@@ -1,0 +1,57 @@
+[
+	{
+		"file": "/home/jeffcreswell/gamedev/RPGs/ryddelmyst/Ryddelmyst/Source/Ryddelmyst/Ryddelmyst.Build.cs",
+		"command": "cl.exe @\"/home/jeffcreswell/gamedev/RPGs/ryddelmyst/Ryddelmyst/.vscode/compileCommands_Ryddelmyst/Ryddelmyst.149.rsp\"",
+		"directory": "/home/jeffcreswell/apps/UnrealEngine4/UnrealEngine/Engine/Source"
+	},
+	{
+		"file": "/home/jeffcreswell/gamedev/RPGs/ryddelmyst/Ryddelmyst/Source/Ryddelmyst/Ryddelmyst.cpp",
+		"command": "cl.exe @\"/home/jeffcreswell/gamedev/RPGs/ryddelmyst/Ryddelmyst/.vscode/compileCommands_Ryddelmyst/Ryddelmyst.149.rsp\"",
+		"directory": "/home/jeffcreswell/apps/UnrealEngine4/UnrealEngine/Engine/Source"
+	},
+	{
+		"file": "/home/jeffcreswell/gamedev/RPGs/ryddelmyst/Ryddelmyst/Source/Ryddelmyst/Ryddelmyst.h",
+		"command": "cl.exe @\"/home/jeffcreswell/gamedev/RPGs/ryddelmyst/Ryddelmyst/.vscode/compileCommands_Ryddelmyst/Ryddelmyst.149.rsp\"",
+		"directory": "/home/jeffcreswell/apps/UnrealEngine4/UnrealEngine/Engine/Source"
+	},
+	{
+		"file": "/home/jeffcreswell/gamedev/RPGs/ryddelmyst/Ryddelmyst/Source/Ryddelmyst/RyddelmystCharacter.cpp",
+		"command": "cl.exe @\"/home/jeffcreswell/gamedev/RPGs/ryddelmyst/Ryddelmyst/.vscode/compileCommands_Ryddelmyst/Ryddelmyst.149.rsp\"",
+		"directory": "/home/jeffcreswell/apps/UnrealEngine4/UnrealEngine/Engine/Source"
+	},
+	{
+		"file": "/home/jeffcreswell/gamedev/RPGs/ryddelmyst/Ryddelmyst/Source/Ryddelmyst/RyddelmystCharacter.h",
+		"command": "cl.exe @\"/home/jeffcreswell/gamedev/RPGs/ryddelmyst/Ryddelmyst/.vscode/compileCommands_Ryddelmyst/Ryddelmyst.149.rsp\"",
+		"directory": "/home/jeffcreswell/apps/UnrealEngine4/UnrealEngine/Engine/Source"
+	},
+	{
+		"file": "/home/jeffcreswell/gamedev/RPGs/ryddelmyst/Ryddelmyst/Source/Ryddelmyst/RyddelmystGameMode.cpp",
+		"command": "cl.exe @\"/home/jeffcreswell/gamedev/RPGs/ryddelmyst/Ryddelmyst/.vscode/compileCommands_Ryddelmyst/Ryddelmyst.149.rsp\"",
+		"directory": "/home/jeffcreswell/apps/UnrealEngine4/UnrealEngine/Engine/Source"
+	},
+	{
+		"file": "/home/jeffcreswell/gamedev/RPGs/ryddelmyst/Ryddelmyst/Source/Ryddelmyst/RyddelmystGameMode.h",
+		"command": "cl.exe @\"/home/jeffcreswell/gamedev/RPGs/ryddelmyst/Ryddelmyst/.vscode/compileCommands_Ryddelmyst/Ryddelmyst.149.rsp\"",
+		"directory": "/home/jeffcreswell/apps/UnrealEngine4/UnrealEngine/Engine/Source"
+	},
+	{
+		"file": "/home/jeffcreswell/gamedev/RPGs/ryddelmyst/Ryddelmyst/Source/Ryddelmyst/RyddelmystHUD.cpp",
+		"command": "cl.exe @\"/home/jeffcreswell/gamedev/RPGs/ryddelmyst/Ryddelmyst/.vscode/compileCommands_Ryddelmyst/Ryddelmyst.149.rsp\"",
+		"directory": "/home/jeffcreswell/apps/UnrealEngine4/UnrealEngine/Engine/Source"
+	},
+	{
+		"file": "/home/jeffcreswell/gamedev/RPGs/ryddelmyst/Ryddelmyst/Source/Ryddelmyst/RyddelmystHUD.h",
+		"command": "cl.exe @\"/home/jeffcreswell/gamedev/RPGs/ryddelmyst/Ryddelmyst/.vscode/compileCommands_Ryddelmyst/Ryddelmyst.149.rsp\"",
+		"directory": "/home/jeffcreswell/apps/UnrealEngine4/UnrealEngine/Engine/Source"
+	},
+	{
+		"file": "/home/jeffcreswell/gamedev/RPGs/ryddelmyst/Ryddelmyst/Source/Ryddelmyst/RyddelmystProjectile.cpp",
+		"command": "cl.exe @\"/home/jeffcreswell/gamedev/RPGs/ryddelmyst/Ryddelmyst/.vscode/compileCommands_Ryddelmyst/Ryddelmyst.149.rsp\"",
+		"directory": "/home/jeffcreswell/apps/UnrealEngine4/UnrealEngine/Engine/Source"
+	},
+	{
+		"file": "/home/jeffcreswell/gamedev/RPGs/ryddelmyst/Ryddelmyst/Source/Ryddelmyst/RyddelmystProjectile.h",
+		"command": "cl.exe @\"/home/jeffcreswell/gamedev/RPGs/ryddelmyst/Ryddelmyst/.vscode/compileCommands_Ryddelmyst/Ryddelmyst.149.rsp\"",
+		"directory": "/home/jeffcreswell/apps/UnrealEngine4/UnrealEngine/Engine/Source"
+	}
+]
