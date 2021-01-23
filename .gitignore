@@ -72,3 +72,6 @@ Build/*/**
 
 # Cache files for the editor to use
 **/DerivedDataCache/*
+
+# Blender backup files
+**/*.blend1
