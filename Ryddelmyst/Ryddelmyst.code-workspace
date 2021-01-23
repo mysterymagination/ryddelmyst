@@ -1,0 +1,23 @@
+{
+	"folders": [
+		{
+			"name": "Ryddelmyst",
+			"path": "."
+		},
+		{
+			"name": "UE4",
+			"path": "/home/jeffcreswell/apps/UnrealEngine4/UnrealEngine"
+		}
+	],
+	"settings": {
+		"typescript.tsc.autoDetect": "off"
+	},
+	"extensions": {
+		"recommendations": [
+			"ms-vscode.cpptools",
+			"ms-dotnettools.csharp",
+			"vadimcn.vscode-lldb",
+			"ms-vscode.mono-debug"
+		]
+	}
+}
