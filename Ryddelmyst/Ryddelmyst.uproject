@@ -1,13 +1,16 @@
 {
 	"FileVersion": 3,
-	"EngineAssociation": "4.26",
+	"EngineAssociation": "{00043E89-08D7-BEAF-FD9B-2E809A92C654}",
 	"Category": "",
 	"Description": "",
 	"Modules": [
 		{
 			"Name": "Ryddelmyst",
 			"Type": "Runtime",
-			"LoadingPhase": "Default"
+			"LoadingPhase": "Default",
+			"AdditionalDependencies": [
+				"Engine"
+			]
 		}
 	]
 }
