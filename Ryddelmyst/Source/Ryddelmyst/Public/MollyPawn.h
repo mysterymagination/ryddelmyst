@@ -15,16 +15,26 @@ public:
 	// Sets default values for this pawn's properties
 	AMollyPawn();
 
-protected:
-	// Called when the game starts or when spawned
-	virtual void BeginPlay() override;
-
-public:	
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 
 	// Called to bind functionality to input
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
+
+	//Input functions
+	void Move_XAxis(float AxisValue);
+	void Move_YAxis(float AxisValue);
+	void StartGrowing();
+	void StopGrowing();
+
+protected:
+	// Called when the game starts or when spawned
+	virtual void BeginPlay() override;
+
+private:	
+	//Input variables
+	FVector CurrentVelocity;
+	bool bGrowing;
 
 public:
 	UPROPERTY(EditAnywhere)
