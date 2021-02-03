@@ -5,7 +5,9 @@
 #include "Camera/CameraComponent.h"
 
 // Sets default values
-AMollyPawn::AMollyPawn()
+AMollyPawn::AMollyPawn() :
+bGrowing(false),
+fMoveTime(0.0f)
 {
  	// Set this pawn to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
@@ -18,8 +20,8 @@ AMollyPawn::AMollyPawn()
 	VisibleMollyComponent = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("TheVisibleMolly"));
 	// Attach camera to our root component, and then offset and rotate the camera
 	MollyCam->SetupAttachment(RootComponent);
-	MollyCam->SetRelativeLocation(FVector(-250.0f, 0.0f, 250.0f));
-	MollyCam->SetRelativeRotation(FRotator(-45.0f, 0.0f, 0.0f));
+	MollyCam->SetRelativeLocation(FVector(-200.0f, 0.0f, 200.0f));
+	MollyCam->SetRelativeRotation(FRotator(-20.0f, 0.0f, 0.0f));
 	// Attach visible object to our root component
 	VisibleMollyComponent->SetupAttachment(RootComponent);
 }
@@ -57,8 +59,14 @@ void AMollyPawn::Tick(float DeltaTime)
 	{
 		if (!CurrentVelocity.IsZero())
 		{
-			FVector NewLocation = GetActorLocation() + (CurrentVelocity * DeltaTime);
+			UE_LOG(LogTemp, Warning, TEXT("Tick; deltaT says %f and movetime says %f"), DeltaTime, fMoveTime);
+			fMoveTime += DeltaTime;
+			FVector NewLocation = GetActorLocation() + (CurrentVelocity * fMoveTime);
 			SetActorLocation(NewLocation);
+		}
+		else 
+		{
+			fMoveTime = 0.0f;
 		}
 	}
 
