@@ -35,6 +35,10 @@ private:
 	//Input variables
 	FVector CurrentVelocity;
 	bool bGrowing;
+	/**
+	 * Aggregates deltatime from incoming frames wherein we've continuously held down the MoveX or MoveY inputs
+	 */  
+	float fMoveTime;
 
 public:
 	UPROPERTY(EditAnywhere)
