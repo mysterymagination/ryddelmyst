@@ -43,4 +43,8 @@ private:
 public:
 	UPROPERTY(EditAnywhere)
 	USceneComponent* VisibleMollyComponent;
+	/**
+	 * Amount of time in seconds that player is allowed in which to trigger the special grow action after starting a move axis input
+	 */ 
+	constexpr static const float kSPECIAL_MOVE_THRESHOLD = 0.3f;
 };
