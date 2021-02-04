@@ -42,8 +42,16 @@ void AMollyPawn::Tick(float DeltaTime)
 		float CurrentScale = VisibleMollyComponent->GetComponentScale().X;
 		if (bGrowing)
 		{
-			// Grow to double size over the course of one second
-			CurrentScale += DeltaTime;
+			if(fMoveTime > 0 && fMoveTime <= kSPECIAL_MOVE_THRESHOLD)
+			{
+				// Special growth action to 2x immediately
+				CurrentScale = 2.0f;
+			}
+			else
+			{
+				// Grow to double size over the course of one second
+				CurrentScale += DeltaTime;
+			}
 		}
 		else
 		{
@@ -100,11 +108,13 @@ void AMollyPawn::Move_YAxis(float AxisValue)
 
 void AMollyPawn::StartGrowing()
 {
+	UE_LOG(LogTemp, Warning, TEXT("StartGrowing"));
 	bGrowing = true;
 }
 
 void AMollyPawn::StopGrowing()
 {
+	UE_LOG(LogTemp, Warning, TEXT("StopGrowing"));
 	bGrowing = false;
 }
 
