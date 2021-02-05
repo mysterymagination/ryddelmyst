@@ -41,8 +41,8 @@ private:
 	float fMoveTime;
 
 public:
-	UPROPERTY(EditAnywhere)
-	USceneComponent* VisibleMollyComponent;
+	UPROPERTY()
+	class UParticleSystemComponent* MollyParticles;
 	/**
 	 * Amount of time in seconds that player is allowed in which to trigger the special grow action after starting a move axis input
 	 */ 
