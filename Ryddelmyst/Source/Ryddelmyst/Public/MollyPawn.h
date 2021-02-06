@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Pawn.h"
+#include "MollyPawnMovementComponent.h"
 #include "MollyPawn.generated.h"
 
 UCLASS()
@@ -43,6 +44,8 @@ private:
 public:
 	UPROPERTY()
 	class UParticleSystemComponent* MollyParticles;
+	UPROPERTY()
+	class UMollyPawnMovementComponent* MollyMovementComponent;	
 	/**
 	 * Amount of time in seconds that player is allowed in which to trigger the special grow action after starting a move axis input
 	 */ 

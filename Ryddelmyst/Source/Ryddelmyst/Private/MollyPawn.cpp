@@ -57,6 +57,9 @@ fMoveTime(0.0f)
 	// Create a camera and attach to our spring arm
     UCameraComponent* Camera = CreateDefaultSubobject<UCameraComponent>(TEXT("MollyCam"));
     Camera->SetupAttachment(SpringArm, USpringArmComponent::SocketName);
+	// Create an instance of our movement component, and tell it to update the root.
+	MollyMovementComponent = CreateDefaultSubobject<UMollyPawnMovementComponent>(TEXT("MollyMovementComponent"));
+	MollyMovementComponent->UpdatedComponent = RootComponent;
 }
 
 // Called when the game starts or when spawned
