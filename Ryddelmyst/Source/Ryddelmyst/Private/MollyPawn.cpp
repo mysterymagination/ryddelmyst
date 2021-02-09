@@ -105,6 +105,7 @@ void AMollyPawn::Tick(float DeltaTime)
 		{
 			UE_LOG(LogTemp, Warning, TEXT("Tick; deltaT says %f and movetime says %f"), DeltaTime, fMoveTime);
 			fMoveTime += DeltaTime;
+			fMoveTime = FMath::Clamp(fMoveTime, 0.0f, 0.3f);
 			FVector NewLocation = GetActorLocation() + (CurrentVelocity * fMoveTime);
 			SetActorLocation(NewLocation);
 		}
@@ -116,6 +117,11 @@ void AMollyPawn::Tick(float DeltaTime)
 
 }
 
+UPawnMovementComponent* AMollyPawn::GetMovementComponent() const
+{
+    return MollyMovementComponent;
+}
+
 // Called to bind functionality to input
 void AMollyPawn::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 {
@@ -124,22 +130,36 @@ void AMollyPawn::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent
 	// Respond when our "Grow" key is pressed or released.
 	InputComponent->BindAction("Grow", IE_Pressed, this, &AMollyPawn::StartGrowing);
 	InputComponent->BindAction("Grow", IE_Released, this, &AMollyPawn::StopGrowing);
+	InputComponent->BindAction("ParticleToggle", IE_Pressed, this, &AMollyPawn::ParticleToggle);
 
 	// Respond every frame to the values of our two movement axes, "MoveX" and "MoveY".
-	InputComponent->BindAxis("MoveForward", this, &AMollyPawn::Move_XAxis);
-	InputComponent->BindAxis("MoveRight", this, &AMollyPawn::Move_YAxis);
+	InputComponent->BindAxis("MoveForward", this, &AMollyPawn::MoveForward);
+	InputComponent->BindAxis("MoveRight", this, &AMollyPawn::MoveRight);
+	InputComponent->BindAxis("Turn", this, &AMollyPawn::Turn);
 }
 
-void AMollyPawn::Move_XAxis(float AxisValue)
+void AMollyPawn::MoveForward(float AxisValue)
 {
-	// Move at 100 units per second forward or backward
-	CurrentVelocity.X = FMath::Clamp(AxisValue, -1.0f, 1.0f) * 100.0f;
+	if (MollyMovementComponent && (MollyMovementComponent->UpdatedComponent == RootComponent))
+	{
+		MollyMovementComponent->AddInputVector(GetActorForwardVector() * AxisValue);
+	}
 }
 
-void AMollyPawn::Move_YAxis(float AxisValue)
+void AMollyPawn::MoveRight(float AxisValue)
 {
-	// Move at 100 units per second right or left
-	CurrentVelocity.Y = FMath::Clamp(AxisValue, -1.0f, 1.0f) * 100.0f;
+	if (MollyMovementComponent && (MollyMovementComponent->UpdatedComponent == RootComponent))
+	{
+		MollyMovementComponent->AddInputVector(GetActorRightVector() * AxisValue);
+	}
+}
+
+void AMollyPawn::Turn(float AxisValue)
+{
+	FRotator NewRotation = GetActorRotation();
+	// rot around Z, so turning 'round from our actor's perspective
+	NewRotation.Yaw += AxisValue;
+	SetActorRotation(NewRotation);
 }
 
 void AMollyPawn::StartGrowing()
@@ -152,5 +172,14 @@ void AMollyPawn::StopGrowing()
 {
 	UE_LOG(LogTemp, Warning, TEXT("StopGrowing"));
 	bGrowing = false;
+}
+
+void AMollyPawn::ParticleToggle()
+{
+	UE_LOG(LogTemp, Warning, TEXT("Toggling Particles"));
+	if(MollyParticles && MollyParticles->Template)
+	{
+		MollyParticles->ToggleActive();
+	}
 }
 
