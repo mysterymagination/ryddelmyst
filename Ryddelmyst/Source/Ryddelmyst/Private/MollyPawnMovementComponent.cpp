@@ -16,19 +16,19 @@ void UMollyPawnMovementComponent::TickComponent(float DeltaTime, enum ELevelTick
 	// Get (and then clear) the movement vector that we set in ACollidingPawn::Tick
 	FVector InputVector = ConsumeInputVector().GetClampedToMaxSize(1.0f);
 	UE_LOG(LogTemp, Warning, TEXT("MollyPawnMovementComponent::TickComponent; input vector is %s"), *InputVector.ToString());
-	FVector DesiredMovementThisFrame = InputVector * DeltaTime * 50.0f;
-	UE_LOG(LogTemp, Warning, TEXT("MollyPawnMovementComponent::TickComponent; init desired movement vector is %s"), *DesiredMovementThisFrame.ToString());
+	// init velocity of 50 units/second
+	FVector DesiredMovementThisFrame = InputVector * DeltaTime * 100.0f;
+	UE_LOG(LogTemp, Warning, TEXT("MollyPawnMovementComponent::TickComponent; after deltaT of %f, init desired movement vector is %s"), DeltaTime, *DesiredMovementThisFrame.ToString());
 	if (!DesiredMovementThisFrame.IsNearlyZero())
 	{
 		// update continuous movement time, clamping at ceil of 0.3 seconds (to cap our acceleration below)
 		fMoveTime += DeltaTime;
-		fMoveTime = FMath::Clamp(fMoveTime, 0.0f, 0.3f);
+		fMoveTime = FMath::Clamp(fMoveTime, 0.0f, 0.6f);
 		UE_LOG(LogTemp, Warning, TEXT("MollyPawnMovementComponent::TickComponent; fMoveTime is %f"), fMoveTime);
 	
-		// juice our desired movement this frame by our continuous movement time, to simulate acceleration
-		DesiredMovementThisFrame *= fMoveTime * 100.0f;
+		// juice our velocity by our continuous movement time, to simulate capped acceleration
+		DesiredMovementThisFrame *= fMoveTime * 10.0f;
 		UE_LOG(LogTemp, Warning, TEXT("MollyPawnMovementComponent::TickComponent; final desired movement vector is %s"), *DesiredMovementThisFrame.ToString());
-	
 
 		FHitResult Hit;
 		SafeMoveUpdatedComponent(DesiredMovementThisFrame, UpdatedComponent->GetComponentRotation(), true, Hit);
