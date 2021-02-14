@@ -17,6 +17,10 @@ class RYDDELMYST_API UIounTorchComponent : public UActorComponent
 public:	
 	// Sets default values for this component's properties
 	UIounTorchComponent();
+	/**
+	 * Set the USceneComponent for the IounTorch to orbit
+	 */
+	void setOrbittedSceneComponent(USceneComponent* orbitted);
 
 protected:
 	// Called when the game starts
@@ -26,7 +30,12 @@ public:
 	// Called every frame
 	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
 
-public:
+private:
+	/**
+	 * Root of this component's scene hierarchy
+	 */
+	UPROPERTY()
+	class USceneComponent* SceneRoot;
 	/**
  	 * Fire particles emitted by the IounTorch
 	 * TODO: emissive material!  I wanna see glowy bits 
@@ -34,8 +43,8 @@ public:
 	UPROPERTY()
 	class UParticleSystemComponent* TorchParticles;
 	/**
-	 * The IounTorch orbits this
+	 * The IounTorch orbits this fella
 	 */ 
 	UPROPERTY()
-	class USceneComponent* ParentSceneComponent;
+	class USceneComponent* OrbittedSceneComponent;
 };
