@@ -3,6 +3,7 @@
 
 #include "IounTorchComponent.h"
 #include "Components/BoxComponent.h"
+#include "Particles/ParticleSystemComponent.h"
 
 
 // Sets default values for this component's properties
@@ -11,18 +12,34 @@ UIounTorchComponent::UIounTorchComponent()
 	// Set this component to be initialized when the game starts, and to be ticked every frame.  You can turn these features
 	// off to improve performance if you don't need them.
 	PrimaryComponentTick.bCanEverTick = true;
-
-	// TODO: create static mesh and physics component members... who would I attach them to without the parent or a builtin RootComponent?  I guess this Component could have its own thing like RootComponent (tho probly should not use that name)
+	
+	// create root scenecomponent box that'll be the physical core of our IounTorch
 	auto* boxComp = CreateDefaultSubobject<UBoxComponent>(TEXT("RootBoxComponent"));
 	boxComp->InitBoxExtent(FVector(50.0f, 50.0f, 50.0f));
+	boxComp->SetCollisionProfileName(TEXT("IounTorchPresence"));
 	boxComp->UpdateBodySetup();
 	SceneRoot = boxComp;
-}
-
-// todo: should be using USceneComponent::GetAttachParent() so we can just lean on the SetupAttachment API
-void UIounTorchComponent::setOrbittedSceneComponent(USceneComponent* orbitted)
-{
-	OrbittedSceneComponent = orbitted;
+	// IounTorch mesh
+	UStaticMeshComponent* PyramidVisual = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("TheVisibleTorch"));
+	PyramidVisual->SetupAttachment(SceneRoot);
+	static ConstructorHelpers::FObjectFinder<UStaticMesh> PyramidVisualAsset(TEXT("/Game/StarterContent/Shapes/Shape_QuadPyramid.Shape_QuadPyramid"));
+	if (PyramidVisualAsset.Succeeded())
+	{
+		PyramidVisual->SetStaticMesh(PyramidVisualAsset.Object);
+		PyramidVisual->SetRelativeLocation(FVector(0.0f, 0.0f, -50.0f));
+		PyramidVisual->SetWorldScale3D(FVector(0.8f));
+	}
+	// Create a particle system that will stay on all the time
+	TorchParticles = CreateDefaultSubobject<UParticleSystemComponent>(TEXT("IounTorchParticles"));
+	TorchParticles->SetupAttachment(PyramidVisual);
+	TorchParticles->bAutoActivate = false;
+	// Offset slighlty from bottom-center of mesh to improve visibility
+	TorchParticles->SetRelativeLocation(FVector(-25.0f, 0.0f, 25.0f));
+	static ConstructorHelpers::FObjectFinder<UParticleSystem> ParticleAsset(TEXT("/Game/StarterContent/Particles/P_Fire.P_Fire"));
+	if (ParticleAsset.Succeeded())
+	{
+		TorchParticles->SetTemplate(ParticleAsset.Object);
+	}
 }
 
 // Called when the game starts
@@ -39,7 +56,7 @@ void UIounTorchComponent::BeginPlay()
 void UIounTorchComponent::TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction)
 {
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
-
-	// ...
+	auto* pOrbitted = this->GetAttachParent();
+	// TODO: check if we have anything non-nullptr from GetAttachParent() and if so define our pos according to it
 }
 
