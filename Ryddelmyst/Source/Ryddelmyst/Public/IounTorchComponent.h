@@ -3,24 +3,20 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "Components/ActorComponent.h"
+#include "Components/SceneComponent.h"
 #include "IounTorchComponent.generated.h"
 
 /**
  * An IounTorch is a sphere that orbits around its USceneComponent parent, wreathed in heatless firelight
  */ 
 UCLASS( ClassGroup=(Custom), meta=(BlueprintSpawnableComponent) )
-class RYDDELMYST_API UIounTorchComponent : public UActorComponent
+class RYDDELMYST_API UIounTorchComponent : public USceneComponent
 {
 	GENERATED_BODY()
 
 public:	
 	// Sets default values for this component's properties
 	UIounTorchComponent();
-	/**
-	 * Set the USceneComponent for the IounTorch to orbit
-	 */
-	void setOrbittedSceneComponent(USceneComponent* orbitted);
 
 protected:
 	// Called when the game starts
@@ -42,9 +38,4 @@ private:
 	 */  
 	UPROPERTY()
 	class UParticleSystemComponent* TorchParticles;
-	/**
-	 * The IounTorch orbits this fella
-	 */ 
-	UPROPERTY()
-	class USceneComponent* OrbittedSceneComponent;
 };
