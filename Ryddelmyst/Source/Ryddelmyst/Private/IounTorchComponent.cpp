@@ -57,6 +57,14 @@ void UIounTorchComponent::TickComponent(float DeltaTime, ELevelTick TickType, FA
 {
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
 	auto* pOrbitted = this->GetAttachParent();
-	// TODO: check if we have anything non-nullptr from GetAttachParent() and if so define our pos according to it
+	// TODO: define our pos according to attach parent
+	if(pOrbitted)
+	{
+		UE_LOG(LogTemp, Warning, TEXT("IounTorch::TickComponent; orbitted parent is %s"), *pOrbitted->GetFName().ToString());
+	}
+	else 
+	{
+		UE_LOG(LogTemp, Warning, TEXT("IounTorch::TickComponent; no parent to orbit yet"));
+	}
 }
 
