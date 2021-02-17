@@ -27,7 +27,6 @@ UIounTorchComponent::UIounTorchComponent()
 	{
 		PyramidVisual->SetStaticMesh(PyramidVisualAsset.Object);
 		PyramidVisual->SetRelativeLocation(FVector(0.0f, 0.0f, -50.0f));
-		PyramidVisual->SetWorldScale3D(FVector(0.8f));
 	}
 	UE_LOG(LogTemp, Warning, TEXT("UIounTorchComponent::ctor; pyramid visual rough sphere bound radius is %f"), PyramidVisual->CalcLocalBounds().SphereRadius);
 	// Create a particle system that will stay on all the time
@@ -63,17 +62,19 @@ void UIounTorchComponent::TickComponent(float DeltaTime, ELevelTick TickType, FA
 	{
 		UE_LOG(LogTemp, Warning, TEXT("IounTorch::TickComponent; orbitted parent is %s"), *pOrbitted->GetFName().ToString());
 		UE_LOG(LogTemp, Warning, TEXT("IounTorch::TickComponent; torch parent pos is %s"), *pOrbitted->GetComponentLocation().ToString());
-		UE_LOG(LogTemp, Warning, TEXT("IounTorch::TickComponent; torch pos is %s"), *this->GetComponentLocation().ToString());
-
+		UE_LOG(LogTemp, Warning, TEXT("IounTorch::TickComponent; torch pos is %s"), *GetComponentLocation().ToString());
+		
 		// todo: debug floating torch - should really move this into a MovementComponent thingy
 		FVector NewLocation = GetComponentLocation();
-		FRotator NewRotation = GetComponentRotation();
+		//FRotator NewRotation = GetComponentRotation();
 		float RunningTime = GetWorld()->GetTimeSeconds();
 		float DeltaHeight = (FMath::Sin(RunningTime + DeltaTime) - FMath::Sin(RunningTime));
-		NewLocation.Z += DeltaHeight;
-		float DeltaRotation = DeltaTime * 20.0f;    //Rotate by 20 degrees per second
-		NewRotation.Yaw += DeltaRotation;
-		SetRelativeLocationAndRotation(NewLocation, NewRotation);
+		NewLocation.Z += DeltaHeight * 20;
+		UE_LOG(LogTemp, Warning, TEXT("IounTorch::TickComponent; runningtime says %f and deltaheight is %f"), RunningTime, DeltaHeight);
+		//float DeltaRotation = DeltaTime * 20.0f;    //Rotate by 20 degrees per second
+		//NewRotation.Yaw += 0.0f;//DeltaRotation;
+		//SetWorldLocationAndRotation(NewLocation, NewRotation);
+		SetWorldLocation(NewLocation);
 	}
 	else 
 	{
