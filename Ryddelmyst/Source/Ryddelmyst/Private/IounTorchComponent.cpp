@@ -29,6 +29,7 @@ UIounTorchComponent::UIounTorchComponent()
 		PyramidVisual->SetRelativeLocation(FVector(0.0f, 0.0f, -50.0f));
 		PyramidVisual->SetWorldScale3D(FVector(0.8f));
 	}
+	UE_LOG(LogTemp, Warning, TEXT("UIounTorchComponent::ctor; pyramid visual rough sphere bound radius is %f"), PyramidVisual->CalcLocalBounds().SphereRadius);
 	// Create a particle system that will stay on all the time
 	TorchParticles = CreateDefaultSubobject<UParticleSystemComponent>(TEXT("IounTorchParticles"));
 	TorchParticles->SetupAttachment(PyramidVisual);
@@ -61,6 +62,7 @@ void UIounTorchComponent::TickComponent(float DeltaTime, ELevelTick TickType, FA
 	if(pOrbitted)
 	{
 		UE_LOG(LogTemp, Warning, TEXT("IounTorch::TickComponent; orbitted parent is %s"), *pOrbitted->GetFName().ToString());
+		UE_LOG(LogTemp, Warning, TEXT("IounTorch::TickComponent; torch pos is %s"), *this->GetComponentLocation().ToString());
 	}
 	else 
 	{
