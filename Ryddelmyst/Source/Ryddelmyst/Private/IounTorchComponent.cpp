@@ -62,7 +62,18 @@ void UIounTorchComponent::TickComponent(float DeltaTime, ELevelTick TickType, FA
 	if(pOrbitted)
 	{
 		UE_LOG(LogTemp, Warning, TEXT("IounTorch::TickComponent; orbitted parent is %s"), *pOrbitted->GetFName().ToString());
+		UE_LOG(LogTemp, Warning, TEXT("IounTorch::TickComponent; torch parent pos is %s"), *pOrbitted->GetComponentLocation().ToString());
 		UE_LOG(LogTemp, Warning, TEXT("IounTorch::TickComponent; torch pos is %s"), *this->GetComponentLocation().ToString());
+
+		// todo: debug floating torch - should really move this into a MovementComponent thingy
+		FVector NewLocation = GetComponentLocation();
+		FRotator NewRotation = GetComponentRotation();
+		float RunningTime = GetWorld()->GetTimeSeconds();
+		float DeltaHeight = (FMath::Sin(RunningTime + DeltaTime) - FMath::Sin(RunningTime));
+		NewLocation.Z += DeltaHeight;
+		float DeltaRotation = DeltaTime * 20.0f;    //Rotate by 20 degrees per second
+		NewRotation.Yaw += DeltaRotation;
+		SetRelativeLocationAndRotation(NewLocation, NewRotation);
 	}
 	else 
 	{
