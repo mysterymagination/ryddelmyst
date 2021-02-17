@@ -63,6 +63,7 @@ bGrowing(false)
 	// Give her an ioun torch
 	auto* IounTorch = CreateDefaultSubobject<UIounTorchComponent>(TEXT("MollyTorch"));
 	IounTorch->SetupAttachment(SphereVisual);
+	IounTorch->SetRelativeLocation(FVector(0.0f, 50.0f, 0.0f));
 }
 
 // Called when the game starts or when spawned
@@ -76,7 +77,7 @@ void AMollyPawn::BeginPlay()
 void AMollyPawn::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
-
+	UE_LOG(LogTemp, Warning, TEXT("AMollyPawn::Tick; Molly lives at %s"), *RootComponent->GetComponentLocation().ToString());
 	{
 		float CurrentScale = RootComponent->GetComponentScale().X;
 		if (bGrowing)
