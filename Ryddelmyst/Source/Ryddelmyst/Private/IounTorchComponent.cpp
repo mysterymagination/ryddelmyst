@@ -13,12 +13,13 @@ UIounTorchComponent::UIounTorchComponent()
 	// off to improve performance if you don't need them.
 	PrimaryComponentTick.bCanEverTick = true;
 	
-	// create root scenecomponent box that'll be the physical core of our IounTorch
+	// create root scenecomponent box that'll be the physical core of our IounTorch, and then attach it to this torch object
 	auto* boxComp = CreateDefaultSubobject<UBoxComponent>(TEXT("RootBoxComponent"));
 	boxComp->InitBoxExtent(FVector(50.0f, 50.0f, 50.0f));
 	boxComp->SetCollisionProfileName(TEXT("IounTorchPresence"));
 	boxComp->UpdateBodySetup();
 	SceneRoot = boxComp;
+	SceneRoot->SetupAttachment(this);
 	// IounTorch mesh
 	UStaticMeshComponent* PyramidVisual = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("TheVisibleTorch"));
 	PyramidVisual->SetupAttachment(SceneRoot);
