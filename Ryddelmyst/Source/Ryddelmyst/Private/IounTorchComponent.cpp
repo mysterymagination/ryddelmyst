@@ -15,7 +15,7 @@ UIounTorchComponent::UIounTorchComponent()
 	
 	// create root scenecomponent box that'll be the physical core of our IounTorch, and then attach it to this torch object
 	auto* boxComp = CreateDefaultSubobject<UBoxComponent>(TEXT("RootBoxComponent"));
-	boxComp->InitBoxExtent(FVector(50.0f, 50.0f, 50.0f));
+	boxComp->InitBoxExtent(FVector(25.0f, 25.0f, 25.0f));
 	boxComp->SetCollisionProfileName(TEXT("IounTorchPresence"));
 	boxComp->UpdateBodySetup();
 	SceneRoot = boxComp;
@@ -27,7 +27,8 @@ UIounTorchComponent::UIounTorchComponent()
 	if (PyramidVisualAsset.Succeeded())
 	{
 		PyramidVisual->SetStaticMesh(PyramidVisualAsset.Object);
-		PyramidVisual->SetRelativeLocation(FVector(0.0f, 0.0f, -50.0f));
+		PyramidVisual->SetRelativeLocation(FVector(0.0f, 0.0f, -25.0f));
+		PyramidVisual->SetWorldScale3D(FVector(0.3f));
 	}
 	UE_LOG(LogTemp, Warning, TEXT("UIounTorchComponent::ctor; pyramid visual rough sphere bound radius is %f"), PyramidVisual->CalcLocalBounds().SphereRadius);
 	// Create a particle system that will stay on all the time
@@ -58,24 +59,27 @@ void UIounTorchComponent::TickComponent(float DeltaTime, ELevelTick TickType, FA
 {
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
 	auto* pOrbitted = this->GetAttachParent();
-	// TODO: define our pos according to attach parent
+	// TODO: define our per frame pos according to attach parent, performing one circumnavigation of the actor per second
 	if(pOrbitted)
 	{
 		UE_LOG(LogTemp, Warning, TEXT("IounTorch::TickComponent; orbitted parent is %s"), *pOrbitted->GetFName().ToString());
 		UE_LOG(LogTemp, Warning, TEXT("IounTorch::TickComponent; torch parent pos is %s"), *pOrbitted->GetComponentLocation().ToString());
 		UE_LOG(LogTemp, Warning, TEXT("IounTorch::TickComponent; torch pos is %s"), *GetComponentLocation().ToString());
 		
-		// todo: debug floating torch - should really move this into a MovementComponent thingy
+		// todo: floating torch - should really move this into a MovementComponent thingy
 		FVector NewLocation = GetComponentLocation();
-		//FRotator NewRotation = GetComponentRotation();
+		FRotator NewRotation = GetComponentRotation();
 		float RunningTime = GetWorld()->GetTimeSeconds();
 		float DeltaHeight = (FMath::Sin(RunningTime + DeltaTime) - FMath::Sin(RunningTime));
-		NewLocation.Z += DeltaHeight * 20;
+		NewLocation.Z += DeltaHeight * 10;
 		UE_LOG(LogTemp, Warning, TEXT("IounTorch::TickComponent; runningtime says %f and deltaheight is %f"), RunningTime, DeltaHeight);
-		//float DeltaRotation = DeltaTime * 20.0f;    //Rotate by 20 degrees per second
-		//NewRotation.Yaw += 0.0f;//DeltaRotation;
-		//SetWorldLocationAndRotation(NewLocation, NewRotation);
-		SetWorldLocation(NewLocation);
+		float DeltaRotation = DeltaTime * 20.0f; //Rotate by 20 degrees per second
+		NewRotation.Yaw += DeltaRotation;
+		SetWorldLocationAndRotation(NewLocation, NewRotation);
+
+		// orbit motion
+		// todo: rotate around Z axis centered on the orbitted actor by deltatime*360 degrees each frame
+
 	}
 	else 
 	{
