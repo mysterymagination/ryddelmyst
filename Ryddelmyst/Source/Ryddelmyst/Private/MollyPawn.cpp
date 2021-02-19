@@ -63,7 +63,7 @@ bGrowing(false)
 	// Give her an ioun torch
 	auto* IounTorch = CreateDefaultSubobject<UIounTorchComponent>(TEXT("MollyTorch"));
 	IounTorch->SetupAttachment(SphereVisual);
-	IounTorch->SetRelativeLocation(FVector(0.0f, 75.0f, 120.0f));
+	//IounTorch->SetRelativeLocation(FVector(0.0f, 75.0f, 120.0f));
 	// todo: how come her bounds stay the same regardless of scaling?
 	UE_LOG(LogTemp, Warning, TEXT("AMollyPawn::ctor; molly's measurements %f"), SphereVisual->CalcLocalBounds().SphereRadius);
 }
