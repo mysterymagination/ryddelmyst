@@ -80,6 +80,7 @@ void UIounTorchComponent::TickComponent(float DeltaTime, ELevelTick TickType, FA
 		UE_LOG(LogTemp, Warning, TEXT("IounTorch::TickComponent; orbit offset says %s"), *orbitOffset.ToString());
 		float DeltaRotation = DeltaTime * 20.0f; //Rotate by 20 degrees per second
 		NewRotation.Yaw += DeltaRotation;
+		UE_LOG(LogTemp, Warning, TEXT("UIounTorchComponent::TickComponent(); rot yaw says %f"), NewRotation.Yaw);
 		SetWorldLocationAndRotation(NewLocation, NewRotation);
 
 		// orbit motion
