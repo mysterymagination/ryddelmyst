@@ -15,9 +15,10 @@ UIounTorchComponent::UIounTorchComponent()
 	
 	// create root scenecomponent box that'll be the physical core of our IounTorch, and then attach it to this torch object
 	auto* boxComp = CreateDefaultSubobject<UBoxComponent>(TEXT("RootBoxComponent"));
-	boxComp->InitBoxExtent(FVector(25.0f, 25.0f, 25.0f));
+	boxComp->InitBoxExtent(FVector(20.0f, 20.0f, 15.0f));
 	boxComp->SetCollisionProfileName(TEXT("IounTorchPresence"));
 	boxComp->UpdateBodySetup();
+	UE_LOG(LogTemp, Warning, TEXT("UIounTorchComponent::ctor; torch box origin is %s and the extent is %s"), *boxComp->CalcBounds(FTransform()).Origin.ToString(), *boxComp->CalcBounds(FTransform()).BoxExtent.ToString());
 	SceneRoot = boxComp;
 	SceneRoot->SetupAttachment(this);
 	// IounTorch mesh
@@ -27,7 +28,10 @@ UIounTorchComponent::UIounTorchComponent()
 	if (PyramidVisualAsset.Succeeded())
 	{
 		PyramidVisual->SetStaticMesh(PyramidVisualAsset.Object);
-		PyramidVisual->SetRelativeLocation(FVector(0.0f, 0.0f, -25.0f));
+		// why does 15 on Z put me at the floor of the box and 0 buts me in the middle?  I thought the extent vector of 15 on Z meant 15 from one endpoint of an edge to the other on Z, such that half would be 7.5?  EDIT: apparently the def of extents here must be that it extends out that far from origin, which is the center, so it extends that far in positive and negative directions on each axis.
+		//PyramidVisual->SetRelativeLocation(FVector(0.0f, 0.0f, 0.0f)); // centered in box, also the default if no relative location specified
+		PyramidVisual->SetRelativeLocation(FVector(0.0f, 0.0f, -15.0f)); // sitting on floor of box
+		//PyramidVisual->SetRelativeLocation(FVector(0.0f, 0.0f, 15.0f)); // sitting on ceiling of box
 		PyramidVisual->SetWorldScale3D(FVector(0.3f));
 	}
 	UE_LOG(LogTemp, Warning, TEXT("UIounTorchComponent::ctor; pyramid visual rough sphere bound radius is %f"), PyramidVisual->CalcLocalBounds().SphereRadius);
@@ -36,7 +40,7 @@ UIounTorchComponent::UIounTorchComponent()
 	TorchParticles->SetupAttachment(PyramidVisual);
 	TorchParticles->bAutoActivate = false;
 	// Offset slighlty from bottom-center of mesh to improve visibility
-	TorchParticles->SetRelativeLocation(FVector(-25.0f, 0.0f, 25.0f));
+	TorchParticles->SetRelativeLocation(FVector(-20.0f, 0.0f, 10.0f));
 	static ConstructorHelpers::FObjectFinder<UParticleSystem> ParticleAsset(TEXT("/Game/StarterContent/Particles/P_Fire.P_Fire"));
 	if (ParticleAsset.Succeeded())
 	{
