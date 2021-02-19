@@ -27,6 +27,8 @@ public:
 	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
 
 private:
+	FVector orbitOffset = { 0.0f, 75.0f, 120.0f };
+
 	/**
 	 * Root of this component's scene hierarchy
 	 */

@@ -77,13 +77,20 @@ void UIounTorchComponent::TickComponent(float DeltaTime, ELevelTick TickType, FA
 		float DeltaHeight = (FMath::Sin(RunningTime + DeltaTime) - FMath::Sin(RunningTime));
 		NewLocation.Z += DeltaHeight * 10;
 		UE_LOG(LogTemp, Warning, TEXT("IounTorch::TickComponent; runningtime says %f and deltaheight is %f"), RunningTime, DeltaHeight);
+		UE_LOG(LogTemp, Warning, TEXT("IounTorch::TickComponent; orbit offset says %s"), *orbitOffset.ToString());
 		float DeltaRotation = DeltaTime * 20.0f; //Rotate by 20 degrees per second
 		NewRotation.Yaw += DeltaRotation;
 		SetWorldLocationAndRotation(NewLocation, NewRotation);
 
 		// orbit motion
 		// todo: rotate around Z axis centered on the orbitted actor by deltatime*360 degrees each frame
-
+		//float orbitRotation = DeltaTime * 20.0f;
+		//FRotator offsetVecRot;
+		//offsetVecRot.Yaw += orbitRotation;
+		//orbitOffset = offsetVecRot.RotateVector(orbitOffset);
+		orbitOffset = NewRotation.RotateVector(orbitOffset);
+		UE_LOG(LogTemp, Warning, TEXT("UIounTorchComponent::TickComponent(); orbitOffset says %s"), *orbitOffset.ToString());
+		SetRelativeLocation(orbitOffset);
 	}
 	else 
 	{
