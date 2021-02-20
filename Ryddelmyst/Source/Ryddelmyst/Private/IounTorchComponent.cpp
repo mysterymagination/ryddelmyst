@@ -80,11 +80,14 @@ void UIounTorchComponent::TickComponent(float DeltaTime, ELevelTick TickType, FA
 		UE_LOG(LogTemp, Warning, TEXT("IounTorch::TickComponent; orbit offset says %s"), *orbitOffset.ToString());
 		float DeltaRotation = DeltaTime * 20.0f; //Rotate by 20 degrees per second
 		NewRotation.Yaw += DeltaRotation;
-		UE_LOG(LogTemp, Warning, TEXT("UIounTorchComponent::TickComponent(); rot yaw says %f"), NewRotation.Yaw);
-		SetWorldLocationAndRotation(NewLocation, NewRotation);
+		UE_LOG(LogTemp, Warning, TEXT("UIounTorchComponent::TickComponent(); rot yaw says %f after adding deltatime of %f times 20 (%f)"), NewRotation.Yaw, DeltaTime, DeltaTime*20.0f);
+		// TODO: wtf?  when I have this line uncommented, I get a weird accelerating and then decelerating propeller motion out of the torch around the spherical Molly... EDIT: when I comment it, things work great right up until I rotate the actor we're attached to at which point we get our propeller business again but under more controlled circumstances.  Essentially the issue is yaw rotation values approaching 180 or -180 which cause the torch to teleport halfway round the orbitted body every frame.  As we approach 0 this rotation appears to 'slow' because the torch is no longer moving so far per frame.  
+		// TODO: how can I keep my floating and rotating torch while also maintaining smooth orbitting motion (and rotate the actor without bothering any of these)?  I'm guessing the main point of interest is in creating a different FRotator for the orbit vector rotation, which isn't based on the rotation of the torch or molly.
+		// TODO: how come world rotation around Z causes a body to spin in place?  I would expect it to rotate around Z crossing through world origin, and therefore assume a sort of orbitting motion of its own.  Perhaps the concept of world vs. local rotation is different than world vs. local position?  Maybe any given rotation essentially has the axes running through the current rotating body's origin?  But then how does our vector roation work?  That guy, I think is basically given as a vector with a certain magnitude coming out of world origin who gets rotated to have a certain heading and is then picked up and dropped at the spherical Molly origin such that the torch orbits her and not world origin.
+		///SetWorldLocationAndRotation(NewLocation, NewRotation);
 
 		// orbit motion
-		// todo: rotate around Z axis centered on the orbitted actor by deltatime*360 degrees each frame
+		// todo: rotate around Z axis centered on the orbitted actor
 		//float orbitRotation = DeltaTime * 20.0f;
 		//FRotator offsetVecRot;
 		//offsetVecRot.Yaw += orbitRotation;
