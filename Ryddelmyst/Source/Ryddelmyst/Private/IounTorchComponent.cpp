@@ -89,8 +89,7 @@ void UIounTorchComponent::TickComponent(float DeltaTime, ELevelTick TickType, FA
 
 		// orbit motion
 		float OrbitRotation = DeltaTime * 20.0f;
-		// todo: our rotation around molly seems odd -- we're basically taking only the overall magnitude of the components in our offset vector into account.  The different components don't seem to actually affect the ultimate position of the torch as expected.  I'd expect 75.0f, 75.0f, 120.0f to put us to the upper forward right of the actor and then we just yaw around her from that point.  Instead, we seem to always be at the same height (basically level with the bottom of the actor) and the only thing that changes is how far away we are from the actor while we yaw around.
-		FRotator OffsetVecRot = OrbitOffset.Rotation();
+		FRotator OffsetVecRot(0.0f, 0.0f, 0.0f);
 		UE_LOG(LogTemp, Warning, TEXT("UIounTorchComponent::TickComponent; OffsetVecRot says %s"), *OffsetVecRot.ToString());
 		OffsetVecRot.Yaw = OrbitRotation;
 		OrbitOffset = OffsetVecRot.RotateVector(OrbitOffset);
