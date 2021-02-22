@@ -104,6 +104,7 @@ void AMollyPawn::Tick(float DeltaTime)
 		CurrentScale = FMath::Clamp(CurrentScale, 1.0f, 2.0f);
 		RootComponent->SetWorldScale3D(FVector(CurrentScale));
 	}
+	UE_LOG(LogTemp, Warning, TEXT("AMollyPawn::Tick; molly pos is %s"), *GetActorLocation().ToString());
 }
 
 UPawnMovementComponent* AMollyPawn::GetMovementComponent() const
