@@ -26,5 +26,14 @@ public:
 	// Called every frame
 	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
 
-		
+private:
+	/**
+	 * The max allowed lifetime of the micrometeor, in seconds 
+	 */
+	UPROPERTY(EditAnywhere)
+	float fMaxLifeTime = 10.0f;
+	/**
+	 * The current time this micrometeor has been alive, in seconds
+	 */
+	float fLifeTime = 0.0f;
 };
