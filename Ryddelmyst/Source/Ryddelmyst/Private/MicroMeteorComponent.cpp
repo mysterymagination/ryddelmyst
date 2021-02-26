@@ -28,7 +28,10 @@ void UMicroMeteorComponent::BeginPlay()
 void UMicroMeteorComponent::TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction)
 {
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
-
-	// ...
+	fLifeTime += DeltaTime;
+	if (fLifeTime >= fMaxLifeTime)
+	{
+		DestroyComponent();
+	}
 }
 
