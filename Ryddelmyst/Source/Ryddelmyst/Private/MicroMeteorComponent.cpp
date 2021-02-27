@@ -28,10 +28,28 @@ void UMicroMeteorComponent::BeginPlay()
 void UMicroMeteorComponent::TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction)
 {
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
-	fLifeTime += DeltaTime;
-	if (fLifeTime >= fMaxLifeTime)
+	fLifeTimer += DeltaTime;
+	if (fLifeTimer >= fMaxLifeTime)
 	{
-		DestroyComponent();
+		if (!bLaunched)
+		{
+			MeteoricLaunch();
+		}
+		else
+		{
+			fLaunchedLifeTimer += DeltaTime;
+			if (fLaunchedLifeTimer >= fMaxLaunchedLifeTime)
+			{
+				DestroyComponent();
+			}
+		}
 	}
+}
+
+void UMicroMeteorComponent::MeteoricLaunch()
+{
+	// todo: cease the orbitting motion and take off straight on orthogonal
+	// todo: fire up with fire particle fx
+	bLaunched = true;
 }
 
