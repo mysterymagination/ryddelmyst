@@ -34,6 +34,11 @@ private:
 
 private:
 	/**
+	 * The offset of the meteor's orbit from the orbitted body 
+	 */
+	UPROPERTY(EditAnywhere)
+	FVector	OrbitOffset = {0.0f};
+	/**
 	 * The max allowed lifetime of the micrometeor, in seconds 
 	 */
 	UPROPERTY(EditAnywhere)
