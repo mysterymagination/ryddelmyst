@@ -99,7 +99,6 @@ void UIounTorchComponent::TickComponent(float DeltaTime, ELevelTick TickType, FA
 		fMeteorSpawnTimer += DeltaTime;
 		if (fMeteorSpawnTimer >= fMeteorSpawnInterval && iMeteorCount < iMaxMeteors)
 		{
-			// todo: micrometeors stop ticking after a few frames for some reason, presumably destroyed?  I thought NewObject with owner this would keep it from being GCed until the IounTorch is no longer in use.
 			auto* pMeteor = NewObject<UMicroMeteorComponent>(this);
 			pMeteor->SetupAttachment(this);
 			pMeteor->RegisterComponent();
