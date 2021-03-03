@@ -27,8 +27,26 @@ public:
 	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
 
 private:
+	/**
+	 * Interval in seconds we should wait before spawning a meteor
+	 */
+	float fMeteorSpawnInterval = 1.0f;
+	/**
+	 * Incrementing timer marking the time since component inception or last meteor spawn
+	 */
+	float fMeteorSpawnTimer = 0.0f;
+	/**
+	 * The number of meteors we have spawned
+	 */
+	uint8 iMeteorCount = 0;
+	/**
+	 * The max number of meteors we allow to spawn 
+	 */
+	uint8 iMaxMeteors = 3;
+	/**
+	 * Defines the radius of the tirch's orbit around the orbitted body 
+	 */
 	FVector OrbitOffset;
-
 	/**
 	 * Root of this component's scene hierarchy
 	 */
