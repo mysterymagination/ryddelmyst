@@ -69,10 +69,12 @@ void UMicroMeteorComponent::TickComponent(float DeltaTime, ELevelTick TickType, 
 			UE_LOG(LogTemp, Warning, TEXT("MicroMeteor::TickComponent; orbit offset says %s and orbitted extent says %s"), *OrbitOffset.ToString(), *orbittedExtent.ToString());
 		}
 		fLifeTimer += DeltaTime;
+		UE_LOG(LogTemp, Warning, TEXT("MicroMeteor::TickComponent; lifetimer is now %f"), fLifeTimer);
 		if (fLifeTimer >= fMaxLifeTime)
 		{
 			if (!bLaunched)
 			{
+				UE_LOG(LogTemp, Warning, TEXT("MicroMeteor::TickComponent; lifetimer is now %f and we're not launched, so launching"), fLifeTimer);
 				MeteoricLaunch();
 			}
 			else
@@ -80,8 +82,11 @@ void UMicroMeteorComponent::TickComponent(float DeltaTime, ELevelTick TickType, 
 				// take off straight on orthogonal, moving linearly at 100 units/second at our current angle
 				OrbitOffset += FVector(DeltaTime * 100.0f);
 				fLaunchedLifeTimer += DeltaTime;
+				UE_LOG(LogTemp, Warning, TEXT("MicroMeteor::TickComponent; we've been launched for %f"), fLaunchedLifeTimer);
 				if (fLaunchedLifeTimer >= fMaxLaunchedLifeTime)
 				{
+					UE_LOG(LogTemp, Warning, TEXT("MicroMeteor::TickComponent; we've been launched for %f, which is quite long enough (gte max launch time of %f) -- self-destruct!"), fLaunchedLifeTimer, fMaxLaunchedLifeTime);
+					// todo: explosion particle fx before destroy?
 					DestroyComponent();
 				}
 			}
@@ -91,12 +96,14 @@ void UMicroMeteorComponent::TickComponent(float DeltaTime, ELevelTick TickType, 
 			// orbit motion @ 60 degrees/second
 			float OrbitRotation = DeltaTime * 60.0f;
 			FRotator OffsetVecRot(0.0f, 0.0f, 0.0f);
-			UE_LOG(LogTemp, Warning, TEXT("UIounTorchComponent::TickComponent; OffsetVecRot says %s"), *OffsetVecRot.ToString());
 			OffsetVecRot.Yaw = OrbitRotation;
+			UE_LOG(LogTemp, Warning, TEXT("MicroMeteor::TickComponent; OffsetVecRot says %s"), *OffsetVecRot.ToString());
 			OrbitOffset = OffsetVecRot.RotateVector(OrbitOffset);
-			UE_LOG(LogTemp, Warning, TEXT("UIounTorchComponent::TickComponent(); OrbitOffset says %s"), *OrbitOffset.ToString());
-			SetRelativeLocation(OrbitOffset);
 		}
+
+		// common case, update the offset vector
+		UE_LOG(LogTemp, Warning, TEXT("MicroMeteor::TickComponent; OrbitOffset says %s"), *OrbitOffset.ToString());
+		SetRelativeLocation(OrbitOffset);
 	}
 }
 
