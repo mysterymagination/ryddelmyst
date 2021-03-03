@@ -4,6 +4,7 @@
 #include "IounTorchComponent.h"
 #include "Components/BoxComponent.h"
 #include "Particles/ParticleSystemComponent.h"
+#include "MicroMeteorComponent.h"
 
 
 // Sets default values for this component's properties
@@ -93,6 +94,18 @@ void UIounTorchComponent::TickComponent(float DeltaTime, ELevelTick TickType, FA
 		OrbitOffset = OffsetVecRot.RotateVector(OrbitOffset);
 		UE_LOG(LogTemp, Warning, TEXT("UIounTorchComponent::TickComponent(); OrbitOffset says %s"), *OrbitOffset.ToString());
 		SetRelativeLocation(OrbitOffset);
+
+		// meteor proc
+		fMeteorSpawnTimer += DeltaTime;
+		if (fMeteorSpawnTimer >= fMeteorSpawnInterval && iMeteorCount < iMaxMeteors)
+		{
+			// todo: micrometeors stop ticking after a few frames for some reason, presumably destroyed?  I thought NewObject with owner this would keep it from being GCed until the IounTorch is no longer in use.
+			auto* pMeteor = NewObject<UMicroMeteorComponent>(this);
+			pMeteor->SetupAttachment(this);
+			pMeteor->RegisterComponent();
+			iMeteorCount++;
+			fMeteorSpawnTimer = 0.0f;
+		}
 	}
 	else 
 	{
