@@ -112,3 +112,8 @@ void UIounTorchComponent::TickComponent(float DeltaTime, ELevelTick TickType, FA
 	}
 }
 
+UPrimitiveComponent* UIounTorchComponent::getPhysicality()
+{
+	return SceneRoot;
+}
+

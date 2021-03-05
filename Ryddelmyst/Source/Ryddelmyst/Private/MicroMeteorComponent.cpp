@@ -5,6 +5,7 @@
 #include "UObject/ConstructorHelpers.h"
 #include "Particles/ParticleSystemComponent.h"
 #include "Components/SphereComponent.h"
+#include "IounTorchComponent.h"
 
 // Sets default values for this component's properties
 UMicroMeteorComponent::UMicroMeteorComponent() 
@@ -57,17 +58,18 @@ void UMicroMeteorComponent::BeginPlay()
 void UMicroMeteorComponent::TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction)
 {
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
-	auto* pOrbitted = this->GetAttachParent();
+	auto* pOrbitted = static_cast<UIounTorchComponent*>(this->GetAttachParent());
 	if (pOrbitted)
 	{
 		// init orbit offset based on orbitted body size
 		if (OrbitOffset.IsZero())
 		{
-			// todo: getting 0s as offset vector comps for some reason
-			FVector orbittedExtent = pOrbitted->CalcBounds(FTransform()).BoxExtent;
-			OrbitOffset = { 0.0f, 1.25f * orbittedExtent.X, 0.75f * orbittedExtent.Z };
+			FVector orbittedExtent = pOrbitted->getPhysicality()->CalcBounds(FTransform()).BoxExtent;
+			//OrbitOffset = { 0.0f, 1.25f * orbittedExtent.Y, 0.75f * orbittedExtent.Z };
+			OrbitOffset = { 35.0f, 35.0f,  25.0f};
 			UE_LOG(LogTemp, Warning, TEXT("MicroMeteor::TickComponent; orbit offset says %s and orbitted extent says %s"), *OrbitOffset.ToString(), *orbittedExtent.ToString());
 		}
+		/*
 		fLifeTimer += DeltaTime;
 		UE_LOG(LogTemp, Warning, TEXT("MicroMeteor::TickComponent; lifetimer is now %f"), fLifeTimer);
 		if (fLifeTimer >= fMaxLifeTime)
@@ -91,6 +93,7 @@ void UMicroMeteorComponent::TickComponent(float DeltaTime, ELevelTick TickType, 
 				}
 			}
 		}
+		*/
 		else
 		{
 			// orbit motion @ 60 degrees/second
