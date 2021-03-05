@@ -17,7 +17,10 @@ class RYDDELMYST_API UIounTorchComponent : public USceneComponent
 public:	
 	// Sets default values for this component's properties
 	UIounTorchComponent();
-
+	/**
+	 * @return the primitive component subclass that defines the torch's physical form
+	 */
+	UPrimitiveComponent* getPhysicality();
 protected:
 	// Called when the game starts
 	virtual void BeginPlay() override;
@@ -48,10 +51,10 @@ private:
 	 */
 	FVector OrbitOffset;
 	/**
-	 * Root of this component's scene hierarchy
+	 * Root of this component's scene hierarchy, defining its basic physicality
 	 */
 	UPROPERTY()
-	class USceneComponent* SceneRoot;
+	class UPrimitiveComponent* SceneRoot;
 	/**
  	 * Fire particles emitted by the IounTorch
 	 * TODO: emissive material!  I wanna see glowy bits 
