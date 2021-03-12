@@ -41,6 +41,10 @@ UMicroMeteorComponent::UMicroMeteorComponent()
 	{
 		MeteorParticles->SetTemplate(ParticleAsset.Object);
 	}
+
+	// todo: trying simple world space positioning for debug
+	UE_LOG(LogTemp, Warning, TEXT("MicroMeteor::ctor; setting world pos to about our maze hallway floor"));
+	this->SetWorldLocation(FVector(-20.0f, 690.0f, 215.0f));
 }
 
 
@@ -58,6 +62,7 @@ void UMicroMeteorComponent::BeginPlay()
 void UMicroMeteorComponent::TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction)
 {
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
+	/*
 	auto* pOrbitted = static_cast<UIounTorchComponent*>(this->GetAttachParent());
 	if (pOrbitted)
 	{
@@ -69,6 +74,7 @@ void UMicroMeteorComponent::TickComponent(float DeltaTime, ELevelTick TickType, 
 			OrbitOffset = { 35.0f, 35.0f,  25.0f};
 			UE_LOG(LogTemp, Warning, TEXT("MicroMeteor::TickComponent; orbit offset says %s and orbitted extent says %s"), *OrbitOffset.ToString(), *orbittedExtent.ToString());
 		}
+	*/
 		/*
 		fLifeTimer += DeltaTime;
 		UE_LOG(LogTemp, Warning, TEXT("MicroMeteor::TickComponent; lifetimer is now %f"), fLifeTimer);
@@ -94,6 +100,7 @@ void UMicroMeteorComponent::TickComponent(float DeltaTime, ELevelTick TickType, 
 			}
 		}
 		*/
+	/*
 		else
 		{
 			// orbit motion @ 60 degrees/second
@@ -108,6 +115,7 @@ void UMicroMeteorComponent::TickComponent(float DeltaTime, ELevelTick TickType, 
 		UE_LOG(LogTemp, Warning, TEXT("MicroMeteor::TickComponent; OrbitOffset says %s"), *OrbitOffset.ToString());
 		SetRelativeLocation(OrbitOffset);
 	}
+	*/
 }
 
 void UMicroMeteorComponent::MeteoricLaunch()
