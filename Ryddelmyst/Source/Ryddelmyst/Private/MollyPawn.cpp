@@ -52,7 +52,7 @@ bGrowing(false)
 	USpringArmComponent* SpringArm = CreateDefaultSubobject<USpringArmComponent>(TEXT("CameraAttachmentArm"));
 	SpringArm->SetupAttachment(RootComponent);
 	SpringArm->SetRelativeRotation(FRotator(-45.f, 0.f, 0.f));
-	SpringArm->TargetArmLength = 400.0f;
+	SpringArm->TargetArmLength = 1400.0f;
 	SpringArm->bEnableCameraLag = true;
 	SpringArm->CameraLagSpeed = 3.0f;
 	// Create a camera and attach to our spring arm
@@ -67,7 +67,7 @@ bGrowing(false)
 	// Give her an ioun torch
 	auto* MicroMeteor = CreateDefaultSubobject<UMicroMeteorComponent>(TEXT("MeteoricMolly"));
 	// todo: meteor isn't showing up at the correct debug world coords, but I did see an odd shadow that was kinda following molly way out of sight -- maybe just move the swing arm camera way out to see more around her?
-	MicroMeteor->SetupAttachment(SphereVisual);
+	//MicroMeteor->SetupAttachment(SphereVisual);
 	UE_LOG(LogTemp, Warning, TEXT("AMollyPawn::ctor; added micrometeor"));
 	// todo: how come her bounds stay the same regardless of scaling?
 	UE_LOG(LogTemp, Warning, TEXT("AMollyPawn::ctor; molly's measurements %f"), SphereVisual->CalcLocalBounds().SphereRadius);
