@@ -44,7 +44,7 @@ UMicroMeteorComponent::UMicroMeteorComponent()
 
 	// todo: trying simple world space positioning for debug
 	UE_LOG(LogTemp, Warning, TEXT("MicroMeteor::ctor; setting world pos to about our maze hallway floor"));
-	this->SetWorldLocation(FVector(-20.0f, 690.0f, 215.0f));
+	this->SetWorldLocation(FVector(-20.0f, 450.0f, 250.0f));
 }
 
 
