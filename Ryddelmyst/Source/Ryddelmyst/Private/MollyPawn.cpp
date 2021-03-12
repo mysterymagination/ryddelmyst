@@ -9,6 +9,7 @@
 #include "Camera/CameraComponent.h"
 #include "GameFramework/SpringArmComponent.h"
 #include "IounTorchComponent.h"
+#include "MicroMeteorComponent.h"
 
 // Sets default values
 AMollyPawn::AMollyPawn() :
@@ -63,6 +64,11 @@ bGrowing(false)
 	// Give her an ioun torch
 	auto* IounTorch = CreateDefaultSubobject<UIounTorchComponent>(TEXT("MollyTorch"));
 	IounTorch->SetupAttachment(SphereVisual);
+	// Give her an ioun torch
+	auto* MicroMeteor = CreateDefaultSubobject<UMicroMeteorComponent>(TEXT("MeteoricMolly"));
+	// todo: meteor isn't showing up at the correct debug world coords, but I did see an odd shadow that was kinda following molly way out of sight -- maybe just move the swing arm camera way out to see more around her?
+	MicroMeteor->SetupAttachment(SphereVisual);
+	UE_LOG(LogTemp, Warning, TEXT("AMollyPawn::ctor; added micrometeor"));
 	// todo: how come her bounds stay the same regardless of scaling?
 	UE_LOG(LogTemp, Warning, TEXT("AMollyPawn::ctor; molly's measurements %f"), SphereVisual->CalcLocalBounds().SphereRadius);
 }
