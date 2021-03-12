@@ -33,7 +33,7 @@ private:
 	/**
 	 * Interval in seconds we should wait before spawning a meteor
 	 */
-	float fMeteorSpawnInterval = 1.0f;
+	float fMeteorSpawnInterval = 3.0f;
 	/**
 	 * Incrementing timer marking the time since component inception or last meteor spawn
 	 */
