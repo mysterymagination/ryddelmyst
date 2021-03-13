@@ -14,6 +14,7 @@ UMicroMeteorComponent::UMicroMeteorComponent()
 	// off to improve performance if you don't need them.
 	PrimaryComponentTick.bCanEverTick = true;
 
+	/*
 	// Sphere shape will serve as our root component
 	USphereComponent* SphereComponent = CreateDefaultSubobject<USphereComponent>(TEXT("RootSphereComponent"));
 	SphereComponent->InitSphereRadius(10.0f);
@@ -45,6 +46,7 @@ UMicroMeteorComponent::UMicroMeteorComponent()
 	// todo: trying simple world space positioning for debug
 	UE_LOG(LogTemp, Warning, TEXT("MicroMeteor::ctor; setting world pos to about our maze hallway floor"));
 	this->SetWorldLocation(FVector(-20.0f, 450.0f, 250.0f));
+	*/
 }
 
 
@@ -53,7 +55,25 @@ void UMicroMeteorComponent::BeginPlay()
 {
 	Super::BeginPlay();
 
-	// ...
+	// Sphere shape will serve as our root component
+	USphereComponent* SphereComponent = NewObject<USphereComponent>(this);
+	SphereComponent->InitSphereRadius(10.0f);
+	SphereComponent->SetCollisionProfileName(TEXT("MicroMeteorPresence"));
+	SphereComponent->SetupAttachment(this);
+	SphereComponent->RegisterComponent();
+	// Create and position a mesh component so we can see where our spherical Molly is
+	UStaticMeshComponent* SphereVisual = NewObject<UStaticMeshComponent>(this);
+	SphereVisual->SetupAttachment(SphereComponent);
+	UStaticMesh* SphereVisualAsset = LoadObject<UStaticMesh>(GetOuter(), TEXT("StaticMesh'/Game/StarterContent/Shapes/Shape_Sphere.Shape_Sphere'"));
+	SphereVisual->SetStaticMesh(SphereVisualAsset);
+	SphereVisual->SetRelativeLocation(FVector(0.0f, 0.0f, -40.0f));
+	// Our sphere component has a radius of 10 units and the startercontent sphere mesh is 50, so scale it down by 80%
+	SphereVisual->SetWorldScale3D(FVector(0.2f));
+	SphereVisual->RegisterComponent();
+	
+	// todo: trying simple world space positioning for debug
+	UE_LOG(LogTemp, Warning, TEXT("MicroMeteor::ctor; setting world pos to about our maze hallway floor"));
+	this->SetWorldLocation(FVector(-20.0f, 450.0f, 250.0f));
 	
 }
 
@@ -62,6 +82,11 @@ void UMicroMeteorComponent::BeginPlay()
 void UMicroMeteorComponent::TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction)
 {
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
+
+	
+	this->SetWorldLocation(FVector(-20.0f + fSpawnPosMod, 450.0f, 250.0f));
+	UE_LOG(LogTemp, Warning, TEXT("MicroMeteor::ctor; resetting world pos to about our maze hallway floor plus %f, giving us location of %s"), fSpawnPosMod, *this->GetComponentLocation().ToString());
+
 	/*
 	auto* pOrbitted = static_cast<UIounTorchComponent*>(this->GetAttachParent());
 	if (pOrbitted)
