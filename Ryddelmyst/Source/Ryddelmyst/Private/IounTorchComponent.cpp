@@ -102,6 +102,7 @@ void UIounTorchComponent::TickComponent(float DeltaTime, ELevelTick TickType, FA
 			auto* pMeteor = NewObject<UMicroMeteorComponent>(this);
 			pMeteor->SetupAttachment(this);
 			pMeteor->RegisterComponent();
+			pMeteor->fSpawnPosMod = iMeteorCount * 20;
 			iMeteorCount++;
 			fMeteorSpawnTimer = 0.0f;
 		}

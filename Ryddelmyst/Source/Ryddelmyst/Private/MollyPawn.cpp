@@ -80,10 +80,25 @@ void AMollyPawn::BeginPlay()
 	
 }
 
+float totalTime = 0.0f;
+int meteorCount = 0;
+
 // Called every frame
 void AMollyPawn::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
+
+	totalTime += DeltaTime;
+	if (totalTime >= 3 && meteorCount < 3)
+	{
+		auto* pMeteor = NewObject<UMicroMeteorComponent>(this, UMicroMeteorComponent::StaticClass());
+		pMeteor->SetupAttachment(RootComponent);
+		pMeteor->fSpawnPosMod = meteorCount * 100;
+		pMeteor->RegisterComponent();
+		meteorCount++;
+		totalTime = 0.0f;
+	}
+
 	{
 		float CurrentScale = RootComponent->GetComponentScale().X;
 		if (bGrowing)
