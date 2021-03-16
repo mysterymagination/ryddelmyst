@@ -80,7 +80,7 @@ void UIounTorchComponent::TickComponent(float DeltaTime, ELevelTick TickType, FA
 		NewLocation.Z += DeltaHeight * 150;
 		UE_LOG(LogTemp, Warning, TEXT("IounTorch::TickComponent; runningtime says %f and deltaheight is %f"), RunningTime, DeltaHeight);
 		UE_LOG(LogTemp, Warning, TEXT("IounTorch::TickComponent; orbit offset says %s"), *OrbitOffset.ToString());
-		float DeltaRotation = DeltaTime * 100.0f; //Rotate by 20 degrees per second
+		float DeltaRotation = DeltaTime * 100.0f; //Rotate by 100 degrees per second
 		NewRotation.Yaw += DeltaRotation;
 		UE_LOG(LogTemp, Warning, TEXT("UIounTorchComponent::TickComponent(); rot yaw says %f after adding deltatime of %f times 20 (%f)"), NewRotation.Yaw, DeltaTime, DeltaTime*20.0f);  
 		// TODO: how come world rotation around Z causes a body to spin in place?  I would expect it to rotate around Z crossing through world origin, and therefore assume a sort of orbitting motion of its own.  Perhaps the concept of world vs. local rotation is different than world vs. local position?  Maybe any given rotation essentially has the axes running through the current rotating body's origin?  But then how does our vector roation work?  That guy, I think is basically given as a vector with a certain magnitude coming out of world origin who gets rotated to have a certain heading and is then picked up and dropped at the spherical Molly origin such that the torch orbits her and not world origin.
@@ -102,7 +102,6 @@ void UIounTorchComponent::TickComponent(float DeltaTime, ELevelTick TickType, FA
 			auto* pMeteor = NewObject<UMicroMeteorComponent>(this);
 			pMeteor->SetupAttachment(this);
 			pMeteor->RegisterComponent();
-			pMeteor->fSpawnPosMod = iMeteorCount * 20;
 			iMeteorCount++;
 			fMeteorSpawnTimer = 0.0f;
 		}
