@@ -70,11 +70,6 @@ void UMicroMeteorComponent::BeginPlay()
 	// Our sphere component has a radius of 10 units and the startercontent sphere mesh is 50, so scale it down by 80%
 	SphereVisual->SetWorldScale3D(FVector(0.2f));
 	SphereVisual->RegisterComponent();
-	
-	// todo: trying simple world space positioning for debug
-	UE_LOG(LogTemp, Warning, TEXT("MicroMeteor::ctor; setting world pos to about our maze hallway floor"));
-	this->SetWorldLocation(FVector(-20.0f, 450.0f, 250.0f));
-	
 }
 
 
@@ -82,12 +77,6 @@ void UMicroMeteorComponent::BeginPlay()
 void UMicroMeteorComponent::TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction)
 {
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
-
-	
-	this->SetWorldLocation(FVector(-20.0f + fSpawnPosMod, 450.0f, 250.0f));
-	UE_LOG(LogTemp, Warning, TEXT("MicroMeteor::ctor; resetting world pos to about our maze hallway floor plus %f, giving us location of %s"), fSpawnPosMod, *this->GetComponentLocation().ToString());
-
-	/*
 	auto* pOrbitted = static_cast<UIounTorchComponent*>(this->GetAttachParent());
 	if (pOrbitted)
 	{
@@ -95,12 +84,9 @@ void UMicroMeteorComponent::TickComponent(float DeltaTime, ELevelTick TickType, 
 		if (OrbitOffset.IsZero())
 		{
 			FVector orbittedExtent = pOrbitted->getPhysicality()->CalcBounds(FTransform()).BoxExtent;
-			//OrbitOffset = { 0.0f, 1.25f * orbittedExtent.Y, 0.75f * orbittedExtent.Z };
-			OrbitOffset = { 35.0f, 35.0f,  25.0f};
+			OrbitOffset = { 0.0f, 2.0f * orbittedExtent.Y, 1.75f * orbittedExtent.Z };
 			UE_LOG(LogTemp, Warning, TEXT("MicroMeteor::TickComponent; orbit offset says %s and orbitted extent says %s"), *OrbitOffset.ToString(), *orbittedExtent.ToString());
 		}
-	*/
-		/*
 		fLifeTimer += DeltaTime;
 		UE_LOG(LogTemp, Warning, TEXT("MicroMeteor::TickComponent; lifetimer is now %f"), fLifeTimer);
 		if (fLifeTimer >= fMaxLifeTime)
@@ -124,12 +110,10 @@ void UMicroMeteorComponent::TickComponent(float DeltaTime, ELevelTick TickType, 
 				}
 			}
 		}
-		*/
-	/*
 		else
 		{
 			// orbit motion @ 60 degrees/second
-			float OrbitRotation = DeltaTime * 60.0f;
+			float OrbitRotation = DeltaTime * 160.0f;
 			FRotator OffsetVecRot(0.0f, 0.0f, 0.0f);
 			OffsetVecRot.Yaw = OrbitRotation;
 			UE_LOG(LogTemp, Warning, TEXT("MicroMeteor::TickComponent; OffsetVecRot says %s"), *OffsetVecRot.ToString());
@@ -140,7 +124,6 @@ void UMicroMeteorComponent::TickComponent(float DeltaTime, ELevelTick TickType, 
 		UE_LOG(LogTemp, Warning, TEXT("MicroMeteor::TickComponent; OrbitOffset says %s"), *OrbitOffset.ToString());
 		SetRelativeLocation(OrbitOffset);
 	}
-	*/
 }
 
 void UMicroMeteorComponent::MeteoricLaunch()

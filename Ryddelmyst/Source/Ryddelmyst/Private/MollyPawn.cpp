@@ -52,7 +52,7 @@ bGrowing(false)
 	USpringArmComponent* SpringArm = CreateDefaultSubobject<USpringArmComponent>(TEXT("CameraAttachmentArm"));
 	SpringArm->SetupAttachment(RootComponent);
 	SpringArm->SetRelativeRotation(FRotator(-45.f, 0.f, 0.f));
-	SpringArm->TargetArmLength = 1400.0f;
+	SpringArm->TargetArmLength = 800.0f;//400.0f;
 	SpringArm->bEnableCameraLag = true;
 	SpringArm->CameraLagSpeed = 3.0f;
 	// Create a camera and attach to our spring arm
@@ -64,11 +64,6 @@ bGrowing(false)
 	// Give her an ioun torch
 	auto* IounTorch = CreateDefaultSubobject<UIounTorchComponent>(TEXT("MollyTorch"));
 	IounTorch->SetupAttachment(SphereVisual);
-	// Give her an ioun torch
-	auto* MicroMeteor = CreateDefaultSubobject<UMicroMeteorComponent>(TEXT("MeteoricMolly"));
-	// todo: meteor isn't showing up at the correct debug world coords, but I did see an odd shadow that was kinda following molly way out of sight -- maybe just move the swing arm camera way out to see more around her?
-	//MicroMeteor->SetupAttachment(SphereVisual);
-	UE_LOG(LogTemp, Warning, TEXT("AMollyPawn::ctor; added micrometeor"));
 	// todo: how come her bounds stay the same regardless of scaling?
 	UE_LOG(LogTemp, Warning, TEXT("AMollyPawn::ctor; molly's measurements %f"), SphereVisual->CalcLocalBounds().SphereRadius);
 }
@@ -80,24 +75,10 @@ void AMollyPawn::BeginPlay()
 	
 }
 
-float totalTime = 0.0f;
-int meteorCount = 0;
-
 // Called every frame
 void AMollyPawn::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
-
-	totalTime += DeltaTime;
-	if (totalTime >= 3 && meteorCount < 3)
-	{
-		auto* pMeteor = NewObject<UMicroMeteorComponent>(this, UMicroMeteorComponent::StaticClass());
-		pMeteor->SetupAttachment(RootComponent);
-		pMeteor->fSpawnPosMod = meteorCount * 100;
-		pMeteor->RegisterComponent();
-		meteorCount++;
-		totalTime = 0.0f;
-	}
 
 	{
 		float CurrentScale = RootComponent->GetComponentScale().X;
