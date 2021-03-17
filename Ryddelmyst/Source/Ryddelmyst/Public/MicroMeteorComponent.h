@@ -41,6 +41,11 @@ private:
 	UPROPERTY(EditAnywhere)
 	FVector	OrbitOffset = {0.0f, 0.0f, 0.0f};
 	/**
+	 * The offset of the meteor from its world position at the time of launch
+	 * TODO: could probably get by using only the OrbitOffset and SetRelativeLocation() for the launch ortho path if we invert the rotation transform of the parent component out of the final transform applied to the child meteor
+	 */
+	FVector	LaunchedOffset = { 0.0f, 0.0f, 0.0f };
+	/**
 	 * The max allowed lifetime of the micrometeor, in seconds 
 	 */
 	UPROPERTY(EditAnywhere)
