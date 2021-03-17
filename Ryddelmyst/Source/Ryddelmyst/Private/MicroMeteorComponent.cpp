@@ -99,7 +99,7 @@ void UMicroMeteorComponent::TickComponent(float DeltaTime, ELevelTick TickType, 
 			else
 			{
 				// take off straight on orthogonal, moving linearly at 100 units/second at our current angle
-				OrbitOffset += FVector(DeltaTime * 100.0f);
+				LaunchedOffset += FVector(DeltaTime * 100.0f);
 				fLaunchedLifeTimer += DeltaTime;
 				UE_LOG(LogTemp, Warning, TEXT("MicroMeteor::TickComponent; we've been launched for %f"), fLaunchedLifeTimer);
 				if (fLaunchedLifeTimer >= fMaxLaunchedLifeTime)
@@ -114,6 +114,12 @@ void UMicroMeteorComponent::TickComponent(float DeltaTime, ELevelTick TickType, 
 					}
 					DestroyComponent();
 				}
+				else
+				{
+					// progress straight launched path
+					UE_LOG(LogTemp, Warning, TEXT("MicroMeteor::TickComponent; going off straight... LaunchedOffset says %s"), *LaunchedOffset.ToString());
+					SetWorldLocation(LaunchedOffset);
+				}
 			}
 		}
 		else
@@ -124,17 +130,18 @@ void UMicroMeteorComponent::TickComponent(float DeltaTime, ELevelTick TickType, 
 			OffsetVecRot.Yaw = OrbitRotation;
 			UE_LOG(LogTemp, Warning, TEXT("MicroMeteor::TickComponent; OffsetVecRot says %s"), *OffsetVecRot.ToString());
 			OrbitOffset = OffsetVecRot.RotateVector(OrbitOffset);
-		}
 
-		// common case, update the offset vector
-		UE_LOG(LogTemp, Warning, TEXT("MicroMeteor::TickComponent; OrbitOffset says %s"), *OrbitOffset.ToString());
-		SetRelativeLocation(OrbitOffset);
+			// progress orbit path
+			UE_LOG(LogTemp, Warning, TEXT("MicroMeteor::TickComponent; still orbitting... OrbitOffset says %s"), *OrbitOffset.ToString());
+			SetRelativeLocation(OrbitOffset);
+		}		
 	}
 }
 
 void UMicroMeteorComponent::MeteoricLaunch()
 {
 	// todo: fire up with fire particle fx
+	LaunchedOffset = GetComponentLocation();
 	bLaunched = true;
 }
 
