@@ -106,6 +106,12 @@ void UMicroMeteorComponent::TickComponent(float DeltaTime, ELevelTick TickType, 
 				{
 					UE_LOG(LogTemp, Warning, TEXT("MicroMeteor::TickComponent; we've been launched for %f, which is quite long enough (gte max launch time of %f) -- self-destruct!"), fLaunchedLifeTimer, fMaxLaunchedLifeTime);
 					// todo: explosion particle fx before destroy?
+					TArray<USceneComponent*> childrenArray;
+					GetChildrenComponents(true, childrenArray);
+					for (auto* childComponent : childrenArray)
+					{
+						childComponent->DestroyComponent();
+					}
 					DestroyComponent();
 				}
 			}
