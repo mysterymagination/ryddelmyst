@@ -45,7 +45,7 @@ private:
 	/**
 	 * The max number of meteors we allow to spawn 
 	 */
-	uint8 iMaxMeteors = 3;
+	uint8 iMaxMeteors = 5;
 	/**
 	 * Defines the radius of the tirch's orbit around the orbitted body 
 	 */
