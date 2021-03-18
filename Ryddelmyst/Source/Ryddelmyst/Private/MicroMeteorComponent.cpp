@@ -99,7 +99,7 @@ void UMicroMeteorComponent::TickComponent(float DeltaTime, ELevelTick TickType, 
 			else
 			{
 				// take off straight on orthogonal, moving linearly at 100 units/second at our current angle
-				LaunchedOffset += FVector(DeltaTime * 100.0f);
+				LaunchedOffset += FVector(DeltaTime * LaunchedOffset.X, DeltaTime * LaunchedOffset.Y, 0.0f);//FVector(DeltaTime * 100.0f);
 				fLaunchedLifeTimer += DeltaTime;
 				UE_LOG(LogTemp, Warning, TEXT("MicroMeteor::TickComponent; we've been launched for %f"), fLaunchedLifeTimer);
 				if (fLaunchedLifeTimer >= fMaxLaunchedLifeTime)
