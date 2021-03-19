@@ -99,7 +99,13 @@ void UMicroMeteorComponent::TickComponent(float DeltaTime, ELevelTick TickType, 
 			else
 			{
 				// take off straight on orthogonal, moving linearly at 100 units/second at our current angle
-				LaunchedOffset += FVector(DeltaTime * LaunchedOffset.X, DeltaTime * LaunchedOffset.Y, 0.0f);//FVector(DeltaTime * 100.0f);
+				LaunchedOffset += FVector(DeltaTime * LaunchedOffset.X, DeltaTime * LaunchedOffset.Y, 0.0f);
+				// todo: instead of progressing in world space, I think we want to stay relative to the orbitted body BUT with any rotation transforms removed via FRotator inverse, I guess?
+				// todo: get current offset vector relative to pOrbitted
+				// todo: get current pOrbitted rotator
+				// todo: invert rotator
+				// todo: rotate the relative offset vector by the inverted rotator
+				// todo: progress the offset vector XY by DeltaTime times themselves and call SetRelativeLocation()
 				fLaunchedLifeTimer += DeltaTime;
 				UE_LOG(LogTemp, Warning, TEXT("MicroMeteor::TickComponent; we've been launched for %f"), fLaunchedLifeTimer);
 				if (fLaunchedLifeTimer >= fMaxLaunchedLifeTime)
