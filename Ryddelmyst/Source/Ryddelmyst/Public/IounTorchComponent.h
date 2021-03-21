@@ -21,6 +21,10 @@ public:
 	 * @return the primitive component subclass that defines the torch's physical form
 	 */
 	UPrimitiveComponent* getPhysicality();
+	/**
+	 * @return the accumulated yaw rotation of this torch around its orbitted body; for use by child micrometeors that need to remove this orbit from the equation once they launch 
+	 */
+	FRotator getOrbitAccumulator();
 protected:
 	// Called when the game starts
 	virtual void BeginPlay() override;
@@ -50,6 +54,10 @@ private:
 	 * Defines the radius of the tirch's orbit around the orbitted body 
 	 */
 	FVector OrbitOffset;
+	/**
+	 * Accumulates Yaw degrees rotated as the torch orbits a body 
+	 */
+	FRotator OrbitAccumulator;
 	/**
 	 * Root of this component's scene hierarchy, defining its basic physicality
 	 */
