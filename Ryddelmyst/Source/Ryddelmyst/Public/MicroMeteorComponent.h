@@ -67,4 +67,9 @@ private:
 	 * True if the meteor is in launched state, false otherwise
 	 */
 	bool bLaunched = false;
+	/**
+	 * Accumulates Yaw of the parent torch's orbit so that we can remove it and continue a steady launch vector relative to the position the orbitted
+	 * torch was in when we entered launched state
+	 */ 
+	FRotator OrbitAccumulator;
 };

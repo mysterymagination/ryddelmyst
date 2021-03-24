@@ -89,10 +89,10 @@ void UIounTorchComponent::TickComponent(float DeltaTime, ELevelTick TickType, FA
 		*/
 
 		// orbit motion
-		float OrbitRotation = DeltaTime * 20.0f;
+		OrbitYaw = DeltaTime * 20.0f;
 		FRotator OffsetVecRot(0.0f, 0.0f, 0.0f);
 		UE_LOG(LogTemp, Warning, TEXT("UIounTorchComponent::TickComponent; OffsetVecRot says %s"), *OffsetVecRot.ToString());
-		OffsetVecRot.Yaw = OrbitRotation;
+		OffsetVecRot.Yaw = OrbitYaw;
 		OrbitOffset = OffsetVecRot.RotateVector(OrbitOffset);
 		UE_LOG(LogTemp, Warning, TEXT("UIounTorchComponent::TickComponent(); OrbitOffset says %s"), *OrbitOffset.ToString());
 		SetRelativeLocation(OrbitOffset);
@@ -119,8 +119,8 @@ UPrimitiveComponent* UIounTorchComponent::getPhysicality()
 	return SceneRoot;
 }
 
-FRotator UIounTorchComponent::getOrbitAccumulator()
+float UIounTorchComponent::getOrbitYaw()
 {
-	return OrbitAccumulator;
+	return OrbitYaw;
 }
 
