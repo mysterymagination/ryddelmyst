@@ -102,21 +102,19 @@ void UMicroMeteorComponent::TickComponent(float DeltaTime, ELevelTick TickType, 
 				//LaunchedOffset += FVector(DeltaTime * LaunchedOffset.X, DeltaTime * LaunchedOffset.Y, 0.0f);
 				
 				// todo: instead of progressing in world space, I think we want to stay relative to the orbitted body BUT with any rotation transforms removed via FRotator inverse, I guess?
-				// todo: get current offset vector relative to pOrbitted
-				FVector baseOffsetVector = GetRelativeLocation();
-				// todo: get current pOrbitted relative location
+				// get current pOrbitted relative location
 				FVector parentRelativeLocation = pOrbitted->GetRelativeLocation();
-				// todo: get current pOrbitted orbit accumulator rotator
+				// accumulate based on torch yaw
+				OrbitAccumulator.Yaw += pOrbitted->getOrbitYaw();
+				// invert orbit accumulator rotator
+				FRotator InverseTorchOrbit = OrbitAccumulator.GetInverse();
+				// rotate the parentRelativeLocation vector by the inverted orbit accumulator rotator such that we have an offset vector from the torch's orbitted body to the position the torch was in when we launched... maybe the orbit accumulator needs to live here and we just publish the Yaw mod we make per frame up in the torch so that we know the rotation that has occurred since launch occurred (which is what we seek to remove) per meteor instance.  Anyway, this newly inverse rotated offset vector becomes our meteor's new LaunchedOffset.
+				LaunchedOffset = InverseTorchOrbit.RotateVector(parentRelativeLocation);
+				// progress the offset vector accumulator XY by DeltaTime times themselves and call SetRelativeLocation()
+				LaunchedOffset += FVector(DeltaTime*LaunchedOffset.X, DeltaTime*LaunchedOffset.Y, 0.0f);
+				SetRelativeLocation(LaunchedOffset);
 
-				// todo: invert orbit accumulator rotator
-				// todo: rotate the parentRelativeLocation vector by the inverted orbit accumulator rotator such that we have an offset vector from the torch's orbitted body to the position the torch was in when we launched... maybe the orbit accumulator needs to live here and we just publish the Yaw mod we make per frame up in the torch so that we know the rotation that has occurred since launch occurred (which is what we seek to remove).  Anyway, this newly inverse rotated offset vector becomes our meteors new LaunchedOffset.  
-
-				// todo: ...or just skip all that one at a time silliness and call pOrbitted->GetComponentTransform() and invert it... maybe?  Well no actually, I don't think we want to remove all transforms.  That would put us back at world origin, I think?
-
-				// todo: progress the offset vector accumulator XY by DeltaTime times themselves and call SetRelativeLocation()
-				// todo: add the offset vector accumulator to the LaunchedOffset
-
-				// todo: hrm... all this business above is to basically get back the vector we have relative to the torch at the time of launch.  I'm not convinced that this will yield different results from what I observed when I simply set LaunchedOffset to the meteor's world location and progressed it fractionally from there.  Well, we'll soon see.
+				// todo: alternatively, take a snapshot of the torch and meteor world space locations when launch occurs and call the delta between those two points your launch vector.  Progress that vector fractionally on XY and boom done.
 
 				fLaunchedLifeTimer += DeltaTime;
 				UE_LOG(LogTemp, Warning, TEXT("MicroMeteor::TickComponent; we've been launched for %f"), fLaunchedLifeTimer);
