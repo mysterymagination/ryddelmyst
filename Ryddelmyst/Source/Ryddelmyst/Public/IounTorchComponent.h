@@ -22,9 +22,9 @@ public:
 	 */
 	UPrimitiveComponent* getPhysicality();
 	/**
-	 * @return the accumulated yaw rotation of this torch around its orbitted body; for use by child micrometeors that need to remove this orbit from the equation once they launch 
+	 * @return the orbit yaw mod this frame
 	 */
-	FRotator getOrbitAccumulator();
+	float getOrbitYaw();
 protected:
 	// Called when the game starts
 	virtual void BeginPlay() override;
@@ -55,9 +55,9 @@ private:
 	 */
 	FVector OrbitOffset;
 	/**
-	 * Accumulates Yaw degrees rotated as the torch orbits a body 
+	 * Yaw degrees the torch has rotated arounded our orbitted body 
 	 */
-	FRotator OrbitAccumulator;
+	float OrbitYaw;
 	/**
 	 * Root of this component's scene hierarchy, defining its basic physicality
 	 */
