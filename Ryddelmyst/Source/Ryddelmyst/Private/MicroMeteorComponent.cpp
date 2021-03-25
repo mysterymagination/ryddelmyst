@@ -98,6 +98,7 @@ void UMicroMeteorComponent::TickComponent(float DeltaTime, ELevelTick TickType, 
 			}
 			else
 			{
+				UE_LOG(LogTemp, Warning, TEXT("MicroMeteor::TickComponent; launching inversely"));
 				// take off straight on orthogonal, moving linearly at 100 units/second at our current angle
 				//LaunchedOffset += FVector(DeltaTime * LaunchedOffset.X, DeltaTime * LaunchedOffset.Y, 0.0f);
 				
@@ -111,7 +112,7 @@ void UMicroMeteorComponent::TickComponent(float DeltaTime, ELevelTick TickType, 
 				// rotate the parentRelativeLocation vector by the inverted orbit accumulator rotator such that we have an offset vector from the torch's orbitted body to the position the torch was in when we launched... maybe the orbit accumulator needs to live here and we just publish the Yaw mod we make per frame up in the torch so that we know the rotation that has occurred since launch occurred (which is what we seek to remove) per meteor instance.  Anyway, this newly inverse rotated offset vector becomes our meteor's new LaunchedOffset.
 				LaunchedOffset = InverseTorchOrbit.RotateVector(parentRelativeLocation);
 				// progress the offset vector accumulator XY by DeltaTime times themselves and call SetRelativeLocation()
-				LaunchedOffset += FVector(DeltaTime*LaunchedOffset.X, DeltaTime*LaunchedOffset.Y, 0.0f);
+				LaunchedOffset += FVector(20*DeltaTime*LaunchedOffset.X, 20*DeltaTime*LaunchedOffset.Y, 0.0f);
 				SetRelativeLocation(LaunchedOffset);
 
 				// todo: alternatively, take a snapshot of the torch and meteor world space locations when launch occurs and call the delta between those two points your launch vector.  Progress that vector fractionally on XY and boom done.
@@ -130,12 +131,14 @@ void UMicroMeteorComponent::TickComponent(float DeltaTime, ELevelTick TickType, 
 					}
 					DestroyComponent();
 				}
+				/*
 				else
 				{
 					// progress straight launched path
 					UE_LOG(LogTemp, Warning, TEXT("MicroMeteor::TickComponent; going off straight... LaunchedOffset says %s"), *LaunchedOffset.ToString());
 					SetWorldLocation(LaunchedOffset);
 				}
+				*/
 			}
 		}
 		else
