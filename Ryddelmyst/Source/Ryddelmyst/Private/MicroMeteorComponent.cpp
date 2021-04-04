@@ -100,19 +100,18 @@ void UMicroMeteorComponent::TickComponent(float DeltaTime, ELevelTick TickType, 
 			{
 				UE_LOG(LogTemp, Warning, TEXT("MicroMeteor::TickComponent; launching inversely"));
 				// take off straight on orthogonal, moving linearly at 100 units/second at our current angle
-				//LaunchedOffset += FVector(DeltaTime * LaunchedOffset.X, DeltaTime * LaunchedOffset.Y, 0.0f);
 				
-				// todo: instead of progressing in world space, I think we want to stay relative to the orbitted body BUT with any rotation transforms removed via FRotator inverse, I guess?
 				// get current pOrbitted relative location
 				FVector parentRelativeLocation = pOrbitted->GetRelativeLocation();
 				// accumulate based on torch yaw
 				OrbitAccumulator.Yaw += pOrbitted->getOrbitYaw();
 				// invert orbit accumulator rotator
 				FRotator InverseTorchOrbit = OrbitAccumulator.GetInverse();
-				// rotate the parentRelativeLocation vector by the inverted orbit accumulator rotator such that we have an offset vector from the torch's orbitted body to the position the torch was in when we launched... maybe the orbit accumulator needs to live here and we just publish the Yaw mod we make per frame up in the torch so that we know the rotation that has occurred since launch occurred (which is what we seek to remove) per meteor instance.  Anyway, this newly inverse rotated offset vector becomes our meteor's new LaunchedOffset.
-				LaunchedOffset = InverseTorchOrbit.RotateVector(parentRelativeLocation);
-				// progress the offset vector accumulator XY by DeltaTime times themselves and call SetRelativeLocation()
-				LaunchedOffset += FVector(20*DeltaTime*LaunchedOffset.X, 20*DeltaTime*LaunchedOffset.Y, 0.0f);
+				// rotate the parentRelativeLocation vector by the inverted orbit accumulator rotator; the orbit accumulator needs to live here and we just publish the Yaw mod we make per frame up in the torch so that we know the rotation that has occurred (which is what we seek to remove) per meteor instance.  This newly inverse rotated offset vector becomes the basis of our meteor's new LaunchedOffset.
+				FVector BaseOffset = InverseTorchOrbit.RotateVector(parentRelativeLocation);
+				// progress the offset vector accumulator XY by DeltaTime times BaseOffset and call SetRelativeLocation()
+				// todo: something's weird with our op here -- I'm seeing some meteors that should be negative on XY fly off from there into positive X and negative Y.  Maybe just adding won't necessarily do the trick?  But then again adding negs over and over should be fine to progress negatively in the XY plane... AH!  The problem is that I'm adding BaseOffset fractional components to the LaunchOffset and BaseOffset represents the position of the torch relative to molly, which is in +X and -Y in the odd case I saw above; the fact that the meteor is in -XY relative to the torch isn't being taken into account at all when it should be the only thing taken into account re: progression.
+				LaunchedOffset += FVector(20*DeltaTime*BaseOffset.X, 20*DeltaTime*BaseOffset.Y, 0.0f);
 				SetRelativeLocation(LaunchedOffset);
 
 				// todo: alternatively, take a snapshot of the torch and meteor world space locations when launch occurs and call the delta between those two points your launch vector.  Progress that vector fractionally on XY and boom done.
