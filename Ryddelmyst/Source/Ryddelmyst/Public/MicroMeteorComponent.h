@@ -58,7 +58,7 @@ private:
 	 * The max allowed time the micrometeor lives after launching, in seconds
 	 */
 	UPROPERTY(EditAnywhere)
-	float fMaxLaunchedLifeTime = 3.0f;
+	float fMaxLaunchedLifeTime = 5.0f;
 	/**
 	 * The current time this micrometeor has been alive since launching, in seconds
 	 */
