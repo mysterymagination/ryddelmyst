@@ -37,7 +37,7 @@ private:
 	/**
 	 * Interval in seconds we should wait before spawning a meteor
 	 */
-	float fMeteorSpawnInterval = 3.0f;
+	float fMeteorSpawnInterval = 0.0f;
 	/**
 	 * Incrementing timer marking the time since component inception or last meteor spawn
 	 */
@@ -49,7 +49,7 @@ private:
 	/**
 	 * The max number of meteors we allow to spawn 
 	 */
-	uint8 iMaxMeteors = 3;
+	uint8 iMaxMeteors = 1;
 	/**
 	 * Defines the radius of the tirch's orbit around the orbitted body 
 	 */
