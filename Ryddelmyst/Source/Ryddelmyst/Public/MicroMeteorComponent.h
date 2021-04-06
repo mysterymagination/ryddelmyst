@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "Components/SceneComponent.h"
+#include "IounTorchComponent.h"
 #include "MicroMeteorComponent.generated.h"
 
 /**
@@ -72,4 +73,8 @@ private:
 	 * torch was in when we entered launched state
 	 */ 
 	FRotator OrbitAccumulator;
+	/**
+	 * The Ioun torch our micro meteor is orbitting and from which it will eventually launch 
+	 */
+	UIounTorchComponent* pOrbitted;
 };
