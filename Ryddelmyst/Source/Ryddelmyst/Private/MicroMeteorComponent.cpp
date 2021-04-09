@@ -11,43 +11,7 @@
 // Sets default values for this component's properties
 UMicroMeteorComponent::UMicroMeteorComponent() 
 {
-	// Set this component to be initialized when the game starts, and to be ticked every frame.  You can turn these features
-	// off to improve performance if you don't need them.
 	PrimaryComponentTick.bCanEverTick = true;
-
-	/*
-	// Sphere shape will serve as our root component
-	USphereComponent* SphereComponent = CreateDefaultSubobject<USphereComponent>(TEXT("RootSphereComponent"));
-	SphereComponent->InitSphereRadius(10.0f);
-	SphereComponent->SetCollisionProfileName(TEXT("MicroMeteorPresence"));
-	SphereComponent->SetupAttachment(this);
-	// Create and position a mesh component so we can see where our spherical Molly is
-	UStaticMeshComponent* SphereVisual = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("TheVisibleMolly"));
-	SphereVisual->SetupAttachment(SphereComponent);
-	static ConstructorHelpers::FObjectFinder<UStaticMesh> SphereVisualAsset(TEXT("/Game/StarterContent/Shapes/Shape_Sphere.Shape_Sphere"));
-	if (SphereVisualAsset.Succeeded())
-	{
-		SphereVisual->SetStaticMesh(SphereVisualAsset.Object);
-		SphereVisual->SetRelativeLocation(FVector(0.0f, 0.0f, -40.0f));
-		// Our sphere component has a radius of 10 units and the startercontent sphere mesh is 50, so scale it down by 80%
-		SphereVisual->SetWorldScale3D(FVector(0.2f));
-	}
-	// Create a particle system that we can activate or deactivate
-	MeteorParticles = CreateDefaultSubobject<UParticleSystemComponent>(TEXT("MeteorFuryParticles"));
-	MeteorParticles->SetupAttachment(SphereVisual);
-	MeteorParticles->bAutoActivate = false;
-	// visibility offset
-	MeteorParticles->SetRelativeLocation(FVector(-20.0f, 0.0f, 20.0f));
-	static ConstructorHelpers::FObjectFinder<UParticleSystem> ParticleAsset(TEXT("/Game/StarterContent/Particles/P_Fire.P_Fire"));
-	if (ParticleAsset.Succeeded())
-	{
-		MeteorParticles->SetTemplate(ParticleAsset.Object);
-	}
-
-	// todo: trying simple world space positioning for debug
-	UE_LOG(LogTemp, Warning, TEXT("MicroMeteor::ctor; setting world pos to about our maze hallway floor"));
-	this->SetWorldLocation(FVector(-20.0f, 450.0f, 250.0f));
-	*/
 }
 
 
@@ -86,12 +50,13 @@ void UMicroMeteorComponent::BeginPlay()
 void UMicroMeteorComponent::TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction)
 {
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
+	UE_LOG(LogTemp, Warning, TEXT("TickComponent; world coords of meteor are %s and world coords of orbitted body are %s"), *GetComponentLocation().ToString(), *pOrbitted->GetComponentLocation().ToString());
 	// init orbit offset based on orbitted body size
 	if (OrbitOffset.IsZero())
 	{
 		FVector orbittedExtent = pOrbitted->getPhysicality()->CalcBounds(FTransform()).BoxExtent;
 		OrbitOffset = { 0.0f, 2.0f * orbittedExtent.Y, 1.75f * orbittedExtent.Z };
-		UE_LOG(LogTemp, Warning, TEXT("MicroMeteor::TickComponent; orbit offset says %s and orbitted extent says %s"), *OrbitOffset.ToString(), *orbittedExtent.ToString());
+		UE_LOG(LogTemp, Warning, TEXT("MicroMeteor::TickComponent; orbitoffset says %s and orbitted extent says %s"), *OrbitOffset.ToString(), *orbittedExtent.ToString());
 	}
 	fLifeTimer += DeltaTime;
 	UE_LOG(LogTemp, Warning, TEXT("MicroMeteor::TickComponent; lifetimer is now %f"), fLifeTimer);
@@ -104,24 +69,14 @@ void UMicroMeteorComponent::TickComponent(float DeltaTime, ELevelTick TickType, 
 		}
 		else
 		{
-			UE_LOG(LogTemp, Warning, TEXT("%s MicroMeteor::TickComponent; launching inversely"), *FDateTime::UtcNow().ToString());
+			// todo: pretty sure my meteor is getting teleported someplace out of sight since it seems to disappear as soon as launch begins and then reports being destroyed sometime much later
 			// first translate out on our existing launch vector's XY
-			LaunchedOffset += FVector(DeltaTime * LaunchedOffset.X, DeltaTime * LaunchedOffset.Y, 0.0f);
-			// now perform rotation to undo the continuing orbit rotation of the torch our meteor was orbitting such that we can use SetRelativeLocation and maintain a consistent unrotated launch vector.
-			// accumulate based on torch yaw this frame
-			OrbitAccumulator.Yaw += pOrbitted->getOrbitYaw();
-			// invert orbit accumulator rotator
-			FRotator InverseTorchOrbit = OrbitAccumulator.GetInverse();
-			UE_LOG(LogTemp, Warning, TEXT("MicroMeteor::TickComponent; our acc yaw is %f and we'll be rotating our launch vector by %s"), OrbitAccumulator.Yaw, *InverseTorchOrbit.ToString());
-			// rotate the LaunchOffset vector by the inverted orbit accumulator rotator; the orbit accumulator needs to live here and we just publish the Yaw mod we make per frame up in the torch so that we know the rotation that has occurred (which is what we seek to remove) per meteor instance.  
-			LaunchedOffset = InverseTorchOrbit.RotateVector(LaunchedOffset);
-			// now that we've translated progression along the launch vector and got a rotation back to our launch point relative to the orbitted body baked into the transform, call SetRelativeLocation()
-			// todo: I think the spiral-y problem I'm seeing with meteor launch now is down to the fact that the yaw we acc represents the torch's rotation around molly, but we're applying the inverse of that rotation to the meteor's launch vector relative to the torch -- effectively rotating around the torch (eventually?).  Perhaps if we attached the meteor to molly and then did this same rotation dance we might be able to use SetRelativeLocation() here?  Then again, that doesn't make super sense -- a rotation should consist of angles and axes only; the particulars of how/where it's applied should be what modifies who is rotating around what.  Since we're bolting our rotated vector onto the torch, we should wind up rotating... around the torch I guess, which indeed isn't what we want.  Hm.  Okay, maybe there is something here.
-			UE_LOG(LogTemp, Warning, TEXT("TickComponent; reparent -- about to SetRelativeLocation relative to attachparent %p"), GetAttachParent());
-			SetRelativeLocation(LaunchedOffset);
+			// at 100 units per second
+			LaunchedOffset += FVector(DeltaTime * 100.0f, DeltaTime * 100.0f, 0.0f);
+			UE_LOG(LogTemp, Warning, TEXT("TickComponent; progressive launch offset says %s"), *LaunchedOffset.ToString());
+			SetWorldLocation(LaunchedOffset);
 
-			// todo: alternatively, take a snapshot of the torch and meteor world space locations when launch occurs and call the delta between those two points your launch vector.  Progress that vector fractionally on XY and boom done.
-
+			// update launched time tracker
 			fLaunchedLifeTimer += DeltaTime;
 			UE_LOG(LogTemp, Warning, TEXT("MicroMeteor::TickComponent; we've been launched for %f"), fLaunchedLifeTimer);
 			if (fLaunchedLifeTimer >= fMaxLaunchedLifeTime)
@@ -140,6 +95,7 @@ void UMicroMeteorComponent::TickComponent(float DeltaTime, ELevelTick TickType, 
 	}
 	else
 	{
+		UE_LOG(LogTemp, Warning, TEXT("TickComponent; meteor still orbitting because fLifeTimer is only %f while allowed max is %f"), fLifeTimer, fMaxLifeTime);
 		// orbit motion @ 60 degrees/second
 		float OrbitRotation = DeltaTime * 160.0f;
 		FRotator OffsetVecRot(0.0f, 0.0f, 0.0f);
@@ -156,12 +112,12 @@ void UMicroMeteorComponent::TickComponent(float DeltaTime, ELevelTick TickType, 
 void UMicroMeteorComponent::MeteoricLaunch()
 {
 	// todo: fire up with fire particle fx
-	// acquire launch init relative pos and flip launched trigger
-	
-	// re-parent to the molly object that our orbitted torch is itself orbitting, so that the inverse rotations we apply up in TickComponent can put our launch vector back starting at the position the torch was in relative to the molly when meteor launch occurred; this way our rotation will be around molly and should work to put us back into the same angle around her where we want our launch vector to progress from.
-	AttachToComponent(pOrbitted->GetAttachParent(), FAttachmentTransformRules::KeepWorldTransform);
-	
-	LaunchedOffset = GetRelativeLocation();
+	// detach from orbitted body
+	DetachFromComponent(FDetachmentTransformRules::KeepWorldTransform);
+	// acquire launch vector via init launch meteor world pos minus launch orbitted body pos and flip launched trigger
+	UE_LOG(LogTemp, Warning, TEXT("TickComponent; init launch world coords of meteor are %s and launch world coords of orbitted body are %s so our delta vec to be used for init launch vec is %s"), *GetComponentLocation().ToString(), *pOrbitted->GetComponentLocation().ToString(), *(GetComponentLocation() - pOrbitted->GetComponentLocation()).ToString());
+	LaunchedOffset = GetComponentLocation() - pOrbitted->GetComponentLocation();
+	UE_LOG(LogTemp, Warning, TEXT("TickComponent; init launch offset says %s"), *LaunchedOffset.ToString());
 	bLaunched = true;
 }
 
