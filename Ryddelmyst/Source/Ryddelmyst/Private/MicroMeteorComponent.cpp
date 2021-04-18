@@ -115,7 +115,7 @@ void UMicroMeteorComponent::MeteoricLaunch()
 	// detach from orbitted body
 	DetachFromComponent(FDetachmentTransformRules::KeepWorldTransform);
 	// acquire launch vector via init launch meteor world pos minus launch orbitted body pos and flip launched trigger
-	UE_LOG(LogTemp, Warning, TEXT("TickComponent; init launch world coords of meteor are %s and launch world coords of orbitted body are %s so our delta vec to be used for init launch vec is %s"), *GetComponentLocation().ToString(), *pOrbitted->GetComponentLocation().ToString(), *(GetComponentLocation() - pOrbitted->GetComponentLocation()).ToString());
+	UE_LOG(LogTemp, Warning, TEXT("TickComponent; init launch world coords of meteor are %s and launch world coords of orbitted body are %s so our delta vec to be used for init launch offset vec is %s"), *GetComponentLocation().ToString(), *pOrbitted->GetComponentLocation().ToString(), *(GetComponentLocation() - pOrbitted->GetComponentLocation()).ToString());
 	LaunchedOffset = GetComponentLocation() - pOrbitted->GetComponentLocation();
 	UE_LOG(LogTemp, Warning, TEXT("TickComponent; init launch offset says %s"), *LaunchedOffset.ToString());
 	bLaunched = true;
