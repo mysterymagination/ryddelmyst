@@ -72,11 +72,11 @@ void UMicroMeteorComponent::TickComponent(float DeltaTime, ELevelTick TickType, 
 			// todo: pretty sure my meteor is getting teleported someplace out of sight since it seems to disappear as soon as launch begins and then reports being destroyed sometime much later
 			// first translate out on our existing launch vector's XY
 			// at 100 units per second
-			//LaunchedOffset += FVector(DeltaTime * 100.0f, DeltaTime * 100.0f, 0.0f);
+			//LaunchedOffset += FVector(DeltaTime * 100.0f, DeltaTime * 100.0f, 0.0f); // so the issue here was literally acceleration -- we'd apply a set slope mod with the LaunchedOffset + current loc below (velocity) but then here we'd be increasing the velocity resulting in acceleration and a curve instead of the desired line of motion.
 
-			UE_LOG(LogTemp, Warning, TEXT("TickComponent; progressive launch offset says %s"), *LaunchedOffset.ToString());
-			SetWorldLocation(GetComponentLocation() + LaunchedOffset);
-			UE_LOG(LogTemp, Warning, TEXT("TickComponent; after applying launch offset of %s, our meteor coords are %s"), *LaunchedOffset.ToString(), *GetComponentLocation().ToString());
+			UE_LOG(LogTemp, Warning, TEXT("TickComponent; progressive launch offset says %s"), *LaunchVector.ToString());
+			SetWorldLocation(GetComponentLocation() + LaunchVector);
+			UE_LOG(LogTemp, Warning, TEXT("TickComponent; after applying launch offset of %s, our meteor coords are %s"), *LaunchVector.ToString(), *GetComponentLocation().ToString());
 
 			// update launched time tracker
 			fLaunchedLifeTimer += DeltaTime;
@@ -118,12 +118,12 @@ void UMicroMeteorComponent::MeteoricLaunch()
 	DetachFromComponent(FDetachmentTransformRules::KeepWorldTransform);
 	// acquire launch vector via init launch meteor world pos minus launch orbitted body pos and flip launched trigger
 	UE_LOG(LogTemp, Warning, TEXT("TickComponent; init launch world coords of meteor are %s and launch world coords of orbitted body are %s so our delta vec to be used for init launch offset vec is %s"), *GetComponentLocation().ToString(), *pOrbitted->GetComponentLocation().ToString(), *(GetComponentLocation() - pOrbitted->GetComponentLocation()).ToString());
-	LaunchedOffset = GetComponentLocation() - pOrbitted->GetComponentLocation();
+	LaunchVector = GetComponentLocation() - pOrbitted->GetComponentLocation();
 	// we don't want to progress on Z, so leave launch vector Z at 0
 	// assuming we're going to be adding the launch vector to the current
 	// world coords each frame.
-	LaunchedOffset.Z = 0.0f;
-	UE_LOG(LogTemp, Warning, TEXT("TickComponent; init launch offset says %s"), *LaunchedOffset.ToString());
+	LaunchVector.Z = 0.0f;
+	UE_LOG(LogTemp, Warning, TEXT("TickComponent; init launch offset says %s"), *LaunchVector.ToString());
 	bLaunched = true;
 }
 
