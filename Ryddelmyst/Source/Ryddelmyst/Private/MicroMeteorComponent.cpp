@@ -69,8 +69,12 @@ void UMicroMeteorComponent::TickComponent(float DeltaTime, ELevelTick TickType, 
 		}
 		else
 		{
+			/*
 			// move along launch velocity
 			SetWorldLocation(GetComponentLocation() + LaunchVector * fLaunchSpeed * DeltaTime);
+			*/
+			UE_LOG(LogTemp, Warning, TEXT("TickComponent; launch -- world location is %s and we're progressing by launch vector %s"), *GetComponentLocation().ToString(), *LaunchVector.ToString());
+			SetWorldLocation(GetComponentLocation() + LaunchVector);
 
 			// update launched time tracker
 			fLaunchedLifeTimer += DeltaTime;
@@ -115,19 +119,44 @@ void UMicroMeteorComponent::MeteoricLaunch()
 	LaunchVector.Z = 0.0f;
 	*/
 
+	/*
 	// this modified approach attempts to bring our component with the larger abs value down to 1 (or -1) and the one with a smaller abs value to some fractional value, such that we have a vector magnitude *close* to 1 (or -1)
 	FVector DirectionVector = GetComponentLocation() - pOrbitted->GetComponentLocation();
 	float MaxComponent = FMath::Max(FMath::Abs(DirectionVector.X), FMath::Abs(DirectionVector.Y));
 	LaunchVector = FVector(DirectionVector.X/MaxComponent, DirectionVector.Y/MaxComponent, 0.0f);
+	*/
 
-	/* // todo: this approach should give me vector mag 1 with directionality preserved, but instead I get crazy stuff like teleporting or entirely stationery meteors?
+	 // todo: this approach should give me vector mag 1 with directionality preserved, but instead I get crazy stuff like teleporting or entirely stationery meteors?
 	// this diff vector gives us our launch direction, tho its magnitude is arbitrary
 	FVector DirectionVector = GetComponentLocation() - pOrbitted->GetComponentLocation();
 	// calculate launch vector as our direction vector reduced to mags 1 so we can apply a simple 1 map unit * a constant N per second speed to finish off our velocity.  We don't want a Z comp in our velocity, so just drop it to 0. 
 	// we reduce to mags 1 by following c^2 = a^2 + b^2 where we know c^2 = 1 and therefore c = 1.  To balance that, we effectively div the component side by itself and voila -- components reduced to values that will give us hypotenuse and therefore vector magnitude equal to 1!  Yay math! We use abs val of the component sum to preserve signage when we perform the div.
-	float ComponentSum = DirectionVector.X + DirectionVector.Y; // FMath::Abs(DirectionVector.X + DirectionVector.Y);
-	LaunchVector = FVector(FGenericPlatformMath::Sqrt(DirectionVector.X/ComponentSum), FGenericPlatformMath::Sqrt(DirectionVector.Y/ComponentSum), 0.0f);
-	*/
+	float ComponentSum = FMath::Abs(DirectionVector.X) + FMath::Abs(DirectionVector.Y);
+	float Mag1X = FGenericPlatformMath::Sqrt(DirectionVector.X / ComponentSum);
+	float Mag1Y = FGenericPlatformMath::Sqrt(DirectionVector.Y / ComponentSum);
+	// check for NaN(ind) issues [https://www.codeproject.com/Articles/824516/Concept-of-NaN-IND-INF-and-DEN] and assign 1 or -1 depending on signage to get us 'close' to magnitude 1
+	if (FMath::IsNaN(Mag1X) || FMath::IsNaN(Mag1Y))
+	{
+		if (FMath::IsNaN(Mag1X))
+		{
+			UE_LOG(LogTemp, Warning, TEXT("TickComponent; launch -- NaN detected for X component, which is %f.  Full details: ComponentSum is %f, DirectionVector.X is %f, and DirectionVector.Y is %f"), Mag1X, ComponentSum, DirectionVector.X, DirectionVector.Y);
+			Mag1X = FMath::IsNegativeFloat(DirectionVector.X) ? -1 : 1;
+			UE_LOG(LogTemp, Warning, TEXT("TickComponent; launch -- NaN detected for X component, changed it to %f"), Mag1X);
+		}
+		if (FMath::IsNaN(Mag1Y))
+		{
+			UE_LOG(LogTemp, Warning, TEXT("TickComponent; launch -- NaN detected for Y component, which is %f.  Full details: ComponentSum is %f, DirectionVector.X is %f, and DirectionVector.Y is %f"), Mag1Y, ComponentSum, DirectionVector.X, DirectionVector.Y);
+			Mag1Y = FMath::IsNegativeFloat(DirectionVector.Y) ? -1 : 1;
+			UE_LOG(LogTemp, Warning, TEXT("TickComponent; launch -- NaN detected for Y component, changed it to %f"), Mag1Y);
+		}
+		float MaxComponent = FMath::Max(FMath::Abs(DirectionVector.X), FMath::Abs(DirectionVector.Y));
+		LaunchVector = FVector(DirectionVector.X / MaxComponent, DirectionVector.Y / MaxComponent, 0.0f);
+	}
+	else
+	{
+		LaunchVector = FVector(Mag1X, Mag1Y, 0.0f);
+	}
+	
 	UE_LOG(LogTemp, Warning, TEXT("TickComponent; init launch offset says %s"), *LaunchVector.ToString());
 	bLaunched = true;
 }
