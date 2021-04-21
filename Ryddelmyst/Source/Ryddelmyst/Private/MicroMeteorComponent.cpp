@@ -134,27 +134,19 @@ void UMicroMeteorComponent::MeteoricLaunch()
 	float ComponentSum = FMath::Abs(DirectionVector.X) + FMath::Abs(DirectionVector.Y);
 	float Mag1X = FGenericPlatformMath::Sqrt(DirectionVector.X / ComponentSum);
 	float Mag1Y = FGenericPlatformMath::Sqrt(DirectionVector.Y / ComponentSum);
+	// todo: zoopsie woodle, I'm trying to take sqrt of negative values... guess the UE4 scene graph doesn't much like imaginary numbers
 	// check for NaN(ind) issues [https://www.codeproject.com/Articles/824516/Concept-of-NaN-IND-INF-and-DEN] and assign 1 or -1 depending on signage to get us 'close' to magnitude 1
 	if (FMath::IsNaN(Mag1X) || FMath::IsNaN(Mag1Y))
 	{
-		if (FMath::IsNaN(Mag1X))
-		{
-			UE_LOG(LogTemp, Warning, TEXT("TickComponent; launch -- NaN detected for X component, which is %f.  Full details: ComponentSum is %f, DirectionVector.X is %f, and DirectionVector.Y is %f"), Mag1X, ComponentSum, DirectionVector.X, DirectionVector.Y);
-			Mag1X = FMath::IsNegativeFloat(DirectionVector.X) ? -1 : 1;
-			UE_LOG(LogTemp, Warning, TEXT("TickComponent; launch -- NaN detected for X component, changed it to %f"), Mag1X);
-		}
-		if (FMath::IsNaN(Mag1Y))
-		{
-			UE_LOG(LogTemp, Warning, TEXT("TickComponent; launch -- NaN detected for Y component, which is %f.  Full details: ComponentSum is %f, DirectionVector.X is %f, and DirectionVector.Y is %f"), Mag1Y, ComponentSum, DirectionVector.X, DirectionVector.Y);
-			Mag1Y = FMath::IsNegativeFloat(DirectionVector.Y) ? -1 : 1;
-			UE_LOG(LogTemp, Warning, TEXT("TickComponent; launch -- NaN detected for Y component, changed it to %f"), Mag1Y);
-		}
+		// log the deets and fail over to the simple component reduce strat which at least preserves component ratio in the direction vector even if it's not 100% magnitude 1
+		UE_LOG(LogTemp, Warning, TEXT("TickComponent; launch -- NaN detected for X or Y components, which are %f,%f.  Full details: ComponentSum is %f, DirectionVector.X is %f, and DirectionVector.Y is %f"), Mag1X, Mag1Y, ComponentSum, DirectionVector.X, DirectionVector.Y);
 		float MaxComponent = FMath::Max(FMath::Abs(DirectionVector.X), FMath::Abs(DirectionVector.Y));
 		LaunchVector = FVector(DirectionVector.X / MaxComponent, DirectionVector.Y / MaxComponent, 0.0f);
 	}
 	else
 	{
 		LaunchVector = FVector(Mag1X, Mag1Y, 0.0f);
+		UE_LOG(LogTemp, Warning, TEXT("TickComponent; launch -- vector mag should be 1 for %s"), *LaunchVector.ToString());
 	}
 	
 	UE_LOG(LogTemp, Warning, TEXT("TickComponent; init launch offset says %s"), *LaunchVector.ToString());
