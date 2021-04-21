@@ -69,7 +69,8 @@ void UMicroMeteorComponent::TickComponent(float DeltaTime, ELevelTick TickType, 
 		}
 		else
 		{
-			SetWorldLocation(GetComponentLocation() + LaunchVector);
+			// move along launch velocity
+			SetWorldLocation(GetComponentLocation() + LaunchVector * fLaunchSpeed * DeltaTime);
 
 			// update launched time tracker
 			fLaunchedLifeTimer += DeltaTime;
@@ -83,6 +84,7 @@ void UMicroMeteorComponent::TickComponent(float DeltaTime, ELevelTick TickType, 
 					childComponent->DestroyComponent();
 				}
 				DestroyComponent();
+				UE_LOG(LogTemp, Warning, TEXT("TickComponent; destroying meteor"));
 			}
 		}
 	}
@@ -106,12 +108,26 @@ void UMicroMeteorComponent::MeteoricLaunch()
 	DetachFromComponent(FDetachmentTransformRules::KeepWorldTransform);
 	// acquire launch vector via init launch meteor world pos minus launch orbitted body pos and flip launched trigger
 	UE_LOG(LogTemp, Warning, TEXT("TickComponent; init launch world coords of meteor are %s and launch world coords of orbitted body are %s so our delta vec to be used for init launch offset vec is %s"), *GetComponentLocation().ToString(), *pOrbitted->GetComponentLocation().ToString(), *(GetComponentLocation() - pOrbitted->GetComponentLocation()).ToString());
-	// todo: currently this gives us a meteoric speed equal to the maggie of this diff vector, which is not very convenient -- I'd like to be able to tweak it in the editor to go @ N map units per second and then only the direction will be given by this vector.
+	
+	/* 
+	// so this simple approach of correct direction and whatever mags works a treat, but makes speed aspect of velocity harder to control.
 	LaunchVector = GetComponentLocation() - pOrbitted->GetComponentLocation();
-	// we don't want to progress on Z, so leave launch vector Z at 0
-	// assuming we're going to be adding the launch vector to the current
-	// world coords each frame.
 	LaunchVector.Z = 0.0f;
+	*/
+
+	// this modified approach attempts to bring our component with the larger abs value down to 1 (or -1) and the one with a smaller abs value to some fractional value, such that we have a vector magnitude *close* to 1 (or -1)
+	FVector DirectionVector = GetComponentLocation() - pOrbitted->GetComponentLocation();
+	float MaxComponent = FMath::Max(FMath::Abs(DirectionVector.X), FMath::Abs(DirectionVector.Y));
+	LaunchVector = FVector(DirectionVector.X/MaxComponent, DirectionVector.Y/MaxComponent, 0.0f);
+
+	/* // todo: this approach should give me vector mag 1 with directionality preserved, but instead I get crazy stuff like teleporting or entirely stationery meteors?
+	// this diff vector gives us our launch direction, tho its magnitude is arbitrary
+	FVector DirectionVector = GetComponentLocation() - pOrbitted->GetComponentLocation();
+	// calculate launch vector as our direction vector reduced to mags 1 so we can apply a simple 1 map unit * a constant N per second speed to finish off our velocity.  We don't want a Z comp in our velocity, so just drop it to 0. 
+	// we reduce to mags 1 by following c^2 = a^2 + b^2 where we know c^2 = 1 and therefore c = 1.  To balance that, we effectively div the component side by itself and voila -- components reduced to values that will give us hypotenuse and therefore vector magnitude equal to 1!  Yay math! We use abs val of the component sum to preserve signage when we perform the div.
+	float ComponentSum = DirectionVector.X + DirectionVector.Y; // FMath::Abs(DirectionVector.X + DirectionVector.Y);
+	LaunchVector = FVector(FGenericPlatformMath::Sqrt(DirectionVector.X/ComponentSum), FGenericPlatformMath::Sqrt(DirectionVector.Y/ComponentSum), 0.0f);
+	*/
 	UE_LOG(LogTemp, Warning, TEXT("TickComponent; init launch offset says %s"), *LaunchVector.ToString());
 	bLaunched = true;
 }

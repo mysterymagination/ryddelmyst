@@ -59,7 +59,7 @@ private:
 	 * The max allowed time the micrometeor lives after launching, in seconds
 	 */
 	UPROPERTY(EditAnywhere)
-	float fMaxLaunchedLifeTime = 25.0f;
+	float fMaxLaunchedLifeTime = 5.0f;
 	/**
 	 * The current time this micrometeor has been alive since launching, in seconds
 	 */
@@ -69,10 +69,10 @@ private:
 	 */
 	bool bLaunched = false;
 	/**
-	 * Accumulates Yaw of the parent torch's orbit so that we can remove it and continue a steady launch vector relative to the position the orbitted
-	 * torch was in when we entered launched state
-	 */ 
-	FRotator OrbitAccumulator;
+	 * The speed at which the launched meteor flies, in map units/second
+	 */
+	UPROPERTY(EditAnywhere)
+	float fLaunchSpeed = 2000.0f;
 	/**
 	 * The Ioun torch our micro meteor is orbitting and from which it will eventually launch 
 	 */
