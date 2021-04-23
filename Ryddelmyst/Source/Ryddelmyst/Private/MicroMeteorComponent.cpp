@@ -69,12 +69,9 @@ void UMicroMeteorComponent::TickComponent(float DeltaTime, ELevelTick TickType, 
 		}
 		else
 		{
-			/*
 			// move along launch velocity
 			SetWorldLocation(GetComponentLocation() + LaunchVector * fLaunchSpeed * DeltaTime);
-			*/
-			UE_LOG(LogTemp, Warning, TEXT("TickComponent; launch -- world location is %s and we're progressing by launch vector %s"), *GetComponentLocation().ToString(), *LaunchVector.ToString());
-			SetWorldLocation(GetComponentLocation() + LaunchVector);
+			UE_LOG(LogTemp, Warning, TEXT("TickComponent; launch -- world location is %s and we're progressing by launch vector %s times launch speed %f times dt %f"), *GetComponentLocation().ToString(), *LaunchVector.ToString(), fLaunchSpeed, DeltaTime);
 
 			// update launched time tracker
 			fLaunchedLifeTimer += DeltaTime;
