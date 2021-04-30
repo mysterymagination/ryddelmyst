@@ -100,9 +100,9 @@ void UIounTorchComponent::TickComponent(float DeltaTime, ELevelTick TickType, FA
 		if (fMeteorSpawnTimer >= fMeteorSpawnInterval && iMeteorCount < iMaxMeteors)
 		{
 			auto* pMeteor = NewObject<UMicroMeteorComponent>(this);
+			pMeteor->setId(++iMeteorCount);
 			pMeteor->SetupAttachment(this);
 			pMeteor->RegisterComponent();
-			iMeteorCount++;
 			fMeteorSpawnTimer = 0.0f;
 		}
 	}
