@@ -64,14 +64,14 @@ void UMicroMeteorComponent::TickComponent(float DeltaTime, ELevelTick TickType, 
 	{
 		if (!bLaunched)
 		{
-			UE_LOG(LogTemp, Warning, TEXT("%s MicroMeteor::TickComponent; lifetimer is now %f and we're not launched, so launching"), *FDateTime::UtcNow().ToString(), fLifeTimer);
+			UE_LOG(LogTemp, Warning, TEXT("%s MicroMeteor::TickComponent; lifetimer is now %f and we're not launched, so launching meteor with id %d"), *FDateTime::UtcNow().ToString(), fLifeTimer, mId);
 			MeteoricLaunch();
 		}
 		else
 		{
 			// move along launch velocity
 			SetWorldLocation(GetComponentLocation() + LaunchVector * fLaunchSpeed * DeltaTime);
-			UE_LOG(LogTemp, Warning, TEXT("TickComponent; launch -- world location is %s and we're progressing by launch vector %s times launch speed %f times dt %f"), *GetComponentLocation().ToString(), *LaunchVector.ToString(), fLaunchSpeed, DeltaTime);
+			UE_LOG(LogTemp, Warning, TEXT("TickComponent; launch -- world location is %s and we're progressing by launch vector %s times launch speed %f times dt %f, for meteor id %d"), *GetComponentLocation().ToString(), *LaunchVector.ToString(), fLaunchSpeed, DeltaTime, mId);
 
 			// update launched time tracker
 			fLaunchedLifeTimer += DeltaTime;
@@ -85,7 +85,7 @@ void UMicroMeteorComponent::TickComponent(float DeltaTime, ELevelTick TickType, 
 					childComponent->DestroyComponent();
 				}
 				DestroyComponent();
-				UE_LOG(LogTemp, Warning, TEXT("TickComponent; destroying meteor"));
+				UE_LOG(LogTemp, Warning, TEXT("TickComponent; destroying meteor id %d"), mId);
 			}
 		}
 	}
@@ -108,7 +108,7 @@ void UMicroMeteorComponent::MeteoricLaunch()
 	// detach from orbitted body
 	DetachFromComponent(FDetachmentTransformRules::KeepWorldTransform);
 	// acquire launch vector via init launch meteor world pos minus launch orbitted body pos and flip launched trigger
-	UE_LOG(LogTemp, Warning, TEXT("TickComponent; init launch world coords of meteor are %s and launch world coords of orbitted body are %s so our delta vec to be used for init launch offset vec is %s"), *GetComponentLocation().ToString(), *pOrbitted->GetComponentLocation().ToString(), *(GetComponentLocation() - pOrbitted->GetComponentLocation()).ToString());
+	UE_LOG(LogTemp, Warning, TEXT("TickComponent; init launch world coords of meteor are %s and launch world coords of orbitted body are %s so our delta vec to be used for init launch offset vec is %s, for meteor id %d"), *GetComponentLocation().ToString(), *pOrbitted->GetComponentLocation().ToString(), *(GetComponentLocation() - pOrbitted->GetComponentLocation()).ToString(), mId);
 	
 	/* 
 	// so this simple approach of correct direction and whatever mags works a treat, but makes speed aspect of velocity harder to control.
@@ -127,21 +127,32 @@ void UMicroMeteorComponent::MeteoricLaunch()
 	// this diff vector gives us our launch direction, tho its magnitude is arbitrary
 	FVector DirectionVector = GetComponentLocation() - pOrbitted->GetComponentLocation();
 	// calculate launch vector as our direction vector reduced to mags 1 so we can apply a simple 1 map unit * a constant N per second speed to finish off our velocity.  We don't want a Z comp in our velocity, so just drop it to 0. 
-	// we reduce to mags 1 by following c^2 = a^2 + b^2 where we know c^2 = 1 and therefore c = 1.  To balance that, we effectively div the component side by itself and voila -- components reduced to values that will give us hypotenuse and therefore vector magnitude equal to 1!  Yay math! We use abs val of the component sum to preserve signage when we perform the div.
-	float ComponentSum = FMath::Abs(DirectionVector.X) + FMath::Abs(DirectionVector.Y);
-	float Mag1X = FGenericPlatformMath::Sqrt(FMath::Abs(DirectionVector.X / ComponentSum));
-	float Mag1Y = FGenericPlatformMath::Sqrt(FMath::Abs(DirectionVector.Y / ComponentSum));
+	// we reduce to mags 1 by following c^2 = a^2 + b^2 where we know c^2 = 1 and therefore c = 1.  With 'a' as run and 'b' as rise and ratio given as rise:run, a = sqrt((ratio^2 + 1)^-1) and b = sqrt(((ratio^-1)^2 + 1)^-1)
+	float directionRatio = FMath::Abs(DirectionVector.Y / DirectionVector.X);
+	float invDirectionRatio = FMath::Abs(DirectionVector.X / DirectionVector.Y);
+	float Mag1X = FMath::Sqrt(1/(FMath::Square(directionRatio) + 1));
+	float Mag1Y = FMath::Sqrt(1/(FMath::Square(invDirectionRatio) + 1));
 	// renew signage
 	Mag1X *= FMath::IsNegativeFloat(DirectionVector.X) ? -1 : 1;
 	Mag1Y *= FMath::IsNegativeFloat(DirectionVector.Y) ? -1 : 1;
 	if (FMath::IsNaN(Mag1X) || FMath::IsNaN(Mag1Y))
 	{
-		UE_LOG(LogTemp, Warning, TEXT("TickComponent; launch -- NaN detected for X or Y components, which are %f,%f.  Full details: ComponentSum is %f, DirectionVector.X is %f, and DirectionVector.Y is %f"), Mag1X, Mag1Y, ComponentSum, DirectionVector.X, DirectionVector.Y);
+		UE_LOG(LogTemp, Warning, TEXT("TickComponent; launch -- NaN detected for X or Y components, which are %f,%f.  Full details: dirrat is %f, invdirrat is %f, DirectionVector.X is %f, and DirectionVector.Y is %f, for meteor with id %d"), Mag1X, Mag1Y, directionRatio, invDirectionRatio, DirectionVector.X, DirectionVector.Y, mId);
 	}
 	LaunchVector = FVector(Mag1X, Mag1Y, 0.0f);
-	UE_LOG(LogTemp, Warning, TEXT("TickComponent; launch -- vector mag should be 1 for %s"), *LaunchVector.ToString());
+	UE_LOG(LogTemp, Warning, TEXT("TickComponent; launch -- vector mag should be 1 for %s, re: meteor id %d"), *LaunchVector.ToString(), mId);
 	
 	UE_LOG(LogTemp, Warning, TEXT("TickComponent; init launch offset says %s"), *LaunchVector.ToString());
 	bLaunched = true;
+}
+
+void UMicroMeteorComponent::setId(size_t id)
+{
+	mId = id;
+}
+
+size_t UMicroMeteorComponent::getId()
+{
+	return mId;
 }
 

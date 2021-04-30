@@ -18,6 +18,8 @@ class RYDDELMYST_API UMicroMeteorComponent : public USceneComponent
 public:	
 	// Sets default values for this component's properties
 	UMicroMeteorComponent();
+	size_t getId();
+	void setId(size_t id);
 
 protected:
 	// Called when the game starts
@@ -34,6 +36,10 @@ private:
 	void MeteoricLaunch();
 
 private:
+	/**
+	 * ID used to track the meteor, assigned by its orbitted body when it's first attached thereto 
+	 */
+	size_t mId = 0;
 	UPROPERTY()
 	class UParticleSystemComponent* MeteorParticles;
 	/**
