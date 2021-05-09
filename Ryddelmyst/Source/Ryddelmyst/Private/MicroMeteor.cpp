@@ -50,7 +50,6 @@ void AMicroMeteor::BeginPlay()
 void AMicroMeteor::TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction)
 {
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
-	UE_LOG(LogTemp, Warning, TEXT("TickComponent; world coords of meteor are %s and world coords of orbitted body are %s"), *GetComponentLocation().ToString(), *pOrbitted->GetComponentLocation().ToString());
 	// init orbit offset based on orbitted body size
 	if (OrbitOffset.IsZero())
 	{
@@ -70,8 +69,9 @@ void AMicroMeteor::TickComponent(float DeltaTime, ELevelTick TickType, FActorCom
 		else
 		{
 			// move along launch velocity
+			UE_LOG(LogTemp, Warning, TEXT("TickComponent; launched -- continuing launch world coords are %s and we're about to progress by launch vector %s times launch speed %f times dt %f, for meteor id %d"), *GetComponentLocation().ToString(), *LaunchVector.ToString(), fLaunchSpeed, DeltaTime, mId);
 			SetWorldLocation(GetComponentLocation() + LaunchVector * fLaunchSpeed * DeltaTime);
-			UE_LOG(LogTemp, Warning, TEXT("TickComponent; launch -- world location is %s and we're progressing by launch vector %s times launch speed %f times dt %f, for meteor id %d"), *GetComponentLocation().ToString(), *LaunchVector.ToString(), fLaunchSpeed, DeltaTime, mId);
+			UE_LOG(LogTemp, Warning, TEXT("TickComponent; launched -- continuing launch world coords are %s and we've now progressed by launch vector %s times launch speed %f times dt %f, for meteor id %d"), *GetComponentLocation().ToString(), *LaunchVector.ToString(), fLaunchSpeed, DeltaTime, mId);
 
 			// update launched time tracker
 			fLaunchedLifeTimer += DeltaTime;
