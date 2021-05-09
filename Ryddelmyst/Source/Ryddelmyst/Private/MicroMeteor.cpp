@@ -1,7 +1,7 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 
-#include "MicroMeteorComponent.h"
+#include "MicroMeteor.h"
 #include "UObject/ConstructorHelpers.h"
 #include "Particles/ParticleSystemComponent.h"
 #include "Components/SphereComponent.h"
@@ -9,14 +9,14 @@
 #include <string>
 
 // Sets default values for this component's properties
-UMicroMeteorComponent::UMicroMeteorComponent() 
+AMicroMeteor::AMicroMeteor() 
 {
-	PrimaryComponentTick.bCanEverTick = true;
+	PrimaryActorTick.bCanEverTick = true;
 }
 
 
 // Called when the game starts
-void UMicroMeteorComponent::BeginPlay()
+void AMicroMeteor::BeginPlay()
 {
 	Super::BeginPlay();
 
@@ -47,7 +47,7 @@ void UMicroMeteorComponent::BeginPlay()
 
 
 // Called every frame
-void UMicroMeteorComponent::TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction)
+void AMicroMeteor::TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction)
 {
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
 	UE_LOG(LogTemp, Warning, TEXT("TickComponent; world coords of meteor are %s and world coords of orbitted body are %s"), *GetComponentLocation().ToString(), *pOrbitted->GetComponentLocation().ToString());
@@ -102,7 +102,7 @@ void UMicroMeteorComponent::TickComponent(float DeltaTime, ELevelTick TickType, 
 	}		
 }
 
-void UMicroMeteorComponent::MeteoricLaunch()
+void AMicroMeteor::MeteoricLaunch()
 {
 	// todo: fire up with fire particle fx
 	// detach from orbitted body
@@ -146,12 +146,12 @@ void UMicroMeteorComponent::MeteoricLaunch()
 	bLaunched = true;
 }
 
-void UMicroMeteorComponent::setId(size_t id)
+void AMicroMeteor::setId(size_t id)
 {
 	mId = id;
 }
 
-size_t UMicroMeteorComponent::getId()
+size_t AMicroMeteor::getId()
 {
 	return mId;
 }

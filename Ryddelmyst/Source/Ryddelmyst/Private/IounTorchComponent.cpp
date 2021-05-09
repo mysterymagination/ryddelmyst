@@ -4,11 +4,11 @@
 #include "IounTorchComponent.h"
 #include "Components/BoxComponent.h"
 #include "Particles/ParticleSystemComponent.h"
-#include "MicroMeteorComponent.h"
+#include "MicroMeteor.h"
 
 
 // Sets default values for this component's properties
-UIounTorchComponent::UIounTorchComponent() :
+AIounTorch::AIounTorch() :
 OrbitOffset(75.0f, 75.0f, 120.0f)
 {
 	// Set this component to be initialized when the game starts, and to be ticked every frame.  You can turn these features
@@ -20,7 +20,7 @@ OrbitOffset(75.0f, 75.0f, 120.0f)
 	boxComp->InitBoxExtent(FVector(20.0f, 20.0f, 15.0f));
 	boxComp->SetCollisionProfileName(TEXT("IounTorchPresence"));
 	boxComp->UpdateBodySetup();
-	UE_LOG(LogTemp, Warning, TEXT("UIounTorchComponent::ctor; torch box origin is %s and the extent is %s"), *boxComp->CalcBounds(FTransform()).Origin.ToString(), *boxComp->CalcBounds(FTransform()).BoxExtent.ToString());
+	UE_LOG(LogTemp, Warning, TEXT("AIounTorch::ctor; torch box origin is %s and the extent is %s"), *boxComp->CalcBounds(FTransform()).Origin.ToString(), *boxComp->CalcBounds(FTransform()).BoxExtent.ToString());
 	SceneRoot = boxComp;
 	SceneRoot->SetupAttachment(this);
 	// IounTorch mesh
@@ -36,7 +36,7 @@ OrbitOffset(75.0f, 75.0f, 120.0f)
 		//PyramidVisual->SetRelativeLocation(FVector(0.0f, 0.0f, 15.0f)); // sitting on ceiling of box
 		PyramidVisual->SetWorldScale3D(FVector(0.5f));
 	}
-	UE_LOG(LogTemp, Warning, TEXT("UIounTorchComponent::ctor; pyramid visual rough sphere bound radius is %f"), PyramidVisual->CalcLocalBounds().SphereRadius);
+	UE_LOG(LogTemp, Warning, TEXT("AIounTorch::ctor; pyramid visual rough sphere bound radius is %f"), PyramidVisual->CalcLocalBounds().SphereRadius);
 	// Create a particle system that will stay on all the time
 	TorchParticles = CreateDefaultSubobject<UParticleSystemComponent>(TEXT("IounTorchParticles"));
 	TorchParticles->SetupAttachment(PyramidVisual);
@@ -51,7 +51,7 @@ OrbitOffset(75.0f, 75.0f, 120.0f)
 }
 
 // Called when the game starts
-void UIounTorchComponent::BeginPlay()
+void AIounTorch::BeginPlay()
 {
 	Super::BeginPlay();
 
@@ -61,7 +61,7 @@ void UIounTorchComponent::BeginPlay()
 
 
 // Called every frame
-void UIounTorchComponent::TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction)
+void AIounTorch::TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction)
 {
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
 	auto* pOrbitted = this->GetAttachParent();
@@ -82,27 +82,26 @@ void UIounTorchComponent::TickComponent(float DeltaTime, ELevelTick TickType, FA
 		UE_LOG(LogTemp, Warning, TEXT("IounTorch::TickComponent; orbit offset says %s"), *OrbitOffset.ToString());
 		float DeltaRotation = DeltaTime * 100.0f; //Rotate by 100 degrees per second
 		NewRotation.Yaw += DeltaRotation;
-		UE_LOG(LogTemp, Warning, TEXT("UIounTorchComponent::TickComponent(); rot yaw says %f after adding deltatime of %f times 20 (%f)"), NewRotation.Yaw, DeltaTime, DeltaTime*20.0f);  
+		UE_LOG(LogTemp, Warning, TEXT("AIounTorch::TickComponent(); rot yaw says %f after adding deltatime of %f times 20 (%f)"), NewRotation.Yaw, DeltaTime, DeltaTime*20.0f);  
 		// TODO: how come world rotation around Z causes a body to spin in place?  I would expect it to rotate around Z crossing through world origin, and therefore assume a sort of orbitting motion of its own.  Perhaps the concept of world vs. local rotation is different than world vs. local position?  Maybe any given rotation essentially has the axes running through the current rotating body's origin?  But then how does our vector rotation work?  That guy, I think is basically given as a vector with a certain magnitude coming out of world origin who gets rotated to have a certain heading and is then picked up and dropped at the spherical Molly origin such that the torch orbits her and not world origin.
 		SetWorldLocationAndRotation(NewLocation, NewRotation);
 
 		// orbit motion
 		OrbitYaw = DeltaTime * 20.0f;
 		FRotator OffsetVecRot(0.0f, 0.0f, 0.0f);
-		UE_LOG(LogTemp, Warning, TEXT("UIounTorchComponent::TickComponent; OffsetVecRot says %s"), *OffsetVecRot.ToString());
+		UE_LOG(LogTemp, Warning, TEXT("AIounTorch::TickComponent; OffsetVecRot says %s"), *OffsetVecRot.ToString());
 		OffsetVecRot.Yaw = OrbitYaw;
 		OrbitOffset = OffsetVecRot.RotateVector(OrbitOffset);
-		UE_LOG(LogTemp, Warning, TEXT("UIounTorchComponent::TickComponent(); OrbitOffset says %s"), *OrbitOffset.ToString());
+		UE_LOG(LogTemp, Warning, TEXT("AIounTorch::TickComponent(); OrbitOffset says %s"), *OrbitOffset.ToString());
 		SetRelativeLocation(OrbitOffset);
 
 		// meteor proc
 		fMeteorSpawnTimer += DeltaTime;
 		if (fMeteorSpawnTimer >= fMeteorSpawnInterval && iMeteorCount < iMaxMeteors)
 		{
-			auto* pMeteor = NewObject<UMicroMeteorComponent>(this);
+			auto* pMeteor = NewObject<AMicroMeteor>(this);
 			pMeteor->setId(++iMeteorCount);
-			pMeteor->SetupAttachment(this);
-			pMeteor->RegisterComponent();
+			pMeteor->AttachToActor(this);
 			fMeteorSpawnTimer = 0.0f;
 		}
 	}
@@ -112,12 +111,12 @@ void UIounTorchComponent::TickComponent(float DeltaTime, ELevelTick TickType, FA
 	}
 }
 
-UPrimitiveComponent* UIounTorchComponent::getPhysicality()
+UPrimitiveComponent* AIounTorch::getPhysicality()
 {
 	return SceneRoot;
 }
 
-float UIounTorchComponent::getOrbitYaw()
+float AIounTorch::getOrbitYaw()
 {
 	return OrbitYaw;
 }
