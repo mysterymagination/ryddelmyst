@@ -3,21 +3,21 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "Components/SceneComponent.h"
+#include "GameFramework/Actor.h"
 #include "IounTorchComponent.h"
-#include "MicroMeteorComponent.generated.h"
+#include "MicroMeteor.generated.h"
 
 /**
  * A smol sphere that orbits its attach parent and zooms off on an orthogonal vector from it (while on fire) when its time is up
  */
 UCLASS( ClassGroup=(Custom), meta=(BlueprintSpawnableComponent) )
-class RYDDELMYST_API UMicroMeteorComponent : public USceneComponent
+class RYDDELMYST_API AMicroMeteor : public AActor
 {
 	GENERATED_BODY()
 
 public:	
 	// Sets default values for this component's properties
-	UMicroMeteorComponent();
+	AMicroMeteor();
 	size_t getId();
 	void setId(size_t id);
 
@@ -27,7 +27,7 @@ protected:
 
 public:	
 	// Called every frame
-	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
+	virtual void Tick(float DeltaTime) override;
 
 private:
 	/**

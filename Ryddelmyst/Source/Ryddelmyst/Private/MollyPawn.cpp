@@ -9,7 +9,7 @@
 #include "Camera/CameraComponent.h"
 #include "GameFramework/SpringArmComponent.h"
 #include "IounTorchComponent.h"
-#include "MicroMeteorComponent.h"
+#include "MicroMeteor.h"
 
 // Sets default values
 AMollyPawn::AMollyPawn() :
