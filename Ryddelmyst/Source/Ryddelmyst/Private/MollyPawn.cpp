@@ -8,7 +8,7 @@
 #include "Components/SphereComponent.h"
 #include "Camera/CameraComponent.h"
 #include "GameFramework/SpringArmComponent.h"
-#include "IounTorchComponent.h"
+#include "IounTorch.h"
 #include "MicroMeteor.h"
 
 // Sets default values
