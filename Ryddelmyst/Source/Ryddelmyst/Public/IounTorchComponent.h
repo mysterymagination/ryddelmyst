@@ -4,19 +4,19 @@
 
 #include "CoreMinimal.h"
 #include "Components/SceneComponent.h"
-#include "IounTorchComponent.generated.h"
+#include "IounTorch.generated.h"
 
 /**
  * An IounTorch is a sphere that orbits around its USceneComponent parent, wreathed in heatless firelight
  */ 
 UCLASS( ClassGroup=(Custom), meta=(BlueprintSpawnableComponent) )
-class RYDDELMYST_API UIounTorchComponent : public USceneComponent
+class RYDDELMYST_API AIounTorch : public AActor
 {
 	GENERATED_BODY()
 
 public:	
 	// Sets default values for this component's properties
-	UIounTorchComponent();
+	AIounTorch();
 	/**
 	 * @return the primitive component subclass that defines the torch's physical form
 	 */
