@@ -60,7 +60,9 @@ void AIounTorch::BeginPlay()
 void AIounTorch::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
-	auto* pOrbitted = this->GetAttachParent();
+	
+	// todo: add a OrbitMovementComponent and query him for our orbit (I guess world) position this frame
+
 	// define our per frame pos according to attach parent, performing circumnavigation at 20 degrees per second
 	if(pOrbitted)
 	{
