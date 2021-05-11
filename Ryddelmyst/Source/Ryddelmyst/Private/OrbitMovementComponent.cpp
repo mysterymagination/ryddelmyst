@@ -29,6 +29,12 @@ void UOrbitMovementComponent::TickComponent(float DeltaTime, ELevelTick TickType
 {
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
 
-	// ...
+	// Make sure that everything is still valid, and that we are allowed to move.
+	if (!PawnOwner || !UpdatedComponent || ShouldSkipUpdate(DeltaTime))
+	{
+		return;
+	}
+
+	// define our per frame pos according to attach parent, performing circumnavigation at 20 degrees per second
 }
 
