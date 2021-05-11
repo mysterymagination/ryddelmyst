@@ -26,5 +26,12 @@ public:
 	// Called every frame
 	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
 
+private:
+	/**
+	 * Configurable in the Editor, this USceneComponent's origin is the point on which
+	 * the orbit motion will center
+	 */
+	UPROPERTY(EditAnywhere)
+	class USceneComponent* OrbitedBody;
 		
 };
