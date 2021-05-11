@@ -17,14 +17,6 @@ class RYDDELMYST_API AIounTorch : public AActor
 public:	
 	// Sets default values for this component's properties
 	AIounTorch();
-	/**
-	 * @return the primitive component subclass that defines the torch's physical form
-	 */
-	UPrimitiveComponent* getPhysicality();
-	/**
-	 * @return the orbit yaw mod this frame
-	 */
-	float getOrbitYaw();
 protected:
 	// Called when the game starts
 	virtual void BeginPlay() override;
@@ -50,14 +42,6 @@ private:
 	 * The max number of meteors we allow to spawn 
 	 */
 	uint8 iMaxMeteors = 3;
-	/**
-	 * Defines the radius of the tirch's orbit around the orbitted body 
-	 */
-	FVector OrbitOffset;
-	/**
-	 * Yaw degrees the torch has rotated arounded our orbitted body 
-	 */
-	float OrbitYaw;
 	/**
  	 * Fire particles emitted by the IounTorch
 	 * TODO: emissive material!  I wanna see glowy bits 
