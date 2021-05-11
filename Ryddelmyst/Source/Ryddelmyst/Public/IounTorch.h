@@ -64,4 +64,9 @@ private:
 	 */  
 	UPROPERTY()
 	class UParticleSystemComponent* TorchParticles;
+	/**
+	 * Controls the torch's orbit motion around an attached body
+	 */
+	UPROPERTY()
+	class UOrbitMovementComponent* OrbitMotion;
 };
