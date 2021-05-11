@@ -62,49 +62,37 @@ void AIounTorch::Tick(float DeltaTime)
 	
 	// todo: add a OrbitMovementComponent and query him for our orbit (I guess world) position this frame
 
-	// define our per frame pos according to attach parent, performing circumnavigation at 20 degrees per second
-	if(pOrbitted)
-	{
-		UE_LOG(LogTemp, Warning, TEXT("IounTorch::TickComponent; orbitted parent is %s"), *pOrbitted->GetFName().ToString());
-		UE_LOG(LogTemp, Warning, TEXT("IounTorch::TickComponent; torch parent pos is %s"), *pOrbitted->GetComponentLocation().ToString());
-		UE_LOG(LogTemp, Warning, TEXT("IounTorch::TickComponent; torch pos is %s"), *GetActorLocation().ToString());
-		
-		// floating torch - should really move this into a MovementComponent thingy
-		FVector NewLocation = GetActorLocation();
-		FRotator NewRotation = GetActorRotation();
-		float RunningTime = GetWorld()->GetTimeSeconds();
-		float DeltaHeight = (FMath::Sin(RunningTime + DeltaTime) - FMath::Sin(RunningTime));
-		NewLocation.Z += DeltaHeight * 150;
-		UE_LOG(LogTemp, Warning, TEXT("IounTorch::TickComponent; runningtime says %f and deltaheight is %f"), RunningTime, DeltaHeight);
-		UE_LOG(LogTemp, Warning, TEXT("IounTorch::TickComponent; orbit offset says %s"), *OrbitOffset.ToString());
-		float DeltaRotation = DeltaTime * 100.0f; //Rotate by 100 degrees per second
-		NewRotation.Yaw += DeltaRotation;
-		UE_LOG(LogTemp, Warning, TEXT("AIounTorch::TickComponent(); rot yaw says %f after adding deltatime of %f times 20 (%f)"), NewRotation.Yaw, DeltaTime, DeltaTime*20.0f);  
-		// TODO: how come world rotation around Z causes a body to spin in place?  I would expect it to rotate around Z crossing through world origin, and therefore assume a sort of orbitting motion of its own.  Perhaps the concept of world vs. local rotation is different than world vs. local position?  Maybe any given rotation essentially has the axes running through the current rotating body's origin?  But then how does our vector rotation work?  That guy, I think is basically given as a vector with a certain magnitude coming out of world origin who gets rotated to have a certain heading and is then picked up and dropped at the spherical Molly origin such that the torch orbits her and not world origin.
-		SetActorLocationAndRotation(NewLocation, NewRotation);
+	// floating torch - should really move this into a MovementComponent thingy
+	FVector NewLocation = GetActorLocation();
+	FRotator NewRotation = GetActorRotation();
+	float RunningTime = GetWorld()->GetTimeSeconds();
+	float DeltaHeight = (FMath::Sin(RunningTime + DeltaTime) - FMath::Sin(RunningTime));
+	NewLocation.Z += DeltaHeight * 150;
+	UE_LOG(LogTemp, Warning, TEXT("IounTorch::TickComponent; runningtime says %f and deltaheight is %f"), RunningTime, DeltaHeight);
+	UE_LOG(LogTemp, Warning, TEXT("IounTorch::TickComponent; orbit offset says %s"), *OrbitOffset.ToString());
+	float DeltaRotation = DeltaTime * 100.0f; //Rotate by 100 degrees per second
+	NewRotation.Yaw += DeltaRotation;
+	UE_LOG(LogTemp, Warning, TEXT("AIounTorch::TickComponent(); rot yaw says %f after adding deltatime of %f times 20 (%f)"), NewRotation.Yaw, DeltaTime, DeltaTime*20.0f);  
+	// TODO: how come world rotation around Z causes a body to spin in place?  I would expect it to rotate around Z crossing through world origin, and therefore assume a sort of orbitting motion of its own.  Perhaps the concept of world vs. local rotation is different than world vs. local position?  Maybe any given rotation essentially has the axes running through the current rotating body's origin?  But then how does our vector rotation work?  That guy, I think is basically given as a vector with a certain magnitude coming out of world origin who gets rotated to have a certain heading and is then picked up and dropped at the spherical Molly origin such that the torch orbits her and not world origin.
+	SetActorLocationAndRotation(NewLocation, NewRotation);
 
-		// orbit motion
-		float OrbitYaw = DeltaTime * 20.0f;
-		FRotator OffsetVecRot(0.0f, 0.0f, 0.0f);
-		UE_LOG(LogTemp, Warning, TEXT("AIounTorch::TickComponent; OffsetVecRot says %s"), *OffsetVecRot.ToString());
-		OffsetVecRot.Yaw = OrbitYaw;
-		OrbitOffset = OffsetVecRot.RotateVector(OrbitOffset);
-		UE_LOG(LogTemp, Warning, TEXT("AIounTorch::TickComponent(); OrbitOffset says %s"), *OrbitOffset.ToString());
-		SetRelativeLocation(OrbitOffset);
+	// orbit motion
+	float OrbitYaw = DeltaTime * 20.0f;
+	FRotator OffsetVecRot(0.0f, 0.0f, 0.0f);
+	UE_LOG(LogTemp, Warning, TEXT("AIounTorch::TickComponent; OffsetVecRot says %s"), *OffsetVecRot.ToString());
+	OffsetVecRot.Yaw = OrbitYaw;
+	OrbitOffset = OffsetVecRot.RotateVector(OrbitOffset);
+	UE_LOG(LogTemp, Warning, TEXT("AIounTorch::TickComponent(); OrbitOffset says %s"), *OrbitOffset.ToString());
+	SetRelativeLocation(OrbitOffset);
 
-		// meteor proc
-		fMeteorSpawnTimer += DeltaTime;
-		if (fMeteorSpawnTimer >= fMeteorSpawnInterval && iMeteorCount < iMaxMeteors)
-		{
-			auto* pMeteor = NewObject<AMicroMeteor>(this);
-			pMeteor->setId(++iMeteorCount);
-			pMeteor->AttachToActor(this);
-			fMeteorSpawnTimer = 0.0f;
-		}
-	}
-	else 
+	// meteor proc
+	fMeteorSpawnTimer += DeltaTime;
+	if (fMeteorSpawnTimer >= fMeteorSpawnInterval && iMeteorCount < iMaxMeteors)
 	{
-		UE_LOG(LogTemp, Warning, TEXT("IounTorch::TickComponent; no parent to orbit yet"));
+		auto* pMeteor = NewObject<AMicroMeteor>(this);
+		pMeteor->setId(++iMeteorCount);
+		pMeteor->AttachToActor(this);
+		fMeteorSpawnTimer = 0.0f;
 	}
 }
 

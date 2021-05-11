@@ -38,4 +38,30 @@ private:
 	 */
 	UPROPERTY(EditAnywhere)
 	FVector	OrbitOffset = { 75.0f, 75.0f, 120.0f };
+	/**
+	 * Dictates whether or not the orbiting body should float up and down along Z in addition to orbit motion
+	 */
+	UPROPERTY(EditAnywhere)
+	bool IsFloating = false;
+	/**
+	 * Dictates the speed at which the orbiting body completes a cycle of floating up and down along Z
+	 */
+	UPROPERTY(EditAnywhere)
+	float FloatingSpeed = 0.0f;
+	/**
+	 * Dictates the distance the comprises a cycle of the orbiting body floating up and down along Z
+	 */
+	UPROPERTY(EditAnywhere)
+	float FloatingRange = 0.0f;
+	/**
+	 * Dictates whether or not the orbiting body should rotate around its local Z axis
+	 */
+	UPROPERTY(EditAnywhere)
+	bool IsSpinning = false;
+	/**
+	 * Dictates the speed at which the orbiting body rotates around local Z
+	 */
+	UPROPERTY(EditAnywhere)
+	float SpinningSpeed = 0.0f;
+	// todo: local rotation over other axes?
 };
