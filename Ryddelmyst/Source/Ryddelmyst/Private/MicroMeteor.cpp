@@ -47,9 +47,9 @@ void AMicroMeteor::BeginPlay()
 
 
 // Called every frame
-void AMicroMeteor::TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction)
+void AMicroMeteor::Tick(float DeltaTime)
 {
-	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
+	Super::Tick(DeltaTime);
 	// init orbit offset based on orbitted body size
 	if (OrbitOffset.IsZero())
 	{

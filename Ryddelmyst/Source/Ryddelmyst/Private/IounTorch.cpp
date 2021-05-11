@@ -9,7 +9,6 @@
 
 // Sets default values for this component's properties
 AIounTorch::AIounTorch() :
-OrbitOffset(75.0f, 75.0f, 120.0f)
 {
 	// Set this component to be initialized when the game starts, and to be ticked every frame.  You can turn these features
 	// off to improve performance if you don't need them.
@@ -85,7 +84,7 @@ void AIounTorch::Tick(float DeltaTime)
 		SetActorLocationAndRotation(NewLocation, NewRotation);
 
 		// orbit motion
-		OrbitYaw = DeltaTime * 20.0f;
+		float OrbitYaw = DeltaTime * 20.0f;
 		FRotator OffsetVecRot(0.0f, 0.0f, 0.0f);
 		UE_LOG(LogTemp, Warning, TEXT("AIounTorch::TickComponent; OffsetVecRot says %s"), *OffsetVecRot.ToString());
 		OffsetVecRot.Yaw = OrbitYaw;
@@ -107,15 +106,5 @@ void AIounTorch::Tick(float DeltaTime)
 	{
 		UE_LOG(LogTemp, Warning, TEXT("IounTorch::TickComponent; no parent to orbit yet"));
 	}
-}
-
-UPrimitiveComponent* AIounTorch::getPhysicality()
-{
-	return SceneRoot;
-}
-
-float AIounTorch::getOrbitYaw()
-{
-	return OrbitYaw;
 }
 

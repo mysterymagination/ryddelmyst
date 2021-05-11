@@ -28,10 +28,14 @@ public:
 
 private:
 	/**
-	 * Configurable in the Editor, this USceneComponent's origin is the point on which
-	 * the orbit motion will center
+	 * Configurable in the Editor, this UPrimitiveComponent's origin is the point on which
+	 * the orbit motion will center.  It's geometry is used to help inform offset or the orbiting body.
 	 */
 	UPROPERTY(EditAnywhere)
-	class USceneComponent* OrbitedBody;
-		
+	class UPrimitiveComponent* OrbitedBody;
+	/**
+	 * The offset of the meteor's orbit from the orbitted body
+	 */
+	UPROPERTY(EditAnywhere)
+	FVector	OrbitOffset = { 75.0f, 75.0f, 120.0f };
 };
