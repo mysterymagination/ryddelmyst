@@ -39,13 +39,16 @@ AIounTorch::AIounTorch() :
 	TorchParticles = CreateDefaultSubobject<UParticleSystemComponent>(TEXT("IounTorchParticles"));
 	TorchParticles->SetupAttachment(PyramidVisual);
 	TorchParticles->bAutoActivate = false;
-	// Offset slighlty from bottom-center of mesh to improve visibility
+	// Offset slightly from bottom-center of mesh to improve visibility
 	TorchParticles->SetRelativeLocation(FVector(-20.0f, 0.0f, 10.0f));
 	static ConstructorHelpers::FObjectFinder<UParticleSystem> ParticleAsset(TEXT("/Game/StarterContent/Particles/P_Fire.P_Fire"));
 	if (ParticleAsset.Succeeded())
 	{
 		TorchParticles->SetTemplate(ParticleAsset.Object);
 	}
+	// Add orbit movemeny
+	OrbitMotion = CreateDefaultSubobject<UOrbitMovementComponent>(TEXT("OrbitMovementComponent"));
+	OrbitMotion->UpdatedComponent = RootComponent;
 }
 
 // Called when the game starts
@@ -59,8 +62,6 @@ void AIounTorch::BeginPlay()
 void AIounTorch::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
-	
-	// todo: add a OrbitMovementComponent and query him for our orbit (I guess world) position this frame
 
 	// meteor proc
 	fMeteorSpawnTimer += DeltaTime;
@@ -68,8 +69,6 @@ void AIounTorch::Tick(float DeltaTime)
 	{
 		auto* pMeteor = NewObject<AMicroMeteor>(this);
 		pMeteor->setId(++iMeteorCount);
-		// todo: issue #3 probably aren't going to actually want to attach the meteors to the torch; the whole idea behind the orbitmovementcomponent is to let the editor handle the association between orbited body and orbiting body, to make the whole system much more modular and useful than a hardcoded hierarchy of orbiting stuff.
-		pMeteor->AttachToActor(this, FAttachmentTransformRules::KeepWorldTransform);
 		fMeteorSpawnTimer = 0.0f;
 	}
 }
