@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "Components/SceneComponent.h"
+#include "OrbitMovementComponent.h"
 #include "IounTorch.generated.h"
 
 /**
