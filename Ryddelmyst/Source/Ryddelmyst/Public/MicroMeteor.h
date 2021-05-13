@@ -4,7 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
-#include "IounTorchComponent.h"
+#include "OrbitMovementComponent.h"
 #include "MicroMeteor.generated.h"
 
 /**
@@ -43,13 +43,7 @@ private:
 	UPROPERTY()
 	class UParticleSystemComponent* MeteorParticles;
 	/**
-	 * The offset of the meteor's orbit from the orbitted body 
-	 */
-	UPROPERTY(EditAnywhere)
-	FVector	OrbitOffset = {0.0f, 0.0f, 0.0f};
-	/**
-	 * The offset of the meteor from its world position at the time of launch
-	 * TODO: could probably get by using only the OrbitOffset and SetRelativeLocation() for the launch ortho path if we invert the rotation transform of the parent component out of the final transform applied to the child meteor
+	 * Vector of magnitude 1 along which we will travel once launched
 	 */
 	FVector	LaunchVector = { 0.0f, 0.0f, 0.0f };
 	/**
@@ -80,7 +74,8 @@ private:
 	UPROPERTY(EditAnywhere)
 	float fLaunchSpeed = 2000.0f;
 	/**
-	 * The Ioun torch our micro meteor is orbitting and from which it will eventually launch 
+	 * Controls the meteor's orbit motion around an attached body
 	 */
-	UIounTorchComponent* pOrbitted;
+	UPROPERTY()
+	class UOrbitMovementComponent* OrbitMotion;
 };
