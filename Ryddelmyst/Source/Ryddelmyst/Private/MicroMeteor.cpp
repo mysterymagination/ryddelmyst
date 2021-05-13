@@ -5,13 +5,35 @@
 #include "UObject/ConstructorHelpers.h"
 #include "Particles/ParticleSystemComponent.h"
 #include "Components/SphereComponent.h"
-#include "IounTorchComponent.h"
 #include <string>
 
 // Sets default values for this component's properties
 AMicroMeteor::AMicroMeteor() 
 {
 	PrimaryActorTick.bCanEverTick = true;
+	// adjust timing with a little instance-unique rando action
+	fMaxLifeTime += FMath::RandRange(-2, 5);
+	fMaxLaunchedLifeTime += FMath::RandRange(-2, 2);
+	// Sphere shape will serve as our root component
+	USphereComponent* SphereComponent = CreateDefaultSubobject<USphereComponent>(TEXT("MeteorPhysicsSphere"));
+	SphereComponent->InitSphereRadius(10.0f);
+	SphereComponent->SetCollisionProfileName(TEXT("MicroMeteorPresence"));
+	RootComponent = SphereComponent;
+	// Create and position a mesh component so we can see where our spherical Molly is
+	UStaticMeshComponent* SphereVisual = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("MeteorVisualSphere"));
+	SphereVisual->SetupAttachment(RootComponent);
+	static ConstructorHelpers::FObjectFinder<UStaticMesh> SphereVisualAsset(TEXT("/Game/StarterContent/Shapes/Shape_Sphere.Shape_Sphere"));
+	if (SphereVisualAsset.Succeeded())
+	{
+		SphereVisual->SetStaticMesh(SphereVisualAsset.Object);
+		// TODO: why is it necessary to move the sphere mesh 40 units down on Z to line up with the center of the sphere component?
+		SphereVisual->SetRelativeLocation(FVector(0.0f, 0.0f, -40.0f));
+		// Our sphere component has a radius of 10 units and the startercontent sphere mesh is 50, so scale it down by 80%
+		SphereVisual->SetWorldScale3D(FVector(0.2f));
+	}
+	// Add orbity movement
+	OrbitMotion = CreateDefaultSubobject<UOrbitMovementComponent>(TEXT("OrbitMovementComponent"));
+	OrbitMotion->UpdatedComponent = RootComponent;
 }
 
 
@@ -19,30 +41,6 @@ AMicroMeteor::AMicroMeteor()
 void AMicroMeteor::BeginPlay()
 {
 	Super::BeginPlay();
-
-	// adjust timing with a little instance-unique rando action
-	fMaxLifeTime += FMath::RandRange(-2, 5);
-	fMaxLaunchedLifeTime += FMath::RandRange(-2, 2);
-
-	// Sphere shape will serve as our root component
-	USphereComponent* SphereComponent = NewObject<USphereComponent>(this);
-	SphereComponent->InitSphereRadius(10.0f);
-	SphereComponent->SetCollisionProfileName(TEXT("MicroMeteorPresence"));
-	SphereComponent->SetupAttachment(this);
-	SphereComponent->RegisterComponent();
-	// Create and position a mesh component so we can see where our spherical Molly is
-	UStaticMeshComponent* SphereVisual = NewObject<UStaticMeshComponent>(this);
-	SphereVisual->SetupAttachment(SphereComponent);
-	UStaticMesh* SphereVisualAsset = LoadObject<UStaticMesh>(GetOuter(), TEXT("StaticMesh'/Game/StarterContent/Shapes/Shape_Sphere.Shape_Sphere'"));
-	SphereVisual->SetStaticMesh(SphereVisualAsset);
-	SphereVisual->SetRelativeLocation(FVector(0.0f, 0.0f, -40.0f));
-	// Our sphere component has a radius of 10 units and the startercontent sphere mesh is 50, so scale it down by 80%
-	SphereVisual->SetWorldScale3D(FVector(0.2f));
-	SphereVisual->RegisterComponent();
-
-	// store handle to our orbitted body
-	pOrbitted = static_cast<UIounTorchComponent*>(GetAttachParent());
-	UE_LOG(LogTemp, Warning, TEXT("BeginPlay; reparent -- pOrbitted says %p"), pOrbitted);
 }
 
 

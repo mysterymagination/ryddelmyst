@@ -62,7 +62,7 @@ bGrowing(false)
 	MollyMovementComponent = CreateDefaultSubobject<UMollyPawnMovementComponent>(TEXT("MollyMovementComponent"));
 	MollyMovementComponent->UpdatedComponent = RootComponent;
 	// Give her an ioun torch
-	auto* IounTorch = CreateDefaultSubobject<UIounTorchComponent>(TEXT("MollyTorch"));
+	auto* IounTorch = CreateDefaultSubobject<AIounTorch>(TEXT("MollyTorch"));
 	IounTorch->SetupAttachment(SphereVisual);
 	// todo: how come her bounds stay the same regardless of scaling?
 	UE_LOG(LogTemp, Warning, TEXT("AMollyPawn::ctor; molly's measurements %f"), SphereVisual->CalcLocalBounds().SphereRadius);
@@ -72,7 +72,6 @@ bGrowing(false)
 void AMollyPawn::BeginPlay()
 {
 	Super::BeginPlay();
-	
 }
 
 // Called every frame
