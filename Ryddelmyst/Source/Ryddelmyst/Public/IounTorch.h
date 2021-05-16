@@ -8,7 +8,7 @@
 #include "IounTorch.generated.h"
 
 /**
- * An IounTorch is a sphere that orbits around its USceneComponent parent, wreathed in heatless firelight
+ * An IounTorch is a sphere that orbits around its UPrimitiveComponent parent, wreathed in heatless firelight
  */ 
 UCLASS( ClassGroup=(Custom), meta=(BlueprintSpawnableComponent) )
 class RYDDELMYST_API AIounTorch : public AActor
