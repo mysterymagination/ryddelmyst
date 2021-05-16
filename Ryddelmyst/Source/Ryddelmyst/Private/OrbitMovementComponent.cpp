@@ -35,6 +35,9 @@ void UOrbitMovementComponent::TickComponent(float DeltaTime, ELevelTick TickType
 		return;
 	}
 
+	// todo: add floating movement to DesiredMovementThisFrame vector
+	FVector DesiredMovementThisFrame(0.0f);
+	FRotator NewRotation = UpdatedComponent->GetComponentRotation();
 	// floating orbiting body 
 	if (IsFloating)
 	{
@@ -47,7 +50,6 @@ void UOrbitMovementComponent::TickComponent(float DeltaTime, ELevelTick TickType
 	if (IsSpinning)
 	{
 		// TODO: how come world rotation around Z causes a body to spin in place?  I would expect it to rotate around Z crossing through world origin, and therefore assume a sort of orbitting motion of its own.  Perhaps the concept of world vs. local rotation is different than world vs. local position?  Maybe any given rotation essentially has the axes running through the current rotating body's origin?  But then how does our vector rotation work?  That guy, I think is basically given as a vector with a certain magnitude coming out of world origin who gets rotated to have a certain heading and is then picked up and dropped at the spherical Molly origin such that the torch orbits her and not world origin.
-		FRotator NewRotation = UpdatedComponent->GetComponentRotation();
 		float DeltaRotation = DeltaTime * 100.0f; //Rotate by 100 degrees per second
 		NewRotation.Yaw += DeltaRotation;
 		UE_LOG(LogTemp, Warning, TEXT("OrbitMovementComponent::TickComponent(); rot yaw says %f after adding deltatime of %f times 20 (%f)"), NewRotation.Yaw, DeltaTime, DeltaTime * 20.0f);
@@ -60,9 +62,11 @@ void UOrbitMovementComponent::TickComponent(float DeltaTime, ELevelTick TickType
 	OffsetVecRot.Yaw = OrbitYaw;
 	OrbitOffset = OffsetVecRot.RotateVector(OrbitOffset);
 	UE_LOG(LogTemp, Warning, TEXT("OrbitMovementComponent::TickComponent(); OrbitOffset says %s"), *OrbitOffset.ToString());
-	SetRelativeLocation(OrbitOffset);
-
-	SafeMoveUpdatedComponent(DesiredMovementThisFrame, UpdatedComponent->GetComponentRotation(), true, Hit);
+	
+	// apply the orbit vector
+	DesiredMovementThisFrame += OrbitOffset;
+	FHitResult Hit;
+	SafeMoveUpdatedComponent(DesiredMovementThisFrame, NewRotation, true, Hit);
 
 	// If we bumped into something, try to slide along it
 	if (Hit.IsValidBlockingHit())
