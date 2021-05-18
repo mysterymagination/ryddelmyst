@@ -35,7 +35,6 @@ void UOrbitMovementComponent::TickComponent(float DeltaTime, ELevelTick TickType
 		return;
 	}
 
-	// todo: add floating movement to DesiredMovementThisFrame vector
 	FVector DesiredMovementThisFrame(0.0f);
 	FRotator NewRotation = UpdatedComponent->GetComponentRotation();
 	// floating orbiting body 
@@ -46,6 +45,7 @@ void UOrbitMovementComponent::TickComponent(float DeltaTime, ELevelTick TickType
 		float DeltaHeight = (FMath::Sin(RunningTime + DeltaTime) - FMath::Sin(RunningTime));
 		NewLocation.Z += DeltaHeight * 150;
 		UE_LOG(LogTemp, Warning, TEXT("OrbitMovementComponent::TickComponent; floating -- runningtime says %f and deltaheight is %f"), RunningTime, DeltaHeight);
+		DesiredMovementThisFrame += NewLocation;
 	}
 	if (IsSpinning)
 	{
