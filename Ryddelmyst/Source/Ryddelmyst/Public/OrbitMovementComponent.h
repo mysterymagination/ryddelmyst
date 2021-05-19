@@ -35,6 +35,7 @@ private:
 	class UPrimitiveComponent* OrbitedBody;
 	/**
 	 * The offset of the meteor's orbit from the orbitted body
+	 * todo: init orbit offset based on orbitted body size
 	 */
 	UPROPERTY(EditAnywhere)
 	FVector	OrbitOffset = { 75.0f, 75.0f, 120.0f };
