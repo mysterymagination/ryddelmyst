@@ -17,6 +17,8 @@ class RYDDELMYST_API UOrbitMovementComponent : public UMovementComponent
 public:	
 	// Sets default values for this component's properties
 	UOrbitMovementComponent();
+	void setOrbitedBody(UPrimitiveComponent* body);
+	UPrimitiveComponent* getOrbitedBody();
 
 protected:
 	// Called when the game starts

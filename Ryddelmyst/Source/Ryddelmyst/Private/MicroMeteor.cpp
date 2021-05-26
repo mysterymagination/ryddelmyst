@@ -122,3 +122,8 @@ size_t AMicroMeteor::getId()
 	return mId;
 }
 
+UOrbitMovementComponent* AMicroMeteor::getOrbitController()
+{
+	return OrbitMotion;
+}
+

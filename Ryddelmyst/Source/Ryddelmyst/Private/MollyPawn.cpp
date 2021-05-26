@@ -61,9 +61,6 @@ bGrowing(false)
 	// Create an instance of our movement component, and tell it to update the root.
 	MollyMovementComponent = CreateDefaultSubobject<UMollyPawnMovementComponent>(TEXT("MollyMovementComponent"));
 	MollyMovementComponent->UpdatedComponent = RootComponent;
-	// Give her an ioun torch
-	auto* IounTorch = CreateDefaultSubobject<AIounTorch>(TEXT("MollyTorch"));
-	IounTorch->SetupAttachment(SphereVisual);
 	// todo: how come her bounds stay the same regardless of scaling?
 	UE_LOG(LogTemp, Warning, TEXT("AMollyPawn::ctor; molly's measurements %f"), SphereVisual->CalcLocalBounds().SphereRadius);
 }

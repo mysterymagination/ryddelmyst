@@ -75,3 +75,13 @@ void UOrbitMovementComponent::TickComponent(float DeltaTime, ELevelTick TickType
 	}
 }
 
+UPrimitiveComponent* UOrbitMovementComponent::getOrbitedBody()
+{
+	return OrbitedBody;
+}
+
+void UOrbitMovementComponent::setOrbitedBody(UPrimitiveComponent* body)
+{
+	OrbitedBody = body;
+}
+

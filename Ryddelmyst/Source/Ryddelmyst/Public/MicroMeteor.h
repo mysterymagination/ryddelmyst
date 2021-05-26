@@ -20,6 +20,10 @@ public:
 	AMicroMeteor();
 	size_t getId();
 	void setId(size_t id);
+	/**
+	 * @return pointer to the UOrbitMovementComponent that controls our orbit motion
+	 */
+	UOrbitMovementComponent* getOrbitController();
 
 protected:
 	// Called when the game starts
