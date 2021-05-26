@@ -77,3 +77,8 @@ void AIounTorch::Tick(float DeltaTime)
 	}
 }
 
+UOrbitMovementComponent* AIounTorch::getOrbitController()
+{
+	return OrbitMotion;
+}
+

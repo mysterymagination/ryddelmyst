@@ -18,6 +18,11 @@ class RYDDELMYST_API AIounTorch : public AActor
 public:	
 	// Sets default values for this component's properties
 	AIounTorch();
+	/**
+	 * @return pointer to the UOrbitMovementComponent that controls our orbit motion
+	 */
+	UOrbitMovementComponent* getOrbitController();
+
 protected:
 	// Called when the game starts
 	virtual void BeginPlay() override;
