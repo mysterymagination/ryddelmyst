@@ -35,6 +35,10 @@ void UOrbitMovementComponent::TickComponent(float DeltaTime, ELevelTick TickType
 		return;
 	}
 
+	// todo: need to use OrbitedBody so we can affect motion relative to its position in world space without actually being attached to it via transform hierarchy... that or actually attach to it so we get that for free!
+	FVector CurrentPos = OrbitedBody->GetActorLocation() + OrbitOffset;
+	// todo: then we add stuff to desiredmovement and then add desiredmovement to currentpos?  But then SafeMoveUpdatedComponent wants a delta rather than a final position...
+
 	FVector DesiredMovementThisFrame(0.0f);
 	FRotator NewRotation = UpdatedComponent->GetComponentRotation();
 	// floating orbiting body 
@@ -75,12 +79,14 @@ void UOrbitMovementComponent::TickComponent(float DeltaTime, ELevelTick TickType
 	}
 }
 
-UPrimitiveComponent* UOrbitMovementComponent::getOrbitedBody()
+///UPrimitiveComponent* UOrbitMovementComponent::getOrbitedBody()
+AActor* UOrbitMovementComponent::getOrbitedBody()
 {
 	return OrbitedBody;
 }
 
-void UOrbitMovementComponent::setOrbitedBody(UPrimitiveComponent* body)
+///void UOrbitMovementComponent::setOrbitedBody(UPrimitiveComponent* body)
+void UOrbitMovementComponent::setOrbitedBody(AActor* body)
 {
 	OrbitedBody = body;
 }
