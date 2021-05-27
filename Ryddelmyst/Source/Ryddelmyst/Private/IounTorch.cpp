@@ -70,8 +70,8 @@ void AIounTorch::Tick(float DeltaTime)
 		auto* pMeteor = NewObject<AMicroMeteor>(this);
 		// need to tell the meteor we just spawned at runtime that its 
 		// OrbitMovementComponent's orbitted body should be this torch
-		UPrimitiveComponent* Body = static_cast<UPrimitiveComponent*>(RootComponent);
-		pMeteor->getOrbitController()->setOrbitedBody(Body);
+		///UPrimitiveComponent* Body = static_cast<UPrimitiveComponent*>(RootComponent);
+		pMeteor->getOrbitController()->setOrbitedBody(this);///Body);
 		pMeteor->setId(++iMeteorCount);
 		fMeteorSpawnTimer = 0.0f;
 	}

@@ -57,6 +57,6 @@ private:
 	/**
 	 * Controls the torch's orbit motion around an attached body
 	 */
-	UPROPERTY()
+	UPROPERTY(VisibleAnywhere)
 	class UOrbitMovementComponent* OrbitMotion;
 };
