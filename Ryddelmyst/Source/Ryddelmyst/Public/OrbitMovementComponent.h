@@ -17,8 +17,10 @@ class RYDDELMYST_API UOrbitMovementComponent : public UMovementComponent
 public:	
 	// Sets default values for this component's properties
 	UOrbitMovementComponent();
-	void setOrbitedBody(UPrimitiveComponent* body);
-	UPrimitiveComponent* getOrbitedBody();
+	///void setOrbitedBody(UPrimitiveComponent* body);
+	void setOrbitedBody(AActor* body);
+	///UPrimitiveComponent* getOrbitedBody();
+	AActor* getOrbitedBody();
 
 protected:
 	// Called when the game starts
@@ -31,13 +33,14 @@ public:
 private:
 	/**
 	 * Configurable in the Editor, this UPrimitiveComponent's origin is the point on which
-	 * the orbit motion will center.  It's geometry is used to help inform offset or the orbiting body.
+	 * the orbit motion will center.  Its geometry is used to help inform offset of the orbiting body.
 	 */
 	UPROPERTY(EditAnywhere)
-	class UPrimitiveComponent* OrbitedBody;
+	class AActor* OrbitedBody; // todo: having OrbitedBody be an AActor* does let me select MollyPawn in the editor, but ideally we'd be able to have its datatype be UPrimitiveComponent* and be able to select an actor's RootComponent that happens to be a primitivecomponent in the editor... not sure that's possible
+	///class UPrimitiveComponent* OrbitedBody;
 	/**
 	 * The offset of the meteor's orbit from the orbitted body
-	 * todo: init orbit offset based on orbitted body size
+	 * todo: init orbit offset based on orbited body size
 	 */
 	UPROPERTY(EditAnywhere)
 	FVector	OrbitOffset = { 75.0f, 75.0f, 120.0f };
