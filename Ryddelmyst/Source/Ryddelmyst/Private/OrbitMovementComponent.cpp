@@ -18,10 +18,10 @@ UOrbitMovementComponent::UOrbitMovementComponent()
 void UOrbitMovementComponent::BeginPlay()
 {
 	Super::BeginPlay();
-	// assign orbit offset translation to be the Editor given offset value relative to the orbited body's location
-	if (OrbitedBody)
-	{
-		OrbitOffset += OrbitedBody->GetActorLocation();
+	// attach this orbitmovementcomponent as a transform child of the orbited body so that our transforms applied here will be relative to it
+	if (UpdatedComponent && OrbitedBody)
+	{  
+		UpdatedComponent->SetupAttachment(OrbitedBody->GetDefaultAttachComponent());
 	}
 }
 
