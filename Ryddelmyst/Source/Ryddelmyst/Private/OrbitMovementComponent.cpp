@@ -18,9 +18,11 @@ UOrbitMovementComponent::UOrbitMovementComponent()
 void UOrbitMovementComponent::BeginPlay()
 {
 	Super::BeginPlay();
-
-	// ...
-	
+	// assign orbit offset translation to be the Editor given offset value relative to the orbited body's location
+	if (OrbitedBody)
+	{
+		OrbitOffset += OrbitedBody->GetActorLocation();
+	}
 }
 
 
@@ -35,7 +37,6 @@ void UOrbitMovementComponent::TickComponent(float DeltaTime, ELevelTick TickType
 		return;
 	}
 
-	// todo: need to use OrbitedBody so we can affect motion relative to its position in world space without actually being attached to it via transform hierarchy... that or actually attach to it so we get that for free!
 	FVector CurrentPos = OrbitedBody->GetActorLocation() + OrbitOffset;
 	// todo: then we add stuff to desiredmovement and then add desiredmovement to currentpos?  But then SafeMoveUpdatedComponent wants a delta rather than a final position...
 
