@@ -69,7 +69,9 @@ void UOrbitMovementComponent::TickComponent(float DeltaTime, ELevelTick TickType
 	UE_LOG(LogTemp, Warning, TEXT("OrbitMovementComponent::TickComponent(); OrbitOffset says %s"), *OrbitOffset.ToString());
 	
 	// apply the orbit vector
-	DesiredMovementThisFrame += OrbitOffset;
+	UpdatedComponent->SetRelativeLocation(OrbitOffset);
+
+	// apply non-orbit motion to the orbiting body
 	FHitResult Hit;
 	SafeMoveUpdatedComponent(DesiredMovementThisFrame, NewRotation, true, Hit);
 
