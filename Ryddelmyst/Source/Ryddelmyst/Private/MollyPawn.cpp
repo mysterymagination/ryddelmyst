@@ -49,10 +49,10 @@ bGrowing(false)
 		MollyParticles->SetTemplate(ParticleAsset.Object);
 	}
 	 // Use a spring arm to give the camera smooth, natural-feeling motion.
-	USpringArmComponent* SpringArm = CreateDefaultSubobject<USpringArmComponent>(TEXT("CameraAttachmentArm"));
+	SpringArm = CreateDefaultSubobject<USpringArmComponent>(TEXT("CameraAttachmentArm"));
 	SpringArm->SetupAttachment(RootComponent);
 	SpringArm->SetRelativeRotation(FRotator(-45.f, 0.f, 0.f));
-	SpringArm->TargetArmLength = 800.0f;
+	SpringArm->TargetArmLength = FCameraArmLength;
 	SpringArm->bEnableCameraLag = true;
 	SpringArm->CameraLagSpeed = 3.0f;
 	// Create a camera and attach to our spring arm
@@ -69,6 +69,7 @@ bGrowing(false)
 void AMollyPawn::BeginPlay()
 {
 	Super::BeginPlay();
+	SpringArm->TargetArmLength = FCameraArmLength;
 }
 
 // Called every frame
