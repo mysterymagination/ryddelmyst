@@ -21,6 +21,7 @@ void UOrbitMovementComponent::BeginPlay()
 	// attach this orbitmovementcomponent as a transform child of the orbited body so that our transforms applied here will be relative to it
 	if (UpdatedComponent && OrbitedBody)
 	{  
+		UE_LOG(LogTemp, Warning, TEXT("OrbitMovementComponent::BeginPlay; attaching to orbited body %s"), *OrbitedBody->GetName());
 		UpdatedComponent->SetupAttachment(OrbitedBody->GetDefaultAttachComponent());
 	}
 }
@@ -37,9 +38,7 @@ void UOrbitMovementComponent::TickComponent(float DeltaTime, ELevelTick TickType
 		return;
 	}
 
-	FVector CurrentPos = OrbitedBody->GetActorLocation() + OrbitOffset;
-	// todo: then we add stuff to desiredmovement and then add desiredmovement to currentpos?  But then SafeMoveUpdatedComponent wants a delta rather than a final position...
-
+	/* todo: uncomment when torch orbit motion is fixed
 	FVector DesiredMovementThisFrame(0.0f);
 	FRotator NewRotation = UpdatedComponent->GetComponentRotation();
 	// floating orbiting body 
@@ -59,18 +58,25 @@ void UOrbitMovementComponent::TickComponent(float DeltaTime, ELevelTick TickType
 		NewRotation.Yaw += DeltaRotation;
 		UE_LOG(LogTemp, Warning, TEXT("OrbitMovementComponent::TickComponent(); rot yaw says %f after adding deltatime of %f times 20 (%f)"), NewRotation.Yaw, DeltaTime, DeltaTime * 20.0f);
 	}
-	
+	*/
+
+	/* todo: uncomment after torch offset is fixed
 	// orbit motion -- define our per frame pos according to attach parent, performing circumnavigation at 20 degrees per second
 	float OrbitYaw = DeltaTime * 20.0f;
 	FRotator OffsetVecRot(0.0f, 0.0f, 0.0f);
-	UE_LOG(LogTemp, Warning, TEXT("OrbitMovementComponent::TickComponent; OffsetVecRot says %s"), *OffsetVecRot.ToString());
 	OffsetVecRot.Yaw = OrbitYaw;
+	UE_LOG(LogTemp, Warning, TEXT("OrbitMovementComponent::TickComponent; OffsetVecRot says %s"), *OffsetVecRot.ToString());
 	OrbitOffset = OffsetVecRot.RotateVector(OrbitOffset);
+	*/
 	UE_LOG(LogTemp, Warning, TEXT("OrbitMovementComponent::TickComponent(); OrbitOffset says %s"), *OrbitOffset.ToString());
 	
+	// todo: something's wrong with my relative offset from the orbited body; I'm seeing world coords reported by the torch equal to OrbitOffset exactly, meaning it's applying offset from origin? 
+
 	// apply the orbit vector
 	UpdatedComponent->SetRelativeLocation(OrbitOffset);
+	UE_LOG(LogTemp, Warning, TEXT("OrbitMovementComponent::TickComponent(); just updated orbiting body known as %s to be at location %s relative to the orbitted body known as %s at world coords %s"), *UpdatedComponent->GetName(), *UpdatedComponent->GetRelativeLocation().ToString(), *OrbitedBody->GetName(), *OrbitedBody->GetActorLocation().ToString());
 
+	/* todo: uncomment when torch orbit motion is fixed
 	// apply non-orbit motion to the orbiting body
 	FHitResult Hit;
 	SafeMoveUpdatedComponent(DesiredMovementThisFrame, NewRotation, true, Hit);
@@ -80,6 +86,7 @@ void UOrbitMovementComponent::TickComponent(float DeltaTime, ELevelTick TickType
 	{
 		SlideAlongSurface(DesiredMovementThisFrame, 1.f - Hit.Time, Hit.Normal, Hit);
 	}
+	*/
 }
 
 ///UPrimitiveComponent* UOrbitMovementComponent::getOrbitedBody()

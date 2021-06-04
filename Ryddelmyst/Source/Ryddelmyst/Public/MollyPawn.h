@@ -40,11 +40,20 @@ private:
 	//Input variables
 	bool bGrowing;
 
-public:
+private:
+	UPROPERTY()
+	class USpringArmComponent* SpringArm;
 	UPROPERTY()
 	class UParticleSystemComponent* MollyParticles;
 	UPROPERTY()
-	class UMollyPawnMovementComponent* MollyMovementComponent;	
+	class UMollyPawnMovementComponent* MollyMovementComponent;
+	/**
+	 * Length of the SpringArm mount we use for the camera to hang it behind our Molly 
+	 */
+	UPROPERTY(EditAnywhere)
+	float FCameraArmLength = 800.0f;
+
+public:
 	/**
 	 * Amount of time in seconds that player is allowed in which to trigger the special grow action after starting a move axis input
 	 */ 
