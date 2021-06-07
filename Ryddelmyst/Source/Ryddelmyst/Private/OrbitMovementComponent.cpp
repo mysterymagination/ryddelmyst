@@ -21,8 +21,9 @@ void UOrbitMovementComponent::BeginPlay()
 	// attach this orbitmovementcomponent as a transform child of the orbited body so that our transforms applied here will be relative to it
 	if (UpdatedComponent && OrbitedBody)
 	{  
-		UE_LOG(LogTemp, Warning, TEXT("OrbitMovementComponent::BeginPlay; attaching to orbited body %s"), *OrbitedBody->GetName());
-		UpdatedComponent->SetupAttachment(OrbitedBody->GetDefaultAttachComponent());
+		UE_LOG(LogTemp, Warning, TEXT("OrbitMovementComponent::BeginPlay; attaching to orbited body %s at default attach component %p"), *OrbitedBody->GetName(), OrbitedBody->GetDefaultAttachComponent());
+		UpdatedComponent->AttachToComponent(OrbitedBody->GetDefaultAttachComponent(), FAttachmentTransformRules::KeepRelativeTransform);
+		UE_LOG(LogTemp, Warning, TEXT("OrbitMovementComponent::BeginPlay; attached the updatedcomponent to %p"), UpdatedComponent->GetAttachParent());
 	}
 }
 
