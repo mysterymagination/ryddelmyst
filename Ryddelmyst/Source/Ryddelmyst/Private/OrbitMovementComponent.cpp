@@ -39,49 +39,50 @@ void UOrbitMovementComponent::TickComponent(float DeltaTime, ELevelTick TickType
 		return;
 	}
 
-	/* todo: uncomment when torch orbit motion is fixed
 	FVector DesiredMovementThisFrame(0.0f);
-	FRotator NewRotation = UpdatedComponent->GetComponentRotation();
+	FRotator SpinRotation = UpdatedComponent->GetComponentRotation();
+	///float floatingScalar = 0.0f;
 	// floating orbiting body 
 	if (IsFloating)
 	{
-		FVector NewLocation = UpdatedComponent->GetComponentLocation();
+		FVector FloatingLocation = FVector(0.0f, 0.0f, 0.0f);
 		float RunningTime = GetWorld()->GetTimeSeconds();
 		float DeltaHeight = (FMath::Sin(RunningTime + DeltaTime) - FMath::Sin(RunningTime));
-		NewLocation.Z += DeltaHeight * 150;
-		UE_LOG(LogTemp, Warning, TEXT("OrbitMovementComponent::TickComponent; floating -- runningtime says %f and deltaheight is %f"), RunningTime, DeltaHeight);
-		DesiredMovementThisFrame += NewLocation;
+		FloatingLocation.Z += DeltaHeight * 150 * FloatingSpeed;
+		///floatingScalar = DeltaHeight * 150 * FloatingSpeed;
+		UE_LOG(LogTemp, Warning, TEXT("OrbitMovementComponent::TickComponent; floating -- runningtime says %f, deltaheight is %f, and floating location is %s"), RunningTime, DeltaHeight, *FloatingLocation.ToString());
+		DesiredMovementThisFrame += FloatingLocation;
 	}
 	if (IsSpinning)
 	{
 		// TODO: how come world rotation around Z causes a body to spin in place?  I would expect it to rotate around Z crossing through world origin, and therefore assume a sort of orbitting motion of its own.  Perhaps the concept of world vs. local rotation is different than world vs. local position?  Maybe any given rotation essentially has the axes running through the current rotating body's origin?  But then how does our vector rotation work?  That guy, I think is basically given as a vector with a certain magnitude coming out of world origin who gets rotated to have a certain heading and is then picked up and dropped at the spherical Molly origin such that the torch orbits her and not world origin.
 		float DeltaRotation = DeltaTime * 100.0f; //Rotate by 100 degrees per second
-		NewRotation.Yaw += DeltaRotation;
-		UE_LOG(LogTemp, Warning, TEXT("OrbitMovementComponent::TickComponent(); rot yaw says %f after adding deltatime of %f times 20 (%f)"), NewRotation.Yaw, DeltaTime, DeltaTime * 20.0f);
+		SpinRotation.Yaw += DeltaRotation;
+		UE_LOG(LogTemp, Warning, TEXT("OrbitMovementComponent::TickComponent(); rot yaw says %f after adding deltatime of %f times 20 (%f)"), SpinRotation.Yaw, DeltaTime, DeltaTime * 20.0f);
 	}
-	*/
 
-	/* todo: uncomment after torch offset is fixed
 	// orbit motion -- define our per frame pos according to attach parent, performing circumnavigation at 20 degrees per second
 	float OrbitYaw = DeltaTime * 20.0f;
 	FRotator OffsetVecRot(0.0f, 0.0f, 0.0f);
 	OffsetVecRot.Yaw = OrbitYaw;
 	UE_LOG(LogTemp, Warning, TEXT("OrbitMovementComponent::TickComponent; OffsetVecRot says %s"), *OffsetVecRot.ToString());
 	OrbitOffset = OffsetVecRot.RotateVector(OrbitOffset);
-	*/
 	UE_LOG(LogTemp, Warning, TEXT("OrbitMovementComponent::TickComponent(); OrbitOffset says %s"), *OrbitOffset.ToString());
-	
-	// todo: something's wrong with my relative offset from the orbited body; I'm seeing world coords reported by the torch equal to OrbitOffset exactly, meaning it's applying offset from origin? 
+
+	///OrbitOffset.Z += floatingScalar;
 
 	// apply the orbit vector
 	UpdatedComponent->SetRelativeLocation(OrbitOffset);
 	UE_LOG(LogTemp, Warning, TEXT("OrbitMovementComponent::TickComponent(); just updated orbiting body known as %s to be at location %s relative to the orbitted body known as %s at world coords %s"), *UpdatedComponent->GetName(), *UpdatedComponent->GetRelativeLocation().ToString(), *OrbitedBody->GetName(), *OrbitedBody->GetActorLocation().ToString());
 
-	/* todo: uncomment when torch orbit motion is fixed
+	UE_LOG(LogTemp, Warning, TEXT("OrbitMovementComponent::TickComponent(); desired movement this frame is %s and desired rotation this frame is %s"), *DesiredMovementThisFrame.ToString(), *SpinRotation.ToString());
+
+	// todo: I think our sputter stutter situation is caused by the fact that our other translations are relative to the attach parent (orbited body) but I guess SafeMoveUpdatedComponent only moves in world space and they wind up clashing?  Or more to the point, OrbitOffset has a Z component and so every frame we basically warp back to the 120 relative offset and then apply whatever the desiredmovementthisframe Z mod, giving us a teleport back plus varying mod movement in Z per frame.
 	// apply non-orbit motion to the orbiting body
 	FHitResult Hit;
-	SafeMoveUpdatedComponent(DesiredMovementThisFrame, NewRotation, true, Hit);
+	SafeMoveUpdatedComponent(DesiredMovementThisFrame, SpinRotation, true, Hit);
 
+	/*
 	// If we bumped into something, try to slide along it
 	if (Hit.IsValidBlockingHit())
 	{
