@@ -50,15 +50,10 @@ private:
 	UPROPERTY(EditAnywhere)
 	bool IsFloating = false;
 	/**
-	 * Dictates the speed at which the orbiting body completes a cycle of floating up and down along Z
+	 * Dictates the speed at which the orbiting body completes a cycle of floating up and down along Z; since the floating range is derived from a sin wave over the current run time, this speed also determines the range the floating body will cover
 	 */
 	UPROPERTY(EditAnywhere)
 	float FloatingSpeed = 0.0f;
-	/**
-	 * Dictates the distance the comprises a cycle of the orbiting body floating up and down along Z
-	 */
-	UPROPERTY(EditAnywhere)
-	float FloatingRange = 0.0f;
 	/**
 	 * Dictates whether or not the orbiting body should rotate around its local Z axis
 	 */
