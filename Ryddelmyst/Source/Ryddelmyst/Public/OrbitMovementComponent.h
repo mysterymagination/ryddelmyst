@@ -43,7 +43,7 @@ private:
 	 * todo: init orbit offset based on orbited body size
 	 */
 	UPROPERTY(EditAnywhere)
-	FVector	OrbitOffset = { 75.0f, 75.0f, 0.0f };
+	FVector	OrbitOffset = { 75.0f, 75.0f, 120.0f };
 	/**
 	 * Dictates whether or not the orbiting body should float up and down along Z in addition to orbit motion
 	 */
