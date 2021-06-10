@@ -44,9 +44,9 @@ void UOrbitMovementComponent::TickComponent(float DeltaTime, ELevelTick TickType
 	{
 		return;
 	}
-
+	
 	FVector DesiredMovementThisFrame(0.0f);
-	FRotator SpinRotation = FRotator();//UpdatedComponent->GetComponentRotation();
+	FRotator SpinRotation = UpdatedComponent->GetComponentRotation();
 	///float floatingScalar = 0.0f;
 	// floating orbiting body 
 	if (IsFloating)
@@ -61,12 +61,13 @@ void UOrbitMovementComponent::TickComponent(float DeltaTime, ELevelTick TickType
 	}
 	if (IsSpinning)
 	{
-		/*
+		
 		// TODO: how come world rotation around Z causes a body to spin in place?  I would expect it to rotate around Z crossing through world origin, and therefore assume a sort of orbitting motion of its own.  Perhaps the concept of world vs. local rotation is different than world vs. local position?  Maybe any given rotation essentially has the axes running through the current rotating body's origin?  But then how does our vector rotation work?  That guy, I think is basically given as a vector with a certain magnitude coming out of world origin who gets rotated to have a certain heading and is then picked up and dropped at the spherical Molly origin such that the torch orbits her and not world origin.
-		float DeltaRotation = DeltaTime * 100.0f; //Rotate by 100 degrees per second
+		float DeltaRotation = DeltaTime * 100.0f * SpinningSpeed; //Rotate by 100*N degrees per second
 		SpinRotation.Yaw += DeltaRotation;
-		UE_LOG(LogTemp, Warning, TEXT("OrbitMovementComponent::TickComponent(); rot yaw says %f after adding deltatime of %f times 20 (%f)"), SpinRotation.Yaw, DeltaTime, DeltaTime * 20.0f);
-		*/
+		UE_LOG(LogTemp, Warning, TEXT("OrbitMovementComponent::TickComponent(); rot yaw says %f after adding deltatime of %f times 100 times SpinningSpeed (%f)"), SpinRotation.Yaw, DeltaTime, DeltaRotation);
+		
+	
 	}
 	/*
 	// orbit motion -- define our per frame pos according to attach parent, performing circumnavigation at 20 degrees per second
@@ -85,7 +86,7 @@ void UOrbitMovementComponent::TickComponent(float DeltaTime, ELevelTick TickType
 
 	UE_LOG(LogTemp, Warning, TEXT("OrbitMovementComponent::TickComponent(); desired movement this frame is %s and desired rotation this frame is %s"), *DesiredMovementThisFrame.ToString(), *SpinRotation.ToString());
 	*/
-
+	
 	// todo: I think our sputter stutter situation is caused by the fact that our other translations are relative to the attach parent (orbited body) but I guess SafeMoveUpdatedComponent only moves in world space and they wind up clashing?  Or more to the point, OrbitOffset has a Z component and so every frame we basically warp back to the 120 relative offset and then apply whatever the desiredmovementthisframe Z mod, giving us a teleport back plus varying mod movement in Z per frame.
 	// EDIT: seems there's more to it than just the above -- I removed the Z comp of the orbitoffset and still saw stutter.  Then I commented both orbit motion and spin to focus on floating solely, and saw correct floating but a weird offset way back from and slightly left of Molly for some reason.  Not sure if that's relevant, but definitely weird.
 	// apply non-orbit motion to the orbiting body
