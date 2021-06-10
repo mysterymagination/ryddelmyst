@@ -47,15 +47,12 @@ void UOrbitMovementComponent::TickComponent(float DeltaTime, ELevelTick TickType
 	
 	FVector DesiredMovementThisFrame(0.0f);
 	FRotator SpinRotation = UpdatedComponent->GetComponentRotation();
-	///float floatingScalar = 0.0f;
-	// floating orbiting body 
 	if (IsFloating)
 	{
 		FVector FloatingLocation = FVector(0.0f, 0.0f, 0.0f);
 		float RunningTime = GetWorld()->GetTimeSeconds();
 		float DeltaHeight = (FMath::Sin(RunningTime + DeltaTime) - FMath::Sin(RunningTime));
 		FloatingLocation.Z += DeltaHeight * 150 * FloatingSpeed;
-		///floatingScalar = DeltaHeight * 150 * FloatingSpeed;
 		UE_LOG(LogTemp, Warning, TEXT("OrbitMovementComponent::TickComponent; floating -- runningtime says %f, deltaheight is %f, and floating location is %s"), RunningTime, DeltaHeight, *FloatingLocation.ToString());
 		DesiredMovementThisFrame += FloatingLocation;
 	}
@@ -66,8 +63,6 @@ void UOrbitMovementComponent::TickComponent(float DeltaTime, ELevelTick TickType
 		float DeltaRotation = DeltaTime * 100.0f * SpinningSpeed; //Rotate by 100*N degrees per second
 		SpinRotation.Yaw += DeltaRotation;
 		UE_LOG(LogTemp, Warning, TEXT("OrbitMovementComponent::TickComponent(); rot yaw says %f after adding deltatime of %f times 100 times SpinningSpeed (%f)"), SpinRotation.Yaw, DeltaTime, DeltaRotation);
-		
-	
 	}
 	
 	// orbit motion -- define our per frame pos according to attach parent, performing circumnavigation at 20 degrees per second
@@ -87,16 +82,11 @@ void UOrbitMovementComponent::TickComponent(float DeltaTime, ELevelTick TickType
 
 	UE_LOG(LogTemp, Warning, TEXT("OrbitMovementComponent::TickComponent(); desired movement this frame is %s and desired rotation this frame is %s"), *DesiredMovementThisFrame.ToString(), *SpinRotation.ToString());
 	
-	
-	// todo: I think our sputter stutter situation is caused by the fact that our other translations are relative to the attach parent (orbited body) but I guess SafeMoveUpdatedComponent only moves in world space and they wind up clashing?  Or more to the point, OrbitOffset has a Z component and so every frame we basically warp back to the 120 relative offset and then apply whatever the desiredmovementthisframe Z mod, giving us a teleport back plus varying mod movement in Z per frame.
-	// EDIT: seems there's more to it than just the above -- I removed the Z comp of the orbitoffset and still saw stutter.  Then I commented both orbit motion and spin to focus on floating solely, and saw correct floating but a weird offset way back from and slightly left of Molly for some reason.  Not sure if that's relevant, but definitely weird.
-	// EDIT2: well yeah I saw stutter because in that case we're just jumping back to 0 on Z before applying float translation each frame!  Same problem.
-	// EDIT3: fixed by having our orbit motion and float motion (all our translations) baked into the orbitoffset vector and apply that with a relative setter, then do safemoveupdatedcomponent with 0ed translation vector and our spinrotation.
 	// TODO: how would I apply my translations via safemoveupdatedcomponent, essentially doing them incrementally instead of calculating the final pos and applying all at once with a relative setter?
 	 
 	// apply non-orbit motion to the orbiting body
 	FHitResult Hit;
-	SafeMoveUpdatedComponent(FVector(0.0f), SpinRotation, true, Hit);//DesiredMovementThisFrame, SpinRotation, true, Hit);
+	SafeMoveUpdatedComponent(FVector(0.0f), SpinRotation, true, Hit);
 
 	// If we bumped into something, try to slide along it
 	if (Hit.IsValidBlockingHit())
