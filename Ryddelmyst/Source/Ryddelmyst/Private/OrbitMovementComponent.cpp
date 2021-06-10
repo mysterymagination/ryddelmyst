@@ -21,9 +21,11 @@ void UOrbitMovementComponent::BeginPlay()
 	// attach this orbitmovementcomponent as a transform child of the orbited body so that our transforms applied here will be relative to it
 	if (UpdatedComponent && OrbitedBody)
 	{  
+		/* todo: for some reason attaching to Molly and then proceeding with only safemoveupdatedcomponent via floating results in a weird way back on X and slightly left on Y offset.  Without attaching, we float as expected at whatever world coords the torch is placed.
 		UE_LOG(LogTemp, Warning, TEXT("OrbitMovementComponent::BeginPlay; attaching to orbited body %s at default attach component %p"), *OrbitedBody->GetName(), OrbitedBody->GetDefaultAttachComponent());
 		UpdatedComponent->AttachToComponent(OrbitedBody->GetDefaultAttachComponent(), FAttachmentTransformRules::KeepRelativeTransform);
 		UE_LOG(LogTemp, Warning, TEXT("OrbitMovementComponent::BeginPlay; attached the updatedcomponent to %p"), UpdatedComponent->GetAttachParent());
+		*/
 	}
 }
 
