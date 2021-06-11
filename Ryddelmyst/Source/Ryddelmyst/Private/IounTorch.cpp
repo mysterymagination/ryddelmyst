@@ -67,14 +67,14 @@ void AIounTorch::Tick(float DeltaTime)
 	fMeteorSpawnTimer += DeltaTime;
 	if (fMeteorSpawnTimer >= fMeteorSpawnInterval && iMeteorCount < iMaxMeteors)
 	{
-		/* todo: uncomment when torch orbit motion is fixed
+		// todo: need UWorld::SpawnActor()?
 		auto* pMeteor = NewObject<AMicroMeteor>(this);
 		// need to tell the meteor we just spawned at runtime that its 
 		// OrbitMovementComponent's orbitted body should be this torch
 		pMeteor->getOrbitController()->setOrbitedBody(this);
 		pMeteor->setId(++iMeteorCount);
-		*/
 		fMeteorSpawnTimer = 0.0f;
+		UE_LOG(LogTemp, Warning, TEXT("IounTorch::Tick(); spawning meteor %d"), iMeteorCount);
 	}
 	UE_LOG(LogTemp, Warning, TEXT("IounTorch::Tick(); we're at %s"), *GetActorLocation().ToString());
 }
