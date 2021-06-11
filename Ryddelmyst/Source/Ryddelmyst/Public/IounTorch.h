@@ -35,6 +35,7 @@ private:
 	/**
 	 * Interval in seconds we should wait before spawning a meteor
 	 */
+	UPROPERTY(EditAnywhere)
 	float fMeteorSpawnInterval = 3.0f;
 	/**
 	 * Incrementing timer marking the time since component inception or last meteor spawn
@@ -47,10 +48,11 @@ private:
 	/**
 	 * The max number of meteors we allow to spawn 
 	 */
+	UPROPERTY(EditAnywhere)
 	uint8 iMaxMeteors = 3;
 	/**
  	 * Fire particles emitted by the IounTorch
-	 * TODO: emissive material!  I wanna see glowy bits 
+	 * TODO: emissive material!  Neon bloom!  I wanna see glowy bits 
 	 */  
 	UPROPERTY()
 	class UParticleSystemComponent* TorchParticles;

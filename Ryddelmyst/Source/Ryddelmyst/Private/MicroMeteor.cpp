@@ -48,7 +48,7 @@ void AMicroMeteor::BeginPlay()
 void AMicroMeteor::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
-	
+	UE_LOG(LogTemp, Warning, TEXT("MicroMeteor::Tick(); we're at %s"), *GetActorLocation().ToString());
 	fLifeTimer += DeltaTime;
 	if (fLifeTimer >= fMaxLifeTime)
 	{
