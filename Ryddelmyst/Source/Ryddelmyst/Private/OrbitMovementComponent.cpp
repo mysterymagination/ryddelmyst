@@ -21,15 +21,13 @@ void UOrbitMovementComponent::BeginPlay()
 	// attach this orbitmovementcomponent as a transform child of the orbited body so that our transforms applied here will be relative to it
 	if (UpdatedComponent && OrbitedBody)
 	{  
-		
-		// todo: for some reason attaching to Molly and then proceeding with only safemoveupdatedcomponent via floating results in a weird way back on X and slightly left on Y offset.  Without attaching, we float as expected at whatever world coords the torch is placed
-		// EDIT: so the attach transform rule I was using was kepprelative, which apparently means we aggregate transforms of parent and child for the child's final world coords; you add the world coords in the editor from the molly to the those of the torch to get the final world coords for it in that mode.  Most likely we want keepworld.
-		// EDIT2: apart from the offset business, I'm seeing bizarre twitching of the torch even when the only movement going on is floating... that actually doesn't happen if I have attach::relative going on.
-		// EDIT3: now with attach commented and with attach::world I don't see any twitching.  Weird editor madness?
 		UE_LOG(LogTemp, Warning, TEXT("OrbitMovementComponent::BeginPlay; attaching to orbited body %s at default attach component %p"), *OrbitedBody->GetName(), OrbitedBody->GetDefaultAttachComponent());
-		UpdatedComponent->AttachToComponent(OrbitedBody->GetDefaultAttachComponent(), FAttachmentTransformRules::KeepWorldTransform);//KeepRelativeTransform);
+		UpdatedComponent->AttachToComponent(OrbitedBody->GetDefaultAttachComponent(), FAttachmentTransformRules::KeepWorldTransform);
 		UE_LOG(LogTemp, Warning, TEXT("OrbitMovementComponent::BeginPlay; attached the updatedcomponent to %p"), UpdatedComponent->GetAttachParent());
-		
+	}
+	else
+	{
+		UE_LOG(LogTemp, Error, TEXT("OrbitMovementComponent::BeginPlay; could not attach to an orbited body because we don't know what our orbitting body is yet (%p) and/or we don't know what our orbited body is yet (%p)"), UpdatedComponent, OrbitedBody);
 	}
 }
 
