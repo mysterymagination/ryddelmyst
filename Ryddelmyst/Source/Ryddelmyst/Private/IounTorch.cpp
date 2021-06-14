@@ -46,11 +46,9 @@ AIounTorch::AIounTorch()
 	{
 		TorchParticles->SetTemplate(ParticleAsset.Object);
 	}
-	/* todo: remove when meteor kinks are worked out
 	// Add orbity movement
 	OrbitMotion = CreateDefaultSubobject<UOrbitMovementComponent>(TEXT("OrbitMovementComponent"));
 	OrbitMotion->UpdatedComponent = RootComponent;
-	*/
 }
 
 // Called when the game starts
@@ -69,7 +67,6 @@ void AIounTorch::Tick(float DeltaTime)
 	fMeteorSpawnTimer += DeltaTime;
 	if (fMeteorSpawnTimer >= fMeteorSpawnInterval && iMeteorCount < iMaxMeteors)
 	{
-		// todo: when I spawnactor like this I wind up going through BeginPlay() prior to having a chance to call setOrbitedBody(), and we miss out on attaching to the orbited body.  Need to either allow for late attachment in OrbitMovementComponent::TickComponent(),  figure out how to pass init vars to SpawnActor(), or find a way to create an AActor instance, configure it, and then spawn that instance in to the world after config. 
 		FTransform SpawnTransform;
 		SpawnTransform.SetIdentity();
 		auto* pMeteor = GetWorld()->SpawnActorDeferred<AMicroMeteor>(AMicroMeteor::StaticClass(), SpawnTransform);
