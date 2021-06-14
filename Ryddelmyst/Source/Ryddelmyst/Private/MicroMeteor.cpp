@@ -85,9 +85,10 @@ void AMicroMeteor::Tick(float DeltaTime)
 void AMicroMeteor::MeteoricLaunch()
 {
 	// todo: fire up with fire particle fx
-	// todo: lookup the orbitted body location from orbitmovementcomponent
-	FVector OrbittedBodyLocation(0.0f);
-	// todo: shut down and detach the orbitmovementcomponent
+	// lookup the orbitted body location from orbitmovementcomponent
+	FVector OrbittedBodyLocation(OrbitMotion->getOrbitedBody()->GetActorLocation());
+	// shut down and detach the orbitmovementcomponent
+	OrbitMotion->DestroyComponent();
 	
 	// acquire launch vector via init launch meteor world pos minus launch orbitted body pos and flip launched trigger
 	UE_LOG(LogTemp, Warning, TEXT("TickComponent; init launch world coords of meteor are %s and launch world coords of orbitted body are %s so our delta vec to be used for init launch offset vec is %s, for meteor id %d"), *GetActorLocation().ToString(), *OrbittedBodyLocation.ToString(), *(GetActorLocation() - OrbittedBodyLocation).ToString(), mId);
