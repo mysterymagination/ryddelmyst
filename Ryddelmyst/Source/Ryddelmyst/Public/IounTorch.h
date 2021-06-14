@@ -49,7 +49,7 @@ private:
 	 * The max number of meteors we allow to spawn 
 	 */
 	UPROPERTY(EditAnywhere)
-	uint8 iMaxMeteors = 1;
+	uint8 iMaxMeteors = 3;
 	/**
  	 * Fire particles emitted by the IounTorch
 	 * TODO: emissive material!  Neon bloom!  I wanna see glowy bits 
