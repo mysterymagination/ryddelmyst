@@ -46,6 +46,7 @@ AIounTorch::AIounTorch()
 	{
 		TorchParticles->SetTemplate(ParticleAsset.Object);
 	}
+	
 	// Add orbity movement
 	OrbitMotion = CreateDefaultSubobject<UOrbitMovementComponent>(TEXT("OrbitMovementComponent"));
 	OrbitMotion->UpdatedComponent = RootComponent;

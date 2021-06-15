@@ -19,7 +19,7 @@ AMicroMeteor::AMicroMeteor()
 	SphereComponent->InitSphereRadius(10.0f);
 	SphereComponent->SetCollisionProfileName(TEXT("MicroMeteorPresence"));
 	RootComponent = SphereComponent;
-	// Create and position a mesh component so we can see where our spherical Molly is
+	// Create and position a mesh component so we can see where our meteor is
 	UStaticMeshComponent* SphereVisual = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("MeteorVisualSphere"));
 	SphereVisual->SetupAttachment(RootComponent);
 	static ConstructorHelpers::FObjectFinder<UStaticMesh> SphereVisualAsset(TEXT("/Game/StarterContent/Shapes/Shape_Sphere.Shape_Sphere"));
