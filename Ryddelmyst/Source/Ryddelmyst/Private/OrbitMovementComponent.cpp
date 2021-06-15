@@ -93,6 +93,15 @@ void UOrbitMovementComponent::TickComponent(float DeltaTime, ELevelTick TickType
 	}
 }
 
+void UOrbitMovementComponent::OnComponentDestroyed(bool bDestroyHierarchy)
+{
+	Super::OnComponentDestroyed(bDestroyHierarchy);
+	if (UpdatedComponent)
+	{
+		UpdatedComponent->DetachFromComponent(FDetachmentTransformRules::KeepWorldTransform);
+	}
+}
+
 ///UPrimitiveComponent* UOrbitMovementComponent::getOrbitedBody()
 AActor* UOrbitMovementComponent::getOrbitedBody()
 {
