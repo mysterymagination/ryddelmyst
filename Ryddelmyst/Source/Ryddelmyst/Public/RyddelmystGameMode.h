@@ -13,7 +13,7 @@ class ARyddelmystGameMode : public AGameModeBase
 
 public:
 	ARyddelmystGameMode();
-	void StartPlay() override;
+	virtual void StartPlay() override;
 };
 
 
