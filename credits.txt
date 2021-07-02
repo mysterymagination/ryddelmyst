@@ -1,0 +1,5 @@
+3D Models:
+ 1. Ryddelmyst/Content/Ryddelmyst_Assets/Meshes/quechan
+    1.1 Source: https://opengameart.org/content/quechan
+    1.2 Authors: https://opengameart.org/users/practicing01 and https://opengameart.org/users/watatita-micro-field
+    1.3 License: CC0
