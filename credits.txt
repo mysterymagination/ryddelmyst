@@ -3,3 +3,7 @@
     1.1 Source: https://opengameart.org/content/quechan
     1.2 Authors: https://opengameart.org/users/practicing01 and https://opengameart.org/users/watatita-micro-field
     1.3 License: CC0
+ 2. Ryddelmyst/Content/Ryddelmyst_Assets/Meshes/human_1
+    2.1 Source: https://opengameart.org/content/base-human-models-low-poly-for-blender-25x
+    2.2 Authors: https://opengameart.org/users/freelikegnu, https://opengameart.org/users/pompei2, https://opengameart.org/users/clint-bellanger
+    2.3 License: CC-BY-SA 3.0, GPL 3.0
