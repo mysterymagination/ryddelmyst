@@ -21,24 +21,21 @@ ARyddelmystCharacter::ARyddelmystCharacter()
 	BaseTurnRate = 45.f;
 	BaseLookUpRate = 45.f;
 
-	// Create a CameraComponent	
+	// Create a CameraComponent	for first person perspective
 	FirstPersonCameraComponent = CreateDefaultSubobject<UCameraComponent>(TEXT("FirstPersonCamera"));
 	FirstPersonCameraComponent->SetupAttachment(GetCapsuleComponent());
-	FirstPersonCameraComponent->SetRelativeLocation(FVector(-39.56f, 1.75f, 50.f + BaseEyeHeight)); // Position the camera
+	FirstPersonCameraComponent->SetRelativeLocation(FVector(-39.56f, 1.75f, 50.f + BaseEyeHeight)); // Position the camera slightly above eye level and at about the front of the mesh's face
 	FirstPersonCameraComponent->bUsePawnControlRotation = true;
 
-	// Create a mesh component that will be used when being viewed from a '1st person' view (when controlling this pawn)
-	FirstPersonMesh = CreateDefaultSubobject<USkeletalMeshComponent>(TEXT("FirstPersonMesh"));
-	check(FirstPersonMesh != nullptr);
-	FirstPersonMesh->SetOnlyOwnerSee(true);
-	FirstPersonMesh->SetupAttachment(FirstPersonCameraComponent);
-	FirstPersonMesh->bCastDynamicShadow = false;
-	FirstPersonMesh->CastShadow = false;
-	FirstPersonMesh->SetRelativeRotation(FRotator(1.9f, -19.19f, 5.2f));
-	FirstPersonMesh->SetRelativeLocation(FVector(-0.5f, -4.4f, -155.7f));
-
-	// The owning player doesn't see the regular (third-person) body mesh.
-	GetMesh()->SetOwnerNoSee(true);
+	// Create a CameraComponent	for third person perspective
+	ThirdPersonCameraComponent = CreateDefaultSubobject<UCameraComponent>(TEXT("ThirdPersonCamera"));
+	ThirdPersonCameraComponent->SetupAttachment(GetCapsuleComponent());
+	FVector thirdPersonOffset = FVector(-150.00f, 0.0f, 50.f + BaseEyeHeight);
+	FRotator fortyFiveCCWYaw = FRotator(0.0, -45.0, 0.0);
+	thirdPersonOffset = fortyFiveCCWYaw.RotateVector(thirdPersonOffset);
+	ThirdPersonCameraComponent->SetRelativeLocation(thirdPersonOffset); // Position the camera well above eye level and behind the mesh's head in quadrant 4 of a plane perpendicular to the character's height axis (Z)
+	ThirdPersonCameraComponent->SetRelativeRotation(fortyFiveCCWYaw); // point the camera at our mesh by matching its own relative rotation to the angle we used to rotate its offset vector
+	ThirdPersonCameraComponent->bUsePawnControlRotation = true;
 }
 
 void ARyddelmystCharacter::BeginPlay()
