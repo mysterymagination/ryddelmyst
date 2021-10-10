@@ -16,13 +16,13 @@ class ARyddelmystCharacter : public ACharacter
 {
 	GENERATED_BODY()
 
-	/** Pawn mesh: 1st person view (arms; seen only by self) */
-	UPROPERTY(VisibleDefaultsOnly, Category=Mesh)
-	USkeletalMeshComponent* FirstPersonMesh;
-
 	/** First person camera */
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Camera, meta = (AllowPrivateAccess = "true"))
 	UCameraComponent* FirstPersonCameraComponent;
+
+	/** Third person camera */
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Camera, meta = (AllowPrivateAccess = "true"))
+		UCameraComponent* ThirdPersonCameraComponent;
 
 public:
 	ARyddelmystCharacter();
@@ -65,10 +65,9 @@ protected:
 	// End of APawn interface
 
 public:
-	/** Returns Mesh1P subobject **/
-	USkeletalMeshComponent* GetMesh1P() const { return FirstPersonMesh; }
 	/** Returns FirstPersonCameraComponent subobject **/
 	UCameraComponent* GetFirstPersonCameraComponent() const { return FirstPersonCameraComponent; }
-
+	/** Returns ThirdPersonCameraComponent subobject **/
+	UCameraComponent* GetThirdPersonCameraComponent() const { return ThirdPersonCameraComponent; }
 };
 
