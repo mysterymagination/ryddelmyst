@@ -24,6 +24,9 @@ class ARyddelmystCharacter : public ACharacter
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Camera, meta = (AllowPrivateAccess = "true"))
 		UCameraComponent* ThirdPersonCameraComponent;
 
+private:
+	bool FirstPersonCameraMode = true;
+
 public:
 	ARyddelmystCharacter();
 
@@ -40,6 +43,8 @@ public:
 	float BaseLookUpRate;
 
 protected:
+	/** Handles switching between first person and third person cameras */
+	void CameraToggle();
 
 	/** Handles moving forward/backward */
 	void MoveForward(float Val);
