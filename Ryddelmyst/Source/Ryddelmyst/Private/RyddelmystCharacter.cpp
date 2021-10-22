@@ -26,6 +26,7 @@ ARyddelmystCharacter::ARyddelmystCharacter()
 	FirstPersonCameraComponent->SetupAttachment(GetCapsuleComponent());
 	FirstPersonCameraComponent->SetRelativeLocation(FVector(-39.56f, 1.75f, 50.f + BaseEyeHeight)); // Position the camera slightly above eye level and at about the front of the mesh's face
 	FirstPersonCameraComponent->bUsePawnControlRotation = true;
+	FirstPersonCameraComponent->SetActive(true);
 
 	// Create a CameraComponent	for third person perspective
 	ThirdPersonCameraComponent = CreateDefaultSubobject<UCameraComponent>(TEXT("ThirdPersonCamera"));
@@ -36,6 +37,7 @@ ARyddelmystCharacter::ARyddelmystCharacter()
 	ThirdPersonCameraComponent->SetRelativeLocation(thirdPersonOffset); // Position the camera well above eye level and behind the mesh's head in quadrant 4 of a plane perpendicular to the character's height axis (Z)
 	ThirdPersonCameraComponent->SetRelativeRotation(fortyFiveCCWYaw); // point the camera at our mesh by matching its own relative rotation to the angle we used to rotate its offset vector
 	ThirdPersonCameraComponent->bUsePawnControlRotation = true;
+	ThirdPersonCameraComponent->SetActive(false);
 }
 
 void ARyddelmystCharacter::BeginPlay()
@@ -62,6 +64,9 @@ void ARyddelmystCharacter::SetupPlayerInputComponent(class UInputComponent* Play
 	PlayerInputComponent->BindAction("Jump", IE_Pressed, this, &ACharacter::Jump);
 	PlayerInputComponent->BindAction("Jump", IE_Released, this, &ACharacter::StopJumping);
 
+	// Bind camera toggle events
+	PlayerInputComponent->BindAction("CameraToggle", IE_Released, this, &ARyddelmystCharacter::CameraToggle);
+
 	// Bind movement events
 	PlayerInputComponent->BindAxis("MoveForward", this, &ARyddelmystCharacter::MoveForward);
 	PlayerInputComponent->BindAxis("MoveRight", this, &ARyddelmystCharacter::MoveRight);
@@ -73,6 +78,22 @@ void ARyddelmystCharacter::SetupPlayerInputComponent(class UInputComponent* Play
 	PlayerInputComponent->BindAxis("TurnRate", this, &ARyddelmystCharacter::TurnAtRate);
 	PlayerInputComponent->BindAxis("LookUp", this, &APawn::AddControllerPitchInput);
 	PlayerInputComponent->BindAxis("LookUpRate", this, &ARyddelmystCharacter::LookUpAtRate);
+}
+
+void ARyddelmystCharacter::CameraToggle()
+{
+	if (FirstPersonCameraMode)
+	{
+		FirstPersonCameraComponent->SetActive(false);
+		ThirdPersonCameraComponent->SetActive(true);
+		FirstPersonCameraMode = false;
+	} 
+	else
+	{
+		FirstPersonCameraComponent->SetActive(true);
+		ThirdPersonCameraComponent->SetActive(false);
+		FirstPersonCameraMode = true;
+	}
 }
 
 void ARyddelmystCharacter::MoveForward(float Value)
