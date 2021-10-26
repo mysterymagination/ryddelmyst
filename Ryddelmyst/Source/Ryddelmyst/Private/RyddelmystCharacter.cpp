@@ -52,6 +52,15 @@ void ARyddelmystCharacter::BeginPlay()
 	// Display a debug message for five seconds. 
 // The -1 "Key" value argument prevents the message from being updated or refreshed.
 	GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Red, TEXT("We are riddled with RyddelmystCharacter!"));
+
+	UE_LOG(LogTemp, Warning, TEXT("BeginPlay; first person cam rel rotation is %s and world rotation is %s.  Third person cam rel rotation is %s and world rotation is %s.  Capsule rel rotation is %s and world rotation is %s."),
+		*FirstPersonCameraComponent->GetRelativeRotation().ToString(),
+		*FirstPersonCameraComponent->GetComponentRotation().ToString(),
+		*ThirdPersonCameraComponent->GetRelativeRotation().ToString(),
+		*ThirdPersonCameraComponent->GetComponentRotation().ToString(),
+		*GetCapsuleComponent()->GetRelativeRotation().ToString(),
+		*GetCapsuleComponent()->GetComponentRotation().ToString());
+
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -86,12 +95,22 @@ void ARyddelmystCharacter::CameraToggle()
 {
 	if (FirstPersonCameraMode)
 	{
+		UE_LOG(LogTemp, Warning, TEXT("CameraToggle; going to third person cam, whose rel rotation is %s and world rotation is %s.  Capsule rel rotation is %s and world rotation is %s."),
+			*ThirdPersonCameraComponent->GetRelativeRotation().ToString(),
+			*ThirdPersonCameraComponent->GetComponentRotation().ToString(),
+			*GetCapsuleComponent()->GetRelativeRotation().ToString(),
+			*GetCapsuleComponent()->GetComponentRotation().ToString());
 		FirstPersonCameraComponent->SetActive(false);
 		ThirdPersonCameraComponent->SetActive(true);
 		FirstPersonCameraMode = false;
 	} 
 	else
 	{
+		UE_LOG(LogTemp, Warning, TEXT("CameraToggle; going to first person cam, whose rel rotation is %s and world rotation is %s.  Capsule rel rotation is %s and world rotation is %s."),
+			*FirstPersonCameraComponent->GetRelativeRotation().ToString(),
+			*FirstPersonCameraComponent->GetComponentRotation().ToString(),
+			*GetCapsuleComponent()->GetRelativeRotation().ToString(),
+			*GetCapsuleComponent()->GetComponentRotation().ToString());
 		FirstPersonCameraComponent->SetActive(true);
 		ThirdPersonCameraComponent->SetActive(false);
 		FirstPersonCameraMode = true;
