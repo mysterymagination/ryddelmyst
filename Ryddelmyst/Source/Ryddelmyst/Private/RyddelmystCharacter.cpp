@@ -35,9 +35,8 @@ ARyddelmystCharacter::ARyddelmystCharacter()
 	FRotator cameraOffsetCCWYaw = FRotator(0.0, -45.0, 0.0);
 	thirdPersonOffset = cameraOffsetCCWYaw.RotateVector(thirdPersonOffset);
 	ThirdPersonCameraComponent->SetRelativeLocation(thirdPersonOffset); // Position the camera well above eye level and behind the mesh's head in quadrant 4 of a plane perpendicular to the character's height axis (Z)
-	// todo: seems like the runtime camera view isn't tied to the camera mesh's facing?
-	FRotator cameraLocalCCWYaw = FRotator(0.0, -45.0, 0.0);
-	ThirdPersonCameraComponent->SetRelativeRotation(cameraLocalCCWYaw); // point the camera at our mesh by matching its own relative rotation to the angle we used to rotate its offset vector (plus some more to take our mesh's glory in a little more clearly)
+	FRotator cameraLocalRotation = FRotator(0.0, -45.0, 0.0);
+	ThirdPersonCameraComponent->SetRelativeRotation(cameraLocalRotation); // point the camera at our mesh by matching its own relative rotation to the angle we used to rotate its offset vector 
 	ThirdPersonCameraComponent->bUsePawnControlRotation = true;
 	ThirdPersonCameraComponent->SetActive(false);
 }
