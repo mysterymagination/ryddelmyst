@@ -26,6 +26,14 @@ class ARyddelmystCharacter : public ACharacter
 
 private:
 	bool FirstPersonCameraMode = true;
+	/**
+	 * Tracks the current vector by which the 3rd person camera is offset from the character CapsuleComponent 
+	 */
+	FVector CurrentThirdPersonCameraOffset;
+	/**
+	 * Tracks the current local rotation of the 3rd person camera 
+	 */
+	FRotator CurrentThirdPersonCameraRotation;
 
 public:
 	ARyddelmystCharacter();
@@ -35,12 +43,20 @@ protected:
 
 public:
 	/** Base turn rate, in deg/sec. Other scaling may affect final turn rate. */
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category=Camera)
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category=Camera)
 	float BaseTurnRate;
 
 	/** Base look up/down rate, in deg/sec. Other scaling may affect final rate. */
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category=Camera)
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category=Camera)
 	float BaseLookUpRate;
+
+	/** Base offset for the 3rd person camera from our character CapsuleComponent */
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category=Camera)
+	FVector BaseThirdPersonCameraOffset;
+
+	/** Base local rotation of the 3rd person camera */
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Camera)
+	FRotator BaseThirdPersonCameraRotation;
 
 protected:
 	/** Handles switching between first person and third person cameras */

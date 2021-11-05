@@ -21,6 +21,10 @@ ARyddelmystCharacter::ARyddelmystCharacter()
 	BaseTurnRate = 45.f;
 	BaseLookUpRate = 45.f;
 
+	// init 3rd person cam props
+	BaseThirdPersonCameraOffset = FVector(-300.00f, 0.0f, 350.f + BaseEyeHeight);
+	BaseThirdPersonCameraRotation = FRotator(-45.0, -45.0, 0.0);
+
 	// Create a CameraComponent	for first person perspective
 	FirstPersonCameraComponent = CreateDefaultSubobject<UCameraComponent>(TEXT("FirstPersonCamera"));
 	FirstPersonCameraComponent->SetupAttachment(GetCapsuleComponent());
@@ -31,12 +35,11 @@ ARyddelmystCharacter::ARyddelmystCharacter()
 	// Create a CameraComponent	for third person perspective
 	ThirdPersonCameraComponent = CreateDefaultSubobject<UCameraComponent>(TEXT("ThirdPersonCamera"));
 	ThirdPersonCameraComponent->SetupAttachment(GetCapsuleComponent());
-	FVector thirdPersonOffset = FVector(-200.00f, 0.0f, 50.f + BaseEyeHeight);
 	FRotator cameraOffsetCCWYaw = FRotator(0.0, -45.0, 0.0);
-	thirdPersonOffset = cameraOffsetCCWYaw.RotateVector(thirdPersonOffset);
-	ThirdPersonCameraComponent->SetRelativeLocation(thirdPersonOffset); // Position the camera well above eye level and behind the mesh's head in quadrant 4 of a plane perpendicular to the character's height axis (Z)
-	FRotator cameraLocalRotation = FRotator(0.0, -45.0, 0.0);
-	ThirdPersonCameraComponent->SetRelativeRotation(cameraLocalRotation); // point the camera at our mesh by matching its own relative rotation to the angle we used to rotate its offset vector 
+	BaseThirdPersonCameraOffset = cameraOffsetCCWYaw.RotateVector(BaseThirdPersonCameraOffset);
+	ThirdPersonCameraComponent->SetRelativeLocation(BaseThirdPersonCameraOffset); // Position the camera well above eye level and behind the mesh's head in quadrant 4 of a plane perpendicular to the character's height axis (Z)
+	BaseThirdPersonCameraRotation = FRotator(-45.0, -45.0, 0.0);
+	ThirdPersonCameraComponent->SetRelativeRotation(BaseThirdPersonCameraRotation); // point the camera at our mesh by matching its own relative rotation to the angle we used to rotate its offset vector 
 	ThirdPersonCameraComponent->bUsePawnControlRotation = true;
 	ThirdPersonCameraComponent->SetActive(false);
 }
