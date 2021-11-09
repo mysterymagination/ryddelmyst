@@ -91,6 +91,15 @@ void ARyddelmystCharacter::SetupPlayerInputComponent(class UInputComponent* Play
 	PlayerInputComponent->BindAxis("TurnRate", this, &ARyddelmystCharacter::TurnAtRate);
 	PlayerInputComponent->BindAxis("LookUp", this, &APawn::AddControllerPitchInput);
 	PlayerInputComponent->BindAxis("LookUpRate", this, &ARyddelmystCharacter::LookUpAtRate);
+
+	// free 3rd person camera movement
+	PlayerInputComponent->BindAxis("Translate Cam X", this, &ARyddelmystCharacter::TranslateCamX);
+	PlayerInputComponent->BindAxis("Translate Cam Y", this, &ARyddelmystCharacter::TranslateCamY);
+	PlayerInputComponent->BindAxis("Translate Cam Z", this, &ARyddelmystCharacter::TranslateCamZ);
+	PlayerInputComponent->BindAxis("Rotate Cam X", this, &ARyddelmystCharacter::RotateCamX);
+	PlayerInputComponent->BindAxis("Rotate Cam Y", this, &ARyddelmystCharacter::RotateCamY);
+	PlayerInputComponent->BindAxis("Rotate Cam Z", this, &ARyddelmystCharacter::RotateCamZ);
+	PlayerInputComponent->BindAxis("Orbit Cam", this, &ARyddelmystCharacter::OrbitCam);
 }
 
 void ARyddelmystCharacter::CameraToggle()
