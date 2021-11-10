@@ -79,6 +79,13 @@ protected:
 	 * @param Rate	This is a normalized rate, i.e. 1.0 means 100% of desired turn rate
 	 */
 	void LookUpAtRate(float Rate);
+	void OrbitCam(float Value);
+	void TranslateCamX(float Value);
+	void TranslateCamY(float Value);
+	void TranslateCamZ(float Value);
+	void RotateCamX(float Value);
+	void RotateCamY(float Value);
+	void RotateCamZ(float Value);
 	
 protected:
 	// APawn interface

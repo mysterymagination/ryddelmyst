@@ -23,7 +23,9 @@ ARyddelmystCharacter::ARyddelmystCharacter()
 
 	// init 3rd person cam props
 	BaseThirdPersonCameraOffset = FVector(-300.00f, 0.0f, 350.f + BaseEyeHeight);
+	CurrentThirdPersonCameraOffset = BaseThirdPersonCameraOffset;
 	BaseThirdPersonCameraRotation = FRotator(-45.0, -45.0, 0.0);
+	CurrentThirdPersonCameraRotation = BaseThirdPersonCameraRotation;
 
 	// Create a CameraComponent	for first person perspective
 	FirstPersonCameraComponent = CreateDefaultSubobject<UCameraComponent>(TEXT("FirstPersonCamera"));
@@ -158,3 +160,45 @@ void ARyddelmystCharacter::LookUpAtRate(float Rate)
 	AddControllerPitchInput(Rate * BaseLookUpRate * GetWorld()->GetDeltaSeconds());
 }
 
+void ARyddelmystCharacter::OrbitCam(float Value)
+{
+	FRotator orbiter(0.0F, Value, 0.0F);
+	CurrentThirdPersonCameraOffset = orbiter.RotateVector(CurrentThirdPersonCameraOffset);
+	ThirdPersonCameraComponent->SetRelativeLocation(CurrentThirdPersonCameraOffset);
+}
+
+void ARyddelmystCharacter::TranslateCamX(float Value)
+{
+	CurrentThirdPersonCameraOffset += FVector(Value, 0.0F, 0.0F);
+	ThirdPersonCameraComponent->SetRelativeLocation(CurrentThirdPersonCameraOffset);
+}
+
+void ARyddelmystCharacter::TranslateCamY(float Value)
+{
+	CurrentThirdPersonCameraOffset += FVector(0.0F, Value, 0.0F);
+	ThirdPersonCameraComponent->SetRelativeLocation(CurrentThirdPersonCameraOffset);
+}
+
+void ARyddelmystCharacter::TranslateCamZ(float Value)
+{
+	CurrentThirdPersonCameraOffset += FVector(0.0F, 0.0F, Value);
+	ThirdPersonCameraComponent->SetRelativeLocation(CurrentThirdPersonCameraOffset);
+}
+
+void ARyddelmystCharacter::RotateCamX(float Value)
+{
+	CurrentThirdPersonCameraRotation += FRotator(0.0F, 0.0F, Value);
+	ThirdPersonCameraComponent->SetRelativeRotation(CurrentThirdPersonCameraRotation);
+}
+
+void ARyddelmystCharacter::RotateCamY(float Value)
+{
+	CurrentThirdPersonCameraRotation += FRotator(Value, 0.0F, 0.0F);
+	ThirdPersonCameraComponent->SetRelativeRotation(CurrentThirdPersonCameraRotation);
+}
+
+void ARyddelmystCharacter::RotateCamZ(float Value)
+{
+	CurrentThirdPersonCameraRotation += FRotator(0.0F, Value, 0.0F);
+	ThirdPersonCameraComponent->SetRelativeRotation(CurrentThirdPersonCameraRotation);
+}
