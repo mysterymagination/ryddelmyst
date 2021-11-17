@@ -81,7 +81,6 @@ void AMollyPawn::Tick(float DeltaTime)
 		float CurrentScale = RootComponent->GetComponentScale().X;
 		if (bGrowing)
 		{
-			// todo: migrate fMoveTime to MollyPawnMovementComponent and provide a getter to call here
 			float moveTime = MollyMovementComponent->getMoveTime();
 			if(moveTime > 0 && moveTime <= kSPECIAL_MOVE_THRESHOLD)
 			{
