@@ -4,10 +4,11 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Pawn.h"
+#include "LookitYou.h"
 #include "LookitYouPawn.generated.h"
 
 UCLASS()
-class RYDDELMYST_API ALookitYouPawn : public APawn
+class RYDDELMYST_API ALookitYouPawn : public APawn, ILookitYou
 {
 	GENERATED_BODY()
 
@@ -17,12 +18,15 @@ public:
 	// Called to bind functionality to input
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 
-	//Input functions
+	// Input functions
 	void FlyAbout();
 	void MoveForward(float AxisValue);
 	void MoveRight(float AxisValue);
 	void MoveUp(float AxisValue);
 	void Turn(float AxisValue);
+
+	// ILookitYou impl
+	void EnableCamera(bool enable);
 
 protected:
 	// Called when the game starts or when spawned
@@ -35,6 +39,8 @@ private:
 private:
 	UPROPERTY()
 	class USpringArmComponent* SpringArm;
+	UPROPERTY()
+	class UCameraComponent* Camera
 	/**
 	 * Length of the SpringArm mount we use for the camera to hang it behind our Molly 
 	 */
