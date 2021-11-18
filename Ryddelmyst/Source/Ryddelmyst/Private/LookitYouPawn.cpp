@@ -25,7 +25,7 @@ ALookitYouPawn::ALookitYouPawn()
 	SpringArm->bEnableCameraLag = true;
 	SpringArm->CameraLagSpeed = 3.0f;
 	// Create a camera and attach to our spring arm
-	UCameraComponent* Camera = CreateDefaultSubobject<UCameraComponent>(TEXT("LookitCam"));
+	Camera = CreateDefaultSubobject<UCameraComponent>(TEXT("LookitCam"));
 	Camera->SetupAttachment(SpringArm, USpringArmComponent::SocketName);
 }
 
@@ -41,36 +41,36 @@ void ALookitYouPawn::SetupPlayerInputComponent(UInputComponent* PlayerInputCompo
 {
 	Super::SetupPlayerInputComponent(PlayerInputComponent);
 
-	InputComponent->BindAction("FlyAbout", IE_Released, this, &ALookitYouPawn::ParticleToggle);
+	InputComponent->BindAction("FlyAbout", IE_Released, this, &ALookitYouPawn::FlyAbout);
 
 	// Respond every frame to the values of our two movement axes, "MoveX" and "MoveY".
 	InputComponent->BindAxis("MoveForward", this, &ALookitYouPawn::MoveForward);
 	InputComponent->BindAxis("MoveRight", this, &ALookitYouPawn::MoveRight);
-	InputComponent->BindAxis("MoveUp", this, &ALookitYouPawn::MoveRight);
+	InputComponent->BindAxis("MoveUp", this, &ALookitYouPawn::MoveUp);
 	InputComponent->BindAxis("Turn", this, &ALookitYouPawn::Turn);
 }
 
 void ALookitYouPawn::MoveForward(float AxisValue)
 {
-	if (Value != 0.0f)
+	if (AxisValue != 0.0f)
 	{
-		AddMovementInput(GetActorForwardVector(), Value);
+		AddMovementInput(GetActorForwardVector(), AxisValue);
 	}
 }
 
 void ALookitYouPawn::MoveRight(float AxisValue)
 {
-	if (Value != 0.0f)
+	if (AxisValue != 0.0f)
 	{
-		AddMovementInput(GetActorRightVector(), Value);
+		AddMovementInput(GetActorRightVector(), AxisValue);
 	}
 }
 
 void ALookitYouPawn::MoveUp(float AxisValue)
 {
-	if (Value != 0.0f)
+	if (AxisValue != 0.0f)
 	{
-		AddMovementInput(GetActorUpVector(), Value);
+		AddMovementInput(GetActorUpVector(), AxisValue);
 	}
 }
 
@@ -96,6 +96,11 @@ void ALookitYouPawn::FlyAbout()
 		// todo: tell this LookitYouPawn to attach to ryddelmyst character again
 		bFollowMode = true;
 	}
+}
+
+void ALookitYouPawn::EnableCamera(bool enable)
+{
+	Camera->SetActive(enable);
 }
 
 

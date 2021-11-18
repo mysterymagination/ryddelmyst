@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Character.h"
+#include "LookitYou.h"
 #include "RyddelmystCharacter.generated.h"
 
 class UInputComponent;
@@ -50,16 +51,12 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category=Camera)
 	float BaseLookUpRate;
 
-	/** Base offset for the 3rd person camera from our character CapsuleComponent */
+	/** Handle to our LookitYou impl, the camerafolk */
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category=Camera)
-	FVector BaseThirdPersonCameraOffset;
-
-	/** Base local rotation of the 3rd person camera */
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Camera)
-	FRotator BaseThirdPersonCameraRotation;
+	ILookitYou* LookitYouGo;
 
 protected:
-	/** Handles switching between first person and third person cameras */
+	/** Handles switching between our cam and the LookitYouPawn's "3rd person" cam */
 	void CameraToggle();
 
 	/** Handles moving forward/backward */
@@ -79,13 +76,6 @@ protected:
 	 * @param Rate	This is a normalized rate, i.e. 1.0 means 100% of desired turn rate
 	 */
 	void LookUpAtRate(float Rate);
-	void OrbitCam(float Value);
-	void TranslateCamX(float Value);
-	void TranslateCamY(float Value);
-	void TranslateCamZ(float Value);
-	void RotateCamX(float Value);
-	void RotateCamY(float Value);
-	void RotateCamZ(float Value);
 	
 protected:
 	// APawn interface
@@ -95,7 +85,5 @@ protected:
 public:
 	/** Returns FirstPersonCameraComponent subobject **/
 	UCameraComponent* GetFirstPersonCameraComponent() const { return FirstPersonCameraComponent; }
-	/** Returns ThirdPersonCameraComponent subobject **/
-	UCameraComponent* GetThirdPersonCameraComponent() const { return ThirdPersonCameraComponent; }
 };
 
