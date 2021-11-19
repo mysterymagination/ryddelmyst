@@ -8,7 +8,7 @@
 #include "LookitYouPawn.generated.h"
 
 UCLASS()
-class RYDDELMYST_API ALookitYouPawn : public APawn, ILookitYou
+class RYDDELMYST_API ALookitYouPawn : public APawn, public ILookitYou
 {
 	GENERATED_BODY()
 
@@ -40,7 +40,7 @@ private:
 	UPROPERTY()
 	class USpringArmComponent* SpringArm;
 	UPROPERTY()
-	class UCameraComponent* Camera
+	class UCameraComponent* Camera;
 	/**
 	 * Length of the SpringArm mount we use for the camera to hang it behind our Molly 
 	 */
