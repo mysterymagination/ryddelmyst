@@ -51,7 +51,7 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category=Camera)
 	float BaseLookUpRate;
 
-	/** Handle to our LookitYou impl, the camerafolk */
+	/** Handle to our LookitYou impl, the camerafolk; expected to be set in Editor or BP to e.g. a LookitYouPawn */
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category=Camera)
 	ILookitYou* LookitYouGo;
 
