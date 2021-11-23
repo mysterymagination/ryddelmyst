@@ -21,20 +21,8 @@ class ARyddelmystCharacter : public ACharacter
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Camera, meta = (AllowPrivateAccess = "true"))
 	UCameraComponent* FirstPersonCameraComponent;
 
-	/** Third person camera */
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Camera, meta = (AllowPrivateAccess = "true"))
-		UCameraComponent* ThirdPersonCameraComponent;
-
 private:
 	bool FirstPersonCameraMode = true;
-	/**
-	 * Tracks the current vector by which the 3rd person camera is offset from the character CapsuleComponent 
-	 */
-	FVector CurrentThirdPersonCameraOffset;
-	/**
-	 * Tracks the current local rotation of the 3rd person camera 
-	 */
-	FRotator CurrentThirdPersonCameraRotation;
 
 public:
 	ARyddelmystCharacter();
