@@ -33,8 +33,9 @@ protected:
 	virtual void BeginPlay() override;
 
 private:	
-	//Input variables
-	bool bFollowMode;
+	// State variables
+	bool FollowMode = true;
+	bool CameraActive = false;
 
 private:
 	UPROPERTY()
@@ -46,4 +47,9 @@ private:
 	 */
 	UPROPERTY(EditAnywhere)
 	float FCameraArmLength = 800.0f;
+	/**
+	 * The Pawn that this LookitYouPawn should be following when not in flyabout mode
+	 */
+	UPROPERTY(EditAnywhere)
+	class APawn* FollowPawn;
 };

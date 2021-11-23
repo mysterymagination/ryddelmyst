@@ -84,23 +84,44 @@ void ALookitYouPawn::Turn(float AxisValue)
 
 void ALookitYouPawn::FlyAbout()
 {
-	if (bFollowMode)
+	if (CameraActive)
 	{
-		// todo: detach this LookitYouPawn from the ryddelmyst character
-		// todo: switch player possession from the ryddelmyst character to this LookitYouPawn
-		bFollowMode = false;
+		if (FollowPawn)
+		{
+			if (FollowMode)
+			{
+				// detach this LookitYouPawn from the follow pawn
+				DetachFromActor(FDetachmentTransformRules::KeepWorldTransform);
+				// switch player possession from the follow pawn to this LookitYouPawn
+				GetController()->UnPossess();
+				GetController()->Possess(this);
+				FollowMode = false;
+			}
+			else
+			{
+				// switch player possession from the this LookitYouPawn back to ryddelmyst character
+				GetController()->UnPossess();
+				GetController()->Possess(FollowPawn);
+				// tell this LookitYouPawn to attach to ryddelmyst character again
+				AttachToActor(FollowPawn, FAttachmentTransformRules::KeepWorldTransform);
+				FollowMode = true;
+			}
+		}
+		else
+		{
+			UE_LOG(LogTemp, Error, TEXT("FlyAbout; tried to fly LookitYouPawn, but he doesn't have a FollowPawn set to detach/attach back to."));
+		}
 	}
 	else
 	{
-		// todo: switch player possession from the this LookitYouPawn back to ryddelmyst character
-		// todo: tell this LookitYouPawn to attach to ryddelmyst character again
-		bFollowMode = true;
+		UE_LOG(LogTemp, Error, TEXT("FlyAbout; tried to fly LookitYouPawn, but his camera is not active.  Please toggle camera to LookitYouPawn first so he can see where he's going when he takes flight!"));
 	}
 }
 
 void ALookitYouPawn::EnableCamera(bool enable)
 {
 	Camera->SetActive(enable);
+	CameraActive = enable;
 }
 
 
