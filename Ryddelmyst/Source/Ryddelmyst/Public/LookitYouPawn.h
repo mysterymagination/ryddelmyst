@@ -26,7 +26,7 @@ public:
 	void Turn(float AxisValue);
 
 	// ILookitYou impl
-	void EnableCamera(bool enable);
+	virtual void EnableCamera(bool enable) override;
 
 protected:
 	// Called when the game starts or when spawned

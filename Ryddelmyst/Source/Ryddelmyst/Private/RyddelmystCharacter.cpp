@@ -21,29 +21,12 @@ ARyddelmystCharacter::ARyddelmystCharacter()
 	BaseTurnRate = 45.f;
 	BaseLookUpRate = 45.f;
 
-	// init 3rd person cam props
-	BaseThirdPersonCameraOffset = FVector(-300.00f, 0.0f, 350.f + BaseEyeHeight);
-	CurrentThirdPersonCameraOffset = BaseThirdPersonCameraOffset;
-	BaseThirdPersonCameraRotation = FRotator(-45.0, -45.0, 0.0);
-	CurrentThirdPersonCameraRotation = BaseThirdPersonCameraRotation;
-
 	// Create a CameraComponent	for first person perspective
 	FirstPersonCameraComponent = CreateDefaultSubobject<UCameraComponent>(TEXT("FirstPersonCamera"));
 	FirstPersonCameraComponent->SetupAttachment(GetCapsuleComponent());
 	FirstPersonCameraComponent->SetRelativeLocation(FVector(-39.56f, 1.75f, 50.f + BaseEyeHeight)); // Position the camera slightly above eye level and at about the front of the mesh's face
 	FirstPersonCameraComponent->bUsePawnControlRotation = true;
 	FirstPersonCameraComponent->SetActive(true);
-
-	// Create a CameraComponent	for third person perspective
-	ThirdPersonCameraComponent = CreateDefaultSubobject<UCameraComponent>(TEXT("ThirdPersonCamera"));
-	ThirdPersonCameraComponent->SetupAttachment(GetCapsuleComponent());
-	FRotator cameraOffsetCCWYaw = FRotator(0.0, -45.0, 0.0);
-	BaseThirdPersonCameraOffset = cameraOffsetCCWYaw.RotateVector(BaseThirdPersonCameraOffset);
-	ThirdPersonCameraComponent->SetRelativeLocation(BaseThirdPersonCameraOffset); // Position the camera well above eye level and behind the mesh's head in quadrant 4 of a plane perpendicular to the character's height axis (Z)
-	BaseThirdPersonCameraRotation = FRotator(-45.0, -45.0, 0.0);
-	ThirdPersonCameraComponent->SetRelativeRotation(BaseThirdPersonCameraRotation); // point the camera at our mesh by matching its own relative rotation to the angle we used to rotate its offset vector 
-	ThirdPersonCameraComponent->bUsePawnControlRotation = true;
-	ThirdPersonCameraComponent->SetActive(false);
 }
 
 void ARyddelmystCharacter::BeginPlay()
@@ -56,15 +39,6 @@ void ARyddelmystCharacter::BeginPlay()
 	// Display a debug message for five seconds. 
 // The -1 "Key" value argument prevents the message from being updated or refreshed.
 	GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Red, TEXT("We are riddled with RyddelmystCharacter!"));
-
-	UE_LOG(LogTemp, Warning, TEXT("BeginPlay; first person cam rel rotation is %s and world rotation is %s.  Third person cam rel rotation is %s and world rotation is %s.  Capsule rel rotation is %s and world rotation is %s."),
-		*FirstPersonCameraComponent->GetRelativeRotation().ToString(),
-		*FirstPersonCameraComponent->GetComponentRotation().ToString(),
-		*ThirdPersonCameraComponent->GetRelativeRotation().ToString(),
-		*ThirdPersonCameraComponent->GetComponentRotation().ToString(),
-		*GetCapsuleComponent()->GetRelativeRotation().ToString(),
-		*GetCapsuleComponent()->GetComponentRotation().ToString());
-
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -93,40 +67,24 @@ void ARyddelmystCharacter::SetupPlayerInputComponent(class UInputComponent* Play
 	PlayerInputComponent->BindAxis("TurnRate", this, &ARyddelmystCharacter::TurnAtRate);
 	PlayerInputComponent->BindAxis("LookUp", this, &APawn::AddControllerPitchInput);
 	PlayerInputComponent->BindAxis("LookUpRate", this, &ARyddelmystCharacter::LookUpAtRate);
-
-	// free 3rd person camera movement
-	PlayerInputComponent->BindAxis("Translate Cam X", this, &ARyddelmystCharacter::TranslateCamX);
-	PlayerInputComponent->BindAxis("Translate Cam Y", this, &ARyddelmystCharacter::TranslateCamY);
-	PlayerInputComponent->BindAxis("Translate Cam Z", this, &ARyddelmystCharacter::TranslateCamZ);
-	PlayerInputComponent->BindAxis("Rotate Cam X", this, &ARyddelmystCharacter::RotateCamX);
-	PlayerInputComponent->BindAxis("Rotate Cam Y", this, &ARyddelmystCharacter::RotateCamY);
-	PlayerInputComponent->BindAxis("Rotate Cam Z", this, &ARyddelmystCharacter::RotateCamZ);
-	PlayerInputComponent->BindAxis("Orbit Cam", this, &ARyddelmystCharacter::OrbitCam);
 }
 
 void ARyddelmystCharacter::CameraToggle()
 {
-	if (FirstPersonCameraMode)
+	if (LookitYouGo)
 	{
-		UE_LOG(LogTemp, Warning, TEXT("CameraToggle; going to third person cam, whose rel rotation is %s and world rotation is %s.  Capsule rel rotation is %s and world rotation is %s."),
-			*ThirdPersonCameraComponent->GetRelativeRotation().ToString(),
-			*ThirdPersonCameraComponent->GetComponentRotation().ToString(),
-			*GetCapsuleComponent()->GetRelativeRotation().ToString(),
-			*GetCapsuleComponent()->GetComponentRotation().ToString());
-		FirstPersonCameraComponent->SetActive(false);
-		ThirdPersonCameraComponent->SetActive(true);
-		FirstPersonCameraMode = false;
+		if (FirstPersonCameraMode)
+		{
+			LookitYouGo->EnableCamera(true);
+		}
+		else
+		{
+			LookitYouGo->EnableCamera(false);
+		}
 	} 
 	else
 	{
-		UE_LOG(LogTemp, Warning, TEXT("CameraToggle; going to first person cam, whose rel rotation is %s and world rotation is %s.  Capsule rel rotation is %s and world rotation is %s."),
-			*FirstPersonCameraComponent->GetRelativeRotation().ToString(),
-			*FirstPersonCameraComponent->GetComponentRotation().ToString(),
-			*GetCapsuleComponent()->GetRelativeRotation().ToString(),
-			*GetCapsuleComponent()->GetComponentRotation().ToString());
-		FirstPersonCameraComponent->SetActive(true);
-		ThirdPersonCameraComponent->SetActive(false);
-		FirstPersonCameraMode = true;
+		UE_LOG(LogTemp, Error, TEXT("CameraToggle; tried to toggle cam, but LookitYouGo is null."));
 	}
 }
 
@@ -158,47 +116,4 @@ void ARyddelmystCharacter::LookUpAtRate(float Rate)
 {
 	// calculate delta for this frame from the rate information
 	AddControllerPitchInput(Rate * BaseLookUpRate * GetWorld()->GetDeltaSeconds());
-}
-
-void ARyddelmystCharacter::OrbitCam(float Value)
-{
-	FRotator orbiter(0.0F, Value, 0.0F);
-	CurrentThirdPersonCameraOffset = orbiter.RotateVector(CurrentThirdPersonCameraOffset);
-	ThirdPersonCameraComponent->SetRelativeLocation(CurrentThirdPersonCameraOffset);
-}
-
-void ARyddelmystCharacter::TranslateCamX(float Value)
-{
-	CurrentThirdPersonCameraOffset += FVector(Value, 0.0F, 0.0F);
-	ThirdPersonCameraComponent->SetRelativeLocation(CurrentThirdPersonCameraOffset);
-}
-
-void ARyddelmystCharacter::TranslateCamY(float Value)
-{
-	CurrentThirdPersonCameraOffset += FVector(0.0F, Value, 0.0F);
-	ThirdPersonCameraComponent->SetRelativeLocation(CurrentThirdPersonCameraOffset);
-}
-
-void ARyddelmystCharacter::TranslateCamZ(float Value)
-{
-	CurrentThirdPersonCameraOffset += FVector(0.0F, 0.0F, Value);
-	ThirdPersonCameraComponent->SetRelativeLocation(CurrentThirdPersonCameraOffset);
-}
-
-void ARyddelmystCharacter::RotateCamX(float Value)
-{
-	CurrentThirdPersonCameraRotation += FRotator(0.0F, 0.0F, Value);
-	ThirdPersonCameraComponent->SetRelativeRotation(CurrentThirdPersonCameraRotation);
-}
-
-void ARyddelmystCharacter::RotateCamY(float Value)
-{
-	CurrentThirdPersonCameraRotation += FRotator(Value, 0.0F, 0.0F);
-	ThirdPersonCameraComponent->SetRelativeRotation(CurrentThirdPersonCameraRotation);
-}
-
-void ARyddelmystCharacter::RotateCamZ(float Value)
-{
-	CurrentThirdPersonCameraRotation += FRotator(0.0F, Value, 0.0F);
-	ThirdPersonCameraComponent->SetRelativeRotation(CurrentThirdPersonCameraRotation);
 }
