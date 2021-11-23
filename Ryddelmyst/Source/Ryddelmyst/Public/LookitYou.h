@@ -26,5 +26,5 @@ public:
 	 * Tells the ILookitYou implementation to turn on its camera, typically because the calling entity is deactivating its own camera and wants to switch to an external view 
 	 * @param enable indicates whether the LookitYou camera should be enabled or disabled
 	 */
-	void EnableCamera(bool enable) = 0;
+	virtual void EnableCamera(bool enable) = 0;
 };
