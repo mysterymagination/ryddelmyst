@@ -27,6 +27,7 @@ public:
 
 	// ILookitYou impl
 	virtual void EnableCamera(bool enable) override;
+	virtual void TakeControl() override;
 
 protected:
 	// Called when the game starts or when spawned
