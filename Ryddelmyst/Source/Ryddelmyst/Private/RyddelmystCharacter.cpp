@@ -56,6 +56,9 @@ void ARyddelmystCharacter::SetupPlayerInputComponent(class UInputComponent* Play
 	// Bind camera toggle events
 	PlayerInputComponent->BindAction("CameraToggle", IE_Released, this, &ARyddelmystCharacter::CameraToggle);
 
+	// Bind LookitYou control mode
+	PlayerInputComponent->BindAction("Free Cam Mode", IE_Released, this, &ARyddelmystCharacter::SendControl);
+
 	// Bind movement events
 	PlayerInputComponent->BindAxis("MoveForward", this, &ARyddelmystCharacter::MoveForward);
 	PlayerInputComponent->BindAxis("MoveRight", this, &ARyddelmystCharacter::MoveRight);
@@ -69,17 +72,33 @@ void ARyddelmystCharacter::SetupPlayerInputComponent(class UInputComponent* Play
 	PlayerInputComponent->BindAxis("LookUpRate", this, &ARyddelmystCharacter::LookUpAtRate);
 }
 
+void ARyddelmystCharacter::SendControl()
+{
+	UE_LOG(LogTemp, Warning, TEXT("SendControl; RyddelmystCharacter attempting to send input control over to LookitYouGo with address %p"), LookitYouGo);
+	if (LookitYouGo)
+	{
+		LookitYouGo->TakeControl();
+	}
+}
+
 void ARyddelmystCharacter::CameraToggle()
 {
+	UE_LOG(LogTemp, Warning, TEXT("CameraToggle; RyddelmystCharacter attempting to activate cam of LookitYouGo with address %p"), LookitYouGo);
 	if (LookitYouGo)
 	{
 		if (FirstPersonCameraMode)
 		{
 			LookitYouGo->EnableCamera(true);
+			FirstPersonCameraComponent->SetActive(false);
+			FirstPersonCameraMode = false;
+			GetWorld()->GetFirstPlayerController()->SetViewTarget(LookitYouGo);
 		}
 		else
 		{
+			FirstPersonCameraComponent->SetActive(true);
 			LookitYouGo->EnableCamera(false);
+			FirstPersonCameraMode = true;
+			GetWorld()->GetFirstPlayerController()->SetViewTarget(this);
 		}
 	} 
 	else

@@ -4,7 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Character.h"
-#include "LookitYou.h"
+#include "LookitYouPawn.h"
 #include "RyddelmystCharacter.generated.h"
 
 class UInputComponent;
@@ -41,11 +41,14 @@ public:
 
 	/** Handle to our LookitYou impl, the camerafolk; expected to be set in Editor or BP to e.g. a LookitYouPawn */
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category=Camera)
-	TScriptInterface<ILookitYou> LookitYouGo;
+	class ALookitYouPawn* LookitYouGo;
 
 protected:
 	/** Handles switching between our cam and the LookitYouPawn's "3rd person" cam */
 	void CameraToggle();
+
+	/** Handles switching player input control over to LookitYouGo */
+	void SendControl();
 
 	/** Handles moving forward/backward */
 	void MoveForward(float Val);

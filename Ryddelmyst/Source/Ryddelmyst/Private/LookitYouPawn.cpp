@@ -1,15 +1,8 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
-
 #include "LookitYouPawn.h"
 #include "Camera/CameraComponent.h"
-#include "UObject/ConstructorHelpers.h"
-#include "Particles/ParticleSystemComponent.h"
-#include "Components/SphereComponent.h"
-#include "Camera/CameraComponent.h"
 #include "GameFramework/SpringArmComponent.h"
-#include "IounTorch.h"
-#include "MicroMeteor.h"
 
 // Sets default values
 ALookitYouPawn::ALookitYouPawn()
@@ -26,7 +19,9 @@ ALookitYouPawn::ALookitYouPawn()
 	SpringArm->CameraLagSpeed = 3.0f;
 	// Create a camera and attach to our spring arm
 	Camera = CreateDefaultSubobject<UCameraComponent>(TEXT("LookitCam"));
+	Camera->bUsePawnControlRotation = true;
 	Camera->SetupAttachment(SpringArm, USpringArmComponent::SocketName);
+	Camera->SetActive(false);
 }
 
 // Called when the game starts or when spawned
@@ -39,14 +34,15 @@ void ALookitYouPawn::BeginPlay()
 // Called to bind functionality to input
 void ALookitYouPawn::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 {
+	UE_LOG(LogTemp, Warning, TEXT("SetupPlayerInputComponent; LookitYouPawn receiving input"));
 	Super::SetupPlayerInputComponent(PlayerInputComponent);
 
-	InputComponent->BindAction("FlyAbout", IE_Released, this, &ALookitYouPawn::FlyAbout);
+	InputComponent->BindAction("Free Cam Mode", IE_Released, this, &ALookitYouPawn::FlyAbout);
 
 	// Respond every frame to the values of our two movement axes, "MoveX" and "MoveY".
 	InputComponent->BindAxis("MoveForward", this, &ALookitYouPawn::MoveForward);
 	InputComponent->BindAxis("MoveRight", this, &ALookitYouPawn::MoveRight);
-	InputComponent->BindAxis("MoveUp", this, &ALookitYouPawn::MoveUp);
+	InputComponent->BindAxis("Levitator", this, &ALookitYouPawn::MoveUp);
 	InputComponent->BindAxis("Turn", this, &ALookitYouPawn::Turn);
 }
 
@@ -68,6 +64,7 @@ void ALookitYouPawn::MoveRight(float AxisValue)
 
 void ALookitYouPawn::MoveUp(float AxisValue)
 {
+	UE_LOG(LogTemp, Warning, TEXT("MoveUp; LookitYouPawn receiving up vector movement with value %f"), AxisValue);
 	if (AxisValue != 0.0f)
 	{
 		AddMovementInput(GetActorUpVector(), AxisValue);
@@ -84,26 +81,33 @@ void ALookitYouPawn::Turn(float AxisValue)
 
 void ALookitYouPawn::FlyAbout()
 {
+	UE_LOG(LogTemp, Warning, TEXT("FlyAbout; LookitYouPawn should be in free fly mode"));
 	if (CameraActive)
 	{
 		if (FollowPawn)
 		{
 			if (FollowMode)
 			{
+				UE_LOG(LogTemp, Warning, TEXT("FlyAbout; while attempting to take control, we find GetController returns %p"), GetController());
+				/*
 				// detach this LookitYouPawn from the follow pawn
 				DetachFromActor(FDetachmentTransformRules::KeepWorldTransform);
 				// switch player possession from the follow pawn to this LookitYouPawn
 				GetController()->UnPossess();
 				GetController()->Possess(this);
+				*/
 				FollowMode = false;
 			}
 			else
 			{
 				// switch player possession from the this LookitYouPawn back to ryddelmyst character
+				UE_LOG(LogTemp, Warning, TEXT("FlyAbout; while attempting to give up control, we find GetController returns %p"), GetController());
+				/*
 				GetController()->UnPossess();
 				GetController()->Possess(FollowPawn);
 				// tell this LookitYouPawn to attach to ryddelmyst character again
 				AttachToActor(FollowPawn, FAttachmentTransformRules::KeepWorldTransform);
+				*/
 				FollowMode = true;
 			}
 		}
@@ -120,8 +124,15 @@ void ALookitYouPawn::FlyAbout()
 
 void ALookitYouPawn::EnableCamera(bool enable)
 {
+	UE_LOG(LogTemp, Warning, TEXT("EnableCamera; LookitYouPawn camera %s"), enable ? TEXT("activating") : TEXT("deactivating"));
 	Camera->SetActive(enable);
 	CameraActive = enable;
+}
+
+void ALookitYouPawn::TakeControl()
+{
+	UE_LOG(LogTemp, Warning, TEXT("TakeControl; LookitYouPawn hopping into pilot's chair!"));
+	FlyAbout();
 }
 
 

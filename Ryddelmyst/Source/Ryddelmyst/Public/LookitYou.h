@@ -14,7 +14,7 @@ class ULookitYou : public UInterface
 };
 
 /**
- * 
+ * Interface providing methods to enable an external camera and request player input control
  */
 class RYDDELMYST_API ILookitYou
 {
@@ -27,4 +27,8 @@ public:
 	 * @param enable indicates whether the LookitYou camera should be enabled or disabled
 	 */
 	virtual void EnableCamera(bool enable) = 0;
+	/**
+	 * Tells our LookitYou that we would like it to process player input if possible 
+	 */
+	virtual void TakeControl() = 0;
 };
