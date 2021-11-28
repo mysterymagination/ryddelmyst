@@ -22,13 +22,16 @@ ALookitYouPawn::ALookitYouPawn()
 	Camera->bUsePawnControlRotation = true;
 	Camera->SetupAttachment(SpringArm, USpringArmComponent::SocketName);
 	Camera->SetActive(false);
+	
 }
 
 // Called when the game starts or when spawned
 void ALookitYouPawn::BeginPlay()
 {
 	Super::BeginPlay();
+	
 	SpringArm->TargetArmLength = FCameraArmLength;
+	
 }
 
 // Called to bind functionality to input
@@ -125,7 +128,9 @@ void ALookitYouPawn::FlyAbout()
 void ALookitYouPawn::EnableCamera(bool enable)
 {
 	UE_LOG(LogTemp, Warning, TEXT("EnableCamera; LookitYouPawn camera %s"), enable ? TEXT("activating") : TEXT("deactivating"));
+
 	Camera->SetActive(enable);
+	
 	CameraActive = enable;
 }
 
