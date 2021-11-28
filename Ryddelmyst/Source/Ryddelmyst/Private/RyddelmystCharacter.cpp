@@ -88,17 +88,17 @@ void ARyddelmystCharacter::CameraToggle()
 	{
 		if (FirstPersonCameraMode)
 		{
-			LookitYouGo->EnableCamera(true);
 			FirstPersonCameraComponent->SetActive(false);
+			LookitYouGo->EnableCamera(true);
 			FirstPersonCameraMode = false;
-			GetWorld()->GetFirstPlayerController()->SetViewTarget(LookitYouGo);
+			GetWorld()->GetFirstPlayerController()->SetViewTargetWithBlend(LookitYouGo, 0.0F, EViewTargetBlendFunction::VTBlend_Linear);
 		}
 		else
 		{
-			FirstPersonCameraComponent->SetActive(true);
 			LookitYouGo->EnableCamera(false);
+			FirstPersonCameraComponent->SetActive(true);
 			FirstPersonCameraMode = true;
-			GetWorld()->GetFirstPlayerController()->SetViewTarget(this);
+			GetWorld()->GetFirstPlayerController()->SetViewTargetWithBlend(this, 0.0F, EViewTargetBlendFunction::VTBlend_Linear);
 		}
 	} 
 	else
