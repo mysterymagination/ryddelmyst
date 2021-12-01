@@ -87,30 +87,32 @@ void ALookitYouPawn::FlyAbout()
 	UE_LOG(LogTemp, Warning, TEXT("FlyAbout; LookitYouPawn should be in free fly mode"));
 	if (CameraActive)
 	{
-		if (FollowPawn)
+		UE_LOG(LogTemp, Warning, TEXT("FlyAbout; parent actor says %p"), GetParentActor());
+		UE_LOG(LogTemp, Warning, TEXT("FlyAbout; owner actor says %p"), this->GetOwner())
+		if (GetParentActor()) //FollowPawn)
 		{
 			if (FollowMode)
 			{
 				UE_LOG(LogTemp, Warning, TEXT("FlyAbout; while attempting to take control, we find GetController returns %p"), GetController());
-				/*
 				// detach this LookitYouPawn from the follow pawn
 				DetachFromActor(FDetachmentTransformRules::KeepWorldTransform);
+				UE_LOG(LogTemp, Warning, TEXT("FlyAbout; after detach, parent actor says %p"), GetParentActor())
+					UE_LOG(LogTemp, Warning, TEXT("FlyAbout; after detach, owner actor says %p"), GetOwner())
 				// switch player possession from the follow pawn to this LookitYouPawn
 				GetController()->UnPossess();
 				GetController()->Possess(this);
-				*/
 				FollowMode = false;
 			}
 			else
 			{
 				// switch player possession from the this LookitYouPawn back to ryddelmyst character
 				UE_LOG(LogTemp, Warning, TEXT("FlyAbout; while attempting to give up control, we find GetController returns %p"), GetController());
-				/*
 				GetController()->UnPossess();
-				GetController()->Possess(FollowPawn);
+				GetController()->Possess(dynamic_cast<APawn*>(GetParentActor()));//FollowPawn);
 				// tell this LookitYouPawn to attach to ryddelmyst character again
-				AttachToActor(FollowPawn, FAttachmentTransformRules::KeepWorldTransform);
-				*/
+				UE_LOG(LogTemp, Warning, TEXT("FlyAbout; attempting to reattach to parent actor %p"), GetParentActor())
+					UE_LOG(LogTemp, Warning, TEXT("FlyAbout; attempting to reattach to owner actor %p"), GetOwner())
+				AttachToActor(GetParentActor(), FAttachmentTransformRules::KeepWorldTransform);
 				FollowMode = true;
 			}
 		}
