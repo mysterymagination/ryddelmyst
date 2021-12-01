@@ -39,6 +39,15 @@ void ARyddelmystCharacter::BeginPlay()
 	// Display a debug message for five seconds. 
 // The -1 "Key" value argument prevents the message from being updated or refreshed.
 	GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Red, TEXT("We are riddled with RyddelmystCharacter!"));
+
+	FActorSpawnParameters SpawnParams;
+	LookitYouGo = GetWorld()->SpawnActor<ALookitYouPawn>(ALookitYouPawn::StaticClass(), SpawnParams);
+	LookitYouGo->AttachToActor(this, FAttachmentTransformRules::KeepRelativeTransform);
+	LookitYouGo->SetActorRelativeLocation(FVector(0.0F, 100.0F, 0.0F));
+	for (auto child : Children)
+	{
+		UE_LOG(LogTemp, Warning, TEXT("BeginPlay; child says %s"), *child->GetName());
+	}
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -84,6 +93,10 @@ void ARyddelmystCharacter::SendControl()
 void ARyddelmystCharacter::CameraToggle()
 {
 	UE_LOG(LogTemp, Warning, TEXT("CameraToggle; RyddelmystCharacter attempting to activate cam of LookitYouGo with address %p"), LookitYouGo);
+	for (auto child : Children)
+	{
+		UE_LOG(LogTemp, Warning, TEXT("CameraToggle; child says %s"), *child->GetName());
+	}
 	if (LookitYouGo)
 	{
 		if (FirstPersonCameraMode)
