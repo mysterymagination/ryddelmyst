@@ -88,8 +88,8 @@ void ALookitYouPawn::FlyAbout()
 	if (CameraActive)
 	{
 		UE_LOG(LogTemp, Warning, TEXT("FlyAbout; parent actor says %p"), GetParentActor());
-		UE_LOG(LogTemp, Warning, TEXT("FlyAbout; owner actor says %p"), this->GetOwner())
-		if (GetParentActor()) //FollowPawn)
+		UE_LOG(LogTemp, Warning, TEXT("FlyAbout; owner actor says %p"), this->GetOwner());
+		if (FollowPawn)
 		{
 			if (FollowMode)
 			{
@@ -100,6 +100,7 @@ void ALookitYouPawn::FlyAbout()
 					UE_LOG(LogTemp, Warning, TEXT("FlyAbout; after detach, owner actor says %p"), GetOwner())
 				// switch player possession from the follow pawn to this LookitYouPawn
 				GetController()->UnPossess();
+				// todo: this line is causing the engine to crash over access violation?
 				GetController()->Possess(this);
 				FollowMode = false;
 			}
@@ -108,11 +109,12 @@ void ALookitYouPawn::FlyAbout()
 				// switch player possession from the this LookitYouPawn back to ryddelmyst character
 				UE_LOG(LogTemp, Warning, TEXT("FlyAbout; while attempting to give up control, we find GetController returns %p"), GetController());
 				GetController()->UnPossess();
-				GetController()->Possess(dynamic_cast<APawn*>(GetParentActor()));//FollowPawn);
+				GetController()->Possess(FollowPawn);
 				// tell this LookitYouPawn to attach to ryddelmyst character again
-				UE_LOG(LogTemp, Warning, TEXT("FlyAbout; attempting to reattach to parent actor %p"), GetParentActor())
-					UE_LOG(LogTemp, Warning, TEXT("FlyAbout; attempting to reattach to owner actor %p"), GetOwner())
-				AttachToActor(GetParentActor(), FAttachmentTransformRules::KeepWorldTransform);
+				UE_LOG(LogTemp, Warning, TEXT("FlyAbout; attempting to reattach to follow pawn %p"), FollowPawn);
+				UE_LOG(LogTemp, Warning, TEXT("FlyAbout; our parent actor is %p"), GetParentActor());
+				UE_LOG(LogTemp, Warning, TEXT("FlyAbout; our owner actor %p"), GetOwner());
+				AttachToActor(FollowPawn, FAttachmentTransformRules::KeepWorldTransform);
 				FollowMode = true;
 			}
 		}
@@ -140,6 +142,16 @@ void ALookitYouPawn::TakeControl()
 {
 	UE_LOG(LogTemp, Warning, TEXT("TakeControl; LookitYouPawn hopping into pilot's chair!"));
 	FlyAbout();
+}
+
+void ALookitYouPawn::SetFollowPawn(APawn* followPawn)
+{
+	FollowPawn = followPawn;
+}
+
+APawn* ALookitYouPawn::GetFollowPawn()
+{
+	return FollowPawn;
 }
 
 

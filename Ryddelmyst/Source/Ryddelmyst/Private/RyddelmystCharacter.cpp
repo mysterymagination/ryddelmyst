@@ -43,11 +43,13 @@ void ARyddelmystCharacter::BeginPlay()
 	FActorSpawnParameters SpawnParams;
 	LookitYouGo = GetWorld()->SpawnActor<ALookitYouPawn>(ALookitYouPawn::StaticClass(), SpawnParams);
 	LookitYouGo->AttachToActor(this, FAttachmentTransformRules::KeepRelativeTransform);
+	UE_LOG(LogTemp, Warning, TEXT("BeginPlay; we have %d children"), Children.Num());
 	LookitYouGo->SetActorRelativeLocation(FVector(0.0F, 100.0F, 0.0F));
 	for (auto child : Children)
 	{
 		UE_LOG(LogTemp, Warning, TEXT("BeginPlay; child says %s"), *child->GetName());
 	}
+	LookitYouGo->SetFollowPawn(this);
 }
 
 //////////////////////////////////////////////////////////////////////////
