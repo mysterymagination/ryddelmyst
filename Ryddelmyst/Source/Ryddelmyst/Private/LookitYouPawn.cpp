@@ -31,7 +31,10 @@ void ALookitYouPawn::BeginPlay()
 	Super::BeginPlay();
 	
 	SpringArm->TargetArmLength = FCameraArmLength;
-	
+	if (FollowPawn)
+	{
+		AttachToActor(FollowPawn, FAttachmentTransformRules::KeepRelativeTransform);
+	}
 }
 
 // Called to bind functionality to input
@@ -132,9 +135,7 @@ void ALookitYouPawn::FlyAbout()
 void ALookitYouPawn::EnableCamera(bool enable)
 {
 	UE_LOG(LogTemp, Warning, TEXT("EnableCamera; LookitYouPawn camera %s"), enable ? TEXT("activating") : TEXT("deactivating"));
-
 	Camera->SetActive(enable);
-	
 	CameraActive = enable;
 }
 
