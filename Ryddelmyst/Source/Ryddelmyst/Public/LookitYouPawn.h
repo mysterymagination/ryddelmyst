@@ -54,13 +54,7 @@ private:
 	float FCameraArmLength = 400.0f;
 	/**
 	 * The Pawn that this LookitYouPawn should be following when not in flyabout mode
-	 */
-	/* todo: maybe experiment again with the editor association between LookitYouPawn and RyddelmystCharacter, but have EnableCamera take a UCameraComponent* and the impl simply reposition and existing camera 
+	 */ 
 	UPROPERTY(EditAnywhere)
 	class APawn* FollowPawn;
-	*/
-	/**
-	 * The Pawn that this LookitYouPawn should be following when not in flyabout mode
-	 */
-	 APawn* FollowPawn;
 };

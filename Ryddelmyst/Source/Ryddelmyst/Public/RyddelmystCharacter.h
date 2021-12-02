@@ -23,8 +23,6 @@ class ARyddelmystCharacter : public ACharacter
 
 private:
 	bool FirstPersonCameraMode = true;
-	/** Handle to our LookitYou impl, the camerafolk; expected to be set in Editor or BP to e.g. a LookitYouPawn */
-	ALookitYouPawn* LookitYouGo;
 
 public:
 	ARyddelmystCharacter();
@@ -41,10 +39,9 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category=Camera)
 	float BaseLookUpRate;
 
-	/** Handle to our LookitYou impl, the camerafolk; expected to be set in Editor or BP to e.g. a LookitYouPawn 
+	/** Handle to our LookitYou impl, the camerafolk; expected to be set in Editor or BP to e.g. a LookitYouPawn  */
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category=Camera)
 	class ALookitYouPawn* LookitYouGo;
-	*/
 
 protected:
 	/** Handles switching between our cam and the LookitYouPawn's "3rd person" cam */
