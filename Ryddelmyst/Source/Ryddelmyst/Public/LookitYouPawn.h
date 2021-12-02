@@ -25,6 +25,10 @@ public:
 	void MoveUp(float AxisValue);
 	void Turn(float AxisValue);
 
+	// field accessors
+	void SetFollowPawn(APawn* followPawn);
+	APawn* GetFollowPawn();
+
 	// ILookitYou impl
 	virtual void EnableCamera(bool enable) override;
 	virtual void TakeControl() override;
@@ -47,7 +51,7 @@ private:
 	 * Length of the SpringArm mount we use for the camera to hang it behind our Molly 
 	 */
 	UPROPERTY(EditAnywhere)
-	float FCameraArmLength = 800.0f;
+	float FCameraArmLength = 400.0f;
 	/**
 	 * The Pawn that this LookitYouPawn should be following when not in flyabout mode
 	 */
@@ -55,4 +59,8 @@ private:
 	UPROPERTY(EditAnywhere)
 	class APawn* FollowPawn;
 	*/
+	/**
+	 * The Pawn that this LookitYouPawn should be following when not in flyabout mode
+	 */
+	 APawn* FollowPawn;
 };
