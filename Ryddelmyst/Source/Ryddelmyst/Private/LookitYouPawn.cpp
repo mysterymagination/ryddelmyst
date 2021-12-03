@@ -22,7 +22,6 @@ ALookitYouPawn::ALookitYouPawn()
 	Camera->bUsePawnControlRotation = true;
 	Camera->SetupAttachment(SpringArm, USpringArmComponent::SocketName);
 	Camera->SetActive(false);
-	
 }
 
 // Called when the game starts or when spawned
@@ -35,6 +34,11 @@ void ALookitYouPawn::BeginPlay()
 	{
 		AttachToActor(FollowPawn, FAttachmentTransformRules::KeepRelativeTransform);
 	}
+}
+
+void ALookitYouPawn::Tick(float DeltaSeconds)
+{
+
 }
 
 // Called to bind functionality to input
@@ -70,7 +74,6 @@ void ALookitYouPawn::MoveRight(float AxisValue)
 
 void ALookitYouPawn::MoveUp(float AxisValue)
 {
-	UE_LOG(LogTemp, Warning, TEXT("MoveUp; LookitYouPawn receiving up vector movement with value %f"), AxisValue);
 	if (AxisValue != 0.0f)
 	{
 		AddMovementInput(GetActorUpVector(), AxisValue);
@@ -99,20 +102,20 @@ void ALookitYouPawn::FlyAbout()
 				UE_LOG(LogTemp, Warning, TEXT("FlyAbout; while attempting to take control, we find GetController returns %p"), GetController());
 				// detach this LookitYouPawn from the follow pawn
 				DetachFromActor(FDetachmentTransformRules::KeepWorldTransform);
-				UE_LOG(LogTemp, Warning, TEXT("FlyAbout; after detach, parent actor says %p"), GetParentActor())
-					UE_LOG(LogTemp, Warning, TEXT("FlyAbout; after detach, owner actor says %p"), GetOwner())
 				// switch player possession from the follow pawn to this LookitYouPawn
-				GetController()->UnPossess();
-				// todo: this line is causing the engine to crash over access violation?
-				GetController()->Possess(this);
+				AController* controller = GetController();
+				// unpossess seems to invalidate the result of GetController(), so we have to store the pointer
+				controller->UnPossess();
+				controller->Possess(this);
 				FollowMode = false;
 			}
 			else
 			{
 				// switch player possession from the this LookitYouPawn back to ryddelmyst character
 				UE_LOG(LogTemp, Warning, TEXT("FlyAbout; while attempting to give up control, we find GetController returns %p"), GetController());
-				GetController()->UnPossess();
-				GetController()->Possess(FollowPawn);
+				AController* controller = GetController();
+				controller->UnPossess();
+				controller->Possess(FollowPawn);
 				// tell this LookitYouPawn to attach to ryddelmyst character again
 				UE_LOG(LogTemp, Warning, TEXT("FlyAbout; attempting to reattach to follow pawn %p"), FollowPawn);
 				UE_LOG(LogTemp, Warning, TEXT("FlyAbout; our parent actor is %p"), GetParentActor());

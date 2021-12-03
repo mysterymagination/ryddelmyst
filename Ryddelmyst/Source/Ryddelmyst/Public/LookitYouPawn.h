@@ -3,12 +3,12 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "GameFramework/Pawn.h"
+#include "GameFramework/DefaultPawn.h"
 #include "LookitYou.h"
 #include "LookitYouPawn.generated.h"
 
 UCLASS()
-class RYDDELMYST_API ALookitYouPawn : public APawn, public ILookitYou
+class RYDDELMYST_API ALookitYouPawn : public ADefaultPawn, public ILookitYou
 {
 	GENERATED_BODY()
 
@@ -36,6 +36,7 @@ public:
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
+	virtual void Tick(float DeltaSeconds) override;
 
 private:	
 	// State variables
