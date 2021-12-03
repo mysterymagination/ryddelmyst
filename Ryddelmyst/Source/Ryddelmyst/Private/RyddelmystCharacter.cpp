@@ -6,6 +6,7 @@
 #include "Components/InputComponent.h"
 #include "GameFramework/InputSettings.h"
 #include "Kismet/GameplayStatics.h"
+#include "GameFramework/CharacterMovementComponent.h"
 
 DEFINE_LOG_CATEGORY_STATIC(LogFPChar, Warning, All);
 
@@ -77,6 +78,7 @@ void ARyddelmystCharacter::SendControl()
 	UE_LOG(LogTemp, Warning, TEXT("SendControl; RyddelmystCharacter attempting to send input control over to LookitYouGo with address %p"), LookitYouGo);
 	if (LookitYouGo)
 	{
+		GetCharacterMovement()->SetMovementMode(EMovementMode::MOVE_None);
 		LookitYouGo->TakeControl();
 	}
 }
