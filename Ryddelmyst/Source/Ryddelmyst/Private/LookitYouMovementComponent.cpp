@@ -16,6 +16,15 @@ void ULookitYouMovementComponent::TickComponent(float DeltaTime, enum ELevelTick
 	FVector InputVector = ConsumeInputVector().GetClampedToMaxSize(1.0f);
 	// init velocity of 400 units/second
 	FVector DesiredMovementThisFrame = InputVector * DeltaTime * 400.0f;
+	if (OrbitScale)
+	{
+		UE_LOG(LogTemp, Warning, TEXT("LookitYouMovementComponent::TickComponent; orbitting by %f degrees %s"), DeltaTime * 20.0f, OrbitScale > 0 ? TEXT("CW") : TEXT("CCW"));
+		FRotator OrbitRotation(0.f, OrbitScale * DeltaTime * 20.0f, 0.f);
+		FVector PreOrbitLocation = UpdatedComponent->GetRelativeLocation();
+		FVector OrbittedLocation = OrbitRotation.RotateVector(PreOrbitLocation);
+		// apply orbit endpoint translations to other translations
+		DesiredMovementThisFrame += OrbittedLocation - PreOrbitLocation;
+	}
 	if (!DesiredMovementThisFrame.IsNearlyZero())
 	{
 		UE_LOG(LogTemp, Warning, TEXT("LookitYouMovementComponent::TickComponent; after deltaT of %f, unclamped non-zero desired movement vector is %s"), DeltaTime, *DesiredMovementThisFrame.ToString());
@@ -60,16 +69,6 @@ void ULookitYouMovementComponent::TickComponent(float DeltaTime, enum ELevelTick
 		}
 		UE_LOG(LogTemp, Warning, TEXT("LookitYouMovementComponent::TickComponent; after deltaT of %f, clamped desired movement vector is %s"), DeltaTime, *DesiredMovementThisFrame.ToString());
 
-		if (OrbitScale)
-		{
-			UE_LOG(LogTemp, Warning, TEXT("LookitYouMovementComponent::TickComponent; orbitting by %f %s"), DeltaTime, OrbitScale, (OrbitScale > 0) ? TEXT("CW") : TEXT("CCW"));
-			FRotator OrbitRotation(0.f, DeltaTime * 20.0f, 0.f);
-			FVector PreOrbitLocation = UpdatedComponent->GetRelativeLocation();
-			FVector OrbittedLocation = OrbitRotation->RotateVector(PreOrbitLocation);
-			// apply orbit endpoint translations to other translations
-			DesiredMovementThisFrame += OrbittedLocation - PreOrbitLocation;
-		}
-
 		FHitResult Hit;
 		SafeMoveUpdatedComponent(DesiredMovementThisFrame, UpdatedComponent->GetComponentRotation(), true, Hit);
 
@@ -81,7 +80,8 @@ void ULookitYouMovementComponent::TickComponent(float DeltaTime, enum ELevelTick
 	}
 }
 
-void LookitYouComponent::Orbit(float AxisValue)
+void ULookitYouMovementComponent::Orbit(float AxisValue)
 {
+	UE_LOG(LogTemp, Warning, TEXT("LookitYouMovementComponent::Orbit; axisvalue is %f"), AxisValue);
 	OrbitScale = AxisValue;
 }
