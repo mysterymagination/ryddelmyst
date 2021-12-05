@@ -86,10 +86,7 @@ void ALookitYouPawn::MoveUp(float AxisValue)
 
 void ALookitYouPawn::Orbit(float AxisValue)
 {
-	if (AxisValue != 0.0f)
-	{
-		Movement->Orbit(AxisValue);
-	}
+	Movement->Orbit(AxisValue);
 }
 
 void ALookitYouPawn::FlyAbout()
