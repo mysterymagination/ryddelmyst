@@ -3,12 +3,13 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "GameFramework/DefaultPawn.h"
+#include "GameFramework/Pawn.h"
 #include "LookitYou.h"
+#include "LookitYouMovementComponent.h"
 #include "LookitYouPawn.generated.h"
 
 UCLASS()
-class RYDDELMYST_API ALookitYouPawn : public ADefaultPawn, public ILookitYou
+class RYDDELMYST_API ALookitYouPawn : public APawn, public ILookitYou
 {
 	GENERATED_BODY()
 
@@ -23,7 +24,7 @@ public:
 	void MoveForward(float AxisValue);
 	void MoveRight(float AxisValue);
 	void MoveUp(float AxisValue);
-	void Turn(float AxisValue);
+	void Orbit(float AxisValue);
 
 	// field accessors
 	void SetFollowPawn(APawn* followPawn);
@@ -48,6 +49,8 @@ private:
 	class USpringArmComponent* SpringArm;
 	UPROPERTY()
 	class UCameraComponent* Camera;
+	UPROPERTY()
+	class ULookitYouMovementComponent* Movement;
 	/**
 	 * Length of the SpringArm mount we use for the camera to hang it behind our Molly 
 	 */
