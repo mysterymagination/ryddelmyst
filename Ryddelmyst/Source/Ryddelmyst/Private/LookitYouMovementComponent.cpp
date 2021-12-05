@@ -21,8 +21,7 @@ void ULookitYouMovementComponent::TickComponent(float DeltaTime, enum ELevelTick
 		UE_LOG(LogTemp, Warning, TEXT("LookitYouMovementComponent::TickComponent; after deltaT of %f, unclamped non-zero desired movement vector is %s"), DeltaTime, *DesiredMovementThisFrame.ToString());
 
 		// check to see if we're trying to move out of bounds and clamp
-		FVector PossibleUpdatedLocation = UpdatedComponent->GetComponentLocation() + DesiredMovementThisFrame;
-		FVector PossibleWandrance = PossibleUpdatedLocation - dynamic_cast<LookitYouPawn*>(GetOwner())->GetFollowPawn()->GetActorLocation();
+		FVector PossibleWandrance = UpdatedComponent->GetRelativeLocation() + DesiredMovementThisFrame;
 		if (abs(PossibleWandrance.X) >= MaxAllowedWandrance)
 		{
 			float OverWandrance = abs(PossibleWandrance.X) - MaxAllowedWandrance;
