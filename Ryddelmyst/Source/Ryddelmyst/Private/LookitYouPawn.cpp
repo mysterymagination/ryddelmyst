@@ -22,6 +22,8 @@ ALookitYouPawn::ALookitYouPawn()
 	Camera->bUsePawnControlRotation = true;
 	Camera->SetupAttachment(SpringArm, USpringArmComponent::SocketName);
 	Camera->SetActive(false);
+	Movement = CreateDefaultSubobject<ULookitYouMovementComponent>(TEXT("LookitYouMove"));
+	Movement->SetUpdatedComponent(RootComponent);
 }
 
 // Called when the game starts or when spawned
@@ -53,7 +55,9 @@ void ALookitYouPawn::SetupPlayerInputComponent(UInputComponent* PlayerInputCompo
 	InputComponent->BindAxis("MoveForward", this, &ALookitYouPawn::MoveForward);
 	InputComponent->BindAxis("MoveRight", this, &ALookitYouPawn::MoveRight);
 	InputComponent->BindAxis("Levitator", this, &ALookitYouPawn::MoveUp);
-	InputComponent->BindAxis("Turn", this, &ALookitYouPawn::Turn);
+	InputComponent->BindAxis("Turn", this, &APawn::AddControllerYawInput);
+	InputComponent->BindAxis("LookUp", this, &APawn::AddControllerPitchInput);
+	InputComponent->BindAxis("Orbit", this, &ALookitYouPawn::Orbit);
 }
 
 void ALookitYouPawn::MoveForward(float AxisValue)
@@ -80,12 +84,12 @@ void ALookitYouPawn::MoveUp(float AxisValue)
 	}
 }
 
-void ALookitYouPawn::Turn(float AxisValue)
+void ALookitYouPawn::Orbit(float AxisValue)
 {
-	FRotator NewRotation = GetActorRotation();
-	// rot around Z, so turning 'round from our actor's perspective
-	NewRotation.Yaw += AxisValue;
-	SetActorRotation(NewRotation);
+	if (AxisValue != 0.0f)
+	{
+		Movement->Orbit(AxisValue);
+	}
 }
 
 void ALookitYouPawn::FlyAbout()
@@ -99,21 +103,21 @@ void ALookitYouPawn::FlyAbout()
 		{
 			if (FollowMode)
 			{
-				UE_LOG(LogTemp, Warning, TEXT("FlyAbout; while attempting to take control, we find GetController returns %p"), GetController());
 				// detach this LookitYouPawn from the follow pawn
 				DetachFromActor(FDetachmentTransformRules::KeepWorldTransform);
 				// switch player possession from the follow pawn to this LookitYouPawn
-				AController* controller = GetController();
-				// unpossess seems to invalidate the result of GetController(), so we have to store the pointer
+				APlayerController* controller = GetWorld()->GetFirstPlayerController();
 				controller->UnPossess();
+				UE_LOG(LogTemp, Warning, TEXT("FlyAbout; while attempting to take control, we find GetController returns %p"), controller);
 				controller->Possess(this);
 				FollowMode = false;
 			}
 			else
 			{
 				// switch player possession from the this LookitYouPawn back to ryddelmyst character
-				UE_LOG(LogTemp, Warning, TEXT("FlyAbout; while attempting to give up control, we find GetController returns %p"), GetController());
-				AController* controller = GetController();
+				APlayerController* controller = GetWorld()->GetFirstPlayerController();
+				controller->UnPossess();
+				UE_LOG(LogTemp, Warning, TEXT("FlyAbout; while attempting to give up control, we find GetController returns %p"), controller);
 				controller->UnPossess();
 				controller->Possess(FollowPawn);
 				// tell this LookitYouPawn to attach to ryddelmyst character again

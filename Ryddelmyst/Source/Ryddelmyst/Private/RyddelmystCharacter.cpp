@@ -78,7 +78,6 @@ void ARyddelmystCharacter::SendControl()
 	UE_LOG(LogTemp, Warning, TEXT("SendControl; RyddelmystCharacter attempting to send input control over to LookitYouGo with address %p"), LookitYouGo);
 	if (LookitYouGo)
 	{
-		GetCharacterMovement()->SetMovementMode(EMovementMode::MOVE_None);
 		LookitYouGo->TakeControl();
 	}
 }
