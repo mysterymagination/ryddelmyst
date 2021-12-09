@@ -34,7 +34,7 @@ void ULookitYouMovementComponent::TickComponent(float DeltaTime, enum ELevelTick
 		FVector AttachRelativePos = UpdatedComponent->GetRelativeLocation();
 		FVector PossibleWandrance = AttachRelativePos + DesiredMovementThisFrame;
 		UE_LOG(LogTemp, Warning, TEXT("LookitYouMovementComponent::TickComponent; lookit rel pos is %s and desired movement vector is %s so possible wandrance of lookit from attach character is %s"), *UpdatedComponent->GetRelativeLocation().ToString(), *DesiredMovementThisFrame.ToString(), *PossibleWandrance.ToString());
-		// todo: at least one problem with this wandrance fencing is that our PossibleWandrance is immediately greater than MaxAllowedWandrance with LookitYouPawn a reasonable distance from RyddelmystCharacter.
+		// todo: at least one problem with this wandrance fencing is that our PossibleWandrance is immediately greater than MaxAllowedWandrance with LookitYouPawn a reasonable distance from RyddelmystCharacter.  Instead of using a single constant for max allowed wandrance, we should be using a constant plus whatever the current offset is (or manually make sure the max allowed is greater than starting offset defined in the editor, but that sounds brittle, or better yet just bump the max allowed up to the current offset if the current offset is greater than the constant).
 		if (abs(PossibleWandrance.X) >= MaxAllowedWandrance)
 		{
 			float OverWandrance = abs(PossibleWandrance.X) - MaxAllowedWandrance;
