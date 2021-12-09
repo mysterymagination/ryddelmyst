@@ -1,6 +1,7 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 #include "LookitYouMovementComponent.h"
+#include <algorithm>
 
 void ULookitYouMovementComponent::TickComponent(float DeltaTime, enum ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction)
 {
@@ -28,19 +29,20 @@ void ULookitYouMovementComponent::TickComponent(float DeltaTime, enum ELevelTick
 	if (!DesiredMovementThisFrame.IsNearlyZero())
 	{
 		UE_LOG(LogTemp, Warning, TEXT("LookitYouMovementComponent::TickComponent; after deltaT of %f, unclamped non-zero desired movement vector is %s"), DeltaTime, *DesiredMovementThisFrame.ToString());
-
-		// todo: we're somehow doubling component values and breaking the engine with the wandrance check below -- I pressed 'a' to fly left for just a second and saw X values doubling themselves every frame... Y and Z dropped to and stayed at 0.
-		// check to see if we're trying to move out of bounds and clamp
+		// check to see if we're trying to move out of flyabout bounds and clamp
 		FVector AttachRelativePos = UpdatedComponent->GetRelativeLocation();
+		float MaxAttachOffsetComponent = std::max(std::max(abs(AttachRelativePos.X), abs(AttachRelativePos.Y)), abs(AttachRelativePos.Z));
+		if (MaxAttachOffsetComponent > MaxAllowedWandrance)
+		{
+			MaxAllowedWandrance = MaxAttachOffsetComponent;
+		}
 		FVector PossibleWandrance = AttachRelativePos + DesiredMovementThisFrame;
 		UE_LOG(LogTemp, Warning, TEXT("LookitYouMovementComponent::TickComponent; lookit rel pos is %s and desired movement vector is %s so possible wandrance of lookit from attach character is %s"), *UpdatedComponent->GetRelativeLocation().ToString(), *DesiredMovementThisFrame.ToString(), *PossibleWandrance.ToString());
-		// todo: at least one problem with this wandrance fencing is that our PossibleWandrance is immediately greater than MaxAllowedWandrance with LookitYouPawn a reasonable distance from RyddelmystCharacter.  Instead of using a single constant for max allowed wandrance, we should be using a constant plus whatever the current offset is (or manually make sure the max allowed is greater than starting offset defined in the editor, but that sounds brittle, or better yet just bump the max allowed up to the current offset if the current offset is greater than the constant).
 		if (abs(PossibleWandrance.X) >= MaxAllowedWandrance)
 		{
 			float OverWandrance = abs(PossibleWandrance.X) - MaxAllowedWandrance;
 			if (DesiredMovementThisFrame.X >= 0)
 			{
-				// todo: ooh, don't wanna do that -- our desired movement per frame is going to be tiny whereas the OverWandrance currently can be several hundred units to start because our MaxAllowedWandrance is less than our starting relative position.  Every frame we'll be modifying a tiny per-frame desired movement with increasing hundreds of map units, which will increase by at least much as the previous frame's OverWandrance; that's how we get the apparent doubling affect of our position until the engine explodes.
 				DesiredMovementThisFrame.X -= OverWandrance;
 			}
 			else

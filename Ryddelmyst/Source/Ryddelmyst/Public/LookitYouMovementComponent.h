@@ -23,6 +23,7 @@ public:
 private:
 	/**
 	 * Maximum map units the LookitYouPawn is allowed to stray away from the FollowPawn on any given axis.  Once this distance is met during a FlyAbout, the motion vector should drop its component corresponding to the axis that hit the limit to 0. 
+	 * todo: this value should probably be at least 1000 map units
 	 */
 	UPROPERTY(EditAnywhere)
 	float MaxAllowedWandrance = 500.f;
