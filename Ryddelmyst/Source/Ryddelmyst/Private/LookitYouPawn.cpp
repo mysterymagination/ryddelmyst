@@ -86,6 +86,7 @@ void ALookitYouPawn::MoveUp(float AxisValue)
 
 void ALookitYouPawn::Orbit(float AxisValue)
 {
+	// LookitYouMovementComponent orbit impl tracks the orbit scale factor (-1, 0, or 1) and applies it in TickComponent; we need to receive 0 AxisValue to know when to turn orbitting off
 	Movement->Orbit(AxisValue);
 }
 

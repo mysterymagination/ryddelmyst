@@ -29,13 +29,18 @@ void ULookitYouMovementComponent::TickComponent(float DeltaTime, enum ELevelTick
 	{
 		UE_LOG(LogTemp, Warning, TEXT("LookitYouMovementComponent::TickComponent; after deltaT of %f, unclamped non-zero desired movement vector is %s"), DeltaTime, *DesiredMovementThisFrame.ToString());
 
+		// todo: we're somehow doubling component values and breaking the engine with the wandrance check below -- I pressed 'a' to fly left for just a second and saw X values doubling themselves every frame... Y and Z dropped to and stayed at 0.
 		// check to see if we're trying to move out of bounds and clamp
-		FVector PossibleWandrance = UpdatedComponent->GetRelativeLocation() + DesiredMovementThisFrame;
+		FVector AttachRelativePos = UpdatedComponent->GetRelativeLocation();
+		FVector PossibleWandrance = AttachRelativePos + DesiredMovementThisFrame;
+		UE_LOG(LogTemp, Warning, TEXT("LookitYouMovementComponent::TickComponent; lookit rel pos is %s and desired movement vector is %s so possible wandrance of lookit from attach character is %s"), *UpdatedComponent->GetRelativeLocation().ToString(), *DesiredMovementThisFrame.ToString(), *PossibleWandrance.ToString());
+		// todo: at least one problem with this wandrance fencing is that our PossibleWandrance is immediately greater than MaxAllowedWandrance with LookitYouPawn a reasonable distance from RyddelmystCharacter.
 		if (abs(PossibleWandrance.X) >= MaxAllowedWandrance)
 		{
 			float OverWandrance = abs(PossibleWandrance.X) - MaxAllowedWandrance;
 			if (DesiredMovementThisFrame.X >= 0)
 			{
+				// todo: ooh, don't wanna do that -- our desired movement per frame is going to be tiny whereas the OverWandrance currently can be several hundred units to start because our MaxAllowedWandrance is less than our starting relative position.  Every frame we'll be modifying a tiny per-frame desired movement with increasing hundreds of map units, which will increase by at least much as the previous frame's OverWandrance; that's how we get the apparent doubling affect of our position until the engine explodes.
 				DesiredMovementThisFrame.X -= OverWandrance;
 			}
 			else
@@ -82,6 +87,5 @@ void ULookitYouMovementComponent::TickComponent(float DeltaTime, enum ELevelTick
 
 void ULookitYouMovementComponent::Orbit(float AxisValue)
 {
-	UE_LOG(LogTemp, Warning, TEXT("LookitYouMovementComponent::Orbit; axisvalue is %f"), AxisValue);
 	OrbitScale = AxisValue;
 }
