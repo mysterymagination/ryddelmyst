@@ -112,9 +112,9 @@ void ALookitYouPawn::FlyAbout()
 			}
 			else
 			{
+				AttachToActor(FollowPawn, FAttachmentTransformRules::KeepWorldTransform);
 				// switch player possession from the this LookitYouPawn back to ryddelmyst character
 				APlayerController* controller = GetWorld()->GetFirstPlayerController();
-				controller->UnPossess();
 				UE_LOG(LogTemp, Warning, TEXT("FlyAbout; while attempting to give up control, we find GetController returns %p"), controller);
 				controller->UnPossess();
 				controller->Possess(FollowPawn);
@@ -122,7 +122,8 @@ void ALookitYouPawn::FlyAbout()
 				UE_LOG(LogTemp, Warning, TEXT("FlyAbout; attempting to reattach to follow pawn %p"), FollowPawn);
 				UE_LOG(LogTemp, Warning, TEXT("FlyAbout; our parent actor is %p"), GetParentActor());
 				UE_LOG(LogTemp, Warning, TEXT("FlyAbout; our owner actor %p"), GetOwner());
-				AttachToActor(FollowPawn, FAttachmentTransformRules::KeepWorldTransform);
+				// the unpossess/possess shuffle above seems to want to switch viewtarget implicitly, so switch it back
+				GetWorld()->GetFirstPlayerController()->SetViewTargetWithBlend(this, 0.0F, EViewTargetBlendFunction::VTBlend_Linear);
 				FollowMode = true;
 			}
 		}
