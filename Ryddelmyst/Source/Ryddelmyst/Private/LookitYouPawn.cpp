@@ -10,17 +10,10 @@ ALookitYouPawn::ALookitYouPawn()
  	// Set this pawn to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
 	
-	// Use a spring arm to give the camera smooth, natural-feeling motion.
-	SpringArm = CreateDefaultSubobject<USpringArmComponent>(TEXT("LookitCameraAttachmentArm"));
-	SpringArm->SetupAttachment(RootComponent);
-	SpringArm->SetRelativeRotation(FRotator(-45.f, 0.f, 0.f));
-	SpringArm->TargetArmLength = FCameraArmLength;
-	SpringArm->bEnableCameraLag = true;
-	SpringArm->CameraLagSpeed = 3.0f;
-	// Create a camera and attach to our spring arm
+	// Create a camera and attach to our root component
 	Camera = CreateDefaultSubobject<UCameraComponent>(TEXT("LookitCam"));
 	Camera->bUsePawnControlRotation = true;
-	Camera->SetupAttachment(SpringArm, USpringArmComponent::SocketName);
+	Camera->SetupAttachment(RootComponent);
 	Camera->SetActive(false);
 	Movement = CreateDefaultSubobject<ULookitYouMovementComponent>(TEXT("LookitYouMove"));
 	Movement->SetUpdatedComponent(RootComponent);
@@ -30,17 +23,10 @@ ALookitYouPawn::ALookitYouPawn()
 void ALookitYouPawn::BeginPlay()
 {
 	Super::BeginPlay();
-	
-	SpringArm->TargetArmLength = FCameraArmLength;
 	if (FollowPawn)
 	{
-		AttachToActor(FollowPawn, FAttachmentTransformRules::KeepRelativeTransform);
+		AttachToActor(FollowPawn, FAttachmentTransformRules::KeepWorldTransform);
 	}
-}
-
-void ALookitYouPawn::Tick(float DeltaSeconds)
-{
-
 }
 
 // Called to bind functionality to input
