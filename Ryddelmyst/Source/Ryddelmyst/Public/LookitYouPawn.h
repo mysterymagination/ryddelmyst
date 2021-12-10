@@ -37,7 +37,6 @@ public:
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
-	virtual void Tick(float DeltaSeconds) override;
 
 private:	
 	// State variables
@@ -46,16 +45,9 @@ private:
 
 private:
 	UPROPERTY()
-	class USpringArmComponent* SpringArm;
-	UPROPERTY()
 	class UCameraComponent* Camera;
 	UPROPERTY()
 	class ULookitYouMovementComponent* Movement;
-	/**
-	 * Length of the SpringArm mount we use for the camera to hang it behind our Molly 
-	 */
-	UPROPERTY(EditAnywhere)
-	float FCameraArmLength = 400.0f;
 	/**
 	 * The Pawn that this LookitYouPawn should be following when not in flyabout mode
 	 */ 
