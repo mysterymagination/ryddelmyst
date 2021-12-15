@@ -71,6 +71,8 @@ void ARyddelmystCharacter::SetupPlayerInputComponent(class UInputComponent* Play
 	PlayerInputComponent->BindAxis("TurnRate", this, &ARyddelmystCharacter::TurnAtRate);
 	PlayerInputComponent->BindAxis("LookUp", this, &APawn::AddControllerPitchInput);
 	PlayerInputComponent->BindAxis("LookUpRate", this, &ARyddelmystCharacter::LookUpAtRate);
+
+	PlayerInputComponent->BindAction("Fire", IE_Pressed, this, &ARyddelmystCharacter::Fire);
 }
 
 void ARyddelmystCharacter::SendControl()
@@ -140,4 +142,8 @@ void ARyddelmystCharacter::LookUpAtRate(float Rate)
 {
 	// calculate delta for this frame from the rate information
 	AddControllerPitchInput(Rate * BaseLookUpRate * GetWorld()->GetDeltaSeconds());
+}
+
+void ARyddelmystCharacter::Fire()
+{
 }

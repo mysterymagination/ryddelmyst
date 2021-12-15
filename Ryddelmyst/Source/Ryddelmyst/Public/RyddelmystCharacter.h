@@ -43,6 +43,15 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category=Camera)
 	class ALookitYouPawn* LookitYouGo;
 
+	// Gun muzzle offset from the camera location.
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Gameplay)
+	FVector MuzzleOffset;
+
+protected:
+	// Projectile class to spawn, naturally it must be some variation of the very best Pathfinder spell
+	UPROPERTY(EditDefaultsOnly, Category = Projectile)
+	TSubclassOf<class ASnowball> ProjectileClass;
+
 protected:
 	/** Handles switching between our cam and the LookitYouPawn's "3rd person" cam */
 	void CameraToggle();
@@ -67,6 +76,11 @@ protected:
 	 * @param Rate	This is a normalized rate, i.e. 1.0 means 100% of desired turn rate
 	 */
 	void LookUpAtRate(float Rate);
+	/**
+	 * Handles firing projectiles.
+	 */ 
+	UFUNCTION()
+	void Fire();
 	
 protected:
 	// APawn interface
