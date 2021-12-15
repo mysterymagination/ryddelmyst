@@ -2,34 +2,15 @@
 
 #pragma once
 
-#include "CoreMinimal.h"
-#include "GameFramework/Actor.h"
-#include "Components/SphereComponent.h"
-#include "GameFramework/ProjectileMovementComponent.h"
+#include "Snowball.h"
 #include "ElectricSnowball.generated.h"
 
 UCLASS()
-class RYDDELMYST_API AElectricSnowball : public AActor
+class RYDDELMYST_API AElectricSnowball : public ASnowball
 {
 	GENERATED_BODY()
 	
 public:	
 	// Sets default values for this actor's properties
 	AElectricSnowball();
-
-protected:
-	// Called when the game starts or when spawned
-	virtual void BeginPlay() override;
-
-public:	
-	// Called every frame
-	virtual void Tick(float DeltaTime) override;
-
-private:
-	// Sphere collision component.
-	UPROPERTY(VisibleDefaultsOnly, Category = Projectile)
-	USphereComponent* CollisionComponent;
-	// Projectile movement component.
-	UPROPERTY(VisibleAnywhere, Category = Movement)
-	UProjectileMovementComponent* ProjectileMovementComponent;
 };
