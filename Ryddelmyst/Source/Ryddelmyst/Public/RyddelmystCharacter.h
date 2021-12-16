@@ -5,6 +5,7 @@
 #include "CoreMinimal.h"
 #include "GameFramework/Character.h"
 #include "LookitYouPawn.h"
+#include "Snowball.h"
 #include "RyddelmystCharacter.generated.h"
 
 class UInputComponent;
@@ -50,7 +51,7 @@ public:
 protected:
 	// Projectile class to spawn, naturally it must be some variation of the very best Pathfinder spell
 	UPROPERTY(EditDefaultsOnly, Category = Projectile)
-	TSubclassOf<class ASnowball> ProjectileClass;
+	TSubclassOf<ASnowball> ProjectileClass;
 
 protected:
 	/** Handles switching between our cam and the LookitYouPawn's "3rd person" cam */

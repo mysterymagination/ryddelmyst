@@ -146,4 +146,41 @@ void ARyddelmystCharacter::LookUpAtRate(float Rate)
 
 void ARyddelmystCharacter::Fire()
 {
+	// Attempt to fire a projectile.
+	if (ProjectileClass)
+	{
+		/* we want the FPS camera, not the eyes
+		// Get the eyes transform.
+		FVector CameraLocation;
+		FRotator CameraRotation;
+		GetActorEyesViewPoint(CameraLocation, CameraRotation);
+		*/
+
+		// Set MuzzleOffset to spawn projectiles slightly in front of the camera.
+		MuzzleOffset.Set(100.0f, 0.0f, 0.0f);
+
+		// Transform MuzzleOffset from camera space to world space.
+		FVector MuzzleLocation = FirstPersonCameraComponent->GetComponentLocation() + FTransform(FirstPersonCameraComponent->GetComponentRotation()).TransformVector(MuzzleOffset);
+
+		// Skew the aim to be slightly upwards.
+		FRotator MuzzleRotation = FirstPersonCameraComponent->GetComponentRotation();
+		MuzzleRotation.Pitch += 10.0f;
+
+		UWorld* World = GetWorld();
+		if (World)
+		{
+			FActorSpawnParameters SpawnParams;
+			SpawnParams.Owner = this;
+			SpawnParams.Instigator = GetInstigator();
+
+			// Spawn the projectile at the muzzle.
+			ASnowball* Snowball = World->SpawnActor<ASnowball>(ProjectileClass, MuzzleLocation, MuzzleRotation, SpawnParams);
+			if (Snowball)
+			{
+				// Set the projectile's initial trajectory.
+				FVector LaunchDirection = MuzzleRotation.Vector();
+				Snowball->FireInDirection(LaunchDirection);
+			}
+		}
+	}
 }
