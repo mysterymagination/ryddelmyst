@@ -32,6 +32,15 @@ ASnowball::ASnowball()
 		ProjectileMovementComponent->bShouldBounce = false;
 		ProjectileMovementComponent->ProjectileGravityScale = 0.0f;
 	}
+	if (!ProjectileMeshComponent)
+	{
+		ProjectileMeshComponent = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("SnowballMeshComponent"));
+		static ConstructorHelpers::FObjectFinder<UStaticMesh>Mesh(TEXT("'/Game/FirstPerson/Meshes/FirstPersonProjectileMesh.FirstPersonProjectileMesh'"));
+		if (Mesh.Succeeded())
+		{
+			ProjectileMeshComponent->SetStaticMesh(Mesh.Object);
+		}
+	}
 }
 
 // Called when the game starts or when spawned
