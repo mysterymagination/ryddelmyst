@@ -164,6 +164,7 @@ void ARyddelmystCharacter::Fire()
 
 		// Skew the aim to be slightly upwards.
 		FRotator MuzzleRotation = FirstPersonCameraComponent->GetComponentRotation();
+		// todo: so what are we doing here exactly?  We've got the world space rotation of the firstpersoncameracomponent and then we're goosing its pitch, but what are we rotating 10 degrees around?  The Y axis, sure, but is that axis considered to run through world origin (implying we take our offset from origin into account somewhere) or does it run through the MuzzleLocation point?  Since the definition of a point in world space is (I think) a vector from origin to an endpoint, maybe there's no distinction?  But what about the arc length -- doesn't vector magnitude i.e. how far the point is away from world origin modify the length of the arc curve that an N degree rotation causes?  EDIT: yeah it does; arc length is radius*theta where theta is the rotation angle in radians and the radius here is our vector magnitude. I guess the point of interest is how we use this MuzzleRotation, and the answer to that is wrapped up in World->SpawnActor() below...
 		MuzzleRotation.Pitch += 10.0f;
 
 		UWorld* World = GetWorld();
