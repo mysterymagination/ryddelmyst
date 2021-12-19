@@ -72,7 +72,7 @@ void ARyddelmystCharacter::SetupPlayerInputComponent(class UInputComponent* Play
 	PlayerInputComponent->BindAxis("LookUp", this, &APawn::AddControllerPitchInput);
 	PlayerInputComponent->BindAxis("LookUpRate", this, &ARyddelmystCharacter::LookUpAtRate);
 
-	PlayerInputComponent->BindAction("Fire", IE_Pressed, this, &ARyddelmystCharacter::Fire);
+	PlayerInputComponent->BindAction("Fire", IE_Released, this, &ARyddelmystCharacter::Fire);
 }
 
 void ARyddelmystCharacter::SendControl()
@@ -146,9 +146,11 @@ void ARyddelmystCharacter::LookUpAtRate(float Rate)
 
 void ARyddelmystCharacter::Fire()
 {
+	UE_LOG(LogTemp, Warning, TEXT("Fire; attempting to fire snowball..."));
 	// Attempt to fire a projectile.
 	if (ProjectileClass)
 	{
+		UE_LOG(LogTemp, Warning, TEXT("Fire; firing snowball!"));
 		/* we want the FPS camera, not the eyes
 		// Get the eyes transform.
 		FVector CameraLocation;
