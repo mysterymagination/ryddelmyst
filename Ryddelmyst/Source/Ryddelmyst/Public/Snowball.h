@@ -37,4 +37,7 @@ private:
 	// Projectile mesh
 	UPROPERTY(VisibleDefaultsOnly, Category = Projectile)
 	UStaticMeshComponent* ProjectileMeshComponent;
+	// Projectile material
+	UPROPERTY(VisibleDefaultsOnly, Category = Projectile)
+	UMaterialInstanceDynamic* ProjectileMaterialInstance;
 };
