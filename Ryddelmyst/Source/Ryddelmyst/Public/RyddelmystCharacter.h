@@ -50,7 +50,7 @@ public:
 
 protected:
 	// Projectile class to spawn, naturally it must be some variation of the very best Pathfinder spell
-	UPROPERTY(EditDefaultsOnly, Category = Projectile)
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Projectile)
 	TSubclassOf<ASnowball> ProjectileClass;
 
 protected:

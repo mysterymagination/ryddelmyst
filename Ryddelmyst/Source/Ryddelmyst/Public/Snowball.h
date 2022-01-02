@@ -5,6 +5,7 @@
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
 #include "Components/SphereComponent.h"
+#include "Particles/ParticleSystemComponent.h"
 #include "GameFramework/ProjectileMovementComponent.h"
 #include "Snowball.generated.h"
 
@@ -27,17 +28,22 @@ public:
 	// Initializes the projectile's velocity in the shoot direction.
 	void FireInDirection(const FVector& ShootDirection);
 
-private:
-	// Sphere collision component.
-	UPROPERTY(VisibleDefaultsOnly, Category = Projectile)
-	USphereComponent* CollisionComponent;
-	// Projectile movement component.
-	UPROPERTY(VisibleAnywhere, Category = Movement)
-	UProjectileMovementComponent* ProjectileMovementComponent;
-	// Projectile mesh
-	UPROPERTY(VisibleDefaultsOnly, Category = Projectile)
-	UStaticMeshComponent* ProjectileMeshComponent;
+protected:
+	// Projectile particle FX
+	UPROPERTY()
+	UParticleSystemComponent* SnowballParticles;
 	// Projectile material
 	UPROPERTY(VisibleDefaultsOnly, Category = Projectile)
 	UMaterialInstanceDynamic* ProjectileMaterialInstance;
+	// Projectile mesh
+	UPROPERTY(VisibleDefaultsOnly, Category = Projectile)
+	UStaticMeshComponent* ProjectileMeshComponent;
+	// Sphere collision component.
+	UPROPERTY(VisibleDefaultsOnly, Category = Projectile)
+	USphereComponent* CollisionComponent;
+
+private:
+	// Projectile movement component.
+	UPROPERTY(VisibleAnywhere, Category = Movement)
+	UProjectileMovementComponent* ProjectileMovementComponent;
 };
