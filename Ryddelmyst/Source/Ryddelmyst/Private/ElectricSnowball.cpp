@@ -6,6 +6,20 @@
 // Sets default values
 AElectricSnowball::AElectricSnowball()
 {
-	// todo: add particle FX for lightning wreathe!
+	// Use a shocking projectile material
+	static ConstructorHelpers::FObjectFinder<UMaterial> Material(TEXT("'/Game/Ryddelmyst_Assets/Materials/ElectricSnowballMaterial.ElectricSnowballMaterial'"));
+	if (Material.Succeeded())
+	{
+		ProjectileMaterialInstance = UMaterialInstanceDynamic::Create(Material.Object, ProjectileMeshComponent);
+	}
+	ProjectileMeshComponent->SetMaterial(0, ProjectileMaterialInstance);
+	ProjectileMeshComponent->SetRelativeScale3D(FVector(0.09f, 0.09f, 0.09f));
+	ProjectileMeshComponent->SetupAttachment(RootComponent);
+	// Use a shocking particle system
+	static ConstructorHelpers::FObjectFinder<UParticleSystem> ParticleAsset(TEXT("/Game/Ryddelmyst_Assets/Particles/P_Sparks.P_Sparks"));
+	if (ParticleAsset.Succeeded())
+	{
+		SnowballParticles->SetTemplate(ParticleAsset.Object);
+	}
 }
 
