@@ -1,6 +1,5 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
-
 #include "Snowball.h"
 
 // Sets default values
@@ -49,6 +48,15 @@ ASnowball::ASnowball()
 	ProjectileMeshComponent->SetMaterial(0, ProjectileMaterialInstance);
 	ProjectileMeshComponent->SetRelativeScale3D(FVector(0.09f, 0.09f, 0.09f));
 	ProjectileMeshComponent->SetupAttachment(RootComponent);
+	// Create a snowy particle system
+	SnowballParticles = CreateDefaultSubobject<UParticleSystemComponent>(TEXT("SnowballParticles"));
+	SnowballParticles->SetupAttachment(RootComponent);
+	SnowballParticles->bAutoActivate = true;
+	static ConstructorHelpers::FObjectFinder<UParticleSystem> ParticleAsset(TEXT("/Game/Ryddelmyst_Assets/Particles/P_Snowflakes.P_Snowflakes"));
+	if (ParticleAsset.Succeeded())
+	{
+		SnowballParticles->SetTemplate(ParticleAsset.Object);
+	}
 }
 
 // Called when the game starts or when spawned
