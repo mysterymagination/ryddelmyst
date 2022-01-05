@@ -151,7 +151,9 @@ void ARyddelmystCharacter::LookUp(float Value)
 		UE_LOG(LogTemp, Warning, TEXT("LookUp; look input %s"), GetWorld()->GetFirstPlayerController()->IsLookInputIgnored() ? TEXT("is ignored") : TEXT("is not ignored"));
 		if (!FirstPersonCameraMode)
 		{
-			UE_LOG(LogTemp, Warning, TEXT("LookUp; attempting to apply pitch in 3PP"));
+			FRotator currentRotation = FirstPersonCameraComponent->GetComponentRotation();
+			FirstPersonCameraComponent->SetWorldRotation(FRotator(currentRotation.Pitch-Value, currentRotation.Yaw, 0.f));
+			UE_LOG(LogTemp, Warning, TEXT("LookUp; attempting to apply pitch in 3PP directly to first person camera to adjust snowball aiming by adding pitch rotation of %f such that our FPP cam rot is now %s"), Value, *FirstPersonCameraComponent->GetComponentRotation().ToString());
 		}
 	}
 }
@@ -168,7 +170,7 @@ void ARyddelmystCharacter::Fire()
 	// Attempt to fire a projectile.
 	if (ProjectileClass)
 	{
-		UE_LOG(LogTemp, Warning, TEXT("Fire; firing snowball!"));
+		UE_LOG(LogTemp, Warning, TEXT("Fire; firing snowball!  FPP cam rotation is %s"), *FirstPersonCameraComponent->GetComponentRotation().ToString());
 		/* we want the FPS camera, not the eyes
 		// Get the eyes transform.
 		FVector CameraLocation;
