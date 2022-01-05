@@ -3,10 +3,11 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "GameFramework/Pawn.h"
 #include "LookitYou.h"
 #include "LookitYouMovementComponent.h"
 #include "LookitYouPawn.generated.h"
+
+class ARyddelmystCharacter;
 
 UCLASS()
 class RYDDELMYST_API ALookitYouPawn : public APawn, public ILookitYou
@@ -25,10 +26,11 @@ public:
 	void MoveRight(float AxisValue);
 	void MoveUp(float AxisValue);
 	void Orbit(float AxisValue);
+	void MirrorControllerPitch(float AxisValue);
 
 	// field accessors
-	void SetFollowPawn(APawn* followPawn);
-	APawn* GetFollowPawn();
+	void SetFollowPawn(ARyddelmystCharacter* followPawn);
+	ARyddelmystCharacter* GetFollowPawn();
 
 	// ILookitYou impl
 	virtual void EnableCamera(bool enable) override;
@@ -49,8 +51,8 @@ private:
 	UPROPERTY()
 	class ULookitYouMovementComponent* Movement;
 	/**
-	 * The Pawn that this LookitYouPawn should be following when not in flyabout mode
+	 * The ARyddelmystCharacter Pawn that this LookitYouPawn should be following when not in flyabout mode
 	 */ 
 	UPROPERTY(EditAnywhere)
-	class APawn* FollowPawn;
+	ARyddelmystCharacter* FollowPawn;
 };
