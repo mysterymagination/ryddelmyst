@@ -69,7 +69,7 @@ void ARyddelmystCharacter::SetupPlayerInputComponent(class UInputComponent* Play
 	// "turnrate" is for devices that we choose to treat as a rate of change, such as an analog joystick
 	PlayerInputComponent->BindAxis("Turn", this, &APawn::AddControllerYawInput);
 	PlayerInputComponent->BindAxis("TurnRate", this, &ARyddelmystCharacter::TurnAtRate);
-	PlayerInputComponent->BindAxis("LookUp", this, &APawn::AddControllerPitchInput);
+	PlayerInputComponent->BindAxis("LookUp", this, &ARyddelmystCharacter::LookUp);
 	PlayerInputComponent->BindAxis("LookUpRate", this, &ARyddelmystCharacter::LookUpAtRate);
 
 	PlayerInputComponent->BindAction("Fire", IE_Released, this, &ARyddelmystCharacter::Fire);
@@ -82,6 +82,11 @@ void ARyddelmystCharacter::SendControl()
 	{
 		LookitYouGo->TakeControl();
 	}
+}
+
+UCameraComponent* ARyddelmystCharacter::GetFirstPersonCamera()
+{
+	return FirstPersonCameraComponent;
 }
 
 void ARyddelmystCharacter::CameraToggle()
@@ -136,6 +141,19 @@ void ARyddelmystCharacter::TurnAtRate(float Rate)
 {
 	// calculate delta for this frame from the rate information
 	AddControllerYawInput(Rate * BaseTurnRate * GetWorld()->GetDeltaSeconds());
+}
+
+void ARyddelmystCharacter::LookUp(float Value)
+{
+	if (Value != 0.0f)
+	{
+		AddControllerPitchInput(Value);
+		UE_LOG(LogTemp, Warning, TEXT("LookUp; look input %s"), GetWorld()->GetFirstPlayerController()->IsLookInputIgnored() ? TEXT("is ignored") : TEXT("is not ignored"));
+		if (!FirstPersonCameraMode)
+		{
+			UE_LOG(LogTemp, Warning, TEXT("LookUp; attempting to apply pitch in 3PP"));
+		}
+	}
 }
 
 void ARyddelmystCharacter::LookUpAtRate(float Rate)
