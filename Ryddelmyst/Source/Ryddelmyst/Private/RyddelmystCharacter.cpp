@@ -149,9 +149,12 @@ void ARyddelmystCharacter::LookUp(float Value)
 	{
 		AddControllerPitchInput(Value);
 		UE_LOG(LogTemp, Warning, TEXT("LookUp; look input %s"), GetWorld()->GetFirstPlayerController()->IsLookInputIgnored() ? TEXT("is ignored") : TEXT("is not ignored"));
+		// Pitch controller input to the FPP cam seems locked for some reason by default after we switch cams to the LookitYouPawn via APlayerController.SetViewTargetWithBlend() so I'm updating the cam pitch rotation here manually.
 		if (!FirstPersonCameraMode)
 		{
 			FRotator currentRotation = FirstPersonCameraComponent->GetComponentRotation();
+			// We don't want any Roll happening, and for some reason when I use AddWorldRotation I get Roll even if I specify 0.f for Yaw and Roll params.  I noticed that in FPP the Roll seems to stay almost 0 forever, so I guess a direct set to 0 here is fine enough.
+			// Current Pitch minus Value allows us to have mouse movement towards you => target pitch down and mouse movement away from you => pitch up like we have in FPP.
 			FirstPersonCameraComponent->SetWorldRotation(FRotator(currentRotation.Pitch-Value, currentRotation.Yaw, 0.f));
 			UE_LOG(LogTemp, Warning, TEXT("LookUp; attempting to apply pitch in 3PP directly to first person camera to adjust snowball aiming by adding pitch rotation of %f such that our FPP cam rot is now %s"), Value, *FirstPersonCameraComponent->GetComponentRotation().ToString());
 		}
