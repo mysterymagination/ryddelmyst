@@ -1,6 +1,7 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 #include "LookitYouPawn.h"
+#include "RyddelmystCharacter.h"
 #include "Camera/CameraComponent.h"
 #include "GameFramework/SpringArmComponent.h"
 
@@ -42,8 +43,21 @@ void ALookitYouPawn::SetupPlayerInputComponent(UInputComponent* PlayerInputCompo
 	InputComponent->BindAxis("MoveRight", this, &ALookitYouPawn::MoveRight);
 	InputComponent->BindAxis("Levitator", this, &ALookitYouPawn::MoveUp);
 	InputComponent->BindAxis("Turn", this, &APawn::AddControllerYawInput);
-	InputComponent->BindAxis("LookUp", this, &APawn::AddControllerPitchInput);
+	InputComponent->BindAxis("LookUp", this, &ALookitYouPawn::MirrorControllerPitch);
 	InputComponent->BindAxis("Orbit", this, &ALookitYouPawn::Orbit);
+}
+
+void ALookitYouPawn::MirrorControllerPitch(float AxisValue)
+{
+	AddControllerPitchInput(AxisValue);
+	
+	if (FollowPawn)
+	{
+		/* this didn't work presumably because the FollowPawn is not currently possessed, so the framework drops controller inputs to it
+		FollowPawn->AddControllerPitchInput(AxisValue);
+		*/
+		FollowPawn->GetFirstPersonCamera()->AddRelativeRotation(FQuat(0.f, AxisValue, 0.f, 0.f));
+	}
 }
 
 void ALookitYouPawn::MoveForward(float AxisValue)
@@ -137,12 +151,12 @@ void ALookitYouPawn::TakeControl()
 	FlyAbout();
 }
 
-void ALookitYouPawn::SetFollowPawn(APawn* followPawn)
+void ALookitYouPawn::SetFollowPawn(ARyddelmystCharacter* followPawn)
 {
 	FollowPawn = followPawn;
 }
 
-APawn* ALookitYouPawn::GetFollowPawn()
+ARyddelmystCharacter* ALookitYouPawn::GetFollowPawn()
 {
 	return FollowPawn;
 }
