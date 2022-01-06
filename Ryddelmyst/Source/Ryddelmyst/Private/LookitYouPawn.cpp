@@ -1,7 +1,6 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 #include "LookitYouPawn.h"
-#include "RyddelmystCharacter.h"
 #include "Camera/CameraComponent.h"
 #include "GameFramework/SpringArmComponent.h"
 
@@ -15,7 +14,7 @@ ALookitYouPawn::ALookitYouPawn()
 	Camera = CreateDefaultSubobject<UCameraComponent>(TEXT("LookitCam"));
 	Camera->bUsePawnControlRotation = true;
 	Camera->SetupAttachment(RootComponent);
-	Camera->SetActive(false);
+	Camera->SetActive(true);
 	Movement = CreateDefaultSubobject<ULookitYouMovementComponent>(TEXT("LookitYouMove"));
 	Movement->SetUpdatedComponent(RootComponent);
 }
@@ -43,21 +42,8 @@ void ALookitYouPawn::SetupPlayerInputComponent(UInputComponent* PlayerInputCompo
 	InputComponent->BindAxis("MoveRight", this, &ALookitYouPawn::MoveRight);
 	InputComponent->BindAxis("Levitator", this, &ALookitYouPawn::MoveUp);
 	InputComponent->BindAxis("Turn", this, &APawn::AddControllerYawInput);
-	InputComponent->BindAxis("LookUp", this, &ALookitYouPawn::MirrorControllerPitch);
+	InputComponent->BindAxis("LookUp", this, &APawn::AddControllerPitchInput);
 	InputComponent->BindAxis("Orbit", this, &ALookitYouPawn::Orbit);
-}
-
-void ALookitYouPawn::MirrorControllerPitch(float AxisValue)
-{
-	AddControllerPitchInput(AxisValue);
-	
-	if (FollowPawn)
-	{
-		/* this didn't work presumably because the FollowPawn is not currently possessed, so the framework drops controller inputs to it
-		FollowPawn->AddControllerPitchInput(AxisValue);
-		*/
-		FollowPawn->GetFirstPersonCamera()->AddRelativeRotation(FQuat(0.f, AxisValue, 0.f, 0.f));
-	}
 }
 
 void ALookitYouPawn::MoveForward(float AxisValue)
@@ -92,57 +78,19 @@ void ALookitYouPawn::Orbit(float AxisValue)
 
 void ALookitYouPawn::FlyAbout()
 {
-	UE_LOG(LogTemp, Warning, TEXT("FlyAbout; LookitYouPawn should be in free fly mode"));
-	if (CameraActive)
+	if (FollowPawn)
 	{
-		UE_LOG(LogTemp, Warning, TEXT("FlyAbout; parent actor says %p"), GetParentActor());
-		UE_LOG(LogTemp, Warning, TEXT("FlyAbout; owner actor says %p"), this->GetOwner());
-		if (FollowPawn)
-		{
-			if (FollowMode)
-			{
-				// detach this LookitYouPawn from the follow pawn
-				DetachFromActor(FDetachmentTransformRules::KeepWorldTransform);
-				// switch player possession from the follow pawn to this LookitYouPawn
-				APlayerController* controller = GetWorld()->GetFirstPlayerController();
-				controller->UnPossess();
-				UE_LOG(LogTemp, Warning, TEXT("FlyAbout; while attempting to take control, we find GetController returns %p"), controller);
-				controller->Possess(this);
-				FollowMode = false;
-			}
-			else
-			{
-				AttachToActor(FollowPawn, FAttachmentTransformRules::KeepWorldTransform);
-				// switch player possession from the this LookitYouPawn back to ryddelmyst character
-				APlayerController* controller = GetWorld()->GetFirstPlayerController();
-				UE_LOG(LogTemp, Warning, TEXT("FlyAbout; while attempting to give up control, we find GetController returns %p"), controller);
-				controller->UnPossess();
-				controller->Possess(FollowPawn);
-				// tell this LookitYouPawn to attach to ryddelmyst character again
-				UE_LOG(LogTemp, Warning, TEXT("FlyAbout; attempting to reattach to follow pawn %p"), FollowPawn);
-				UE_LOG(LogTemp, Warning, TEXT("FlyAbout; our parent actor is %p"), GetParentActor());
-				UE_LOG(LogTemp, Warning, TEXT("FlyAbout; our owner actor %p"), GetOwner());
-				// the unpossess/possess shuffle above seems to want to switch viewtarget implicitly, so switch it back
-				GetWorld()->GetFirstPlayerController()->SetViewTargetWithBlend(this, 0.0F, EViewTargetBlendFunction::VTBlend_Linear);
-				FollowMode = true;
-			}
-		}
-		else
-		{
-			UE_LOG(LogTemp, Error, TEXT("FlyAbout; tried to fly LookitYouPawn, but he doesn't have a FollowPawn set to detach/attach back to."));
-		}
+		// switch player possession back to ryddelmyst character
+		APlayerController* controller = GetWorld()->GetFirstPlayerController();
+		UE_LOG(LogTemp, Warning, TEXT("FlyAbout; while attempting to give up control, we find GetController returns %p"), controller);
+		controller->UnPossess();
+		controller->Possess(FollowPawn);
+		UE_LOG(LogTemp, Warning, TEXT("FlyAbout; attempting to repossess follow pawn %p"), FollowPawn);
 	}
 	else
 	{
-		UE_LOG(LogTemp, Error, TEXT("FlyAbout; tried to fly LookitYouPawn, but his camera is not active.  Please toggle camera to LookitYouPawn first so he can see where he's going when he takes flight!"));
+		UE_LOG(LogTemp, Error, TEXT("FlyAbout; tried to fly LookitYouPawn, but he doesn't have a FollowPawn set to detach/attach back to."));
 	}
-}
-
-void ALookitYouPawn::EnableCamera(bool enable)
-{
-	UE_LOG(LogTemp, Warning, TEXT("EnableCamera; LookitYouPawn camera %s"), enable ? TEXT("activating") : TEXT("deactivating"));
-	Camera->SetActive(enable);
-	CameraActive = enable;
 }
 
 void ALookitYouPawn::TakeControl()
@@ -151,12 +99,12 @@ void ALookitYouPawn::TakeControl()
 	FlyAbout();
 }
 
-void ALookitYouPawn::SetFollowPawn(ARyddelmystCharacter* followPawn)
+void ALookitYouPawn::SetFollowPawn(APawn* followPawn)
 {
 	FollowPawn = followPawn;
 }
 
-ARyddelmystCharacter* ALookitYouPawn::GetFollowPawn()
+APawn* ALookitYouPawn::GetFollowPawn()
 {
 	return FollowPawn;
 }
