@@ -28,6 +28,14 @@ ARyddelmystCharacter::ARyddelmystCharacter()
 	FirstPersonCameraComponent->SetRelativeLocation(FVector(-39.56f, 1.75f, 50.f + BaseEyeHeight)); // Position the camera slightly above eye level and at about the front of the mesh's face
 	FirstPersonCameraComponent->bUsePawnControlRotation = true;
 	FirstPersonCameraComponent->SetActive(true);
+
+	// Create a CameraComponent	for third person perspective
+	ThirdPersonCameraComponent = CreateDefaultSubobject<UCameraComponent>(TEXT("ThirdPersonCamera"));
+	ThirdPersonCameraComponent->SetupAttachment(GetCapsuleComponent());
+	ThirdPersonCameraComponent->SetRelativeLocation(FVector(-239.56f, 1.75f, 100.f + BaseEyeHeight)); // Position the camera slightly above eye level and at about the front of the mesh's face
+	ThirdPersonCameraComponent->SetRelativeRotation(FRotator(-20.f, 0.f, 0.f));
+	ThirdPersonCameraComponent->bUsePawnControlRotation = true;
+	ThirdPersonCameraComponent->SetActive(false);
 }
 
 void ARyddelmystCharacter::BeginPlay()
@@ -77,45 +85,23 @@ void ARyddelmystCharacter::SetupPlayerInputComponent(class UInputComponent* Play
 
 void ARyddelmystCharacter::SendControl()
 {
-	UE_LOG(LogTemp, Warning, TEXT("SendControl; RyddelmystCharacter attempting to send input control over to LookitYouGo with address %p"), LookitYouGo);
-	if (LookitYouGo)
-	{
-		LookitYouGo->TakeControl();
-	}
-}
 
-UCameraComponent* ARyddelmystCharacter::GetFirstPersonCamera()
-{
-	return FirstPersonCameraComponent;
+	LookitYouGo->TakeControl();
 }
 
 void ARyddelmystCharacter::CameraToggle()
 {
-	UE_LOG(LogTemp, Warning, TEXT("CameraToggle; RyddelmystCharacter attempting to activate cam of LookitYouGo with address %p"), LookitYouGo);
-	for (auto child : Children)
+	if (FirstPersonCameraMode)
 	{
-		UE_LOG(LogTemp, Warning, TEXT("CameraToggle; child says %s"), *child->GetName());
+		FirstPersonCameraMode = false;
+		FirstPersonCameraComponent->SetActive(false);
+		ThirdPersonCameraComponent->SetActive(true);
 	}
-	if (LookitYouGo)
-	{
-		if (FirstPersonCameraMode)
-		{
-			FirstPersonCameraComponent->SetActive(false);
-			LookitYouGo->EnableCamera(true);
-			FirstPersonCameraMode = false;
-			GetWorld()->GetFirstPlayerController()->SetViewTargetWithBlend(LookitYouGo, 0.0F, EViewTargetBlendFunction::VTBlend_Linear);
-		}
-		else
-		{
-			LookitYouGo->EnableCamera(false);
-			FirstPersonCameraComponent->SetActive(true);
-			FirstPersonCameraMode = true;
-			GetWorld()->GetFirstPlayerController()->SetViewTargetWithBlend(this, 0.0F, EViewTargetBlendFunction::VTBlend_Linear);
-		}
-	} 
 	else
 	{
-		UE_LOG(LogTemp, Error, TEXT("CameraToggle; tried to toggle cam, but LookitYouGo is null."));
+		ThirdPersonCameraComponent->SetActive(false);
+		FirstPersonCameraComponent->SetActive(true);
+		FirstPersonCameraMode = true;
 	}
 }
 
@@ -173,13 +159,7 @@ void ARyddelmystCharacter::Fire()
 	// Attempt to fire a projectile.
 	if (ProjectileClass)
 	{
-		UE_LOG(LogTemp, Warning, TEXT("Fire; firing snowball!  FPP cam rotation is %s"), *FirstPersonCameraComponent->GetComponentRotation().ToString());
-		/* we want the FPS camera, not the eyes
-		// Get the eyes transform.
-		FVector CameraLocation;
-		FRotator CameraRotation;
-		GetActorEyesViewPoint(CameraLocation, CameraRotation);
-		*/
+		UE_LOG(LogTemp, Warning, TEXT("Fire; firing snowball!  FPP cam world rotation is %s and relative rotation is %s"), *FirstPersonCameraComponent->GetComponentRotation().ToString(), *FirstPersonCameraComponent->GetRelativeRotation().ToString());
 
 		// Set MuzzleOffset to spawn projectiles slightly in front of the camera.
 		MuzzleOffset.Set(100.0f, 0.0f, 0.0f);
