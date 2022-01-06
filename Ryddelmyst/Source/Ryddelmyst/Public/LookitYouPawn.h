@@ -19,7 +19,7 @@ public:
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 
 	// Input functions
-	void FlyAbout();
+	void EndFlyAbout();
 	void MoveForward(float AxisValue);
 	void MoveRight(float AxisValue);
 	void MoveUp(float AxisValue);
@@ -30,7 +30,12 @@ public:
 	APawn* GetFollowPawn();
 
 	// ILookitYou impl
+	// Since we're a Pawn with our own camera and we're getting spawned when TakeControl() is called, we don't need to mess with camera settings
+	virtual void EnableCamera(bool enable) override;
+	// Unpossess the FollowPawn and possess this Pawn instead
 	virtual void TakeControl() override;
+	// Return the Actor location in world space
+	virtual FVector GetLocation() override;
 
 protected:
 	// Called when the game starts or when spawned

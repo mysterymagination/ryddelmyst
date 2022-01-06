@@ -35,7 +35,7 @@ void ALookitYouPawn::SetupPlayerInputComponent(UInputComponent* PlayerInputCompo
 	UE_LOG(LogTemp, Warning, TEXT("SetupPlayerInputComponent; LookitYouPawn receiving input"));
 	Super::SetupPlayerInputComponent(PlayerInputComponent);
 
-	InputComponent->BindAction("Free Cam Mode", IE_Released, this, &ALookitYouPawn::FlyAbout);
+	InputComponent->BindAction("Free Cam Mode", IE_Released, this, &ALookitYouPawn::EndFlyAbout);
 
 	// Respond every frame to the values of our two movement axes, "MoveX" and "MoveY".
 	InputComponent->BindAxis("MoveForward", this, &ALookitYouPawn::MoveForward);
@@ -76,7 +76,7 @@ void ALookitYouPawn::Orbit(float AxisValue)
 	Movement->Orbit(AxisValue);
 }
 
-void ALookitYouPawn::FlyAbout()
+void ALookitYouPawn::EndFlyAbout()
 {
 	if (FollowPawn)
 	{
@@ -86,6 +86,8 @@ void ALookitYouPawn::FlyAbout()
 		controller->UnPossess();
 		controller->Possess(FollowPawn);
 		UE_LOG(LogTemp, Warning, TEXT("FlyAbout; attempting to repossess follow pawn %p"), FollowPawn);
+		// todo: tell the FawnPawn that we're send control back its way; the RyddelmystCharacter impl will respond by moving its 3PP cam to the last LookitYouPawn location and setting its LookitYou handle to nullptr 
+		Destroy();
 	}
 	else
 	{
@@ -96,8 +98,20 @@ void ALookitYouPawn::FlyAbout()
 void ALookitYouPawn::TakeControl()
 {
 	UE_LOG(LogTemp, Warning, TEXT("TakeControl; LookitYouPawn hopping into pilot's chair!"));
-	FlyAbout();
+	// switch player possession to this LookitYouPawn
+	APlayerController* controller = GetWorld()->GetFirstPlayerController();
+	UE_LOG(LogTemp, Warning, TEXT("FlyAbout; while attempting to give up control, we find GetController returns %p"), controller);
+	controller->UnPossess();
+	controller->Possess(this);
 }
+
+void ALookitYouPawn::EnableCamera(bool enable){}
+
+FVector ALookitYouPawn::GetLocation() 
+{
+	return GetActorLocation();
+}
+
 
 void ALookitYouPawn::SetFollowPawn(APawn* followPawn)
 {
