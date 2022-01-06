@@ -31,4 +31,8 @@ public:
 	 * Tells our LookitYou that we would like it to process player input if possible 
 	 */
 	virtual void TakeControl() = 0;
+	/** 
+	 * @return the world space position vector of the ILookitYou impl 
+	 */
+	virtual FVector GetLocation() = 0;
 };
