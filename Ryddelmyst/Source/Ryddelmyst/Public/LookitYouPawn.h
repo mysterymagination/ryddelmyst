@@ -7,8 +7,6 @@
 #include "LookitYouMovementComponent.h"
 #include "LookitYouPawn.generated.h"
 
-class ARyddelmystCharacter;
-
 UCLASS()
 class RYDDELMYST_API ALookitYouPawn : public APawn, public ILookitYou
 {
@@ -26,24 +24,17 @@ public:
 	void MoveRight(float AxisValue);
 	void MoveUp(float AxisValue);
 	void Orbit(float AxisValue);
-	void MirrorControllerPitch(float AxisValue);
 
 	// field accessors
-	void SetFollowPawn(ARyddelmystCharacter* followPawn);
-	ARyddelmystCharacter* GetFollowPawn();
+	void SetFollowPawn(APawn* followPawn);
+	APawn* GetFollowPawn();
 
 	// ILookitYou impl
-	virtual void EnableCamera(bool enable) override;
 	virtual void TakeControl() override;
 
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
-
-private:	
-	// State variables
-	bool FollowMode = true;
-	bool CameraActive = false;
 
 private:
 	UPROPERTY()
@@ -51,8 +42,8 @@ private:
 	UPROPERTY()
 	class ULookitYouMovementComponent* Movement;
 	/**
-	 * The ARyddelmystCharacter Pawn that this LookitYouPawn should be following when not in flyabout mode
+	 * The Pawn that this LookitYouPawn should be following when not in flyabout mode
 	 */ 
 	UPROPERTY(EditAnywhere)
-	ARyddelmystCharacter* FollowPawn;
+	APawn* FollowPawn;
 };

@@ -22,12 +22,15 @@ class ARyddelmystCharacter : public ACharacter
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Camera, meta = (AllowPrivateAccess = "true"))
 	UCameraComponent* FirstPersonCameraComponent;
 
+	/** Third person camera */
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Camera, meta = (AllowPrivateAccess = "true"))
+	UCameraComponent* ThirdPersonCameraComponent;
+
 private:
 	bool FirstPersonCameraMode = true;
 
 public:
 	ARyddelmystCharacter();
-	UCameraComponent* GetFirstPersonCamera();
 
 protected:
 	virtual void BeginPlay();
