@@ -34,7 +34,7 @@ ARyddelmystCharacter::ARyddelmystCharacter()
 	ThirdPersonCameraComponent->SetupAttachment(GetCapsuleComponent());
 	ThirdPersonCameraComponent->SetRelativeLocation(FVector(-239.56f, 1.75f, 100.f + BaseEyeHeight)); // Position the camera slightly above eye level and at about the front of the mesh's face
 	ThirdPersonCameraComponent->SetRelativeRotation(FRotator(-20.f, 0.f, 0.f));
-	ThirdPersonCameraComponent->bUsePawnControlRotation = true;
+	ThirdPersonCameraComponent->bUsePawnControlRotation = false;
 	ThirdPersonCameraComponent->SetActive(false);
 }
 
@@ -144,7 +144,7 @@ void ARyddelmystCharacter::LookUp(float Value)
 	{
 		AddControllerPitchInput(Value);
 		UE_LOG(LogTemp, Warning, TEXT("LookUp; look input %s"), GetWorld()->GetFirstPlayerController()->IsLookInputIgnored() ? TEXT("is ignored") : TEXT("is not ignored"));
-		// Pitch controller input to the FPP cam seems locked for some reason by default after we switch cams to the LookitYouPawn via APlayerController.SetViewTargetWithBlend() so I'm updating the cam pitch rotation here manually.
+		// Pitch controller input to the 1PP cam while in 3PP since 1PP cam controls spawn location of projectiles; it is essentially our 'muzzle'
 		if (!FirstPersonCameraMode)
 		{
 			FRotator currentRotation = FirstPersonCameraComponent->GetComponentRotation();
