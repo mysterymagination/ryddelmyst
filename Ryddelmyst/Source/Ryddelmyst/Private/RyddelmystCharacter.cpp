@@ -85,8 +85,17 @@ void ARyddelmystCharacter::SetupPlayerInputComponent(class UInputComponent* Play
 
 void ARyddelmystCharacter::SendControl()
 {
-
-	LookitYouGo->TakeControl();
+	if (!LookitYouGo)
+	{
+		FActorSpawnParameters SpawnParams;
+		SpawnParams.Owner = this;
+		SpawnParams.Instigator = GetInstigator();
+		LookitYouGo = GetWorld()->SpawnActor<ALookitYouPawn>(ThirdPersonCameraComponent->GetComponentLocation(), ThirdPersonCameraComponent->GetComponentRotation(), SpawnParams);
+	}
+	if (LookitYouGo)
+	{
+		LookitYouGo->TakeControl();
+	}
 }
 
 void ARyddelmystCharacter::CameraToggle()

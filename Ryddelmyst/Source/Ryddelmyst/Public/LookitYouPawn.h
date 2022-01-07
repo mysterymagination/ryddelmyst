@@ -52,6 +52,6 @@ private:
 	/**
 	 * The FawnCharacter that this LookitYouPawn should will need be bound around and to which it will return possession control when the user indicates flyabout is done.
 	 */ 
-	UPROPERTY(EditAnywhere)
+	UPROPERTY()
 	AFawnCharacter* FollowPawn;
 };
