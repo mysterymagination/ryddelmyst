@@ -23,9 +23,9 @@ ALookitYouPawn::ALookitYouPawn()
 void ALookitYouPawn::BeginPlay()
 {
 	Super::BeginPlay();
-	if (FollowPawn)
+	if (FollowCharacter)
 	{
-		AttachToActor(FollowPawn, FAttachmentTransformRules::KeepWorldTransform);
+		AttachToActor(FollowCharacter, FAttachmentTransformRules::KeepWorldTransform);
 	}
 }
 
@@ -78,21 +78,21 @@ void ALookitYouPawn::Orbit(float AxisValue)
 
 void ALookitYouPawn::EndFlyAbout()
 {
-	if (FollowPawn)
+	if (FollowCharacter)
 	{
 		// switch player possession back to ryddelmyst character
 		APlayerController* controller = GetWorld()->GetFirstPlayerController();
 		UE_LOG(LogTemp, Warning, TEXT("FlyAbout; while attempting to give up control, we find GetController returns %p"), controller);
 		controller->UnPossess();
-		controller->Possess(FollowPawn);
-		UE_LOG(LogTemp, Warning, TEXT("FlyAbout; attempting to repossess follow pawn %p"), FollowPawn);
+		controller->Possess(FollowCharacter);
+		UE_LOG(LogTemp, Warning, TEXT("FlyAbout; attempting to repossess follow pawn %p"), FollowCharacter);
 		// tell the FawnPawn that we're sending control back its way; the RyddelmystCharacter impl will respond by moving its 3PP cam to the last LookitYouPawn location and setting its LookitYou handle to nullptr 
-		FollowPawn->OnLostFollower(this);
+		FollowCharacter->OnLostFollower(this);
 		Destroy();
 	}
 	else
 	{
-		UE_LOG(LogTemp, Error, TEXT("FlyAbout; tried to fly LookitYouPawn, but he doesn't have a FollowPawn set to detach/attach back to."));
+		UE_LOG(LogTemp, Error, TEXT("FlyAbout; tried to fly LookitYouPawn, but he doesn't have a FollowCharacter set to detach/attach back to."));
 	}
 }
 
@@ -118,14 +118,14 @@ FRotator ALookitYouPawn::GetRotation()
 	return GetActorRotation();
 }
 
-void ALookitYouPawn::SetFollowPawn(AFawnCharacter* followPawn)
+void ALookitYouPawn::SetFollowCharacter(AFawnCharacter* followCharacter)
 {
-	FollowPawn = followPawn;
+	FollowCharacter = followCharacter;
 }
 
-AFawnCharacter* ALookitYouPawn::GetFollowPawn()
+AFawnCharacter* ALookitYouPawn::GetFollowCharacter()
 {
-	return FollowPawn;
+	return FollowCharacter;
 }
 
 

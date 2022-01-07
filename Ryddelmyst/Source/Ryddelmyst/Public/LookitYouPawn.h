@@ -27,13 +27,13 @@ public:
 	void Orbit(float AxisValue);
 
 	// field accessors
-	void SetFollowPawn(AFawnCharacter* followPawn);
-	AFawnCharacter* GetFollowPawn();
+	void SetFollowCharacter(AFawnCharacter* followCharacter);
+	AFawnCharacter* GetFollowCharacter();
 
 	// ILookitYou impl
 	// Since we're a Pawn with our own camera and we're getting spawned when TakeControl() is called, we don't need to mess with camera settings
 	virtual void EnableCamera(bool enable) override;
-	// Unpossess the FollowPawn and possess this Pawn instead
+	// Unpossess the FollowCharacter and possess this Pawn instead
 	virtual void TakeControl() override;
 	// Return the LookitYouPawn's location in world space
 	virtual FVector GetLocation() override;
@@ -53,5 +53,5 @@ private:
 	 * The FawnCharacter that this LookitYouPawn should will need be bound around and to which it will return possession control when the user indicates flyabout is done.
 	 */ 
 	UPROPERTY()
-	AFawnCharacter* FollowPawn;
+	AFawnCharacter* FollowCharacter;
 };
