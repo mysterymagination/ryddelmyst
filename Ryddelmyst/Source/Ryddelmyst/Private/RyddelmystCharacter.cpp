@@ -94,12 +94,14 @@ void ARyddelmystCharacter::SendControl()
 	}
 	if (LookitYouGo)
 	{
+		LookitYouGo->SetFollowCharacter(this);
 		LookitYouGo->TakeControl();
 	}
 }
 
 void ARyddelmystCharacter::CameraToggle()
 {
+	UE_LOG(LogTemp, Warning, TEXT("CameraToggle; 1PP cam rotation is %s"),  *FirstPersonCameraComponent->GetComponentRotation().ToString());
 	if (FirstPersonCameraMode)
 	{
 		FirstPersonCameraMode = false;
@@ -142,10 +144,13 @@ void ARyddelmystCharacter::LookUp(float Value)
 {
 	if (Value != 0.0f)
 	{
-		AddControllerPitchInput(Value);
-		UE_LOG(LogTemp, Warning, TEXT("LookUp; look input %s"), GetWorld()->GetFirstPlayerController()->IsLookInputIgnored() ? TEXT("is ignored") : TEXT("is not ignored"));
-		// Pitch controller input to the 1PP cam while in 3PP since 1PP cam controls spawn location of projectiles; it is essentially our 'muzzle'
-		if (!FirstPersonCameraMode)
+		// Only send controller pitch to CharacterMovementComponent if we're in 1PP.  In 3PP, manually pitch the 1PP cam based on controller input since 1PP cam controls spawn location of projectiles; it is essentially our 'muzzle'.  CharacterMovementComponent seems to only consider forwarding pitch to 1PP cam if it is active i.e. we are in 1PP mode, which is why we're manually applying pitch to 1PP cam while we're in 3PP.
+		if (FirstPersonCameraMode)
+		{
+			AddControllerPitchInput(Value);
+			UE_LOG(LogTemp, Warning, TEXT("LookUp; adding pitch rotation of %f for CharacterMovementComponent to consume"), Value);
+		}
+		else
 		{
 			FRotator currentRotation = FirstPersonCameraComponent->GetComponentRotation();
 			// We don't want any Roll happening, and for some reason when I use AddWorldRotation I get Roll even if I specify 0.f for Yaw and Roll params.  I noticed that in FPP the Roll seems to stay almost 0 forever, so I guess a direct set to 0 here is fine enough.

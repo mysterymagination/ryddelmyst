@@ -28,7 +28,7 @@ public:
 	 */
 	virtual void EnableCamera(bool enable) = 0;
 	/**
-	 * Tells our LookitYou that we would like it to process player input if possible 
+	 * Tells our LookitYou that we would like it to process player input if possible
 	 */
 	virtual void TakeControl() = 0;
 	/** 
