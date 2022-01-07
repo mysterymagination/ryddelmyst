@@ -36,6 +36,7 @@ void ULookitYouMovementComponent::TickComponent(float DeltaTime, enum ELevelTick
 		{
 			MaxAllowedWandrance = MaxAttachOffsetComponent;
 		}
+		UE_LOG(LogTemp, Warning, TEXT("LookitYouMovementComponent::TickComponent; max wandrance is %f"), MaxAllowedWandrance);
 		FVector PossibleWandrance = AttachRelativePos + DesiredMovementThisFrame;
 		UE_LOG(LogTemp, Warning, TEXT("LookitYouMovementComponent::TickComponent; lookit rel pos is %s and desired movement vector is %s so possible wandrance of lookit from attach character is %s"), *UpdatedComponent->GetRelativeLocation().ToString(), *DesiredMovementThisFrame.ToString(), *PossibleWandrance.ToString());
 		if (abs(PossibleWandrance.X) >= MaxAllowedWandrance)
