@@ -3,7 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "GameFramework/Character.h"
+#include "FawnCharacter.h"
 #include "LookitYouPawn.h"
 #include "Snowball.h"
 #include "RyddelmystCharacter.generated.h"
@@ -14,7 +14,7 @@ class USceneComponent;
 class UCameraComponent;
 
 UCLASS(config=Game)
-class ARyddelmystCharacter : public ACharacter
+class ARyddelmystCharacter : public AFawnCharacter
 {
 	GENERATED_BODY()
 
@@ -31,6 +31,7 @@ private:
 
 public:
 	ARyddelmystCharacter();
+	virtual void OnLostFollower(ILookitYou* lookitYou) override;
 
 protected:
 	virtual void BeginPlay();

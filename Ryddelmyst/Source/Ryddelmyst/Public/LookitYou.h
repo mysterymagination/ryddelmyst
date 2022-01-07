@@ -35,4 +35,8 @@ public:
 	 * @return the world space position vector of the ILookitYou impl 
 	 */
 	virtual FVector GetLocation() = 0;
+	/**
+	 * @return the world space rotation of the ILookitYou impl
+	 */
+	virtual FRotator GetRotation() = 0;
 };
