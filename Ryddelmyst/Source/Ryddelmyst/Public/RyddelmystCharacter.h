@@ -45,8 +45,8 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category=Camera)
 	float BaseLookUpRate;
 
-	/** Handle to our LookitYou impl, the camerafolk; expected to be set in Editor or BP to e.g. a LookitYouPawn  */
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category=Camera)
+	/** Handle to our LookitYou impl, which will be spawned when user inputs Free Cam Mode action.  */
+	UPROPERTY()
 	class ALookitYouPawn* LookitYouGo;
 
 	// Gun muzzle offset from the camera location.
