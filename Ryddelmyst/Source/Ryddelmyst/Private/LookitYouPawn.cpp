@@ -80,6 +80,7 @@ void ALookitYouPawn::EndFlyAbout()
 {
 	if (FollowCharacter)
 	{
+		DetachFromActor(FDetachmentTransformRules::KeepWorldTransform);
 		// switch player possession back to ryddelmyst character
 		APlayerController* controller = GetWorld()->GetFirstPlayerController();
 		UE_LOG(LogTemp, Warning, TEXT("FlyAbout; while attempting to give up control, we find GetController returns %p"), controller);
@@ -104,6 +105,10 @@ void ALookitYouPawn::TakeControl()
 	UE_LOG(LogTemp, Warning, TEXT("FlyAbout; while attempting to give up control, we find GetController returns %p"), controller);
 	controller->UnPossess();
 	controller->Possess(this);
+	if (FollowCharacter)
+	{
+		AttachToActor(FollowCharacter, FAttachmentTransformRules::KeepWorldTransform);
+	}
 }
 
 void ALookitYouPawn::EnableCamera(bool enable){}
