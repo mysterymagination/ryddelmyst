@@ -86,7 +86,8 @@ void ALookitYouPawn::EndFlyAbout()
 		controller->UnPossess();
 		controller->Possess(FollowPawn);
 		UE_LOG(LogTemp, Warning, TEXT("FlyAbout; attempting to repossess follow pawn %p"), FollowPawn);
-		// todo: tell the FawnPawn that we're send control back its way; the RyddelmystCharacter impl will respond by moving its 3PP cam to the last LookitYouPawn location and setting its LookitYou handle to nullptr 
+		// tell the FawnPawn that we're sending control back its way; the RyddelmystCharacter impl will respond by moving its 3PP cam to the last LookitYouPawn location and setting its LookitYou handle to nullptr 
+		FollowPawn->OnLostFollower(this);
 		Destroy();
 	}
 	else
@@ -112,13 +113,17 @@ FVector ALookitYouPawn::GetLocation()
 	return GetActorLocation();
 }
 
+FRotator ALookitYouPawn::GetRotation()
+{
+	return GetActorRotation();
+}
 
-void ALookitYouPawn::SetFollowPawn(APawn* followPawn)
+void ALookitYouPawn::SetFollowPawn(AFawnCharacter* followPawn)
 {
 	FollowPawn = followPawn;
 }
 
-APawn* ALookitYouPawn::GetFollowPawn()
+AFawnCharacter* ALookitYouPawn::GetFollowPawn()
 {
 	return FollowPawn;
 }

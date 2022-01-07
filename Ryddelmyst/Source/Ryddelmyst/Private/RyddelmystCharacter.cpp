@@ -190,3 +190,11 @@ void ARyddelmystCharacter::Fire()
 		}
 	}
 }
+
+void ARyddelmystCharacter::OnLostFollower(ILookitYou* lookitYou)
+{
+	// move the 3PP camera to the last location and rotation of the lookityou
+	ThirdPersonCameraComponent->SetWorldLocationAndRotation(lookitYou->GetLocation(), lookitYou->GetRotation());
+	// nullify the lookityou member
+	LookitYouGo = nullptr;
+}
