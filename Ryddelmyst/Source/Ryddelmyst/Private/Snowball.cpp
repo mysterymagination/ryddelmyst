@@ -16,7 +16,20 @@ ASnowball::ASnowball()
 		// Use a sphere as a simple collision representation.
 		CollisionComponent = CreateDefaultSubobject<USphereComponent>(TEXT("SphereComponent"));
 		// Set the sphere's collision radius.
+		
+		// todo: trying to lower the impact force of the snowball; maybe mass derives from the radius of the physics sphere?
 		CollisionComponent->InitSphereRadius(15.0f);
+		CollisionComponent->SetMassOverrideInKg(NAME_None, 0.1f, true);
+
+		// On hit event handling
+		CollisionComponent->SetSimulatePhysics(true);
+		CollisionComponent->SetNotifyRigidBodyCollision(true);
+		CollisionComponent->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
+		CollisionComponent->SetCollisionProfileName("BlockAllDynamic");
+		FScriptDelegate onHitDelegate;
+		onHitDelegate.BindUFunction(this, FName("OnHit"));
+		CollisionComponent->OnComponentHit.Add(onHitDelegate);
+
 		// Set the root component to be the collision component.
 		RootComponent = CollisionComponent;
 	}
@@ -77,5 +90,12 @@ void ASnowball::Tick(float DeltaTime)
 void ASnowball::FireInDirection(const FVector& ShootDirection)
 {
 	ProjectileMovementComponent->Velocity = ShootDirection * ProjectileMovementComponent->InitialSpeed;
+}
+
+void ASnowball::OnHit(UPrimitiveComponent* HitComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit)
+{
+	UE_LOG(LogTemp, Warning, TEXT("Snowball::OnHit; we hit %s"), (OtherActor != nullptr ? *OtherActor->GetName() : TEXT("null")));
+	Destroy();
+	// todo: leave behind flattened snowball messh?
 }
 
