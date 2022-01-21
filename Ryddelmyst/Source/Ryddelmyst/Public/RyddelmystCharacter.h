@@ -28,6 +28,7 @@ class ARyddelmystCharacter : public AFawnCharacter
 
 private:
 	bool FirstPersonCameraMode = true;
+	uint8_t SelectedWeaponIdx = 0;
 
 public:
 	ARyddelmystCharacter();
@@ -54,9 +55,9 @@ public:
 	FVector MuzzleOffset;
 
 protected:
-	// Projectile class to spawn, naturally it must be some variation of the very best Pathfinder spell
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Projectile)
-	TSubclassOf<ASnowball> ProjectileClass;
+	// List of weapons
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Gameplay)
+	TArray<TSubclassOf<ASnowball>> Spells;
 
 protected:
 	/** Handles switching between our cam and the LookitYouPawn's "3rd person" cam */
@@ -76,6 +77,16 @@ protected:
 	 * @param Rate	This is a normalized rate, i.e. 1.0 means 100% of desired turn rate
 	 */
 	void TurnAtRate(float Rate);
+
+	/**
+	 * Called via input to Cycle Weapon Up event
+	 */
+	void CycleWeaponUp();
+
+	/**
+	 * Called via input to Cycle Weapon Down event
+	 */
+	void CycleWeaponDown();
 
 	/**
 	 * Called via input to turn look up/down at a given rate.
