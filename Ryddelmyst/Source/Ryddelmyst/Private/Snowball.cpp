@@ -94,7 +94,6 @@ void ASnowball::FireInDirection(const FVector& ShootDirection)
 
 void ASnowball::OnHit(UPrimitiveComponent* HitComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit)
 {
-	UE_LOG(LogTemp, Warning, TEXT("Snowball::OnHit; we hit %s"), (OtherActor != nullptr ? *OtherActor->GetName() : TEXT("null")));
 	Destroy();
 	// todo: leave behind flattened snowball messh?
 }

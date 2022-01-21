@@ -79,6 +79,8 @@ void ARyddelmystCharacter::SetupPlayerInputComponent(class UInputComponent* Play
 	PlayerInputComponent->BindAxis("TurnRate", this, &ARyddelmystCharacter::TurnAtRate);
 	PlayerInputComponent->BindAxis("LookUp", this, &ARyddelmystCharacter::LookUp);
 	PlayerInputComponent->BindAxis("LookUpRate", this, &ARyddelmystCharacter::LookUpAtRate);
+	PlayerInputComponent->BindAction("Cycle Weapon Up", IE_Released, this, &ARyddelmystCharacter::CycleWeaponUp);
+	PlayerInputComponent->BindAction("Cycle Weapon Down", IE_Released, this, &ARyddelmystCharacter::CycleWeaponDown);
 
 	PlayerInputComponent->BindAction("Fire", IE_Released, this, &ARyddelmystCharacter::Fire);
 }
@@ -165,14 +167,44 @@ void ARyddelmystCharacter::LookUpAtRate(float Rate)
 	AddControllerPitchInput(Rate * BaseLookUpRate * GetWorld()->GetDeltaSeconds());
 }
 
+void ARyddelmystCharacter::CycleWeaponUp()
+{
+	UE_LOG(LogTemp, Warning, TEXT("CycleWeaponUp"));
+	if (Spells.Num() > 0)
+	{	
+		if (SelectedWeaponIdx < Spells.Num() - 1)
+		{
+			SelectedWeaponIdx++;
+		}
+		else
+		{
+			SelectedWeaponIdx = 0;
+		}
+	}
+}
+
+void ARyddelmystCharacter::CycleWeaponDown()
+{
+	UE_LOG(LogTemp, Warning, TEXT("CycleWeaponDown"));
+	if (Spells.Num() > 0)
+	{
+		if (SelectedWeaponIdx > 0)
+		{
+			SelectedWeaponIdx--;
+		}
+		else
+		{
+			SelectedWeaponIdx = Spells.Num() - 1;
+		}
+	}
+}
+
 void ARyddelmystCharacter::Fire()
 {
-	UE_LOG(LogTemp, Warning, TEXT("Fire; attempting to fire snowball..."));
+	UE_LOG(LogTemp, Warning, TEXT("Fire; attempting to fire snowball... using weapon idx %u"), SelectedWeaponIdx);
 	// Attempt to fire a projectile.
-	if (ProjectileClass)
+	if (SelectedWeaponIdx < Spells.Num())
 	{
-		UE_LOG(LogTemp, Warning, TEXT("Fire; firing snowball!  FPP cam world rotation is %s and relative rotation is %s"), *FirstPersonCameraComponent->GetComponentRotation().ToString(), *FirstPersonCameraComponent->GetRelativeRotation().ToString());
-
 		// Set MuzzleOffset to spawn projectiles slightly in front of the camera.
 		MuzzleOffset.Set(100.0f, 0.0f, 0.0f);
 
@@ -192,7 +224,7 @@ void ARyddelmystCharacter::Fire()
 			SpawnParams.Instigator = GetInstigator();
 
 			// Spawn the projectile at the muzzle.
-			ASnowball* Snowball = World->SpawnActor<ASnowball>(ProjectileClass, MuzzleLocation, MuzzleRotation, SpawnParams);
+			ASnowball* Snowball = World->SpawnActor<ASnowball>(Spells[SelectedWeaponIdx], MuzzleLocation, MuzzleRotation, SpawnParams);
 			if (Snowball)
 			{
 				// Set the projectile's initial trajectory.
