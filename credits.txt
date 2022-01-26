@@ -15,6 +15,10 @@
     4.1 Source: https://opengameart.org/content/free-hedges
     4.2 Authors: https://opengameart.org/users/yughues
     4.3 License: CC0
+ 5. Ryddelmyst/Content/Ryddelmyst_Assets/Meshes/Rocks/rocks.blend
+    5.1 Source: https://opengameart.org/content/handpainted-style-rocks
+    5.2 Authors: https://opengameart.org/users/rubberduck
+    5.3 License: CC0
 
 Textures:
   1. Ryddelmyst/Content/Ryddelmyst_Assets/Textures/snowflake.png 
