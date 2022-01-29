@@ -32,10 +32,8 @@ void ULookitYouMovementComponent::TickComponent(float DeltaTime, enum ELevelTick
 		// check to see if we're trying to move out of flyabout bounds and clamp
 		FVector AttachRelativePos = UpdatedComponent->GetRelativeLocation();
 		float MaxAttachOffsetComponent = std::max(std::max(abs(AttachRelativePos.X), abs(AttachRelativePos.Y)), abs(AttachRelativePos.Z));
-		if (MaxAttachOffsetComponent > MaxAllowedWandrance)
-		{
-			MaxAllowedWandrance = MaxAttachOffsetComponent;
-		}
+		// in practice I'm finding that allowing the cam to fly around to a constant distance away from the character that may not have anything to do with initial hand-tuned cam offset allows for seeing too much of the map; instead, let's make the init offset the max wandrance and then the player can move freely within that range.
+		MaxAllowedWandrance = MaxAttachOffsetComponent;
 		UE_LOG(LogTemp, Warning, TEXT("LookitYouMovementComponent::TickComponent; max wandrance is %f"), MaxAllowedWandrance);
 		FVector PossibleWandrance = AttachRelativePos + DesiredMovementThisFrame;
 		UE_LOG(LogTemp, Warning, TEXT("LookitYouMovementComponent::TickComponent; lookit rel pos is %s and desired movement vector is %s so possible wandrance of lookit from attach character is %s"), *UpdatedComponent->GetRelativeLocation().ToString(), *DesiredMovementThisFrame.ToString(), *PossibleWandrance.ToString());
