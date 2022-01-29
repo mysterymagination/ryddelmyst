@@ -28,6 +28,7 @@ class ARyddelmystCharacter : public AFawnCharacter
 
 private:
 	bool FirstPersonCameraMode = true;
+	bool IsRunning = false;
 	uint8_t SelectedWeaponIdx = 0;
 
 public:
@@ -77,6 +78,11 @@ protected:
 	 * @param Rate	This is a normalized rate, i.e. 1.0 means 100% of desired turn rate
 	 */
 	void TurnAtRate(float Rate);
+
+	/**
+	 * Called via input to Run toggle event
+	 */
+	void Run();
 
 	/**
 	 * Called via input to Cycle Weapon Up event

@@ -83,6 +83,7 @@ void ARyddelmystCharacter::SetupPlayerInputComponent(class UInputComponent* Play
 	PlayerInputComponent->BindAction("Cycle Weapon Down", IE_Released, this, &ARyddelmystCharacter::CycleWeaponDown);
 
 	PlayerInputComponent->BindAction("Fire", IE_Released, this, &ARyddelmystCharacter::Fire);
+	PlayerInputComponent->BindAction("Run", IE_Released, this, &ARyddelmystCharacter::Run);
 }
 
 void ARyddelmystCharacter::SendControl()
@@ -116,6 +117,26 @@ void ARyddelmystCharacter::CameraToggle()
 		FirstPersonCameraComponent->SetActive(true);
 		FirstPersonCameraMode = true;
 	}
+}
+
+void ARyddelmystCharacter::Run()
+{
+	UE_LOG(LogTemp, Warning, TEXT("Run; speed is %f and we are %s"), GetCharacterMovement()->Velocity.Size(), IsRunning ? TEXT("running") : TEXT("walking"));
+	if (IsRunning)
+	{
+		// toggle to walk speed
+		GetCharacterMovement()->Velocity *= 0.5f;
+		GetCapsuleComponent()->SetAllPhysicsLinearVelocity(GetCharacterMovement()->Velocity * 0.5f, false);
+		UE_LOG(LogTemp, Warning, TEXT("Run; after toggle to walk, speed is %f"), GetCharacterMovement()->Velocity.Size());
+	}
+	else
+	{
+		// toggle to run speed
+		GetCharacterMovement()->Velocity *= 2.0f;
+		GetCapsuleComponent()->SetAllPhysicsLinearVelocity(GetCharacterMovement()->Velocity * 2.0f, false);
+		UE_LOG(LogTemp, Warning, TEXT("Run; after toggle to run, speed is %f"), GetCharacterMovement()->Velocity.Size());
+	}
+	IsRunning = !IsRunning;
 }
 
 void ARyddelmystCharacter::MoveForward(float Value)
