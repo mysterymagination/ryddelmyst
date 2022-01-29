@@ -19,6 +19,14 @@
     5.1 Source: https://opengameart.org/content/handpainted-style-rocks
     5.2 Authors: https://opengameart.org/users/rubberduck
     5.3 License: CC0
+ 6. Ryddelmyst/Content/Ryddelmyst_Assets/Meshes/Rocks/rock.blend
+    6.1 Source: https://opengameart.org/content/mossy-rock
+    6.2 Authors: https://opengameart.org/users/hoodedkian
+    6.3 License: CC0
+ 7. Ryddelmyst/Content/Ryddelmyst_Assets/Meshes/altar.blend
+    7.1: Source: https://opengameart.org/content/altar
+    7.2: Authors: https://opengameart.org/users/mess110
+    7.3: License: CC0
 
 Textures:
   1. Ryddelmyst/Content/Ryddelmyst_Assets/Textures/snowflake.png 
