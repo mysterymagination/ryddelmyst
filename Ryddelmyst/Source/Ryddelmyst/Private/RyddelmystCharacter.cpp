@@ -125,16 +125,12 @@ void ARyddelmystCharacter::Run()
 	if (IsRunning)
 	{
 		// toggle to walk speed
-		GetCharacterMovement()->Velocity *= 0.5f;
-		GetCapsuleComponent()->SetAllPhysicsLinearVelocity(GetCharacterMovement()->Velocity * 0.5f, false);
-		UE_LOG(LogTemp, Warning, TEXT("Run; after toggle to walk, speed is %f"), GetCharacterMovement()->Velocity.Size());
+		GetCharacterMovement()->MaxWalkSpeed = 600.f;
 	}
 	else
 	{
 		// toggle to run speed
-		GetCharacterMovement()->Velocity *= 2.0f;
-		GetCapsuleComponent()->SetAllPhysicsLinearVelocity(GetCharacterMovement()->Velocity * 2.0f, false);
-		UE_LOG(LogTemp, Warning, TEXT("Run; after toggle to run, speed is %f"), GetCharacterMovement()->Velocity.Size());
+		GetCharacterMovement()->MaxWalkSpeed = 1800.f;
 	}
 	IsRunning = !IsRunning;
 }
@@ -144,7 +140,7 @@ void ARyddelmystCharacter::MoveForward(float Value)
 	if (Value != 0.0f)
 	{
 		// add movement in that direction
-		AddMovementInput(GetActorForwardVector(), Value);
+		AddMovementInput(GetActorForwardVector(), Value * (IsRunning ? 30 : 1));
 	}
 }
 
@@ -153,7 +149,7 @@ void ARyddelmystCharacter::MoveRight(float Value)
 	if (Value != 0.0f)
 	{
 		// add movement in that direction
-		AddMovementInput(GetActorRightVector(), Value);
+		AddMovementInput(GetActorRightVector(), Value * (IsRunning ? 30 : 1));
 	}
 }
 
