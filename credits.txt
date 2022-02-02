@@ -27,6 +27,10 @@
     7.1: Source: https://opengameart.org/content/altar
     7.2: Authors: https://opengameart.org/users/mess110
     7.3: License: CC0
+ 8. Ryddelmyst/Content/Ryddelmyst_Assets/Meshes/Rocks/asteroid_rock.blend
+    8.1: Source: https://opengameart.org/content/low-poly-rocks
+    8.2: Authors: https://opengameart.org/users/para
+    8.3: License: CC0
 
 Textures:
   1. Ryddelmyst/Content/Ryddelmyst_Assets/Textures/snowflake.png 
