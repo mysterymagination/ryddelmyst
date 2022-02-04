@@ -36,9 +36,13 @@
     9.2: Authors: https://opengameart.org/users/julius
     9.3: License: http://www.gnu.org/licenses/old-licenses/gpl-2.0.html, http://www.gnu.org/licenses/gpl-3.0.html, http://creativecommons.org/licenses/by-sa/3.0/
  10. Ryddelmyst/Content/Ryddelmyst_Assets/Meshes/Trees/quercus
-    9.1: Source: https://opengameart.org/content/oak-tree
-    9.2: Authors: https://opengameart.org/users/lauris71
-    9.3: License: http://creativecommons.org/licenses/by-sa/3.0/, http://www.gnu.org/licenses/gpl-3.0.html
+    10.1: Source: https://opengameart.org/content/oak-tree
+    10.2: Authors: https://opengameart.org/users/lauris71
+    10.3: License: http://creativecommons.org/licenses/by-sa/3.0/, http://www.gnu.org/licenses/gpl-3.0.html
+ 11. Ryddelmyst/Content/Ryddelmyst_Assets/Meshes/treasurechest.blend
+    11.1: Source: https://opengameart.org/content/treasure-chest-animated-idleopen
+    11.2: Authors: https://opengameart.org/users/thekingofdemons and https://opengameart.org/users/weaponguy
+    11.3: License: http://creativecommons.org/licenses/by-sa/3.0/
 
 Textures:
   1. Ryddelmyst/Content/Ryddelmyst_Assets/Textures/snowflake.png 
