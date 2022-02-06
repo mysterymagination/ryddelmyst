@@ -43,6 +43,14 @@
     11.1: Source: https://opengameart.org/content/treasure-chest-animated-idleopen
     11.2: Authors: https://opengameart.org/users/thekingofdemons and https://opengameart.org/users/weaponguy
     11.3: License: http://creativecommons.org/licenses/by-sa/3.0/
+ 12. Ryddelmyst/Content/Ryddelmyst_Assets/Meshes/Spike_trap_Mk2
+    12.1: Source: https://opengameart.org/content/spyke-trap-low-poly-updated
+    12.2: Authors: https://opengameart.org/users/danimal
+    12.3: License: http://creativecommons.org/licenses/by/3.0/
+ 13. Ryddelmyst/Content/Ryddelmyst_Assets/Textures/Tornado
+    13.1: Source: https://opengameart.org/content/tornado
+    13.2: Authors: https://opengameart.org/users/devnewton
+    13.3: License: https://creativecommons.org/licenses/by/4.0/, http://creativecommons.org/licenses/by/3.0/, http://creativecommons.org/licenses/by-sa/4.0/, http://creativecommons.org/licenses/by-sa/3.0/, http://opengameart.org/content/oga-by-30-faq, http://creativecommons.org/publicdomain/zero/1.0/
 
 Textures:
   1. Ryddelmyst/Content/Ryddelmyst_Assets/Textures/snowflake.png 
