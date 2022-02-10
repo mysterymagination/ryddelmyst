@@ -6,6 +6,7 @@
 #include "Components/InputComponent.h"
 #include "GameFramework/InputSettings.h"
 #include "Kismet/GameplayStatics.h"
+#include "Interact.h"
 #include "GameFramework/CharacterMovementComponent.h"
 
 DEFINE_LOG_CATEGORY_STATIC(LogFPChar, Warning, All);
@@ -84,6 +85,14 @@ void ARyddelmystCharacter::SetupPlayerInputComponent(class UInputComponent* Play
 
 	PlayerInputComponent->BindAction("Fire", IE_Released, this, &ARyddelmystCharacter::Fire);
 	PlayerInputComponent->BindAction("Run", IE_Released, this, &ARyddelmystCharacter::Run);
+	PlayerInputComponent->BindAction("Interact", IE_Released, this, &ARyddelmystCharacter::Interact);
+}
+
+void ARyddelmystCharacter::Interact()
+{
+	// todo: toss a ray out to some interact distance and check for a hit object implementing IInteract
+	// todo: run the IInteract::Interact() function
+	// todo: process returned interact capability array e.g. if it's grabbable, then grab it!
 }
 
 void ARyddelmystCharacter::SendControl()
