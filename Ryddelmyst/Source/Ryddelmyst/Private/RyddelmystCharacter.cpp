@@ -90,9 +90,35 @@ void ARyddelmystCharacter::SetupPlayerInputComponent(class UInputComponent* Play
 
 void ARyddelmystCharacter::Interact()
 {
-	// todo: toss a ray out to some interact distance and check for a hit object implementing IInteract
-	// todo: run the IInteract::Interact() function
-	// todo: process returned interact capability array e.g. if it's grabbable, then grab it!
+	// determine where our ray trace should begin and end
+	const FVector start_trace = FirstPersonCameraComponent->GetComponentLocation();
+	const FVector direction = FirstPersonCameraComponent->GetComponentRotation().Vector();
+	const FVector end_trace = start_trace + (direction * MaxInteractDistance);
+	UE_LOG(LogTemp, Warning, TEXT("Interact; ray start says %s, direction says %s, and ray end says %s"), *start_trace.ToString(), *direction.ToString(), *end_trace.ToString());
+	FCollisionQueryParams TraceParams(FName(TEXT("InteractTrace")), true, this);
+	TraceParams.bReturnPhysicalMaterial = false;
+	TraceParams.bTraceComplex = true;
+
+	// cast our ray out and check for a hit object implementing IInteract
+	FHitResult Hit(ForceInit);
+	GetWorld()->LineTraceSingleByChannel(Hit, start_trace, end_trace, ECollisionChannel::ECC_GameTraceChannel1, TraceParams);
+	
+	// process any hit actor looking for interactability
+	AActor* Actor = Hit.GetActor();
+	if (Actor)
+	{
+		UE_LOG(LogTemp, Warning, TEXT("Interact; found something in range called %s"), *Actor->GetName());
+		IInteract* Interactable = Cast<IInteract>(Actor);
+		if (Interactable)
+		{
+			TArray<InteractCapability> capArray = Interactable->OnInteract();
+			for (auto cap : capArray)
+			{
+				UE_LOG(LogTemp, Warning, TEXT("Interact; cap array of interactable says %s"), cap);
+				// todo: process returned interact capability array e.g. if it's grabbable, then grab it!
+			}
+		}
+	}
 }
 
 void ARyddelmystCharacter::SendControl()
