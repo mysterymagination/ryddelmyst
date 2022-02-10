@@ -55,6 +55,10 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Gameplay)
 	FVector MuzzleOffset;
 
+	// Distance at which the player can interact with objects.
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Interaction")
+	float MaxInteractDistance = 1000.f;
+
 protected:
 	// List of weapons
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Gameplay)
