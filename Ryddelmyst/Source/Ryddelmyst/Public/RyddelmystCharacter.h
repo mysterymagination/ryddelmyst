@@ -105,6 +105,11 @@ protected:
 	 */ 
 	UFUNCTION()
 	void Fire();
+	/**
+	 * Handles activating interactable objects.
+	 */
+	UFUNCTION()
+	void Interact();
 	
 protected:
 	// APawn interface
