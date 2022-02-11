@@ -57,7 +57,7 @@ public:
 
 	// Distance at which the player can interact with objects.
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Interaction")
-	float MaxInteractDistance = 1000.f;
+	float MaxInteractDistance = 100.f;
 
 protected:
 	// List of weapons
