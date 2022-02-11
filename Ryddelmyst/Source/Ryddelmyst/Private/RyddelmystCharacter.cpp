@@ -119,12 +119,13 @@ void ARyddelmystCharacter::Interact()
 			{
 				UE_LOG(LogTemp, Warning, TEXT("Interact; cap array index is %d, and ordinal says %u"), idx, (uint8)cap);
 				idx++;
-				UEnum* MyEnum = FindObject<UEnum>(nullptr, TEXT("InteractCapability"));
+				UEnum* MyEnum = FindObject<UEnum>(ANY_PACKAGE, TEXT("InteractCapability"));
 				UE_LOG(LogTemp, Warning, TEXT("Interact; myenum ptr is %p"), MyEnum);
-				/*
-				FString DisplayString = MyEnum->GetNameStringByValue((uint8)cap);
-				UE_LOG(LogTemp, Warning, TEXT("Interact; cap array of interactable says %s"), *DisplayString);
-				*/
+				if (MyEnum)
+				{
+					FString DisplayString = MyEnum->GetNameStringByValue((uint8)cap);
+					UE_LOG(LogTemp, Warning, TEXT("Interact; cap array of interactable says %s"), *DisplayString);
+				}
 				// todo: process returned interact capability array e.g. if it's grabbable, then grab it!
 			}
 		}
