@@ -108,13 +108,23 @@ void ARyddelmystCharacter::Interact()
 	if (Actor)
 	{
 		UE_LOG(LogTemp, Warning, TEXT("Interact; found something in range called %s"), *Actor->GetName());
-		IInteract* Interactable = Cast<IInteract>(Actor);
-		if (Interactable)
+		if (Actor->GetClass()->ImplementsInterface(UInteract::StaticClass()))
 		{
-			TArray<InteractCapability> capArray = Interactable->OnInteract();
+
+			UE_LOG(LogTemp, Warning, TEXT("Interact; actor is interactable!"));
+			TArray<InteractCapability> capArray = IInteract::Execute_OnInteract(Actor);
+			UE_LOG(LogTemp, Warning, TEXT("Interact; cap array of interactable has %d members"), capArray.Num());
+			int idx = 0;
 			for (auto cap : capArray)
 			{
-				UE_LOG(LogTemp, Warning, TEXT("Interact; cap array of interactable says %s"), cap);
+				UE_LOG(LogTemp, Warning, TEXT("Interact; cap array index is %d, and ordinal says %u"), idx, (uint8)cap);
+				idx++;
+				UEnum* MyEnum = FindObject<UEnum>(nullptr, TEXT("InteractCapability"));
+				UE_LOG(LogTemp, Warning, TEXT("Interact; myenum ptr is %p"), MyEnum);
+				/*
+				FString DisplayString = MyEnum->GetNameStringByValue((uint8)cap);
+				UE_LOG(LogTemp, Warning, TEXT("Interact; cap array of interactable says %s"), *DisplayString);
+				*/
 				// todo: process returned interact capability array e.g. if it's grabbable, then grab it!
 			}
 		}
