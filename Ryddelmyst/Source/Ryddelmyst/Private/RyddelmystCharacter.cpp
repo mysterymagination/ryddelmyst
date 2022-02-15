@@ -110,7 +110,7 @@ void ARyddelmystCharacter::Interact()
 		UE_LOG(LogTemp, Warning, TEXT("Interact; found something in range called %s"), *Actor->GetName());
 		if (Actor->GetClass()->ImplementsInterface(UInteract::StaticClass()))
 		{
-
+			// todo: if we're already engaged with an interactable, end that engagement e.g. by dropping a GRABBABLE Actor.
 			UE_LOG(LogTemp, Warning, TEXT("Interact; actor is interactable!"));
 			TArray<InteractCapability> capArray = IInteract::Execute_OnInteract(Actor);
 			UE_LOG(LogTemp, Warning, TEXT("Interact; cap array of interactable has %d members"), capArray.Num());
@@ -125,6 +125,14 @@ void ARyddelmystCharacter::Interact()
 				{
 					FString DisplayString = MyEnum->GetNameStringByValue((uint8)cap);
 					UE_LOG(LogTemp, Warning, TEXT("Interact; cap array of interactable says %s"), *DisplayString);
+				}
+
+				if (cap == InteractCapability::GRABBABLE)
+				{
+					Actor->AttachToActor(this, FAttachmentTransformRules::KeepWorldTransform);
+					FTransform GrabTranslator = FTransform();
+					GrabTranslator.SetTranslation(FVector(0.f, 0.f, 100.f));
+					Actor->AddActorLocalTransform(GrabTranslator);
 				}
 				// todo: process returned interact capability array e.g. if it's grabbable, then grab it!
 			}
