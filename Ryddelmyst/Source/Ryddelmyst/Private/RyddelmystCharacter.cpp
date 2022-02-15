@@ -90,6 +90,8 @@ void ARyddelmystCharacter::SetupPlayerInputComponent(class UInputComponent* Play
 
 void ARyddelmystCharacter::Interact()
 {
+	// todo: if we're already engaged with an interactable, end that engagement e.g. by dropping a GRABBABLE Actor.
+
 	// determine where our ray trace should begin and end
 	const FVector start_trace = FirstPersonCameraComponent->GetComponentLocation();
 	const FVector direction = FirstPersonCameraComponent->GetComponentRotation().Vector();
@@ -110,7 +112,6 @@ void ARyddelmystCharacter::Interact()
 		UE_LOG(LogTemp, Warning, TEXT("Interact; found something in range called %s"), *Actor->GetName());
 		if (Actor->GetClass()->ImplementsInterface(UInteract::StaticClass()))
 		{
-			// todo: if we're already engaged with an interactable, end that engagement e.g. by dropping a GRABBABLE Actor.
 			UE_LOG(LogTemp, Warning, TEXT("Interact; actor is interactable!"));
 			TArray<InteractCapability> capArray = IInteract::Execute_OnInteract(Actor);
 			UE_LOG(LogTemp, Warning, TEXT("Interact; cap array of interactable has %d members"), capArray.Num());
