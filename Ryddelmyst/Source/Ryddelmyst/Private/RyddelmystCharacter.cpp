@@ -86,6 +86,7 @@ void ARyddelmystCharacter::SetupPlayerInputComponent(class UInputComponent* Play
 	PlayerInputComponent->BindAction("Fire", IE_Released, this, &ARyddelmystCharacter::Fire);
 	PlayerInputComponent->BindAction("Run", IE_Released, this, &ARyddelmystCharacter::Run);
 	PlayerInputComponent->BindAction("Interact", IE_Released, this, &ARyddelmystCharacter::Interact);
+	PlayerInputComponent->BindAction("Crouch", IE_Released, this, &ARyddelmystCharacter::HandleCrouch);
 }
 
 void ARyddelmystCharacter::Interact()
@@ -135,7 +136,7 @@ void ARyddelmystCharacter::Interact()
 					GrabTranslator.SetTranslation(FVector(0.f, 0.f, 100.f));
 					Actor->AddActorLocalTransform(GrabTranslator);
 				}
-				// todo: process returned interact capability array e.g. if it's grabbable, then grab it!
+				// todo: extend player collision bounds to encompass the grabbable object; I guess toss a cubeoid around it?  Alternative would be to lean on the existing collision of the object and somehow get a message sent to the player iff the player is holding it that it has collided with something.
 			}
 		}
 	}
@@ -189,6 +190,21 @@ void ARyddelmystCharacter::Run()
 	}
 	IsRunning = !IsRunning;
 }
+
+void ARyddelmystCharacter::HandleCrouch()
+{
+	if (bIsCrouched)
+	{
+		UE_LOG(LogTemp, Warning, TEXT("HandleCrouch; uncrouching"));
+		Super::UnCrouch(false);
+	}
+	else
+	{
+		UE_LOG(LogTemp, Warning, TEXT("HandleCrouch; crouching"));
+		Super::Crouch(false);
+	}
+}
+
 
 void ARyddelmystCharacter::MoveForward(float Value)
 {

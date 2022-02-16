@@ -114,6 +114,11 @@ protected:
 	 */
 	UFUNCTION()
 	void Interact();
+	/**
+	 * Handles crouch position toggle.
+	 */
+	UFUNCTION()
+	void HandleCrouch();
 	
 protected:
 	// APawn interface
