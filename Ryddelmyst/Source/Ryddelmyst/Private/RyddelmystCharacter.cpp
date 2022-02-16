@@ -131,10 +131,12 @@ void ARyddelmystCharacter::Interact()
 
 				if (cap == InteractCapability::GRABBABLE)
 				{
+					// todo: physics on during grab causes the object to not follow us for some reason despite attachment, even with gravity off
+					Actor->DisableComponentsSimulatePhysics();
+					// todo: if we teleport the object into its carry location relative to the player and that location is inside another collision object, the player and grabbed object get rocketed away.  Funny, but not useful.  
+					Actor->SetActorEnableCollision(false);
 					Actor->AttachToActor(this, FAttachmentTransformRules::KeepWorldTransform);
-					FTransform GrabTranslator = FTransform();
-					GrabTranslator.SetTranslation(FVector(0.f, 0.f, 100.f));
-					Actor->AddActorLocalTransform(GrabTranslator);
+					Actor->SetActorRelativeLocation(FVector(MaxInteractDistance*2.f, 0.f, 0.f));
 				}
 				// todo: extend player collision bounds to encompass the grabbable object; I guess toss a cubeoid around it?  Alternative would be to lean on the existing collision of the object and somehow get a message sent to the player iff the player is holding it that it has collided with something.
 			}
@@ -193,6 +195,7 @@ void ARyddelmystCharacter::Run()
 
 void ARyddelmystCharacter::HandleCrouch()
 {
+	// todo: reposition any grabbed object based on crouch/uncrouch eye height etc.
 	if (bIsCrouched)
 	{
 		UE_LOG(LogTemp, Warning, TEXT("HandleCrouch; uncrouching"));
