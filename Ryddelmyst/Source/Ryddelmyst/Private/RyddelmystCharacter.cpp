@@ -91,7 +91,43 @@ void ARyddelmystCharacter::SetupPlayerInputComponent(class UInputComponent* Play
 
 void ARyddelmystCharacter::Interact()
 {
-	// todo: if we're already engaged with an interactable, end that engagement e.g. by dropping a GRABBABLE Actor.
+	// if we're already engaged with an interactable, end that engagement e.g. by dropping a GRABBABLE Actor.
+	if (GrabbedActor)
+	{
+		// bounding box is better
+		// look up SkeletalMeshComponent of the Character and use her Z so that objects will be placed at her feet.
+		float DroppedZValue = GetActorLocation().Z;
+		UActorComponent* CharacterComponent = GetComponentByClass(USkeletalMeshComponent::StaticClass());
+		USkeletalMeshComponent* CharacterSkeleton = Cast<USkeletalMeshComponent>(CharacterComponent);
+		if (CharacterSkeleton)
+		{
+			DroppedZValue = CharacterSkeleton->GetComponentLocation().Z;
+		}
+		
+
+		// since GetActorBounds fills in the BoundBoxExtents output var with values relative to the center of the Actor, e.g. half the full size in a given dimension, we can just use the Z component directly for our half height modifier to DroppedZValue below
+		FVector GrabbedBoundingBoxExtents;
+		FVector GrabbedOrigin;
+		GrabbedActor->GetActorBounds(false, GrabbedOrigin, GrabbedBoundingBoxExtents, false);
+		// todo: the placement on Z gets messed up by crouching iff I use the bounding box extent Z rather than the skeletal mesh origin Z (which happens to be our feet).  I'm guessing this is because one or the other but not both of GetActorLocation().Z and the GetActorBounds bounding box extent Z is being adjusted for crouch, causing our final calculated Z to be slighlty below the ground. EDIT: looks like your bb extent z doesn't fully change for some reason; it went down very slightly but was about the same.  I'm guessing it gets modified by the crouch, but something in my collision bounds is not modified by the crouch, so we get a weird slight modification.
+		FVector CharacterBoundingBoxExtents;
+		FVector CharacterOrigin;
+		GetActorBounds(true, CharacterOrigin, CharacterBoundingBoxExtents, false);
+		UE_LOG(LogTemp, Warning, TEXT("character Z is %f and character bb extent z is %f"), GetActorLocation().Z, CharacterBoundingBoxExtents.Z);
+		// world space strat
+		FVector DroppedLocationOffset = GetActorRotation().RotateVector(FVector(MaxInteractDistance * 2.f, 0.f, GrabbedBoundingBoxExtents.Z));
+		float CharacterFeetZ = GetActorLocation().Z - CharacterBoundingBoxExtents.Z;
+		// we need to add back our crouched half height as the crouch op does not seem to affect the bounding box extents
+		if (GetCharacterMovement()->IsCrouching())
+		{
+			CharacterFeetZ += GetCharacterMovement()->CrouchedHalfHeight;
+		}
+		GrabbedActor->SetActorLocation(FVector(DroppedLocationOffset.X + GetActorLocation().X, DroppedLocationOffset.Y + GetActorLocation().Y, DroppedLocationOffset.Z + CharacterFeetZ));
+		// todo: local space strat, for practice
+		GrabbedActor->SetActorEnableCollision(true);
+		GrabbedActor->DetachFromActor(FDetachmentTransformRules::KeepWorldTransform);
+		GrabbedActor = nullptr;
+	}
 
 	// determine where our ray trace should begin and end
 	const FVector start_trace = FirstPersonCameraComponent->GetComponentLocation();
@@ -131,12 +167,14 @@ void ARyddelmystCharacter::Interact()
 
 				if (cap == InteractCapability::GRABBABLE)
 				{
+					GrabbedActor = Actor;
 					// todo: physics on during grab causes the object to not follow us for some reason despite attachment, even with gravity off
-					Actor->DisableComponentsSimulatePhysics();
+					// todo: check if physics is enabled and iff so, disable.  Also make a note somewhere that we need to renable physics for this grabbed actor at whatever components we find it enabled.
+					GrabbedActor->DisableComponentsSimulatePhysics();
 					// todo: if we teleport the object into its carry location relative to the player and that location is inside another collision object, the player and grabbed object get rocketed away.  Funny, but not useful.  
-					Actor->SetActorEnableCollision(false);
-					Actor->AttachToActor(this, FAttachmentTransformRules::KeepWorldTransform);
-					Actor->SetActorRelativeLocation(FVector(MaxInteractDistance*2.f, 0.f, 0.f));
+					GrabbedActor->SetActorEnableCollision(false);
+					GrabbedActor->AttachToActor(this, FAttachmentTransformRules::KeepWorldTransform);
+					GrabbedActor->SetActorRelativeLocation(FVector(MaxInteractDistance*2.f, 0.f, 0.f));
 				}
 				// todo: extend player collision bounds to encompass the grabbable object; I guess toss a cubeoid around it?  Alternative would be to lean on the existing collision of the object and somehow get a message sent to the player iff the player is holding it that it has collided with something.
 			}
