@@ -26,6 +26,10 @@ class ARyddelmystCharacter : public AFawnCharacter
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Camera, meta = (AllowPrivateAccess = "true"))
 	UCameraComponent* ThirdPersonCameraComponent;
 
+	/** Handle to an Actor the Character grabbed during interaction event */
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Interaction", meta = (AllowPrivateAccess = "true"))
+	AActor* GrabbedActor;
+
 private:
 	bool FirstPersonCameraMode = true;
 	bool IsRunning = false;
