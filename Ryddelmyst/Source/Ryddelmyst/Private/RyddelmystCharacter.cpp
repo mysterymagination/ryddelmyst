@@ -94,7 +94,7 @@ void ARyddelmystCharacter::Interact()
 	// if we're already engaged with an interactable, end that engagement e.g. by dropping a GRABBABLE Actor.
 	if (GrabbedActor)
 	{
-		// bounding box is better
+		/* bounding box is better since we don't necessarily want to rely on having a skeletalmesh whose origin happens to be her feet
 		// look up SkeletalMeshComponent of the Character and use her Z so that objects will be placed at her feet.
 		float DroppedZValue = GetActorLocation().Z;
 		UActorComponent* CharacterComponent = GetComponentByClass(USkeletalMeshComponent::StaticClass());
@@ -103,7 +103,7 @@ void ARyddelmystCharacter::Interact()
 		{
 			DroppedZValue = CharacterSkeleton->GetComponentLocation().Z;
 		}
-		
+		*/
 
 		// since GetActorBounds fills in the BoundBoxExtents output var with values relative to the center of the Actor, e.g. half the full size in a given dimension, we can just use the Z component directly for our half height modifier to DroppedZValue below
 		FVector GrabbedBoundingBoxExtents;
@@ -114,7 +114,9 @@ void ARyddelmystCharacter::Interact()
 		FVector CharacterOrigin;
 		GetActorBounds(true, CharacterOrigin, CharacterBoundingBoxExtents, false);
 		UE_LOG(LogTemp, Warning, TEXT("character Z is %f and character bb extent z is %f"), GetActorLocation().Z, CharacterBoundingBoxExtents.Z);
-		// world space strat
+		
+		/*
+		// world space strat, for practice and reference
 		FVector DroppedLocationOffset = GetActorRotation().RotateVector(FVector(MaxInteractDistance * 2.f, 0.f, GrabbedBoundingBoxExtents.Z));
 		float CharacterFeetZ = GetActorLocation().Z - CharacterBoundingBoxExtents.Z;
 		// we need to add back our crouched half height as the crouch op does not seem to affect the bounding box extents
@@ -123,7 +125,18 @@ void ARyddelmystCharacter::Interact()
 			CharacterFeetZ += GetCharacterMovement()->CrouchedHalfHeight;
 		}
 		GrabbedActor->SetActorLocation(FVector(DroppedLocationOffset.X + GetActorLocation().X, DroppedLocationOffset.Y + GetActorLocation().Y, DroppedLocationOffset.Z + CharacterFeetZ));
-		// todo: local space strat, for practice
+		*/
+
+		// local space strat, cleaner
+		FVector DroppedLocationOffset(MaxInteractDistance * 2.f, 0.f, GrabbedBoundingBoxExtents.Z);
+		float CharacterFeetZ = -CharacterBoundingBoxExtents.Z;
+		// we need to add back our crouched half height as the crouch op does not seem to affect the bounding box extents
+		if (GetCharacterMovement()->IsCrouching())
+		{
+			CharacterFeetZ += GetCharacterMovement()->CrouchedHalfHeight;
+		}
+		GrabbedActor->SetActorRelativeLocation(FVector(DroppedLocationOffset.X, DroppedLocationOffset.Y, DroppedLocationOffset.Z + CharacterFeetZ));
+
 		GrabbedActor->SetActorEnableCollision(true);
 		GrabbedActor->DetachFromActor(FDetachmentTransformRules::KeepWorldTransform);
 		GrabbedActor = nullptr;
