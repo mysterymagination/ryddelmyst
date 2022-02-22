@@ -22,7 +22,8 @@ enum class InteractCapability : uint8 {
 	PULLABLE UMETA(DisplayName = "PULLABLE"),
 	PUSHABLE UMETA(DisplayName = "PUSHABLE"),
 	SWITCHABLE UMETA(DisplayName = "SWITCHABLE"),
-	HUGGABLE UMETA(DisplayName = "HUGGABLE")
+	HUGGABLE UMETA(DisplayName = "HUGGABLE"),
+	DESCRIBABLE UMETA(DisplayName = "DESCRIBABLE")
 };
 
 /**
