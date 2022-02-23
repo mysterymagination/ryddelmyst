@@ -32,24 +32,6 @@ class ARyddelmystCharacter : public AFawnCharacter
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Interaction", meta = (AllowPrivateAccess = "true"))
 	AActor* GrabbedActor;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Health")
-	float FullHealth;
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Health")
-	float Health;
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Health")
-	float RedFlash;
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Magic")
-	float FullMagic;
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Magic")
-	float Magic;
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Magic")
-	UCurveFloat* MagicCurve;
-
 private:
 	bool FirstPersonCameraMode = true;
 	bool IsRunning = false;
@@ -86,7 +68,25 @@ public:
 
 	// Distance at which the player can interact with objects.
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Interaction")
-	float MaxInteractDistance = 100.f;
+	float MaxInteractDistance = 200.f;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Health")
+		float FullHealth;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Health")
+		float Health;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Health")
+		float RedFlash;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Magic")
+		float FullMagic;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Magic")
+		float Magic;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Magic")
+		UCurveFloat* MagicCurve;
 
 protected:
 	// List of weapons
