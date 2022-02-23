@@ -7,6 +7,8 @@
 #include "GameFramework/InputSettings.h"
 #include "Kismet/GameplayStatics.h"
 #include "Interact.h"
+#include "Kismet/KismetMathLibrary.h"
+#include "TimerManager.h"
 #include "GameFramework/CharacterMovementComponent.h"
 
 DEFINE_LOG_CATEGORY_STATIC(LogFPChar, Warning, All);
@@ -49,6 +51,24 @@ void ARyddelmystCharacter::BeginPlay()
 	// Display a debug message for five seconds. 
 // The -1 "Key" value argument prevents the message from being updated or refreshed.
 	GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Red, TEXT("We are riddled with RyddelmystCharacter!"));
+
+	FullHealth = 1000.f;
+	Health = FullHealth;
+	FullMagic = 100.f;
+	Magic = FullMagic;
+
+	if (MagicCurve)
+	{
+		FOnTimelineFloat TimelineCallback;
+		TimelineCallback.BindUFunction(this, FName("OnMagicRechargeTick"));
+		MyTimeline.AddInterpFloat(MagicCurve, TimelineCallback);
+	}
+}
+
+void ARyddelmystCharacter::Tick(float DeltaTime)
+{
+	Super::Tick(DeltaTime);
+	MyTimeline.TickTimeline(DeltaTime);
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -189,6 +209,11 @@ void ARyddelmystCharacter::Interact()
 					GrabbedActor->AttachToActor(this, FAttachmentTransformRules::KeepWorldTransform);
 					GrabbedActor->SetActorRelativeLocation(FVector(MaxInteractDistance*2.f, 0.f, 0.f));
 				}
+				else if (cap == InteractCapability::DESCRIBABLE)
+				{
+					// todo: cast Actor to an IDescribable, which is a BP Interface... edit: maybe not possible?
+				}
+
 				// todo: extend player collision bounds to encompass the grabbable object; I guess toss a cubeoid around it?  Alternative would be to lean on the existing collision of the object and somehow get a message sent to the player iff the player is holding it that it has collided with something.
 			}
 		}
