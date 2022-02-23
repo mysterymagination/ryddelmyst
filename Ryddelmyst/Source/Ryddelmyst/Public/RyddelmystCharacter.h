@@ -6,6 +6,8 @@
 #include "FawnCharacter.h"
 #include "LookitYouPawn.h"
 #include "Snowball.h"
+#include "Components/TimelineComponent.h"
+#include "Components/BoxComponent.h"
 #include "RyddelmystCharacter.generated.h"
 
 class UInputComponent;
@@ -30,17 +32,40 @@ class ARyddelmystCharacter : public AFawnCharacter
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Interaction", meta = (AllowPrivateAccess = "true"))
 	AActor* GrabbedActor;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Health")
+	float FullHealth;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Health")
+	float Health;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Health")
+	float RedFlash;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Magic")
+	float FullMagic;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Magic")
+	float Magic;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Magic")
+	UCurveFloat* MagicCurve;
+
 private:
 	bool FirstPersonCameraMode = true;
 	bool IsRunning = false;
 	uint8_t SelectedWeaponIdx = 0;
+	FTimeline MyTimeline;
+	float CurveFloatValue;
+	float TimelineValue;
+	FTimerHandle MemberTimerHandle;
 
 public:
 	ARyddelmystCharacter();
 	virtual void OnLostFollower(ILookitYou* lookitYou) override;
 
 protected:
-	virtual void BeginPlay();
+	virtual void BeginPlay() override;
+	virtual void Tick(float DeltaTime) override;
 
 public:
 	/** Base turn rate, in deg/sec. Other scaling may affect final turn rate. */
@@ -123,6 +148,37 @@ protected:
 	 */
 	UFUNCTION()
 	void HandleCrouch();
+
+	/** Get Health */
+	UFUNCTION(BlueprintPure, Category = "Health")
+	float GetHealth();
+
+	/** Get Magic */
+	UFUNCTION(BlueprintPure, Category = "Magic")
+	float GetMagic();
+
+	/** Update Health data and UI */
+	UFUNCTION(BlueprintCallable, Category = "Health")
+	void UpdateHealth(float HealthChange);
+
+	/** Update Magic data and UI */
+	UFUNCTION(BlueprintCallable, Category = "Magic")
+	void UpdateMagic(float MagicChange);
+
+	/** Damage Timer */
+	UFUNCTION()
+	void DamageTimer();
+
+	/** Play damage flash VFX */
+	UFUNCTION(BlueprintPure, Category = "Health")
+	bool PlayFlash();
+
+	UFUNCTION()
+	void HandleDamage(float Damage, const FHitResult& HitInfo);
+
+	/** Callback run when our magic recharge timeline ticks */
+	UFUNCTION()
+	void OnMagicRechargeTick();
 	
 protected:
 	// APawn interface
