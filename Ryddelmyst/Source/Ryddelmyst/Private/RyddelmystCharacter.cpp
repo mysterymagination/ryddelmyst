@@ -409,3 +409,47 @@ void ARyddelmystCharacter::OnLostFollower(ILookitYou* lookitYou)
 	// nullify the lookityou member
 	LookitYouGo = nullptr;
 }
+
+float ARyddelmystCharacter::GetHealth() 
+{
+	return Health;
+}
+
+float ARyddelmystCharacter::GetMagic()
+{
+	return Magic;
+}
+
+void ARyddelmystCharacter::UpdateHealth(float HealthChange)
+{
+	Health += HealthChange;
+	// todo: update health status bar
+}
+
+void ARyddelmystCharacter::UpdateMagic(float MagicChange)
+{
+	Magic += MagicChange;
+	// todo: update magic status bar
+}
+
+void ARyddelmystCharacter::DamageTimer()
+{
+	// todo: stub
+}
+
+bool ARyddelmystCharacter::PlayFlash()
+{
+	// todo: play damage flash VFX
+	return false;
+}
+
+void ARyddelmystCharacter::HandleDamage(float Damage, const FHitResult& HitInfo)
+{
+	UpdateHealth(-Damage);
+	// todo: send the character flying in some direction derived from HitInfo?
+}
+
+void ARyddelmystCharacter::OnMagicRechargeTick()
+{
+	// todo: recharge magic slightly
+}
