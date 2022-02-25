@@ -53,11 +53,6 @@ void ARyddelmystCharacter::BeginPlay()
 // The -1 "Key" value argument prevents the message from being updated or refreshed.
 	GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Red, TEXT("We are riddled with RyddelmystCharacter!"));
 
-	FullHealth = 1000.f;
-	Health = FullHealth;
-	FullMagic = 100.f;
-	Magic = FullMagic;
-
 	if (MagicCurve)
 	{
 		FOnTimelineFloat TimelineCallback;
@@ -400,11 +395,20 @@ void ARyddelmystCharacter::Fire()
 
 			// Spawn the projectile at the muzzle.
 			ASnowball* Snowball = World->SpawnActor<ASnowball>(Spells[SelectedWeaponIdx], MuzzleLocation, MuzzleRotation, SpawnParams);
-			if (Snowball)
+			if (Snowball && Magic >= Snowball->GetMagicCost())
 			{
 				// Set the projectile's initial trajectory.
 				FVector LaunchDirection = MuzzleRotation.Vector();
 				Snowball->FireInDirection(LaunchDirection);
+
+				FTimerDelegate TimerDelegate;
+				int MagicRechargeAmount = 20.f;
+				TimerDelegate.BindUFunction(this, FName("UpdateMagic"), MagicRechargeAmount);
+
+				MyTimeline.Stop();
+				GetWorldTimerManager().ClearTimer(MagicTimerHandle);
+				UpdateMagic(-Snowball->GetMagicCost());
+				GetWorldTimerManager().SetTimer(MagicTimerHandle, TimerDelegate, 5.0f, false, 0.f);
 			}
 		}
 	}

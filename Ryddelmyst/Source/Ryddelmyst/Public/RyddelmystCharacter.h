@@ -39,7 +39,7 @@ private:
 	FTimeline MyTimeline;
 	float CurveFloatValue;
 	float TimelineValue;
-	FTimerHandle MemberTimerHandle;
+	FTimerHandle MagicTimerHandle;
 
 public:
 	ARyddelmystCharacter();
@@ -75,22 +75,22 @@ public:
 	float CarryDistance = 200.f;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Health")
-		float FullHealth;
+	float FullHealth = 1000.f;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Health")
-		float Health;
+	float Health = FullHealth;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Health")
-		float RedFlash;
+	float RedFlash;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Magic")
-		float FullMagic;
+	float FullMagic = 100.f;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Magic")
-		float Magic;
+	float Magic = FullMagic;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Magic")
-		UCurveFloat* MagicCurve;
+	UCurveFloat* MagicCurve;
 
 protected:
 	// List of weapons
