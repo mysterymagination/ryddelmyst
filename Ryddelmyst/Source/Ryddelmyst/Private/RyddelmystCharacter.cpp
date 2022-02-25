@@ -7,6 +7,7 @@
 #include "GameFramework/InputSettings.h"
 #include "Kismet/GameplayStatics.h"
 #include "Interact.h"
+#include "Describable.h"
 #include "Kismet/KismetMathLibrary.h"
 #include "TimerManager.h"
 #include "GameFramework/CharacterMovementComponent.h"
@@ -148,7 +149,7 @@ void ARyddelmystCharacter::Interact()
 		*/
 
 		// local space strat, cleaner
-		FVector DroppedLocationOffset(MaxInteractDistance * 2.f, 0.f, GrabbedBoundingBoxExtents.Z);
+		FVector DroppedLocationOffset(CarryDistance, 0.f, GrabbedBoundingBoxExtents.Z);
 		float CharacterFeetZ = -CharacterBoundingBoxExtents.Z;
 		// we need to add back our crouched half height as the crouch op does not seem to affect the bounding box extents
 		if (GetCharacterMovement()->IsCrouching())
@@ -161,60 +162,67 @@ void ARyddelmystCharacter::Interact()
 		GrabbedActor->DetachFromActor(FDetachmentTransformRules::KeepWorldTransform);
 		GrabbedActor = nullptr;
 	}
-
-	// determine where our ray trace should begin and end
-	const FVector start_trace = FirstPersonCameraComponent->GetComponentLocation();
-	const FVector direction = FirstPersonCameraComponent->GetComponentRotation().Vector();
-	const FVector end_trace = start_trace + (direction * MaxInteractDistance);
-	UE_LOG(LogTemp, Warning, TEXT("Interact; ray start says %s, direction says %s, and ray end says %s"), *start_trace.ToString(), *direction.ToString(), *end_trace.ToString());
-	FCollisionQueryParams TraceParams(FName(TEXT("InteractTrace")), true, this);
-	TraceParams.bReturnPhysicalMaterial = false;
-	TraceParams.bTraceComplex = true;
-
-	// cast our ray out and check for a hit object implementing IInteract
-	FHitResult Hit(ForceInit);
-	GetWorld()->LineTraceSingleByChannel(Hit, start_trace, end_trace, ECollisionChannel::ECC_GameTraceChannel1, TraceParams);
-	
-	// process any hit actor looking for interactability
-	AActor* Actor = Hit.GetActor();
-	if (Actor)
+	else
 	{
-		UE_LOG(LogTemp, Warning, TEXT("Interact; found something in range called %s"), *Actor->GetName());
-		if (Actor->GetClass()->ImplementsInterface(UInteract::StaticClass()))
+		// determine where our ray trace should begin and end
+		const FVector start_trace = FirstPersonCameraComponent->GetComponentLocation();
+		const FVector direction = FirstPersonCameraComponent->GetComponentRotation().Vector();
+		const FVector end_trace = start_trace + (direction * MaxInteractDistance);
+		UE_LOG(LogTemp, Warning, TEXT("Interact; ray start says %s, direction says %s, and ray end says %s"), *start_trace.ToString(), *direction.ToString(), *end_trace.ToString());
+		FCollisionQueryParams TraceParams(FName(TEXT("InteractTrace")), true, this);
+		TraceParams.bReturnPhysicalMaterial = false;
+		TraceParams.bTraceComplex = true;
+
+		// cast our ray out and check for a hit object implementing IInteract
+		FHitResult Hit(ForceInit);
+		GetWorld()->LineTraceSingleByChannel(Hit, start_trace, end_trace, ECollisionChannel::ECC_GameTraceChannel1, TraceParams);
+
+		// process any hit actor looking for interactability
+		AActor* Actor = Hit.GetActor();
+		if (Actor)
 		{
-			UE_LOG(LogTemp, Warning, TEXT("Interact; actor is interactable!"));
-			TArray<InteractCapability> capArray = IInteract::Execute_OnInteract(Actor);
-			UE_LOG(LogTemp, Warning, TEXT("Interact; cap array of interactable has %d members"), capArray.Num());
-			int idx = 0;
-			for (auto cap : capArray)
+			UE_LOG(LogTemp, Warning, TEXT("Interact; found something in range called %s"), *Actor->GetName());
+			if (Actor->GetClass()->ImplementsInterface(UInteract::StaticClass()))
 			{
-				UE_LOG(LogTemp, Warning, TEXT("Interact; cap array index is %d, and ordinal says %u"), idx, (uint8)cap);
-				idx++;
-				UEnum* MyEnum = FindObject<UEnum>(ANY_PACKAGE, TEXT("InteractCapability"));
-				UE_LOG(LogTemp, Warning, TEXT("Interact; myenum ptr is %p"), MyEnum);
-				if (MyEnum)
+				UE_LOG(LogTemp, Warning, TEXT("Interact; actor is interactable!"));
+				TArray<InteractCapability> capArray = IInteract::Execute_OnInteract(Actor);
+				UE_LOG(LogTemp, Warning, TEXT("Interact; cap array of interactable has %d members"), capArray.Num());
+				int idx = 0;
+				for (auto cap : capArray)
 				{
-					FString DisplayString = MyEnum->GetNameStringByValue((uint8)cap);
-					UE_LOG(LogTemp, Warning, TEXT("Interact; cap array of interactable says %s"), *DisplayString);
-				}
+					UE_LOG(LogTemp, Warning, TEXT("Interact; cap array index is %d, and ordinal says %u"), idx, (uint8)cap);
+					idx++;
+					UEnum* MyEnum = FindObject<UEnum>(ANY_PACKAGE, TEXT("InteractCapability"));
+					UE_LOG(LogTemp, Warning, TEXT("Interact; myenum ptr is %p"), MyEnum);
+					if (MyEnum)
+					{
+						FString DisplayString = MyEnum->GetNameStringByValue((uint8)cap);
+						UE_LOG(LogTemp, Warning, TEXT("Interact; cap array of interactable says %s"), *DisplayString);
+					}
 
-				if (cap == InteractCapability::GRABBABLE)
-				{
-					GrabbedActor = Actor;
-					// todo: physics on during grab causes the object to not follow us for some reason despite attachment, even with gravity off
-					// todo: check if physics is enabled and iff so, disable.  Also make a note somewhere that we need to renable physics for this grabbed actor at whatever components we find it enabled.
-					GrabbedActor->DisableComponentsSimulatePhysics();
-					// todo: if we teleport the object into its carry location relative to the player and that location is inside another collision object, the player and grabbed object get rocketed away.  Funny, but not useful.  
-					GrabbedActor->SetActorEnableCollision(false);
-					GrabbedActor->AttachToActor(this, FAttachmentTransformRules::KeepWorldTransform);
-					GrabbedActor->SetActorRelativeLocation(FVector(MaxInteractDistance*2.f, 0.f, 0.f));
-				}
-				else if (cap == InteractCapability::DESCRIBABLE)
-				{
-					// todo: cast Actor to an IDescribable, which is a BP Interface... edit: maybe not possible?
-				}
+					if (cap == InteractCapability::GRABBABLE)
+					{
+						GrabbedActor = Actor;
+						// todo: physics on during grab causes the object to not follow us for some reason despite attachment, even with gravity off
+						// todo: check if physics is enabled and iff so, disable.  Also make a note somewhere that we need to renable physics for this grabbed actor at whatever components we find it enabled.
+						GrabbedActor->DisableComponentsSimulatePhysics();
+						// todo: if we teleport the object into its carry location relative to the player and that location is inside another collision object, the player and grabbed object get rocketed away.  Funny, but not useful.  
+						GrabbedActor->SetActorEnableCollision(false);
+						GrabbedActor->AttachToActor(this, FAttachmentTransformRules::KeepWorldTransform);
+						GrabbedActor->SetActorRelativeLocation(FVector(CarryDistance, 0.f, 0.f));
+						UE_LOG(LogTemp, Warning, TEXT("Interact; player forward vector is %s.  placing grabbed actor at %s relative to player.  Its world coords are %s and world coords of player are %s"), *GetActorForwardVector().ToString(), *GrabbedActor->GetRootComponent()->GetRelativeLocation().ToString(), *GrabbedActor->GetActorLocation().ToString(), *GetActorLocation().ToString());
+					}
+					else if (cap == InteractCapability::DESCRIBABLE)
+					{
+						if (Actor->GetClass()->ImplementsInterface(UDescribable::StaticClass()))
+						{
+							FString DescString = IDescribable::Execute_GenerateDescription(Actor);
+							UE_LOG(LogTemp, Warning, TEXT("Interact; description of %s is %s"), *Actor->GetName(), *DescString);
+						}
+					}
 
-				// todo: extend player collision bounds to encompass the grabbable object; I guess toss a cubeoid around it?  Alternative would be to lean on the existing collision of the object and somehow get a message sent to the player iff the player is holding it that it has collided with something.
+					// todo: extend player collision bounds to encompass the grabbable object; I guess toss a cubeoid around it?  Alternative would be to lean on the existing collision of the object and somehow get a message sent to the player iff the player is holding it that it has collided with something.
+				}
 			}
 		}
 	}
