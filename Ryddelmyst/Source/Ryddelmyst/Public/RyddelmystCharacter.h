@@ -70,6 +70,10 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Interaction")
 	float MaxInteractDistance = 200.f;
 
+	// Distance at which the player will carry objects out from their mesh on X axis.
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Interaction")
+	float CarryDistance = 200.f;
+
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Health")
 		float FullHealth;
 
