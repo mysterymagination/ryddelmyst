@@ -204,6 +204,7 @@ void ARyddelmystCharacter::Interact()
 						// todo: if we teleport the object into its carry location relative to the player and that location is inside another collision object, the player and grabbed object get rocketed away.  Funny, but not useful.  
 						GrabbedActor->SetActorEnableCollision(false);
 						GrabbedActor->AttachToActor(this, FAttachmentTransformRules::KeepWorldTransform);
+						// todo: that wooden egg variable offset is upsetting me.  Maybe try unwinding the rotations on it and the player character (should just be setrot(-getrot()) I think?) so we can look at the translation more clearly.  Also try adding just a regular sphere to the scene and see if it has the same problem.
 						GrabbedActor->SetActorRelativeLocation(FVector(CarryDistance, 0.f, 0.f));
 						UE_LOG(LogTemp, Warning, TEXT("Interact; player forward vector is %s.  placing grabbed actor at %s relative to player.  Its world coords are %s and world coords of player are %s"), *GetActorForwardVector().ToString(), *GrabbedActor->GetRootComponent()->GetRelativeLocation().ToString(), *GrabbedActor->GetActorLocation().ToString(), *GetActorLocation().ToString());
 					}
