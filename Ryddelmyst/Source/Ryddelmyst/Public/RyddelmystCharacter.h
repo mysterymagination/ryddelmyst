@@ -40,6 +40,7 @@ private:
 	float CurveFloatValue;
 	float TimelineValue;
 	FTimerHandle MagicTimerHandle;
+	FTimerHandle InvincibilityTimerHandle;
 
 public:
 	ARyddelmystCharacter();
@@ -88,9 +89,6 @@ public:
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Magic")
 	float Magic = FullMagic;
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Magic")
-	UCurveFloat* MagicCurve;
 
 protected:
 	// List of weapons
@@ -157,9 +155,17 @@ protected:
 	UFUNCTION(BlueprintPure, Category = "Health")
 	float GetHealth();
 
+	/** Get Health for display */
+	UFUNCTION(BlueprintPure, Category = "Health")
+	FText GetHealthText();
+
 	/** Get Magic */
 	UFUNCTION(BlueprintPure, Category = "Magic")
 	float GetMagic();
+
+	/** Get Magic for display */
+	UFUNCTION(BlueprintPure, Category = "Magic")
+	FText GetMagicText();
 
 	/** Update Health data and UI */
 	UFUNCTION(BlueprintCallable, Category = "Health")
@@ -173,9 +179,9 @@ protected:
 	UFUNCTION()
 	void DamageTimer();
 
-	/** Play damage flash VFX */
+	/** Check if we should Play damage flash VFX */
 	UFUNCTION(BlueprintPure, Category = "Health")
-	bool PlayFlash();
+	bool ShouldFlash();
 
 	UFUNCTION()
 	void HandleDamage(float Damage, const FHitResult& HitInfo);
@@ -183,6 +189,14 @@ protected:
 	/** Callback run when our magic recharge timeline ticks */
 	UFUNCTION()
 	void OnMagicRechargeTick();
+
+	/** Damage Timer starts the invincibility clock after taking damage */
+	UFUNCTION()
+	void DamageInvincibilityTimer();
+
+	/** Marks that the actor can be damaged again */
+	UFUNCTION()
+	void SetDamageState();
 	
 protected:
 	// APawn interface
