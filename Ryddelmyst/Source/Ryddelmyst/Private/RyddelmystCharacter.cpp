@@ -58,6 +58,10 @@ void ARyddelmystCharacter::BeginPlay()
 		FOnTimelineFloat TimelineCallback;
 		TimelineCallback.BindUFunction(this, FName("OnMagicRechargeTick"));
 		MyTimeline.AddInterpFloat(MagicCurve, TimelineCallback);
+		FTimerDelegate TimerDelegate;
+		int MagicRechargeAmount = 20.f;
+		TimerDelegate.BindUFunction(this, FName("UpdateMagic"), MagicRechargeAmount);
+		GetWorldTimerManager().SetTimer(MagicTimerHandle, TimerDelegate, 5.0f, true, 0.f);
 	}
 }
 
@@ -204,8 +208,11 @@ void ARyddelmystCharacter::Interact()
 						// todo: if we teleport the object into its carry location relative to the player and that location is inside another collision object, the player and grabbed object get rocketed away.  Funny, but not useful.  
 						GrabbedActor->SetActorEnableCollision(false);
 						GrabbedActor->AttachToActor(this, FAttachmentTransformRules::KeepWorldTransform);
-						// todo: that wooden egg variable offset is upsetting me.  Maybe try unwinding the rotations on it and the player character (should just be setrot(-getrot()) I think?) so we can look at the translation more clearly.  Also try adding just a regular sphere to the scene and see if it has the same problem.
+						// todo: that wooden egg variable offset is upsetting me.  Maybe try unwinding the rotations on it and the player character (should just be setrot(-getrot()) I think?) so we can look at the translation more clearly.  Also try adding just a regular sphere to the scene and see if it has the same problem.  EDIT: it does not!  Ha!
 						GrabbedActor->SetActorRelativeLocation(FVector(CarryDistance, 0.f, 0.f));
+						/* Forward Vector version; it's just a unit vector on X accounting for all your rotations 
+						GrabbedActor->SetActorLocation(GetActorLocation() + (GetActorForwardVector() * CarryDistance));
+						*/
 						UE_LOG(LogTemp, Warning, TEXT("Interact; player forward vector is %s.  placing grabbed actor at %s relative to player.  Its world coords are %s and world coords of player are %s"), *GetActorForwardVector().ToString(), *GrabbedActor->GetRootComponent()->GetRelativeLocation().ToString(), *GrabbedActor->GetActorLocation().ToString(), *GetActorLocation().ToString());
 					}
 					else if (cap == InteractCapability::DESCRIBABLE)
@@ -401,15 +408,7 @@ void ARyddelmystCharacter::Fire()
 				// Set the projectile's initial trajectory.
 				FVector LaunchDirection = MuzzleRotation.Vector();
 				Snowball->FireInDirection(LaunchDirection);
-
-				FTimerDelegate TimerDelegate;
-				int MagicRechargeAmount = 20.f;
-				TimerDelegate.BindUFunction(this, FName("UpdateMagic"), MagicRechargeAmount);
-
-				MyTimeline.Stop();
-				GetWorldTimerManager().ClearTimer(MagicTimerHandle);
 				UpdateMagic(-Snowball->GetMagicCost());
-				GetWorldTimerManager().SetTimer(MagicTimerHandle, TimerDelegate, 5.0f, false, 0.f);
 			}
 		}
 	}
@@ -433,15 +432,37 @@ float ARyddelmystCharacter::GetMagic()
 	return Magic;
 }
 
+FText ARyddelmystCharacter::GetHealthText()
+{
+	int32 HP = FMath::RoundHalfFromZero(Health);
+	FString HPS = FString::FromInt(HP);
+	FString FullHPS = FString::FromInt(FullHealth);
+	FString HealthHUD = HPS + FString(TEXT("/")) + FullHPS;
+	FText HPText = FText::FromString(HealthHUD);
+	return HPText;
+}
+
+FText ARyddelmystCharacter::GetMagicText()
+{
+	int32 MP = FMath::RoundHalfFromZero(Magic);
+	FString MPS = FString::FromInt(MP);
+	FString FullMPS = FString::FromInt(FullMagic);
+	FString MagicHUD = MPS + FString(TEXT("/")) + FullMPS;
+	FText MPText = FText::FromString(MagicHUD);
+	return MPText;
+}
+
 void ARyddelmystCharacter::UpdateHealth(float HealthChange)
 {
 	Health += HealthChange;
+	Health = FMath::Clamp(Health, 0.0f, FullHealth);
 	// todo: update health status bar
 }
 
 void ARyddelmystCharacter::UpdateMagic(float MagicChange)
 {
 	Magic += MagicChange;
+	Magic = FMath::Clamp(Magic, 0.0f, FullMagic);
 	// todo: update magic status bar
 }
 
@@ -450,19 +471,37 @@ void ARyddelmystCharacter::DamageTimer()
 	// todo: stub
 }
 
-bool ARyddelmystCharacter::PlayFlash()
+bool ARyddelmystCharacter::ShouldFlash()
 {
-	// todo: play damage flash VFX
+	if (RedFlash)
+	{
+		RedFlash = false;
+		return true;
+	}
+
 	return false;
 }
 
 void ARyddelmystCharacter::HandleDamage(float Damage, const FHitResult& HitInfo)
 {
 	UpdateHealth(-Damage);
+	SetCanBeDamaged(false);
+	DamageInvincibilityTimer();
+	RedFlash = true;
 	// todo: send the character flying in some direction derived from HitInfo?
 }
 
 void ARyddelmystCharacter::OnMagicRechargeTick()
 {
 	// todo: recharge magic slightly
+}
+
+void ARyddelmystCharacter::SetDamageState()
+{
+	SetCanBeDamaged(true);
+}
+
+void ARyddelmystCharacter::DamageInvincibilityTimer()
+{
+	GetWorldTimerManager().SetTimer(InvincibilityTimerHandle, this, &ARyddelmystCharacter::SetDamageState, 2.0f, false);
 }
