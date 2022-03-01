@@ -53,16 +53,21 @@ void ARyddelmystCharacter::BeginPlay()
 // The -1 "Key" value argument prevents the message from being updated or refreshed.
 	GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Red, TEXT("We are riddled with RyddelmystCharacter!"));
 
+	/* non-linear magic recharge for smoother constant regen effect; could still be effectively 20 points every 5 seconds, but would update fractionally per frame in that interval.  This would look smoother to player.
 	if (MagicCurve)
 	{
 		FOnTimelineFloat TimelineCallback;
 		TimelineCallback.BindUFunction(this, FName("OnMagicRechargeTick"));
 		MyTimeline.AddInterpFloat(MagicCurve, TimelineCallback);
-		FTimerDelegate TimerDelegate;
-		int MagicRechargeAmount = 20.f;
-		TimerDelegate.BindUFunction(this, FName("UpdateMagic"), MagicRechargeAmount);
-		GetWorldTimerManager().SetTimer(MagicTimerHandle, TimerDelegate, 5.0f, true, 0.f);
 	}
+	*/
+
+	// linear magic recharge; recharges in 20 point blocks every 5 seconds
+	FTimerDelegate TimerDelegate;
+	int MagicRechargeAmount = 20.f;
+	TimerDelegate.BindUFunction(this, FName("UpdateMagic"), MagicRechargeAmount);
+	GetWorldTimerManager().SetTimer(MagicTimerHandle, TimerDelegate, 5.0f, true, 0.f);
+	
 }
 
 void ARyddelmystCharacter::Tick(float DeltaTime)
@@ -133,7 +138,8 @@ void ARyddelmystCharacter::Interact()
 		FVector CharacterBoundingBoxExtents;
 		FVector CharacterOrigin;
 		GetActorBounds(true, CharacterOrigin, CharacterBoundingBoxExtents, false);
-		UE_LOG(LogTemp, Warning, TEXT("character Z is %f and character bb extent z is %f"), GetActorLocation().Z, CharacterBoundingBoxExtents.Z);
+		UE_LOG(LogTemp, Warning, TEXT("character origin is %s and grabbed obj origin is %s"), *CharacterOrigin.ToString(), *GrabbedOrigin.ToString());
+		UE_LOG(LogTemp, Warning, TEXT("character Z is %f and character bb extent z is %f, and grabbed obj Z is %f and grabbed obj bb extent Z is %f"), GetActorLocation().Z, CharacterBoundingBoxExtents.Z, GrabbedActor->GetActorLocation().Z, GrabbedBoundingBoxExtents.Z);
 		
 		/*
 		// world space strat, for practice and reference
@@ -150,6 +156,7 @@ void ARyddelmystCharacter::Interact()
 		// local space strat, cleaner
 		FVector DroppedLocationOffset(CarryDistance, 0.f, GrabbedBoundingBoxExtents.Z);
 		float CharacterFeetZ = -CharacterBoundingBoxExtents.Z;
+		UE_LOG(LogTemp, Warning, TEXT("Interact; dropped location Z raw is %f and feetz is %f so final Z location relative to actor is %f"), DroppedLocationOffset.Z, CharacterFeetZ, DroppedLocationOffset.Z + CharacterFeetZ);
 		// we need to add back our crouched half height as the crouch op does not seem to affect the bounding box extents
 		if (GetCharacterMovement()->IsCrouching())
 		{
