@@ -17,7 +17,8 @@ class UInteract : public UInterface
  * Enums tagging different possible ways with which the object can be interacted by players e.g. a grabbable object might let the player know that it should play its grab animation, transform the grabbed object to the appropriate carry position, and attach the carried object to the player transforms.
  */
 UENUM(BlueprintType)
-enum class InteractCapability : uint8 {
+enum class InteractCapability : uint8 
+{
 	GRABBABLE UMETA(DisplayName = "GRABBABLE"),
 	PULLABLE UMETA(DisplayName = "PULLABLE"),
 	PUSHABLE UMETA(DisplayName = "PUSHABLE"),
