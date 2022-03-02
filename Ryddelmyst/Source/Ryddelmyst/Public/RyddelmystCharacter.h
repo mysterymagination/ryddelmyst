@@ -151,10 +151,6 @@ protected:
 	UFUNCTION()
 	void HandleCrouch();
 
-	/** Get Health */
-	UFUNCTION(BlueprintPure, Category = "Health")
-	float GetHealth();
-
 	/** Get Health for display */
 	UFUNCTION(BlueprintPure, Category = "Health")
 	FText GetHealthText();
@@ -206,5 +202,8 @@ protected:
 public:
 	/** Returns FirstPersonCameraComponent subobject **/
 	UCameraComponent* GetFirstPersonCameraComponent() const { return FirstPersonCameraComponent; }
+	/** Get Health */
+	UFUNCTION(BlueprintPure, Category = "Health")
+	float GetHealth();
 };
 
