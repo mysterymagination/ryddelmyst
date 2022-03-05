@@ -4,7 +4,6 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
-#include "DamageTypes.h"
 #include "DamageSurface.generated.h"
 
 // Applies damage of a given type to overlapping actors
@@ -12,11 +11,18 @@ UCLASS()
 class RYDDELMYST_API ADamageSurface : public AActor
 {
 	GENERATED_BODY()
-	
 
 protected:
+	// the damage dealt by the surface
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Gameplay")
-	EDamageTypes DamageType;
+	TSubclassOf<UDamageType> DamageType;
+
+	// defines the shape of the damage surface e.g. along the entirety of a static mesh
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Collision")
+	UPrimitiveComponent* CollisionShapeComponent;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Gameplay")
+	float DamageAmount;
 
 public:	
 	// Sets default values for this actor's properties
@@ -30,4 +36,13 @@ public:
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 
+private:
+	UFUNCTION()
+	void OnOverlapBegin(class UPrimitiveComponent* OverlappedComp, class AActor* OtherActor, class UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
+
+	UFUNCTION()
+	void OnOverlapEnd(class UPrimitiveComponent* OverlappedComp, class AActor* OtherActor, class UPrimitiveComponent* OtherComp, int32 OtherBodyIndex);
+
+	UFUNCTION()
+	void ApplyDamage();
 };
