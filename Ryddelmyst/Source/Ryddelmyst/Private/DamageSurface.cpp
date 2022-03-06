@@ -18,13 +18,12 @@ void ADamageSurface::BeginPlay()
 	Super::BeginPlay();
 	if (CollisionShapeComponent)
 	{
-		// todo: will the static mesh fire overlap events based on the actual shape of the mesh or will it use generated simple collision shape?  If the latter, I guess we'll need to define simple collision for the lava pool manually to be only the lava-y bits.
 		FScriptDelegate OverlapBeginDelegate;
 		OverlapBeginDelegate.BindUFunction(this, FName("OnOverlapBegin"));
 		CollisionShapeComponent->OnComponentBeginOverlap.Add(OverlapBeginDelegate);
 		FScriptDelegate OverlapEndDelegate;
-		OverlapBeginDelegate.BindUFunction(this, FName("OnOverlapEnd"));
-		CollisionShapeComponent->OnComponentBeginOverlap.Add(OverlapEndDelegate);
+		OverlapEndDelegate.BindUFunction(this, FName("OnOverlapEnd"));
+		CollisionShapeComponent->OnComponentEndOverlap.Add(OverlapEndDelegate);
 	}
 }
 
@@ -36,17 +35,21 @@ void ADamageSurface::Tick(float DeltaTime)
 
 void ADamageSurface::OnOverlapBegin(class UPrimitiveComponent* OverlappedComp, class AActor* OtherActor, class UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
-	// todo: gonna wanna add a timer to apply damage over time after all, since there isn't obviously an OnOverlapping or similar per-frame overlap event.  TBD if we get beging and/or end overlap events per-frame?
-	UGameplayStatics::ApplyPointDamage(OtherActor, DamageAmount, GetActorLocation(), SweepResult, nullptr, this, DamageType);
+	UE_LOG(LogTemp, Warning, TEXT("OnOverlapBegin; overlap begin with %s"), *OtherActor->GetName());
+	ContactActor = OtherActor;
+	HitResult = SweepResult;
+	GetWorldTimerManager().SetTimer(DamageTimerHandle, this, &ADamageSurface::ApplyDamage, 0.5f, true, 0.0f);
 }
 
 void ADamageSurface::OnOverlapEnd(class UPrimitiveComponent* OverlappedComp, class AActor* OtherActor, class UPrimitiveComponent* OtherComp, int32 OtherBodyIndex)
 {
-
+	UE_LOG(LogTemp, Warning, TEXT("OnOverlapBegin; overlap end with %s"), *OtherActor->GetName());
+	ContactActor = nullptr;
+	GetWorldTimerManager().ClearTimer(DamageTimerHandle);
 }
 
 void ADamageSurface::ApplyDamage()
 {
-
+	UGameplayStatics::ApplyPointDamage(ContactActor, DamageAmount, GetActorLocation(), HitResult, nullptr, this, DamageType);
 }
 

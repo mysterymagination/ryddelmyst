@@ -12,13 +12,24 @@ class RYDDELMYST_API ADamageSurface : public AActor
 {
 	GENERATED_BODY()
 
+private:
+	// Handle to the timer that controls the period at which damage is applied to actors in contact with this surface
+	FTimerHandle DamageTimerHandle;
+
+	// Data about the most recent overlap event with an Actor
+	FHitResult HitResult;
+
+	// Actor in contact with the surface. todo: make this a vector to support multiple contact actors
+	UPROPERTY()
+	AActor* ContactActor;
+
 protected:
 	// the damage dealt by the surface
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Gameplay")
 	TSubclassOf<UDamageType> DamageType;
 
 	// defines the shape of the damage surface e.g. along the entirety of a static mesh
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Collision")
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Gameplay")
 	UPrimitiveComponent* CollisionShapeComponent;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Gameplay")
