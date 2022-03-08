@@ -68,6 +68,9 @@ void ARyddelmystCharacter::BeginPlay()
 	TimerDelegate.BindUFunction(this, FName("UpdateMagic"), MagicRechargeAmount);
 	GetWorldTimerManager().SetTimer(MagicTimerHandle, TimerDelegate, 5.0f, true, 0.f);
 	
+	FScriptDelegate DamageDelegate;
+	DamageDelegate.BindUFunction(this, FName("HandleDamage"));
+	OnTakeAnyDamage.Add(DamageDelegate);
 }
 
 void ARyddelmystCharacter::Tick(float DeltaTime)
@@ -488,8 +491,9 @@ bool ARyddelmystCharacter::ShouldFlash()
 	return false;
 }
 
-void ARyddelmystCharacter::HandleDamage(float Damage, const FHitResult& HitInfo)
+void ARyddelmystCharacter::HandleDamage(AActor* DamagedActor, float Damage, AController* InstigatedBy, FVector HitLocation, UPrimitiveComponent* FHitComponent, FName BoneName, FVector ShotFromDirection, class UDamageType* DamageType, AActor* DamageCauser)
 {
+	UE_LOG(LogTemp, Warning, TEXT("HandleDamage; ouch for %f"), Damage);
 	UpdateHealth(-Damage);
 	SetCanBeDamaged(false);
 	DamageInvincibilityTimer();
@@ -509,5 +513,5 @@ void ARyddelmystCharacter::SetDamageState()
 
 void ARyddelmystCharacter::DamageInvincibilityTimer()
 {
-	GetWorldTimerManager().SetTimer(InvincibilityTimerHandle, this, &ARyddelmystCharacter::SetDamageState, 2.0f, false);
+	GetWorldTimerManager().SetTimer(InvincibilityTimerHandle, this, &ARyddelmystCharacter::SetDamageState, 1.f, false);
 }

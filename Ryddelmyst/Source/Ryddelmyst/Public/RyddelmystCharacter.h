@@ -180,7 +180,7 @@ protected:
 	bool ShouldFlash();
 
 	UFUNCTION()
-	void HandleDamage(float Damage, const FHitResult& HitInfo);
+	void HandleDamage(AActor* DamagedActor, float Damage, AController* InstigatedBy, FVector HitLocation, UPrimitiveComponent* FHitComponent, FName BoneName, FVector ShotFromDirection, class UDamageType* DamageType, AActor* DamageCauser);
 
 	/** Callback run when our magic recharge timeline ticks */
 	UFUNCTION()
