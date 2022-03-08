@@ -16,6 +16,8 @@ ARyddelmystGameMode::ARyddelmystGameMode()
 
 	// use our custom HUD class
 	HUDClass = ARyddelmystHUD::StaticClass();
+
+	PrimaryActorTick.bCanEverTick = true;
 }
 
 void ARyddelmystGameMode::StartPlay()
@@ -34,6 +36,7 @@ void ARyddelmystGameMode::BeginPlay()
 	Super::BeginPlay();
 	SetCurrentState(EGamePlayState::EPlaying);
 	PlayerCharacter = Cast<ARyddelmystCharacter>(UGameplayStatics::GetPlayerPawn(this, 0));
+	UE_LOG(LogTemp, Warning, TEXT("BeginPlay; player character set to %s"), PlayerCharacter ? *PlayerCharacter->GetName() : TEXT("null"));
 }
 
 void ARyddelmystGameMode::Tick(float DeltaTime)
@@ -70,8 +73,7 @@ void ARyddelmystGameMode::HandleNewState(EGamePlayState NewState)
 		break;
 		case EGamePlayState::EGameOver:
 		{
-			// todo: what does this do in PIE mode?  Anyway, need an actual UI saying the game is over and a restart button
-			FGenericPlatformMisc::RequestExit(false);
+			UE_LOG(LogTemp, Warning, TEXT("Game Over!"));
 		}
 		break;
 		default:

@@ -50,6 +50,7 @@ void ADamageSurface::OnOverlapEnd(class UPrimitiveComponent* OverlappedComp, cla
 
 void ADamageSurface::ApplyDamage()
 {
+	UE_LOG(LogTemp, Warning, TEXT("ApplyDamage; applying %f damage to contact actor %s"), DamageAmount, *ContactActor->GetName());
 	UGameplayStatics::ApplyPointDamage(ContactActor, DamageAmount, GetActorLocation(), HitResult, nullptr, this, DamageType);
 }
 
