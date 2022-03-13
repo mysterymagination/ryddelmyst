@@ -14,8 +14,9 @@ ARyddelmystHUD::ARyddelmystHUD()
 	static ConstructorHelpers::FObjectFinder<UTexture2D> CrosshairTexObj(TEXT("/Game/FirstPerson/Textures/FirstPersonCrosshair"));
 	CrosshairTex = CrosshairTexObj.Object;
 
-	static ConstructorHelpers::FClassFinder<UUserWidget> HealthBarObj(TEXT("/Game/FirstPerson/UI/Health_UI"));
-	HUDWidgetClass = HealthBarObj.Class;
+	static ConstructorHelpers::FClassFinder<UUserWidget> StatusWidgetObj(TEXT("/Game/Ryddelmyst_Assets/UI/BP_Status"));
+	StatusWidgetClass = StatusWidgetObj.Class;
+	UE_LOG(LogTemp, Warning, TEXT("ctor; StatusWIdgetClass came up as %p"), StatusWidgetClass);
 }
 
 
@@ -41,13 +42,17 @@ void ARyddelmystHUD::DrawHUD()
 void ARyddelmystHUD::BeginPlay()
 {
 	Super::BeginPlay();
-	if (HUDWidgetClass != nullptr)
+	if (StatusWidgetClass != nullptr)
 	{
-		CurrentWidget = CreateWidget<UUserWidget>(GetWorld(), HUDWidgetClass);
-
-		if (CurrentWidget)
+		StatusWidget = CreateWidget<UUserWidget>(GetWorld(), StatusWidgetClass);
+		UE_LOG(LogTemp, Warning, TEXT("BeginPlay; status widget says %p"), StatusWidget)
+		if (StatusWidget)
 		{
-			CurrentWidget->AddToViewport();
+			StatusWidget->AddToViewport();
 		}
+	}
+	else
+	{
+		UE_LOG(LogTemp, Error, TEXT("BeginPlay; status widget class says %p"), StatusWidgetClass)
 	}
 }
