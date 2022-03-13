@@ -21,5 +21,9 @@ AElectricSnowball::AElectricSnowball()
 	{
 		SnowballParticles->SetTemplate(ParticleAsset.Object);
 	}
+
+
+	// update magic cost for subclass
+	MagicCost = 20.f;
 }
 
