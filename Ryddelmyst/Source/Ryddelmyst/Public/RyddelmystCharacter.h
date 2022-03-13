@@ -151,18 +151,6 @@ protected:
 	UFUNCTION()
 	void HandleCrouch();
 
-	/** Get Health for display */
-	UFUNCTION(BlueprintPure, Category = "Health")
-	FText GetHealthText();
-
-	/** Get Magic */
-	UFUNCTION(BlueprintPure, Category = "Magic")
-	float GetMagic();
-
-	/** Get Magic for display */
-	UFUNCTION(BlueprintPure, Category = "Magic")
-	FText GetMagicText();
-
 	/** Update Health data and UI */
 	UFUNCTION(BlueprintCallable, Category = "Health")
 	void UpdateHealth(float HealthChange);
@@ -171,20 +159,8 @@ protected:
 	UFUNCTION(BlueprintCallable, Category = "Magic")
 	void UpdateMagic(float MagicChange);
 
-	/** Damage Timer */
-	UFUNCTION()
-	void DamageTimer();
-
-	/** Check if we should Play damage flash VFX */
-	UFUNCTION(BlueprintPure, Category = "Health")
-	bool ShouldFlash();
-
 	UFUNCTION()
 	void HandleDamage(AActor* DamagedActor, float Damage, AController* InstigatedBy, FVector HitLocation, UPrimitiveComponent* FHitComponent, FName BoneName, FVector ShotFromDirection, class UDamageType* DamageType, AActor* DamageCauser);
-
-	/** Callback run when our magic recharge timeline ticks */
-	UFUNCTION()
-	void OnMagicRechargeTick();
 
 	/** Damage Timer starts the invincibility clock after taking damage */
 	UFUNCTION()
@@ -202,8 +178,29 @@ protected:
 public:
 	/** Returns FirstPersonCameraComponent subobject **/
 	UCameraComponent* GetFirstPersonCameraComponent() const { return FirstPersonCameraComponent; }
+
 	/** Get Health */
 	UFUNCTION(BlueprintPure, Category = "Health")
 	float GetHealth();
+
+	/** Get full Health value */
+	UFUNCTION(BlueprintPure, Category = "Health")
+	float GetMaxHealth();
+
+	/** Get Health for display */
+	UFUNCTION(BlueprintPure, Category = "Health")
+	FText GetHealthText();
+
+	/** Get Magic */
+	UFUNCTION(BlueprintPure, Category = "Magic")
+	float GetMagic();
+
+	/** Get full Magic value */
+	UFUNCTION(BlueprintPure, Category = "Magic")
+	float GetMaxMagic();
+
+	/** Get Magic for display */
+	UFUNCTION(BlueprintPure, Category = "Magic")
+	FText GetMagicText();
 };
 

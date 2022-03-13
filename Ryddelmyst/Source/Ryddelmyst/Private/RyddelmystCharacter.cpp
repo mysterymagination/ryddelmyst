@@ -436,9 +436,18 @@ float ARyddelmystCharacter::GetHealth()
 	return Health;
 }
 
+float ARyddelmystCharacter::GetMaxHealth()
+{
+	return FullHealth;
+}
+
 float ARyddelmystCharacter::GetMagic()
 {
 	return Magic;
+}
+float ARyddelmystCharacter::GetMaxMagic()
+{
+	return FullMagic;
 }
 
 FText ARyddelmystCharacter::GetHealthText()
@@ -465,30 +474,12 @@ void ARyddelmystCharacter::UpdateHealth(float HealthChange)
 {
 	Health += HealthChange;
 	Health = FMath::Clamp(Health, 0.0f, FullHealth);
-	// todo: update health status bar
 }
 
 void ARyddelmystCharacter::UpdateMagic(float MagicChange)
 {
 	Magic += MagicChange;
 	Magic = FMath::Clamp(Magic, 0.0f, FullMagic);
-	// todo: update magic status bar
-}
-
-void ARyddelmystCharacter::DamageTimer()
-{
-	// todo: stub
-}
-
-bool ARyddelmystCharacter::ShouldFlash()
-{
-	if (RedFlash)
-	{
-		RedFlash = false;
-		return true;
-	}
-
-	return false;
 }
 
 void ARyddelmystCharacter::HandleDamage(AActor* DamagedActor, float Damage, AController* InstigatedBy, FVector HitLocation, UPrimitiveComponent* FHitComponent, FName BoneName, FVector ShotFromDirection, class UDamageType* DamageType, AActor* DamageCauser)
@@ -499,11 +490,6 @@ void ARyddelmystCharacter::HandleDamage(AActor* DamagedActor, float Damage, ACon
 	DamageInvincibilityTimer();
 	RedFlash = true;
 	// todo: send the character flying in some direction derived from HitInfo?
-}
-
-void ARyddelmystCharacter::OnMagicRechargeTick()
-{
-	// todo: recharge magic slightly
 }
 
 void ARyddelmystCharacter::SetDamageState()

@@ -23,9 +23,9 @@ private:
 	class UTexture2D* CrosshairTex;
 
 	UPROPERTY(EditAnywhere, Category = "Health")
-	TSubclassOf<class UUserWidget> HUDWidgetClass;
+	TSubclassOf<class UUserWidget> StatusWidgetClass;
 
 	UPROPERTY(EditAnywhere, Category = "Health")
-	class UUserWidget* CurrentWidget;
+	class UUserWidget* StatusWidget;
 };
 
