@@ -14,9 +14,6 @@ class RYDDELMYST_API ASnowball : public AActor
 {
 	GENERATED_BODY()
 
-private:
-	float MagicCost = 10.f;
-
 public:
 	// Sets default values for this actor's properties
 	ASnowball();
@@ -30,7 +27,10 @@ public:
 	virtual void Tick(float DeltaTime) override;
 	// Initializes the projectile's velocity in the shoot direction.
 	void FireInDirection(const FVector& ShootDirection);
-	float GetMagicCost() const;
+	float GetMagicCost()
+	{
+		return MagicCost;
+	};
 
 protected:
 	// Projectile particle FX
@@ -45,6 +45,9 @@ protected:
 	// Sphere collision component.
 	UPROPERTY(VisibleDefaultsOnly, Category = Projectile)
 	USphereComponent* CollisionComponent;
+	// mana cost of this spell
+	UPROPERTY(EditAnywhere, Category = Projectile)
+	float MagicCost = 10.f;
 
 private:
 	// Projectile movement component.

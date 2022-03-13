@@ -53,15 +53,6 @@ void ARyddelmystCharacter::BeginPlay()
 // The -1 "Key" value argument prevents the message from being updated or refreshed.
 	GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Red, TEXT("We are riddled with RyddelmystCharacter!"));
 
-	/* non-linear magic recharge for smoother constant regen effect; could still be effectively 20 points every 5 seconds, but would update fractionally per frame in that interval.  This would look smoother to player.
-	if (MagicCurve)
-	{
-		FOnTimelineFloat TimelineCallback;
-		TimelineCallback.BindUFunction(this, FName("OnMagicRechargeTick"));
-		MyTimeline.AddInterpFloat(MagicCurve, TimelineCallback);
-	}
-	*/
-
 	// linear magic recharge; recharges in 20 point blocks every 5 seconds
 	FTimerDelegate TimerDelegate;
 	int MagicRechargeAmount = 20.f;
@@ -76,7 +67,6 @@ void ARyddelmystCharacter::BeginPlay()
 void ARyddelmystCharacter::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
-	MyTimeline.TickTimeline(DeltaTime);
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -406,18 +396,22 @@ void ARyddelmystCharacter::Fire()
 		UWorld* World = GetWorld();
 		if (World)
 		{
-			FActorSpawnParameters SpawnParams;
-			SpawnParams.Owner = this;
-			SpawnParams.Instigator = GetInstigator();
-
-			// Spawn the projectile at the muzzle.
-			ASnowball* Snowball = World->SpawnActor<ASnowball>(Spells[SelectedWeaponIdx], MuzzleLocation, MuzzleRotation, SpawnParams);
-			if (Snowball && Magic >= Snowball->GetMagicCost())
+			TSubclassOf<ASnowball> SnowballType = Spells[SelectedWeaponIdx];
+			if (Magic >= SnowballType.GetDefaultObject()->GetMagicCost())
 			{
-				// Set the projectile's initial trajectory.
-				FVector LaunchDirection = MuzzleRotation.Vector();
-				Snowball->FireInDirection(LaunchDirection);
-				UpdateMagic(-Snowball->GetMagicCost());
+				UE_LOG(LogTemp, Warning, TEXT("Fire; magic is %f and cost is %f so firing"), Magic, SnowballType.GetDefaultObject()->GetMagicCost());
+				FActorSpawnParameters SpawnParams;
+				SpawnParams.Owner = this;
+				SpawnParams.Instigator = GetInstigator();
+				// Spawn the projectile at the muzzle.
+				ASnowball* Snowball = World->SpawnActor<ASnowball>(SnowballType, MuzzleLocation, MuzzleRotation, SpawnParams);
+				if (Snowball)
+				{
+					// Set the projectile's initial trajectory.
+					FVector LaunchDirection = MuzzleRotation.Vector();
+					Snowball->FireInDirection(LaunchDirection);
+					UpdateMagic(-Snowball->GetMagicCost());
+				}
 			}
 		}
 	}
@@ -479,7 +473,9 @@ void ARyddelmystCharacter::UpdateHealth(float HealthChange)
 void ARyddelmystCharacter::UpdateMagic(float MagicChange)
 {
 	Magic += MagicChange;
+	UE_LOG(LogTemp, Warning, TEXT("UpdateMagic; magicchange is %f so magic is %f prior to clamp"), MagicChange, Magic);
 	Magic = FMath::Clamp(Magic, 0.0f, FullMagic);
+	UE_LOG(LogTemp, Warning, TEXT("UpdateMagic; magic is %f post clamp"), Magic);
 }
 
 void ARyddelmystCharacter::HandleDamage(AActor* DamagedActor, float Damage, AController* InstigatedBy, FVector HitLocation, UPrimitiveComponent* FHitComponent, FName BoneName, FVector ShotFromDirection, class UDamageType* DamageType, AActor* DamageCauser)
@@ -488,7 +484,6 @@ void ARyddelmystCharacter::HandleDamage(AActor* DamagedActor, float Damage, ACon
 	UpdateHealth(-Damage);
 	SetCanBeDamaged(false);
 	DamageInvincibilityTimer();
-	RedFlash = true;
 	// todo: send the character flying in some direction derived from HitInfo?
 }
 
