@@ -98,8 +98,3 @@ void ASnowball::OnHit(UPrimitiveComponent* HitComp, AActor* OtherActor, UPrimiti
 	// todo: leave behind flattened snowball messh?
 }
 
-float ASnowball::GetMagicCost() const
-{
-	return MagicCost;
-}
-

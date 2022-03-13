@@ -81,9 +81,6 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Health")
 	float Health = FullHealth;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Health")
-	float RedFlash;
-
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Magic")
 	float FullMagic = 100.f;
 
