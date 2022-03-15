@@ -55,7 +55,7 @@ void ARyddelmystCharacter::BeginPlay()
 
 	// linear magic recharge; recharges in 20 point blocks every 5 seconds
 	FTimerDelegate TimerDelegate;
-	int MagicRechargeAmount = 20.f;
+	float MagicRechargeAmount = 20.f;
 	TimerDelegate.BindUFunction(this, FName("UpdateMagic"), MagicRechargeAmount);
 	GetWorldTimerManager().SetTimer(MagicTimerHandle, TimerDelegate, 5.0f, true, 0.f);
 	
