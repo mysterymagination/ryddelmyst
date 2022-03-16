@@ -56,3 +56,8 @@ void ARyddelmystHUD::BeginPlay()
 		UE_LOG(LogTemp, Error, TEXT("BeginPlay; status widget class says %p"), StatusWidgetClass)
 	}
 }
+
+UUserWidget* ARyddelmystHUD::GetStatusWidget()
+{
+	return StatusWidget;
+}

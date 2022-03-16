@@ -11,6 +11,9 @@
 #include "Kismet/KismetMathLibrary.h"
 #include "TimerManager.h"
 #include "GameFramework/CharacterMovementComponent.h"
+#include "RyddelmystHUD.h"
+#include "Blueprint/UserWidget.h"
+#include "Blueprint/WidgetTree.h"
 
 DEFINE_LOG_CATEGORY_STATIC(LogFPChar, Warning, All);
 
@@ -62,6 +65,13 @@ void ARyddelmystCharacter::BeginPlay()
 	FScriptDelegate DamageDelegate;
 	DamageDelegate.BindUFunction(this, FName("HandleDamage"));
 	OnTakeAnyDamage.Add(DamageDelegate);
+
+	FScriptDelegate OverlapBeginDelegate;
+	OverlapBeginDelegate.BindUFunction(this, FName("OnOverlapBegin"));
+	GetCapsuleComponent()->OnComponentBeginOverlap.Add(OverlapBeginDelegate);
+	FScriptDelegate OverlapEndDelegate;
+	OverlapEndDelegate.BindUFunction(this, FName("OnOverlapEnd"));
+	GetCapsuleComponent()->OnComponentEndOverlap.Add(OverlapEndDelegate);
 }
 
 void ARyddelmystCharacter::Tick(float DeltaTime)
@@ -495,4 +505,21 @@ void ARyddelmystCharacter::SetDamageState()
 void ARyddelmystCharacter::DamageInvincibilityTimer()
 {
 	GetWorldTimerManager().SetTimer(InvincibilityTimerHandle, this, &ARyddelmystCharacter::SetDamageState, 1.f, false);
+}
+
+void ARyddelmystCharacter::OnOverlapBegin(class UPrimitiveComponent* OverlappedComp, class AActor* OtherActor, class UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
+{
+	UE_LOG(LogTemp, Warning, TEXT("OnOverlapBegin; character overlapping %s"), *OtherActor->GetName());
+	APlayerController* PlayerController = UGameplayStatics::GetPlayerController(GetWorld(), 0);
+	ARyddelmystHUD* HUD = Cast<ARyddelmystHUD>(PlayerController->GetHUD());
+	UUserWidget* StatusWidget = HUD->GetStatusWidget();
+	UWidget* InventoryPanel = StatusWidget->WidgetTree->FindWidget(FName("InventoryPanel"));
+	UE_LOG(LogTemp, Warning, TEXT("OnOverlapBegin; inv panle widget address is %p"), InventoryPanel);
+	// todo: if overlap item is POCKETABLE then add to onscreen inv as well as data inventory
+	///Inventory.Add(Item);
+}
+
+void ARyddelmystCharacter::OnOverlapEnd(class UPrimitiveComponent* OverlappedComp, class AActor* OtherActor, class UPrimitiveComponent* OtherComp, int32 OtherBodyIndex)
+{
+	UE_LOG(LogTemp, Warning, TEXT("OnOverlapEnd; character no longer overlapping %s"), *OtherActor->GetName());
 }
