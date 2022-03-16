@@ -6,6 +6,7 @@
 #include "FawnCharacter.h"
 #include "LookitYouPawn.h"
 #include "Snowball.h"
+#include "Item.h"
 #include "Components/TimelineComponent.h"
 #include "Components/BoxComponent.h"
 #include "RyddelmystCharacter.generated.h"
@@ -41,6 +42,7 @@ private:
 	float TimelineValue;
 	FTimerHandle MagicTimerHandle;
 	FTimerHandle InvincibilityTimerHandle;
+	TArray<TScriptInterface<IItem>> Inventory;
 
 public:
 	ARyddelmystCharacter();
@@ -199,5 +201,12 @@ public:
 	/** Get Magic for display */
 	UFUNCTION(BlueprintPure, Category = "Magic")
 	FText GetMagicText();
+
+private:
+	UFUNCTION()
+	void OnOverlapBegin(class UPrimitiveComponent* OverlappedComp, class AActor* OtherActor, class UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
+
+	UFUNCTION()
+	void OnOverlapEnd(class UPrimitiveComponent* OverlappedComp, class AActor* OtherActor, class UPrimitiveComponent* OtherComp, int32 OtherBodyIndex);
 };
 
