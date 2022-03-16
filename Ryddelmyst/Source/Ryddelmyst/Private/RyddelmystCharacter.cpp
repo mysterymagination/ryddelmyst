@@ -514,7 +514,7 @@ void ARyddelmystCharacter::OnOverlapBegin(class UPrimitiveComponent* OverlappedC
 	ARyddelmystHUD* HUD = Cast<ARyddelmystHUD>(PlayerController->GetHUD());
 	UUserWidget* StatusWidget = HUD->GetStatusWidget();
 	UWidget* InventoryPanel = StatusWidget->WidgetTree->FindWidget(FName("InventoryPanel"));
-	UE_LOG(LogTemp, Warning, TEXT("OnOverlapBegin; inv panle widget address is %p"), InventoryPanel);
+	UE_LOG(LogTemp, Warning, TEXT("OnOverlapBegin; inv panel widget address is %p"), InventoryPanel);
 	// todo: if overlap item is POCKETABLE then add to onscreen inv as well as data inventory
 	///Inventory.Add(Item);
 }
