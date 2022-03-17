@@ -14,6 +14,8 @@
 #include "RyddelmystHUD.h"
 #include "Blueprint/UserWidget.h"
 #include "Blueprint/WidgetTree.h"
+#include "Components/HorizontalBox.h"
+#include "Components/Image.h"
 
 DEFINE_LOG_CATEGORY_STATIC(LogFPChar, Warning, All);
 
@@ -513,10 +515,21 @@ void ARyddelmystCharacter::OnOverlapBegin(class UPrimitiveComponent* OverlappedC
 	APlayerController* PlayerController = UGameplayStatics::GetPlayerController(GetWorld(), 0);
 	ARyddelmystHUD* HUD = Cast<ARyddelmystHUD>(PlayerController->GetHUD());
 	UUserWidget* StatusWidget = HUD->GetStatusWidget();
-	UWidget* InventoryPanel = StatusWidget->WidgetTree->FindWidget(FName("InventoryPanel"));
+	UWidget* InventoryPanelWidget = StatusWidget->WidgetTree->FindWidget(FName("InventoryPanel"));
+	UHorizontalBox* InventoryPanel = Cast<UHorizontalBox>(InventoryPanelWidget);
 	UE_LOG(LogTemp, Warning, TEXT("OnOverlapBegin; inv panel widget address is %p"), InventoryPanel);
-	// todo: if overlap item is POCKETABLE then add to onscreen inv as well as data inventory
-	///Inventory.Add(Item);
+	// todo: if overlap item is an Item then add to onscreen inv as well as data inventory
+	if (OtherActor->GetClass()->ImplementsInterface(UItem::StaticClass()))
+	{
+		UE_LOG(LogTemp, Warning, TEXT("OnOverlapBegin; overlapped actor is an Item!"));
+		UTexture2D* Icon = IItem::Execute_GetDisplayIcon(OtherActor);
+		UImage* IconWidget = StatusWidget->WidgetTree->ConstructWidget<UImage>();
+		IconWidget->SetBrushSize(FVector2D(FIntPoint(128, 128)));
+		IconWidget->SetBrushFromTexture(Icon, false);
+		InventoryPanel->AddChildToHorizontalBox(IconWidget);
+		IItem* Item = Cast<IItem>(OtherActor);
+		Inventory.Add(Item);
+	}
 }
 
 void ARyddelmystCharacter::OnOverlapEnd(class UPrimitiveComponent* OverlappedComp, class AActor* OtherActor, class UPrimitiveComponent* OtherComp, int32 OtherBodyIndex)

@@ -42,7 +42,7 @@ private:
 	float TimelineValue;
 	FTimerHandle MagicTimerHandle;
 	FTimerHandle InvincibilityTimerHandle;
-	TArray<TScriptInterface<IItem>> Inventory;
+	TArray<IItem*> Inventory;
 
 public:
 	ARyddelmystCharacter();
