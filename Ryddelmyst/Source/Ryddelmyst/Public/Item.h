@@ -23,21 +23,24 @@ class RYDDELMYST_API IItem
 public:
 	/**
 	 * Function run when the player first picks up the item from the stage and places it in their inventory
+	 * @param Picker the Actor picking up the Item
 	 */
 	UFUNCTION(BlueprintCallable, BlueprintNativeEvent, Category = "Item")
-	void OnPickup();
+	void OnPickup(AActor* Picker);
 
 	/**
 	 * Function run when the player drops the item from inventory back into the stage
+	 * @param Dropper the Actor dropping the Item
 	 */
 	UFUNCTION(BlueprintCallable, BlueprintNativeEvent, Category = "Item")
-	void OnDrop();
+	void OnDrop(AActor* Dropper);
 
 	/**
 	 * Function run when the player uses the item from their inventory
+	 * @param User the Actor using the Item
 	 */
 	UFUNCTION(BlueprintCallable, BlueprintNativeEvent, Category = "Item")
-	void OnUse();
+	void OnUse(AActor* User);
 
 	/**
 	 * Returns the icon that should represent this item in the player's inventory UI
