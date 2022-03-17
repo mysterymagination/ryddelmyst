@@ -518,7 +518,7 @@ void ARyddelmystCharacter::OnOverlapBegin(class UPrimitiveComponent* OverlappedC
 	UWidget* InventoryPanelWidget = StatusWidget->WidgetTree->FindWidget(FName("InventoryPanel"));
 	UHorizontalBox* InventoryPanel = Cast<UHorizontalBox>(InventoryPanelWidget);
 	UE_LOG(LogTemp, Warning, TEXT("OnOverlapBegin; inv panel widget address is %p"), InventoryPanel);
-	// todo: if overlap item is an Item then add to onscreen inv as well as data inventory
+	// if overlap item is an Item then add to onscreen inv as well as data inventory
 	if (OtherActor->GetClass()->ImplementsInterface(UItem::StaticClass()))
 	{
 		UE_LOG(LogTemp, Warning, TEXT("OnOverlapBegin; overlapped actor is an Item!"));
@@ -527,8 +527,8 @@ void ARyddelmystCharacter::OnOverlapBegin(class UPrimitiveComponent* OverlappedC
 		IconWidget->SetBrushSize(FVector2D(FIntPoint(128, 128)));
 		IconWidget->SetBrushFromTexture(Icon, false);
 		InventoryPanel->AddChildToHorizontalBox(IconWidget);
-		IItem* Item = Cast<IItem>(OtherActor);
-		Inventory.Add(Item);
+		Inventory.Add(OtherActor);
+		IItem::Execute_OnPickup(OtherActor, this);
 	}
 }
 
