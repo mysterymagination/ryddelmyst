@@ -522,13 +522,20 @@ void ARyddelmystCharacter::OnOverlapBegin(class UPrimitiveComponent* OverlappedC
 	if (OtherActor->GetClass()->ImplementsInterface(UItem::StaticClass()))
 	{
 		UE_LOG(LogTemp, Warning, TEXT("OnOverlapBegin; overlapped actor is an Item!"));
-		UTexture2D* Icon = IItem::Execute_GetDisplayIcon(OtherActor);
-		UImage* IconWidget = StatusWidget->WidgetTree->ConstructWidget<UImage>();
-		IconWidget->SetBrushSize(FVector2D(FIntPoint(128, 128)));
-		IconWidget->SetBrushFromTexture(Icon, false);
-		InventoryPanel->AddChildToHorizontalBox(IconWidget);
-		Inventory.Add(OtherActor);
-		IItem::Execute_OnPickup(OtherActor, this);
+		if (Inventory.Num() < MaxInventory)
+		{
+			UTexture2D* Icon = IItem::Execute_GetDisplayIcon(OtherActor);
+			UImage* IconWidget = StatusWidget->WidgetTree->ConstructWidget<UImage>();
+			IconWidget->SetBrushSize(FVector2D(FIntPoint(128, 128)));
+			IconWidget->SetBrushFromTexture(Icon, false);
+			InventoryPanel->AddChildToHorizontalBox(IconWidget);
+			//Inventory.Add(OtherActor);// todo: not safe to hold reference to AActor we're likely going to destroy in the OnPickup impl 
+			IItem::Execute_OnPickup(OtherActor, this);
+		}
+		else
+		{
+			// todo: raise dialog informing the player that their inventory is full
+		}
 	}
 }
 

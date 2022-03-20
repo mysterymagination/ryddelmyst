@@ -42,7 +42,7 @@ private:
 	float TimelineValue;
 	FTimerHandle MagicTimerHandle;
 	FTimerHandle InvincibilityTimerHandle;
-	TArray<AActor*> Inventory;
+	TArray<UItem*> Inventory;
 
 public:
 	ARyddelmystCharacter();
@@ -72,6 +72,10 @@ public:
 	// Distance at which the player can interact with objects.
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Interaction")
 	float MaxInteractDistance = 200.f;
+
+	// Max number of items that can be held in the inventory.
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Inventory")
+	uint8 MaxInventory = 4;
 
 	// Distance at which the player will carry objects out from their mesh on X axis.
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Interaction")

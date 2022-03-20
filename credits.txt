@@ -65,3 +65,7 @@ Textures:
     3.1 Source: https://opengameart.org/content/blood-red-health-bar
     3.2 Authors: https://opengameart.org/users/qubodup
     3.3 License: http://creativecommons.org/licenses/by/3.0/
+  4. Ryddelmyst/Content/Ryddelmyst_Assets/Sprites/DungeonCrawl_ProjectUtumnoTileset.png
+    4.1 Source: https://opengameart.org/content/dungeon-crawl-32x32-tiles
+    4.2 Authors: https://opengameart.org/users/medicinestorm and http://code.google.com/p/crawl-tiles/
+    4.3 CC0
