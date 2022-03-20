@@ -13,7 +13,8 @@ class RYDDELMYST_API AItemActor : public AActor
 	GENERATED_BODY()
 	
 private:
-	UItem* Item;
+	UPROPERTY()
+	TScriptInterface<UItem> Item;
 
 public:	
 	// Sets default values for this actor's properties

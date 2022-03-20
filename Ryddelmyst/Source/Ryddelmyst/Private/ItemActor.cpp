@@ -28,6 +28,6 @@ void AItemActor::Tick(float DeltaTime)
 
 UItem* AItemActor::GetItem()
 {
-	return Item;
+	return Cast<UItem>(Item.GetObject());
 }
 
