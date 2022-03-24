@@ -15,7 +15,9 @@
 #include "Blueprint/UserWidget.h"
 #include "Blueprint/WidgetTree.h"
 #include "Components/HorizontalBox.h"
+#include "Components/GridPanel.h"
 #include "Components/Image.h"
+#include "DrawDebugHelpers.h"
 
 DEFINE_LOG_CATEGORY_STATIC(LogFPChar, Warning, All);
 
@@ -45,6 +47,14 @@ ARyddelmystCharacter::ARyddelmystCharacter()
 	ThirdPersonCameraComponent->SetRelativeRotation(FRotator(-20.f, 0.f, 0.f));
 	ThirdPersonCameraComponent->bUsePawnControlRotation = false;
 	ThirdPersonCameraComponent->SetActive(false);
+
+	APlayerController* PlayerController = UGameplayStatics::GetPlayerController(GetWorld(), 0);
+	HUD = Cast<ARyddelmystHUD>(PlayerController->GetHUD());
+	StatusWidget = HUD->GetStatusWidget();
+	UWidget* InventoryPanelWidget = StatusWidget->WidgetTree->FindWidget(FName("InventoryPanel"));
+	InventoryPanel = Cast<UHorizontalBox>(InventoryPanelWidget);
+	UWidget* InventorySelectionOverlayWidget = StatusWidget->WidgetTree->FindWidget(FName("InventorySelectionOverlay"));
+	InventorySelectionOverlay = Cast<UGridPanel>(InventorySelectionOverlayWidget);
 }
 
 void ARyddelmystCharacter::BeginPlay()
@@ -117,6 +127,9 @@ void ARyddelmystCharacter::SetupPlayerInputComponent(class UInputComponent* Play
 	PlayerInputComponent->BindAction("Run", IE_Released, this, &ARyddelmystCharacter::Run);
 	PlayerInputComponent->BindAction("Interact", IE_Released, this, &ARyddelmystCharacter::Interact);
 	PlayerInputComponent->BindAction("Crouch", IE_Released, this, &ARyddelmystCharacter::HandleCrouch);
+
+	PlayerInputComponent->BindAxis("Select Item", this, &ARyddelmystCharacter::CycleItem);
+	PlayerInputComponent->BindAction("Use Item", IE_Released, this, &ARyddelmystCharacter::UseItem);
 }
 
 void ARyddelmystCharacter::Interact()
@@ -175,14 +188,28 @@ void ARyddelmystCharacter::Interact()
 	}
 	else
 	{
+		// todo: debug draw this trace so we can figure out why the ray is apparently not running directly through the reticle at the center of the viewport.
 		// determine where our ray trace should begin and end
 		const FVector start_trace = FirstPersonCameraComponent->GetComponentLocation();
 		const FVector direction = FirstPersonCameraComponent->GetComponentRotation().Vector();
 		const FVector end_trace = start_trace + (direction * MaxInteractDistance);
 		UE_LOG(LogTemp, Warning, TEXT("Interact; ray start says %s, direction says %s, and ray end says %s"), *start_trace.ToString(), *direction.ToString(), *end_trace.ToString());
+		DrawDebugLine(
+			GetWorld(), 
+			start_trace, 
+			end_trace,
+			FColor(255,0,255,255),
+			false,
+			50000.f,
+			1,
+			12.f
+		);
+		const FName TraceTag("InteractRay");
+		GetWorld()->DebugDrawTraceTag = TraceTag;
 		FCollisionQueryParams TraceParams(FName(TEXT("InteractTrace")), true, this);
 		TraceParams.bReturnPhysicalMaterial = false;
 		TraceParams.bTraceComplex = true;
+		TraceParams.TraceTag = TraceTag;
 
 		// cast our ray out and check for a hit object implementing IInteract
 		FHitResult Hit(ForceInit);
@@ -512,11 +539,6 @@ void ARyddelmystCharacter::DamageInvincibilityTimer()
 void ARyddelmystCharacter::OnOverlapBegin(class UPrimitiveComponent* OverlappedComp, class AActor* OtherActor, class UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
 	UE_LOG(LogTemp, Warning, TEXT("OnOverlapBegin; character overlapping %s"), *OtherActor->GetName());
-	APlayerController* PlayerController = UGameplayStatics::GetPlayerController(GetWorld(), 0);
-	ARyddelmystHUD* HUD = Cast<ARyddelmystHUD>(PlayerController->GetHUD());
-	UUserWidget* StatusWidget = HUD->GetStatusWidget();
-	UWidget* InventoryPanelWidget = StatusWidget->WidgetTree->FindWidget(FName("InventoryPanel"));
-	UHorizontalBox* InventoryPanel = Cast<UHorizontalBox>(InventoryPanelWidget);
 	UE_LOG(LogTemp, Warning, TEXT("OnOverlapBegin; inv panel widget address is %p"), InventoryPanel);
 	// if overlap item is an Item then add to onscreen inv as well as data inventory
 	if (OtherActor->GetClass()->ImplementsInterface(UItem::StaticClass()))
@@ -542,4 +564,45 @@ void ARyddelmystCharacter::OnOverlapBegin(class UPrimitiveComponent* OverlappedC
 void ARyddelmystCharacter::OnOverlapEnd(class UPrimitiveComponent* OverlappedComp, class AActor* OtherActor, class UPrimitiveComponent* OtherComp, int32 OtherBodyIndex)
 {
 	UE_LOG(LogTemp, Warning, TEXT("OnOverlapEnd; character no longer overlapping %s"), *OtherActor->GetName());
+}
+
+void ARyddelmystCharacter::UseItem()
+{
+	// todo: lookup the currently selected item, if any
+	// todo: run selected item's OnUse()
+}
+
+void ARyddelmystCharacter::CycleItem(float Value)
+{
+	if (Value != 0.f)
+	{
+		// clear selection overlay
+		InventorySelectionOverlay->ClearChildren();
+		if (Value > 0.f)
+		{
+			// cycle up, wrapping to 0 if at top bound
+			if (SelectedItemIdx == Inventory.Num() - 1)
+			{
+				SelectedItemIdx = 0;
+			}
+			else
+			{
+				SelectedItemIdx++;
+			}
+		}
+		else
+		{
+			// todo: cycle down, wrapping to top bound if at 0
+			if (SelectedItemIdx == 0)
+			{
+				SelectedItemIdx = Inventory.Num() - 1;
+			}
+			else
+			{
+				SelectedItemIdx--;
+			}
+		}
+		// todo: add selection overlay image
+		// todo: nudge the overlay image to image width * new SelectedItemIdx
+	}
 }
