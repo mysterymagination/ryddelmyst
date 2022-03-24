@@ -18,6 +18,7 @@
 #include "Components/GridPanel.h"
 #include "Components/Image.h"
 #include "DrawDebugHelpers.h"
+#include "Engine/Texture2D.h"
 
 DEFINE_LOG_CATEGORY_STATIC(LogFPChar, Warning, All);
 
@@ -47,14 +48,6 @@ ARyddelmystCharacter::ARyddelmystCharacter()
 	ThirdPersonCameraComponent->SetRelativeRotation(FRotator(-20.f, 0.f, 0.f));
 	ThirdPersonCameraComponent->bUsePawnControlRotation = false;
 	ThirdPersonCameraComponent->SetActive(false);
-
-	APlayerController* PlayerController = UGameplayStatics::GetPlayerController(GetWorld(), 0);
-	HUD = Cast<ARyddelmystHUD>(PlayerController->GetHUD());
-	StatusWidget = HUD->GetStatusWidget();
-	UWidget* InventoryPanelWidget = StatusWidget->WidgetTree->FindWidget(FName("InventoryPanel"));
-	InventoryPanel = Cast<UHorizontalBox>(InventoryPanelWidget);
-	UWidget* InventorySelectionOverlayWidget = StatusWidget->WidgetTree->FindWidget(FName("InventorySelectionOverlay"));
-	InventorySelectionOverlay = Cast<UGridPanel>(InventorySelectionOverlayWidget);
 }
 
 void ARyddelmystCharacter::BeginPlay()
@@ -84,6 +77,25 @@ void ARyddelmystCharacter::BeginPlay()
 	FScriptDelegate OverlapEndDelegate;
 	OverlapEndDelegate.BindUFunction(this, FName("OnOverlapEnd"));
 	GetCapsuleComponent()->OnComponentEndOverlap.Add(OverlapEndDelegate);
+
+	// UI setup
+	APlayerController* PlayerController = UGameplayStatics::GetPlayerController(GetWorld(), 0);
+	HUD = Cast<ARyddelmystHUD>(PlayerController->GetHUD());
+	StatusWidget = HUD->GetStatusWidget();
+	UWidget* InventoryPanelWidget = StatusWidget->WidgetTree->FindWidget(FName("InventoryPanel"));
+	InventoryPanel = Cast<UHorizontalBox>(InventoryPanelWidget);
+	UWidget* InventorySelectionOverlayWidget = StatusWidget->WidgetTree->FindWidget(FName("InventorySelectionOverlay"));
+	InventorySelectionOverlay = Cast<UGridPanel>(InventorySelectionOverlayWidget);
+
+	static ConstructorHelpers::FObjectFinder<UTexture2D> SelectionTexObj(TEXT("/Game/Ryddelmyst_Assets/Textures/SelectionHighlight"));
+	InventorySelectionTexture = SelectionTexObj.Object;
+
+	if (InventorySelectionTexture)
+	{
+		InventorySelectionIcon = StatusWidget->WidgetTree->ConstructWidget<UImage>();
+		InventorySelectionIcon->SetBrushSize(FVector2D(FIntPoint(128, 128)));
+		InventorySelectionIcon->SetBrushFromTexture(InventorySelectionTexture, false);
+	}
 }
 
 void ARyddelmystCharacter::Tick(float DeltaTime)
@@ -592,7 +604,7 @@ void ARyddelmystCharacter::CycleItem(float Value)
 		}
 		else
 		{
-			// todo: cycle down, wrapping to top bound if at 0
+			// cycle down, wrapping to top bound if at 0
 			if (SelectedItemIdx == 0)
 			{
 				SelectedItemIdx = Inventory.Num() - 1;
@@ -602,7 +614,12 @@ void ARyddelmystCharacter::CycleItem(float Value)
 				SelectedItemIdx--;
 			}
 		}
-		// todo: add selection overlay image
-		// todo: nudge the overlay image to image width * new SelectedItemIdx
+		// add selection overlay image
+		if (InventorySelectionIcon)
+		{
+			InventorySelectionOverlay->AddChildToGrid(InventorySelectionIcon, 0, SelectedItemIdx);
+			// todo: how would I programmatically nudge the overlay image to e.g. image width * new SelectedItemIdx
+			//InventorySelectionOverlay->grid
+		}
 	}
 }
