@@ -33,6 +33,22 @@ class ARyddelmystCharacter : public AFawnCharacter
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Interaction", meta = (AllowPrivateAccess = "true"))
 	AActor* GrabbedActor;
 
+	/** Handle to the Status UI in the HUD */
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "HUD", meta = (AllowPrivateAccess = "true"))
+	class UUserWidget* StatusWidget;
+
+	/** Handle to the HUD */
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "HUD", meta = (AllowPrivateAccess = "true"))
+	class ARyddelmystHUD* HUD;
+
+	/** Handle to the InventoryPanel UI widget in the HUD */
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Inventory", meta = (AllowPrivateAccess = "true"))
+	class UHorizontalBox* InventoryPanel;
+
+	/** Handle to the InventorySelectionOverlay UI widget in the HUD */
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Inventory", meta = (AllowPrivateAccess = "true"))
+	class UGridPanel* InventorySelectionOverlay;
+
 private:
 	bool FirstPersonCameraMode = true;
 	bool IsRunning = false;
@@ -43,6 +59,7 @@ private:
 	FTimerHandle MagicTimerHandle;
 	FTimerHandle InvincibilityTimerHandle;
 	TArray<UItem*> Inventory;
+	uint8_t SelectedItemIdx = 0;
 
 public:
 	ARyddelmystCharacter();
@@ -172,6 +189,19 @@ protected:
 	/** Marks that the actor can be damaged again */
 	UFUNCTION()
 	void SetDamageState();
+
+	/**
+	 * Runs the selected Item's OnUse() iff an Item is selected.
+	 */
+	UFUNCTION()
+	void UseItem();
+
+	/**
+	 * Cycles through the player's Inventory, selecting an item at the incremented index if the Value is positive and decremented index if Value is negative
+	 * @param Value negative to cycle backwards/down and positive to cycle forwards/up
+	 */
+	UFUNCTION()
+	void CycleItem(float Value);
 	
 protected:
 	// APawn interface
