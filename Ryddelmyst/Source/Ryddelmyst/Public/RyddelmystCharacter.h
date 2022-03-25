@@ -33,29 +33,9 @@ class ARyddelmystCharacter : public AFawnCharacter
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Interaction", meta = (AllowPrivateAccess = "true"))
 	AActor* GrabbedActor;
 
-	/** Handle to the Status UI in the HUD */
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "HUD", meta = (AllowPrivateAccess = "true"))
-	class UUserWidget* StatusWidget;
-
 	/** Handle to the HUD */
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "HUD", meta = (AllowPrivateAccess = "true"))
 	class ARyddelmystHUD* HUD;
-
-	/** Handle to the InventoryPanel UI widget in the HUD */
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Inventory", meta = (AllowPrivateAccess = "true"))
-	class UHorizontalBox* InventoryPanel;
-
-	/** Handle to the InventorySelectionOverlay UI widget in the HUD */
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Inventory", meta = (AllowPrivateAccess = "true"))
-	class UGridPanel* InventorySelectionOverlay;
-
-	/** Icon used to indicate selection in the InventorySelectionOverlay UI widget in the HUD */
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Inventory", meta = (AllowPrivateAccess = "true"))
-	class UImage* InventorySelectionIcon;
-
-	/** Texture used to fill the InventorySelectionIcon */
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Inventory", meta = (AllowPrivateAccess = "true"))
-	class UTexture2D* InventorySelectionTexture;
 
 private:
 	bool FirstPersonCameraMode = true;
