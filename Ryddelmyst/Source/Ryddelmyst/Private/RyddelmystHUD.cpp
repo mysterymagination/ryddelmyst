@@ -21,6 +21,9 @@ ARyddelmystHUD::ARyddelmystHUD()
 	static ConstructorHelpers::FClassFinder<UUserWidget> StatusWidgetObj(TEXT("/Game/Ryddelmyst_Assets/UI/BP_Status"));
 	StatusWidgetClass = StatusWidgetObj.Class;
 	UE_LOG(LogTemp, Warning, TEXT("ctor; StatusWIdgetClass came up as %p"), StatusWidgetClass);
+
+	static ConstructorHelpers::FObjectFinder<UTexture2D> SelectionTexObj(TEXT("/Game/Ryddelmyst_Assets/Textures/SelectionHighlight"));
+	InventorySelectionTexture = SelectionTexObj.Object;
 }
 
 
@@ -58,9 +61,6 @@ void ARyddelmystHUD::BeginPlay()
 			InventoryPanel = Cast<UHorizontalBox>(InventoryPanelWidget);
 			UWidget* InventorySelectionOverlayWidget = StatusWidget->WidgetTree->FindWidget(FName("InventorySelectionOverlay"));
 			InventorySelectionOverlay = Cast<UGridPanel>(InventorySelectionOverlayWidget);
-
-			static ConstructorHelpers::FObjectFinder<UTexture2D> SelectionTexObj(TEXT("/Game/Ryddelmyst_Assets/Textures/SelectionHighlight"));
-			InventorySelectionTexture = SelectionTexObj.Object;
 
 			if (InventorySelectionTexture)
 			{

@@ -537,9 +537,12 @@ void ARyddelmystCharacter::OnOverlapBegin(class UPrimitiveComponent* OverlappedC
 		UE_LOG(LogTemp, Warning, TEXT("OnOverlapBegin; overlapped actor is an Item!"));
 		if (Inventory.Num() < MaxInventory)
 		{
-			HUD->AddItemIcon(IItem::Execute_GetDisplayIcon(ItemActor));
-			IItem::Execute_OnPickup(ItemActor, this);
+			// todo: apparently the UItem associated with IItem does not itself count as implementing IItem; the Execute_ fn below crashes over assertion error that the given UObject* implements the IItem interface, so... guess we're gonna need a concrete Item object?
+			HUD->AddItemIcon(ItemActor->GetItem()->GetDisplayIcon());//IItem::Execute_GetDisplayIcon(ItemActor->GetItem()));
+			/*
+			IItem::Execute_OnPickup(ItemActor->GetItem(), this);
 			Inventory.Add(ItemActor->GetItem());
+			*/
 		}
 		else
 		{

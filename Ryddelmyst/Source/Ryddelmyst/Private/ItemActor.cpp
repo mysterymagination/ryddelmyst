@@ -26,8 +26,8 @@ void AItemActor::Tick(float DeltaTime)
 	Super::Tick(DeltaTime);
 }
 
-UItem* AItemActor::GetItem()
+IItem* AItemActor::GetItem()
 {
-	return Cast<UItem>(Item.GetObject());
+	return reinterpret_cast<IItem*>(Item.GetInterface());
 }
 
