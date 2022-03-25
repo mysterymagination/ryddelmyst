@@ -7,6 +7,10 @@
 #include "CanvasItem.h"
 #include "UObject/ConstructorHelpers.h"
 #include "Blueprint/UserWidget.h"
+#include "Blueprint/WidgetTree.h"
+#include "Components/HorizontalBox.h"
+#include "Components/GridPanel.h"
+#include "Components/Image.h"
 
 ARyddelmystHUD::ARyddelmystHUD()
 {
@@ -49,6 +53,21 @@ void ARyddelmystHUD::BeginPlay()
 		if (StatusWidget)
 		{
 			StatusWidget->AddToViewport();
+			// UI setup
+			UWidget* InventoryPanelWidget = StatusWidget->WidgetTree->FindWidget(FName("InventoryPanel"));
+			InventoryPanel = Cast<UHorizontalBox>(InventoryPanelWidget);
+			UWidget* InventorySelectionOverlayWidget = StatusWidget->WidgetTree->FindWidget(FName("InventorySelectionOverlay"));
+			InventorySelectionOverlay = Cast<UGridPanel>(InventorySelectionOverlayWidget);
+
+			static ConstructorHelpers::FObjectFinder<UTexture2D> SelectionTexObj(TEXT("/Game/Ryddelmyst_Assets/Textures/SelectionHighlight"));
+			InventorySelectionTexture = SelectionTexObj.Object;
+
+			if (InventorySelectionTexture)
+			{
+				InventorySelectionIcon = StatusWidget->WidgetTree->ConstructWidget<UImage>();
+				InventorySelectionIcon->SetBrushSize(FVector2D(FIntPoint(128, 128)));
+				InventorySelectionIcon->SetBrushFromTexture(InventorySelectionTexture, false);
+			}
 		}
 	}
 	else
@@ -60,4 +79,24 @@ void ARyddelmystHUD::BeginPlay()
 UUserWidget* ARyddelmystHUD::GetStatusWidget()
 {
 	return StatusWidget;
+}
+
+void ARyddelmystHUD::AddItemIcon(class UTexture2D* tex)
+{
+	UImage* IconWidget = StatusWidget->WidgetTree->ConstructWidget<UImage>();
+	IconWidget->SetBrushSize(FVector2D(FIntPoint(128, 128)));
+	IconWidget->SetBrushFromTexture(tex, false);
+	InventoryPanel->AddChildToHorizontalBox(IconWidget);
+}
+
+void ARyddelmystHUD::SelectItem(uint8 idx)
+{
+	// clear selection overlay
+	InventorySelectionOverlay->ClearChildren();
+	// add selection overlay image
+	if (InventorySelectionIcon)
+	{
+		InventorySelectionOverlay->AddChildToGrid(InventorySelectionIcon, 0, idx);
+		// todo: how would I programmatically nudge the overlay image to e.g. image width * new SelectedItemIdx?  Something using the GridSlot returned by AddChildToGrid()?
+	}
 }

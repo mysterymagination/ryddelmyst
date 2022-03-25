@@ -31,5 +31,5 @@ public:
 
 protected:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Inventory")
-	TSubclassOf<UItem> ItemType;
+	TSubclassOf<UObject> ItemType;
 };
