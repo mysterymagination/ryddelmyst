@@ -11,14 +11,10 @@
 #include "Kismet/KismetMathLibrary.h"
 #include "TimerManager.h"
 #include "GameFramework/CharacterMovementComponent.h"
-#include "RyddelmystHUD.h"
-#include "Blueprint/UserWidget.h"
-#include "Blueprint/WidgetTree.h"
-#include "Components/HorizontalBox.h"
-#include "Components/GridPanel.h"
-#include "Components/Image.h"
 #include "DrawDebugHelpers.h"
-#include "Engine/Texture2D.h"
+#include "RyddelmystHUD.h"
+#include "GameFramework/PlayerController.h"
+#include "ItemActor.h"
 
 DEFINE_LOG_CATEGORY_STATIC(LogFPChar, Warning, All);
 
@@ -71,31 +67,14 @@ void ARyddelmystCharacter::BeginPlay()
 	DamageDelegate.BindUFunction(this, FName("HandleDamage"));
 	OnTakeAnyDamage.Add(DamageDelegate);
 
+	HUD = UGameplayStatics::GetPlayerController(GetWorld(), 0)->GetHUD<ARyddelmystHUD>();
+
 	FScriptDelegate OverlapBeginDelegate;
 	OverlapBeginDelegate.BindUFunction(this, FName("OnOverlapBegin"));
 	GetCapsuleComponent()->OnComponentBeginOverlap.Add(OverlapBeginDelegate);
 	FScriptDelegate OverlapEndDelegate;
 	OverlapEndDelegate.BindUFunction(this, FName("OnOverlapEnd"));
 	GetCapsuleComponent()->OnComponentEndOverlap.Add(OverlapEndDelegate);
-
-	// UI setup
-	APlayerController* PlayerController = UGameplayStatics::GetPlayerController(GetWorld(), 0);
-	HUD = Cast<ARyddelmystHUD>(PlayerController->GetHUD());
-	StatusWidget = HUD->GetStatusWidget();
-	UWidget* InventoryPanelWidget = StatusWidget->WidgetTree->FindWidget(FName("InventoryPanel"));
-	InventoryPanel = Cast<UHorizontalBox>(InventoryPanelWidget);
-	UWidget* InventorySelectionOverlayWidget = StatusWidget->WidgetTree->FindWidget(FName("InventorySelectionOverlay"));
-	InventorySelectionOverlay = Cast<UGridPanel>(InventorySelectionOverlayWidget);
-
-	static ConstructorHelpers::FObjectFinder<UTexture2D> SelectionTexObj(TEXT("/Game/Ryddelmyst_Assets/Textures/SelectionHighlight"));
-	InventorySelectionTexture = SelectionTexObj.Object;
-
-	if (InventorySelectionTexture)
-	{
-		InventorySelectionIcon = StatusWidget->WidgetTree->ConstructWidget<UImage>();
-		InventorySelectionIcon->SetBrushSize(FVector2D(FIntPoint(128, 128)));
-		InventorySelectionIcon->SetBrushFromTexture(InventorySelectionTexture, false);
-	}
 }
 
 void ARyddelmystCharacter::Tick(float DeltaTime)
@@ -551,20 +530,16 @@ void ARyddelmystCharacter::DamageInvincibilityTimer()
 void ARyddelmystCharacter::OnOverlapBegin(class UPrimitiveComponent* OverlappedComp, class AActor* OtherActor, class UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
 	UE_LOG(LogTemp, Warning, TEXT("OnOverlapBegin; character overlapping %s"), *OtherActor->GetName());
-	UE_LOG(LogTemp, Warning, TEXT("OnOverlapBegin; inv panel widget address is %p"), InventoryPanel);
 	// if overlap item is an Item then add to onscreen inv as well as data inventory
-	if (OtherActor->GetClass()->ImplementsInterface(UItem::StaticClass()))
+	auto ItemActor = Cast<AItemActor>(OtherActor);
+	if (ItemActor)
 	{
 		UE_LOG(LogTemp, Warning, TEXT("OnOverlapBegin; overlapped actor is an Item!"));
 		if (Inventory.Num() < MaxInventory)
 		{
-			UTexture2D* Icon = IItem::Execute_GetDisplayIcon(OtherActor);
-			UImage* IconWidget = StatusWidget->WidgetTree->ConstructWidget<UImage>();
-			IconWidget->SetBrushSize(FVector2D(FIntPoint(128, 128)));
-			IconWidget->SetBrushFromTexture(Icon, false);
-			InventoryPanel->AddChildToHorizontalBox(IconWidget);
-			//Inventory.Add(OtherActor);// todo: not safe to hold reference to AActor we're likely going to destroy in the OnPickup impl 
-			IItem::Execute_OnPickup(OtherActor, this);
+			HUD->AddItemIcon(IItem::Execute_GetDisplayIcon(ItemActor));
+			IItem::Execute_OnPickup(ItemActor, this);
+			Inventory.Add(ItemActor->GetItem());
 		}
 		else
 		{
@@ -580,16 +555,16 @@ void ARyddelmystCharacter::OnOverlapEnd(class UPrimitiveComponent* OverlappedCom
 
 void ARyddelmystCharacter::UseItem()
 {
-	// todo: lookup the currently selected item, if any
-	// todo: run selected item's OnUse()
+	if (SelectedItemIdx >= 0 && SelectedItemIdx < Inventory.Num())
+	{
+		IItem::Execute_OnUse(Inventory[SelectedItemIdx], this);
+	}
 }
 
 void ARyddelmystCharacter::CycleItem(float Value)
 {
 	if (Value != 0.f)
 	{
-		// clear selection overlay
-		InventorySelectionOverlay->ClearChildren();
 		if (Value > 0.f)
 		{
 			// cycle up, wrapping to 0 if at top bound
@@ -614,12 +589,6 @@ void ARyddelmystCharacter::CycleItem(float Value)
 				SelectedItemIdx--;
 			}
 		}
-		// add selection overlay image
-		if (InventorySelectionIcon)
-		{
-			InventorySelectionOverlay->AddChildToGrid(InventorySelectionIcon, 0, SelectedItemIdx);
-			// todo: how would I programmatically nudge the overlay image to e.g. image width * new SelectedItemIdx
-			//InventorySelectionOverlay->grid
-		}
+		HUD->SelectItem(SelectedItemIdx);
 	}
 }
