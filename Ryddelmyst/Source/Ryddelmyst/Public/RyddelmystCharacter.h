@@ -46,7 +46,7 @@ private:
 	float TimelineValue;
 	FTimerHandle MagicTimerHandle;
 	FTimerHandle InvincibilityTimerHandle;
-	TArray<UItem*> Inventory;
+	TArray<UObject*> Inventory;
 	uint8_t SelectedItemIdx = 0;
 
 public:

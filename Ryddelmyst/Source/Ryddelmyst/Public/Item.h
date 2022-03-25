@@ -7,7 +7,7 @@
 #include "Item.generated.h"
 
 // This class does not need to be modified.
-UINTERFACE(MinimalAPI)
+UINTERFACE(MinimalAPI, meta = (Blueprintable))
 class UItem : public UInterface
 {
 	GENERATED_BODY()
