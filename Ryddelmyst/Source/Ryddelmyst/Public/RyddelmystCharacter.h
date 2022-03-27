@@ -46,8 +46,10 @@ private:
 	float TimelineValue;
 	FTimerHandle MagicTimerHandle;
 	FTimerHandle InvincibilityTimerHandle;
+	FTimerHandle InventoryTimerHandle;
 	TArray<UObject*> Inventory;
 	uint8_t SelectedItemIdx = 0;
+	bool IsInventorySleeping = false;
 
 public:
 	ARyddelmystCharacter();
@@ -190,6 +192,10 @@ protected:
 	 */
 	UFUNCTION()
 	void CycleItem(float Value);
+
+	/** Wakes the inventory system to user input */
+	UFUNCTION()
+	void WakeInventory();
 	
 protected:
 	// APawn interface

@@ -537,16 +537,30 @@ void ARyddelmystCharacter::OnOverlapBegin(class UPrimitiveComponent* OverlappedC
 		UE_LOG(LogTemp, Warning, TEXT("OnOverlapBegin; overlapped actor is an Item!"));
 		if (Inventory.Num() < MaxInventory)
 		{
-			// todo: apparently the UItem associated with IItem does not itself count as implementing IItem; the Execute_ fn below crashes over assertion error that the given UObject* implements the IItem interface, so... guess we're gonna need a concrete Item object?
-			HUD->AddItemIcon(ItemActor->GetItem()->GetDisplayIcon());//IItem::Execute_GetDisplayIcon(ItemActor->GetItem()));
-			/*
-			IItem::Execute_OnPickup(ItemActor->GetItem(), this);
-			Inventory.Add(ItemActor->GetItem());
-			*/
+			UObject* ItemObj = ItemActor->GetItem();
+			if (ItemObj->GetClass()->ImplementsInterface(UItem::StaticClass()))
+			{
+
+				HUD->AddItemIcon(IItem::Execute_GetDisplayIcon(ItemObj));
+				IItem::Execute_OnPickup(ItemObj, this);
+				Inventory.Add(ItemObj);
+				ItemActor->Destroy();
+				if (Inventory.Num() == 1)
+				{
+					// adding first inv item, so auto select it
+					SelectedItemIdx = 0;
+					HUD->SelectItem(SelectedItemIdx);
+				}
+			}
+			else
+			{
+				UE_LOG(LogTemp, Warning, TEXT("OnOverlapBegin; overlapped itemactor's item obj %s does not implement the item interface"), *ItemObj->GetName());
+			}
 		}
 		else
 		{
 			// todo: raise dialog informing the player that their inventory is full
+			UE_LOG(LogTemp, Warning, TEXT("OnOverlapBegin; inventory is full"));
 		}
 	}
 }
@@ -560,6 +574,7 @@ void ARyddelmystCharacter::UseItem()
 {
 	if (SelectedItemIdx >= 0 && SelectedItemIdx < Inventory.Num())
 	{
+		UE_LOG(LogTemp, Warning, TEXT("UseItem; used item is %s"), *Inventory[SelectedItemIdx]->GetName());
 		IItem::Execute_OnUse(Inventory[SelectedItemIdx], this);
 	}
 }
@@ -568,30 +583,53 @@ void ARyddelmystCharacter::CycleItem(float Value)
 {
 	if (Value != 0.f)
 	{
-		if (Value > 0.f)
+		if (!IsInventorySleeping)
 		{
-			// cycle up, wrapping to 0 if at top bound
-			if (SelectedItemIdx == Inventory.Num() - 1)
+			if (Value > 0.f)
 			{
-				SelectedItemIdx = 0;
+				UE_LOG(LogTemp, Warning, TEXT("CycleItem; up"));
+				// cycle up, wrapping to 0 if at top bound
+				if (SelectedItemIdx == Inventory.Num() - 1)
+				{
+					SelectedItemIdx = 0;
+				}
+				else
+				{
+					SelectedItemIdx++;
+				}
 			}
 			else
 			{
-				SelectedItemIdx++;
+				UE_LOG(LogTemp, Warning, TEXT("CycleItem; down"));
+				// cycle down, wrapping to top bound if at 0
+				if (SelectedItemIdx == 0)
+				{
+					SelectedItemIdx = Inventory.Num() - 1;
+				}
+				else
+				{
+					SelectedItemIdx--;
+				}
 			}
+			HUD->SelectItem(SelectedItemIdx);
+			GetWorldTimerManager().SetTimer(InventoryTimerHandle, this, &ARyddelmystCharacter::WakeInventory, 0.25f, false);
+			IsInventorySleeping = true;
 		}
 		else
 		{
-			// cycle down, wrapping to top bound if at 0
-			if (SelectedItemIdx == 0)
-			{
-				SelectedItemIdx = Inventory.Num() - 1;
-			}
-			else
-			{
-				SelectedItemIdx--;
-			}
+			UE_LOG(LogTemp, Warning, TEXT("CycleItem; inventory is sleeping, please wait"));
 		}
-		HUD->SelectItem(SelectedItemIdx);
 	}
+	else
+	{
+		// user is not holding down cycle keys, so wake inv immediately.   This way there is no possibility of perceived delay after the user manually presses the cycle key multiple times in quick succession.
+		GetWorldTimerManager().ClearTimer(InventoryTimerHandle);
+		IsInventorySleeping = false;
+	}
+}
+
+void ARyddelmystCharacter::WakeInventory()
+{
+	UE_LOG(LogTemp, Warning, TEXT("WakeInventory"));
+	IsInventorySleeping = false;
 }

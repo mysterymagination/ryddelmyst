@@ -10,6 +10,7 @@
 #include "Blueprint/WidgetTree.h"
 #include "Components/HorizontalBox.h"
 #include "Components/GridPanel.h"
+#include "Components/GridSlot.h"
 #include "Components/Image.h"
 
 ARyddelmystHUD::ARyddelmystHUD()
@@ -96,7 +97,11 @@ void ARyddelmystHUD::SelectItem(uint8 idx)
 	// add selection overlay image
 	if (InventorySelectionIcon)
 	{
-		InventorySelectionOverlay->AddChildToGrid(InventorySelectionIcon, 0, idx);
-		// todo: how would I programmatically nudge the overlay image to e.g. image width * new SelectedItemIdx?  Something using the GridSlot returned by AddChildToGrid()?
+		UE_LOG(LogTemp, Warning, TEXT("SelectItem; idx is %u"), idx);
+		// todo: htf do you properly use this fella as a grid?!  Adding children to successive indices just lands us in what I would expect to be column 0 and there's no way to set the column and row dimensions, nor number of columns and rows.  GridSlots let you mess with col and row stuff, but that would suggest I need to populate the grid with empty cells before I can work with it as, y'know, a grid?
+		UGridSlot* slot = InventorySelectionOverlay->AddChildToGrid(InventorySelectionIcon, 0, 0);
+		// todo: look up the image width programmatically
+		slot->SetNudge(FVector2D(idx*128, 0.f));
+		slot->SynchronizeProperties();
 	}
 }
