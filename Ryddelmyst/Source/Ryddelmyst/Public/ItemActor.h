@@ -14,7 +14,7 @@ class RYDDELMYST_API AItemActor : public AActor
 	
 private:
 	UPROPERTY()
-	TScriptInterface<IItem> Item;
+	UObject* Item;
 
 public:	
 	// Sets default values for this actor's properties
@@ -27,9 +27,9 @@ protected:
 public:	
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
-	IItem* GetItem();
+	UObject* GetItem();
 
 protected:
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Inventory")
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Inventory", meta = (MustImplement = "Item"))
 	TSubclassOf<UObject> ItemType;
 };
