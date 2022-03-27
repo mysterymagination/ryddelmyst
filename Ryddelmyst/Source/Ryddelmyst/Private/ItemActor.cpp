@@ -16,7 +16,7 @@ void AItemActor::BeginPlay()
 	Super::BeginPlay();
 	if (ItemType)
 	{
-		Item = NewObject<UItem>(ItemType);
+		Item = NewObject<UObject>(this, ItemType);
 	}
 }
 
@@ -26,8 +26,8 @@ void AItemActor::Tick(float DeltaTime)
 	Super::Tick(DeltaTime);
 }
 
-IItem* AItemActor::GetItem()
+UObject* AItemActor::GetItem()
 {
-	return reinterpret_cast<IItem*>(Item.GetInterface());
+	return Item;
 }
 
