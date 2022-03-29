@@ -537,12 +537,13 @@ void ARyddelmystCharacter::OnOverlapBegin(class UPrimitiveComponent* OverlappedC
 		UE_LOG(LogTemp, Warning, TEXT("OnOverlapBegin; overlapped actor is an Item!"));
 		if (Inventory.Num() < MaxInventory)
 		{
-			UObject* ItemObj = ItemActor->GetItem();
-			if (ItemObj->GetClass()->ImplementsInterface(UItem::StaticClass()))
+			TSubclassOf<UObject> ItemClass = ItemActor->GetItemType();
+			if (ItemClass->ImplementsInterface(UItem::StaticClass()))
 			{
-
+				UObject* ItemObj = NewObject<UObject>(this, ItemClass);
 				HUD->AddItemIcon(IItem::Execute_GetDisplayIcon(ItemObj));
 				IItem::Execute_OnPickup(ItemObj, this);
+				UE_LOG(LogTemp, Warning, TEXT("OnOverlapBegin; adding item %s whose address is %p"), *ItemObj->GetName(), ItemObj);
 				Inventory.Add(ItemObj);
 				ItemActor->Destroy();
 				if (Inventory.Num() == 1)
@@ -554,7 +555,7 @@ void ARyddelmystCharacter::OnOverlapBegin(class UPrimitiveComponent* OverlappedC
 			}
 			else
 			{
-				UE_LOG(LogTemp, Warning, TEXT("OnOverlapBegin; overlapped itemactor's item obj %s does not implement the item interface"), *ItemObj->GetName());
+				UE_LOG(LogTemp, Warning, TEXT("OnOverlapBegin; overlapped itemactor's item class %s does not implement the item interface"), *ItemClass->GetName());
 			}
 		}
 		else
@@ -574,7 +575,7 @@ void ARyddelmystCharacter::UseItem()
 {
 	if (SelectedItemIdx >= 0 && SelectedItemIdx < Inventory.Num())
 	{
-		UE_LOG(LogTemp, Warning, TEXT("UseItem; used item is %s"), *Inventory[SelectedItemIdx]->GetName());
+		UE_LOG(LogTemp, Warning, TEXT("UseItem; used item is %s and lives at %p"), *Inventory[SelectedItemIdx]->GetName(), Inventory[SelectedItemIdx]);
 		IItem::Execute_OnUse(Inventory[SelectedItemIdx], this);
 	}
 }
