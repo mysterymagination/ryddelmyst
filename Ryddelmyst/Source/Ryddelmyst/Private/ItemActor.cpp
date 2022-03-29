@@ -2,6 +2,8 @@
 
 
 #include "ItemActor.h"
+#include "Kismet/GameplayStatics.h"
+#include "GameFramework/Character.h"
 
 // Sets default values
 AItemActor::AItemActor()
@@ -10,24 +12,8 @@ AItemActor::AItemActor()
 	PrimaryActorTick.bCanEverTick = true;
 }
 
-// Called when the game starts or when spawned
-void AItemActor::BeginPlay()
+TSubclassOf<UObject> AItemActor::GetItemType()
 {
-	Super::BeginPlay();
-	if (ItemType)
-	{
-		Item = NewObject<UObject>(this, ItemType);
-	}
-}
-
-// Called every frame
-void AItemActor::Tick(float DeltaTime)
-{
-	Super::Tick(DeltaTime);
-}
-
-UObject* AItemActor::GetItem()
-{
-	return Item;
+	return ItemType;
 }
 
