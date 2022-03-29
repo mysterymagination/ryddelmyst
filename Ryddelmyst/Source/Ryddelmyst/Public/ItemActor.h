@@ -11,23 +11,14 @@ UCLASS()
 class RYDDELMYST_API AItemActor : public AActor
 {
 	GENERATED_BODY()
-	
-private:
-	UPROPERTY()
-	UObject* Item;
 
 public:	
 	// Sets default values for this actor's properties
 	AItemActor();
 
-protected:
-	// Called when the game starts or when spawned
-	virtual void BeginPlay() override;
-
 public:	
-	// Called every frame
-	virtual void Tick(float DeltaTime) override;
-	UObject* GetItem();
+	UFUNCTION()
+	TSubclassOf<UObject> GetItemType();
 
 protected:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Inventory", meta = (MustImplement = "Item"))

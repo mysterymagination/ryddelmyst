@@ -47,6 +47,7 @@ private:
 	FTimerHandle MagicTimerHandle;
 	FTimerHandle InvincibilityTimerHandle;
 	FTimerHandle InventoryTimerHandle;
+	UPROPERTY()
 	TArray<UObject*> Inventory;
 	uint8_t SelectedItemIdx = 0;
 	bool IsInventorySleeping = false;
