@@ -12,6 +12,7 @@
 #include "Components/GridPanel.h"
 #include "Components/GridSlot.h"
 #include "Components/Image.h"
+#include "TextDisplayWidget.h"
 
 ARyddelmystHUD::ARyddelmystHUD()
 {
@@ -50,7 +51,7 @@ void ARyddelmystHUD::DrawHUD()
 void ARyddelmystHUD::BeginPlay()
 {
 	Super::BeginPlay();
-	if (StatusWidgetClass != nullptr)
+	if (StatusWidgetClass)
 	{
 		StatusWidget = CreateWidget<UUserWidget>(GetWorld(), StatusWidgetClass);
 		UE_LOG(LogTemp, Warning, TEXT("BeginPlay; status widget says %p"), StatusWidget)
@@ -73,7 +74,16 @@ void ARyddelmystHUD::BeginPlay()
 	}
 	else
 	{
-		UE_LOG(LogTemp, Error, TEXT("BeginPlay; status widget class says %p"), StatusWidgetClass)
+		UE_LOG(LogTemp, Error, TEXT("BeginPlay; no status widget class set"));
+	}
+
+	if (TextWidgetClass)
+	{
+		TextWidget = CreateWidget<UTextDisplayWidget>(GetWorld(), TextWidgetClass);
+	}
+	else
+	{
+		UE_LOG(LogTemp, Error, TEXT("BeginPlay; text widget class set"));
 	}
 }
 
@@ -103,5 +113,18 @@ void ARyddelmystHUD::SelectItem(uint8 idx)
 		// todo: look up the image width programmatically
 		slot->SetNudge(FVector2D(idx*128, 0.f));
 		slot->SynchronizeProperties();
+	}
+}
+
+void ARyddelmystHUD::ShowDialogue(const FText& Text)
+{
+	if (TextWidget)
+	{
+		TextWidget->SetText(Text);
+		TextWidget->AddToViewport();
+	}
+	else
+	{
+		UE_LOG(LogTemp, Error, TEXT("ShowDialogue; text widget not created yet"));
 	}
 }

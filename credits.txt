@@ -68,4 +68,14 @@ Textures:
   4. Ryddelmyst/Content/Ryddelmyst_Assets/Sprites/DungeonCrawl_ProjectUtumnoTileset.png
     4.1 Source: https://opengameart.org/content/dungeon-crawl-32x32-tiles
     4.2 Authors: https://opengameart.org/users/medicinestorm and http://code.google.com/p/crawl-tiles/
-    4.3 CC0
+    4.3 License: CC0
+  5. Ryddelmyst/Content/Ryddelmyst_Assets/Textures/map.png
+    5.1 Source: https://opengameart.org/content/map
+    5.2 Authors: https://opengameart.org/users/yd
+    5.3 License: CC0
+
+Fonts:
+  1. Ryddelmyst/Content/Ryddelmyst_Assets/Fonts/alagard_by_pix3m-d6awiwp.ttf
+    5.1 Source: https://opengameart.org/content/pixel-fonts-by-pix3m
+    5.2 Authors: http://pix3m.deviantart.com/ and submitted by https://opengameart.org/users/julius
+    5.3 License: http://creativecommons.org/licenses/by/3.0/

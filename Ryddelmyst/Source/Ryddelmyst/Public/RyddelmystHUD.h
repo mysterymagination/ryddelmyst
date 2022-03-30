@@ -33,6 +33,9 @@ public:
 	UFUNCTION()
 	void SelectItem(uint8 idx);
 
+	UFUNCTION(BlueprintCallable, Category = "Dialogue")
+	void ShowDialogue(const FText& Text);
+
 private:
 	/** Crosshair asset pointer */
 	UPROPERTY()
@@ -41,8 +44,11 @@ private:
 	UPROPERTY(EditAnywhere, Category = "Health")
 	TSubclassOf<class UUserWidget> StatusWidgetClass;
 
-	UPROPERTY(EditAnywhere, Category = "Health")
+	UPROPERTY()
 	class UUserWidget* StatusWidget;
+
+	UPROPERTY()
+	class UTextDisplayWidget* TextWidget;
 
 	/** Handle to the InventoryPanel UI widget in the HUD */
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Inventory", meta = (AllowPrivateAccess = "true"))
@@ -59,5 +65,9 @@ private:
 	/** Texture used to fill the InventorySelectionIcon */
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Inventory", meta = (AllowPrivateAccess = "true"))
 	class UTexture2D* InventorySelectionTexture;
+
+public:
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Dialogue")
+	TSubclassOf<class UTextDisplayWidget> TextWidgetClass;
 };
 
