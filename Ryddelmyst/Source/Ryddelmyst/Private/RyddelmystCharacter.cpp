@@ -125,6 +125,9 @@ void ARyddelmystCharacter::SetupPlayerInputComponent(class UInputComponent* Play
 
 void ARyddelmystCharacter::Interact()
 {
+	// hide dialogue if showing
+	HUD->HideDialogue();
+
 	// if we're already engaged with an interactable, end that engagement e.g. by dropping a GRABBABLE Actor.
 	if (GrabbedActor)
 	{

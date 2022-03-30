@@ -36,6 +36,9 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "Dialogue")
 	void ShowDialogue(const FText& Text);
 
+	UFUNCTION(BlueprintCallable, Category = "Dialogue")
+	void HideDialogue();
+
 private:
 	/** Crosshair asset pointer */
 	UPROPERTY()
