@@ -27,11 +27,24 @@ public:
 	void AddItemIcon(class UTexture2D* tex);
 
 	/**
+	 * Removes the UImage icon widget at the given child index from the InventoryPanel
+	 * @param idx the index of the item icon to remove
+	 */
+	UFUNCTION()
+	void RemoveItemIcon(uint8 idx);
+
+	/**
 	 * Moves the InventorySelectionIcon to the column of InventorySelectionOverlay at the given index
 	 * @param idx the index of the item being selected
 	 */
 	UFUNCTION()
 	void SelectItem(uint8 idx);
+
+	/**
+	 * Removes the InventorySelectionIcon entirely
+	 */
+	UFUNCTION()
+	void ClearItemSelection();
 
 	UFUNCTION(BlueprintCallable, Category = "Dialogue")
 	void ShowDialogue(const FText& Text);
