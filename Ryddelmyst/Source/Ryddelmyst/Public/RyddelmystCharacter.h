@@ -38,18 +38,29 @@ class ARyddelmystCharacter : public AFawnCharacter
 	class ARyddelmystHUD* HUD;
 
 private:
+	UPROPERTY()
 	bool FirstPersonCameraMode = true;
+	UPROPERTY()
 	bool IsRunning = false;
-	uint8_t SelectedWeaponIdx = 0;
+	UPROPERTY()
+	uint8 SelectedWeaponIdx = 0;
+	UPROPERTY()
 	FTimeline MyTimeline;
+	UPROPERTY()
 	float CurveFloatValue;
+	UPROPERTY()
 	float TimelineValue;
+	UPROPERTY()
 	FTimerHandle MagicTimerHandle;
+	UPROPERTY()
 	FTimerHandle InvincibilityTimerHandle;
+	UPROPERTY()
 	FTimerHandle InventoryTimerHandle;
 	UPROPERTY()
 	TArray<UObject*> Inventory;
-	uint8_t SelectedItemIdx = 0;
+	UPROPERTY()
+	uint8 SelectedItemIdx = 0;
+	UPROPERTY()
 	bool IsInventorySleeping = false;
 
 public:
