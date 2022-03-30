@@ -121,10 +121,28 @@ void ARyddelmystHUD::ShowDialogue(const FText& Text)
 	if (TextWidget)
 	{
 		TextWidget->SetText(Text);
-		TextWidget->AddToViewport();
+		if (!TextWidget->IsInViewport())
+		{
+			TextWidget->AddToViewport();
+		}
 	}
 	else
 	{
 		UE_LOG(LogTemp, Error, TEXT("ShowDialogue; text widget not created yet"));
+	}
+}
+
+void ARyddelmystHUD::HideDialogue()
+{
+	if (TextWidget)
+	{
+		if (TextWidget->IsInViewport())
+		{
+			TextWidget->RemoveFromViewport();
+		}
+	}
+	else
+	{
+		UE_LOG(LogTemp, Error, TEXT("HideDialogue; text widget not created yet"));
 	}
 }
