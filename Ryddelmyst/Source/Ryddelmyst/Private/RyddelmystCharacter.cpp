@@ -182,7 +182,6 @@ void ARyddelmystCharacter::Interact()
 	}
 	else
 	{
-		// todo: debug draw this trace so we can figure out why the ray is apparently not running directly through the reticle at the center of the viewport.
 		// determine where our ray trace should begin and end
 		const FVector start_trace = FirstPersonCameraComponent->GetComponentLocation();
 		const FVector direction = FirstPersonCameraComponent->GetComponentRotation().Vector();
@@ -580,6 +579,25 @@ void ARyddelmystCharacter::UseItem()
 	{
 		UE_LOG(LogTemp, Warning, TEXT("UseItem; used item is %s and lives at %p"), *Inventory[SelectedItemIdx]->GetName(), Inventory[SelectedItemIdx]);
 		IItem::Execute_OnUse(Inventory[SelectedItemIdx], this);
+		
+		// todo: support non-consumable/multi-use items?
+		
+		// remove the used item from inv
+		Inventory.RemoveAt(SelectedItemIdx);
+		// remove the used item's icon
+		HUD->RemoveItemIcon(SelectedItemIdx);
+		// only need to modify the SelectedItemIdx if we've used the only item in the inv or if we used the last item (i.e. item at highest index) in the inv array
+		if (Inventory.Num() == 0)
+		{
+			// empty inv after removing used item, clear selection 
+			HUD->ClearItemSelection();
+		}
+		else if (SelectedItemIdx >= Inventory.Num())
+		{
+			// drop the selected item idx to max since we're now above the max index
+			SelectedItemIdx = Inventory.Num() - 1;
+			HUD->SelectItem(SelectedItemIdx);
+		}
 	}
 }
 
@@ -587,7 +605,7 @@ void ARyddelmystCharacter::CycleItem(float Value)
 {
 	if (Value != 0.f)
 	{
-		if (!IsInventorySleeping)
+		if (!IsInventorySleeping && Inventory.Num() > 0)
 		{
 			if (Value > 0.f)
 			{
@@ -621,7 +639,7 @@ void ARyddelmystCharacter::CycleItem(float Value)
 		}
 		else
 		{
-			UE_LOG(LogTemp, Warning, TEXT("CycleItem; inventory is sleeping, please wait"));
+			UE_LOG(LogTemp, Warning, TEXT("CycleItem; inventory is sleeping or empty, can't cycle now"));
 		}
 	}
 	else

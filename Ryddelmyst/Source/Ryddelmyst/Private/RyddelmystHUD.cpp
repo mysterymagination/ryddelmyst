@@ -100,6 +100,11 @@ void ARyddelmystHUD::AddItemIcon(class UTexture2D* tex)
 	InventoryPanel->AddChildToHorizontalBox(IconWidget);
 }
 
+void ARyddelmystHUD::RemoveItemIcon(uint8 idx)
+{
+	InventoryPanel->RemoveChildAt(idx);
+}
+
 void ARyddelmystHUD::SelectItem(uint8 idx)
 {
 	// clear selection overlay
@@ -114,6 +119,11 @@ void ARyddelmystHUD::SelectItem(uint8 idx)
 		slot->SetNudge(FVector2D(idx*128, 0.f));
 		slot->SynchronizeProperties();
 	}
+}
+
+void ARyddelmystHUD::ClearItemSelection()
+{
+	InventorySelectionOverlay->ClearChildren();
 }
 
 void ARyddelmystHUD::ShowDialogue(const FText& Text)
