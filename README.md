@@ -1,2 +1,2 @@
 # Ryddelmyst
-cutethulhu meets Phantasy Star 1 on the battlefields of Final Fantasy Tactics!
+cutethulhu meets Castlevania on the battlefields of Final Fantasy Tactics!
