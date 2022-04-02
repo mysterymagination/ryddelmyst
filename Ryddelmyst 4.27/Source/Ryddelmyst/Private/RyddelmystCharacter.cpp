@@ -67,7 +67,11 @@ void ARyddelmystCharacter::BeginPlay()
 	DamageDelegate.BindUFunction(this, FName("HandleDamage"));
 	OnTakeAnyDamage.Add(DamageDelegate);
 
+	// todo: this gives us a nullptr HUD because (I guess) the cast fails after ClientSetHUD()? 
+	TSubclassOf<ARyddelmystHUD> HUDClass;
+	UGameplayStatics::GetPlayerController(GetWorld(), 0)->ClientSetHUD(HUDClass);
 	HUD = UGameplayStatics::GetPlayerController(GetWorld(), 0)->GetHUD<ARyddelmystHUD>();
+	UE_LOG(LogTemp, Warning, TEXT("BeginPlay; ryddel hud is %p"), HUD);
 
 	FScriptDelegate OverlapBeginDelegate;
 	OverlapBeginDelegate.BindUFunction(this, FName("OnOverlapBegin"));
@@ -89,6 +93,8 @@ void ARyddelmystCharacter::SetupPlayerInputComponent(class UInputComponent* Play
 {
 	// set up gameplay key bindings
 	check(PlayerInputComponent);
+
+	PlayerInputComponent->BindAction("Pause", IE_Pressed, this, &ARyddelmystCharacter::PauseGame);
 
 	// Bind jump events
 	PlayerInputComponent->BindAction("Jump", IE_Pressed, this, &ACharacter::Jump);
@@ -121,6 +127,13 @@ void ARyddelmystCharacter::SetupPlayerInputComponent(class UInputComponent* Play
 
 	PlayerInputComponent->BindAxis("Select Item", this, &ARyddelmystCharacter::CycleItem);
 	PlayerInputComponent->BindAction("Use Item", IE_Released, this, &ARyddelmystCharacter::UseItem);
+}
+
+void ARyddelmystCharacter::PauseGame()
+{
+	UE_LOG(LogTemp, Warning, TEXT("PauseGame"));
+	UGameplayStatics::GetPlayerController(GetWorld(), 0)->SetPause(true);
+	HUD->ShowPauseMenu();
 }
 
 void ARyddelmystCharacter::Interact()

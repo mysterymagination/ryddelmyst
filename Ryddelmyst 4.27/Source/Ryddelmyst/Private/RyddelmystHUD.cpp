@@ -22,7 +22,9 @@ ARyddelmystHUD::ARyddelmystHUD()
 
 	static ConstructorHelpers::FClassFinder<UUserWidget> StatusWidgetObj(TEXT("/Game/Ryddelmyst_Assets/UI/BP_Status"));
 	StatusWidgetClass = StatusWidgetObj.Class;
-	UE_LOG(LogTemp, Warning, TEXT("ctor; StatusWIdgetClass came up as %p"), StatusWidgetClass);
+	
+	static ConstructorHelpers::FClassFinder<UUserWidget> PauseMenuWidgetObj(TEXT("/Game/Ryddelmyst_Assets/UI/BP_PauseMenu"));
+	PauseMenuWidgetClass = PauseMenuWidgetObj.Class;
 
 	static ConstructorHelpers::FObjectFinder<UTexture2D> SelectionTexObj(TEXT("/Game/Ryddelmyst_Assets/Textures/SelectionHighlight"));
 	InventorySelectionTexture = SelectionTexObj.Object;
@@ -83,7 +85,16 @@ void ARyddelmystHUD::BeginPlay()
 	}
 	else
 	{
-		UE_LOG(LogTemp, Error, TEXT("BeginPlay; text widget class set"));
+		UE_LOG(LogTemp, Error, TEXT("BeginPlay; no text widget class set"));
+	}
+
+	if (PauseMenuWidgetClass)
+	{
+		PauseMenuWidget = CreateWidget<UUserWidget>(GetWorld(), PauseMenuWidgetClass);
+	}
+	else
+	{
+		UE_LOG(LogTemp, Error, TEXT("BeginPlay; no pause menu widget class set"));
 	}
 }
 
@@ -154,5 +165,39 @@ void ARyddelmystHUD::HideDialogue()
 	else
 	{
 		UE_LOG(LogTemp, Error, TEXT("HideDialogue; text widget not created yet"));
+	}
+}
+
+void ARyddelmystHUD::ClearHUD()
+{
+	if (TextWidget)
+	{
+		if (TextWidget->IsInViewport())
+		{
+			TextWidget->RemoveFromViewport();
+		}
+	}
+	if (StatusWidget)
+	{
+		if (StatusWidget->IsInViewport())
+		{
+			StatusWidget->RemoveFromViewport();
+		}
+	}
+	Canvas->Reset();
+}
+
+void ARyddelmystHUD::ShowPauseMenu()
+{
+	if (PauseMenuWidget)
+	{
+		if (!PauseMenuWidget->IsInViewport())
+		{
+			PauseMenuWidget->AddToViewport();
+		}
+	}
+	else
+	{
+		UE_LOG(LogTemp, Error, TEXT("ShowPauseMenu; pause menu widget not created"));
 	}
 }

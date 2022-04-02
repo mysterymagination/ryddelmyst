@@ -73,6 +73,10 @@ Textures:
     5.1 Source: https://opengameart.org/content/map
     5.2 Authors: https://opengameart.org/users/yd
     5.3 License: CC0
+  6. Ryddelmyst/Content/Ryddelmyst_Assets/Textures/environment_forestbackground1-1.png
+    6.1 Source: https://opengameart.org/content/forest-background-art
+    6.2 Authors: https://opengameart.org/users/ramtam
+    6.3 License: http://creativecommons.org/licenses/by-sa/3.0/
 
 Fonts:
   1. Ryddelmyst/Content/Ryddelmyst_Assets/Fonts/alagard_by_pix3m-d6awiwp.ttf
