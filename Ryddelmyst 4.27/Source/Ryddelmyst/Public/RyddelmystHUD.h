@@ -52,6 +52,12 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "Dialogue")
 	void HideDialogue();
 
+	UFUNCTION(BlueprintCallable, Category = "GameState")
+	void ClearHUD();
+
+	UFUNCTION(BlueprintCallable, Category = "GameState")
+	void ShowPauseMenu();
+
 private:
 	/** Crosshair asset pointer */
 	UPROPERTY()
@@ -62,6 +68,12 @@ private:
 
 	UPROPERTY()
 	class UUserWidget* StatusWidget;
+
+	UPROPERTY(EditAnywhere, Category = "GameState")
+	TSubclassOf<class UUserWidget> PauseMenuWidgetClass;
+
+	UPROPERTY()
+	class UUserWidget* PauseMenuWidget;
 
 	UPROPERTY()
 	class UTextDisplayWidget* TextWidget;
