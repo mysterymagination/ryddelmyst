@@ -158,6 +158,11 @@ protected:
 	void LookUpAtRate(float Rate);
 	void LookUp(float Value);
 	/**
+	 * Pauses the game and raises the pause menu.
+	 */ 
+	UFUNCTION()
+	void PauseGame();
+	/**
 	 * Handles firing projectiles.
 	 */ 
 	UFUNCTION()
