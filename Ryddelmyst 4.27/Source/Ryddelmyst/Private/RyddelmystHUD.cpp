@@ -53,48 +53,53 @@ void ARyddelmystHUD::DrawHUD()
 void ARyddelmystHUD::BeginPlay()
 {
 	Super::BeginPlay();
-	if (StatusWidgetClass)
+	FString MapName = GetWorld()->GetMapName();
+	UE_LOG(LogTemp, Warning, TEXT("BeginPlay; map name is %s"), *MapName);
+	if(!GetWorld()->GetMapName().Contains("splash", ESearchCase::Type::IgnoreCase))
 	{
-		StatusWidget = CreateWidget<UUserWidget>(GetWorld(), StatusWidgetClass);
-		UE_LOG(LogTemp, Warning, TEXT("BeginPlay; status widget says %p"), StatusWidget)
-		if (StatusWidget)
+		if (StatusWidgetClass)
 		{
-			StatusWidget->AddToViewport();
-			// UI setup
-			UWidget* InventoryPanelWidget = StatusWidget->WidgetTree->FindWidget(FName("InventoryPanel"));
-			InventoryPanel = Cast<UHorizontalBox>(InventoryPanelWidget);
-			UWidget* InventorySelectionOverlayWidget = StatusWidget->WidgetTree->FindWidget(FName("InventorySelectionOverlay"));
-			InventorySelectionOverlay = Cast<UGridPanel>(InventorySelectionOverlayWidget);
-
-			if (InventorySelectionTexture)
+			StatusWidget = CreateWidget<UUserWidget>(GetWorld(), StatusWidgetClass);
+			UE_LOG(LogTemp, Warning, TEXT("BeginPlay; status widget says %p"), StatusWidget)
+			if (StatusWidget)
 			{
-				InventorySelectionIcon = StatusWidget->WidgetTree->ConstructWidget<UImage>();
-				InventorySelectionIcon->SetBrushSize(FVector2D(FIntPoint(128, 128)));
-				InventorySelectionIcon->SetBrushFromTexture(InventorySelectionTexture, false);
+				StatusWidget->AddToViewport();
+				// UI setup
+				UWidget* InventoryPanelWidget = StatusWidget->WidgetTree->FindWidget(FName("InventoryPanel"));
+				InventoryPanel = Cast<UHorizontalBox>(InventoryPanelWidget);
+				UWidget* InventorySelectionOverlayWidget = StatusWidget->WidgetTree->FindWidget(FName("InventorySelectionOverlay"));
+				InventorySelectionOverlay = Cast<UGridPanel>(InventorySelectionOverlayWidget);
+
+				if (InventorySelectionTexture)
+				{
+					InventorySelectionIcon = StatusWidget->WidgetTree->ConstructWidget<UImage>();
+					InventorySelectionIcon->SetBrushSize(FVector2D(FIntPoint(128, 128)));
+					InventorySelectionIcon->SetBrushFromTexture(InventorySelectionTexture, false);
+				}
 			}
 		}
-	}
-	else
-	{
-		UE_LOG(LogTemp, Error, TEXT("BeginPlay; no status widget class set"));
-	}
+		else
+		{
+			UE_LOG(LogTemp, Error, TEXT("BeginPlay; no status widget class set"));
+		}
 
-	if (TextWidgetClass)
-	{
-		TextWidget = CreateWidget<UTextDisplayWidget>(GetWorld(), TextWidgetClass);
-	}
-	else
-	{
-		UE_LOG(LogTemp, Error, TEXT("BeginPlay; no text widget class set"));
-	}
+		if (TextWidgetClass)
+		{
+			TextWidget = CreateWidget<UTextDisplayWidget>(GetWorld(), TextWidgetClass);
+		}
+		else
+		{
+			UE_LOG(LogTemp, Error, TEXT("BeginPlay; no text widget class set"));
+		}
 
-	if (PauseMenuWidgetClass)
-	{
-		PauseMenuWidget = CreateWidget<UUserWidget>(GetWorld(), PauseMenuWidgetClass);
-	}
-	else
-	{
-		UE_LOG(LogTemp, Error, TEXT("BeginPlay; no pause menu widget class set"));
+		if (PauseMenuWidgetClass)
+		{
+			PauseMenuWidget = CreateWidget<UUserWidget>(GetWorld(), PauseMenuWidgetClass);
+		}
+		else
+		{
+			UE_LOG(LogTemp, Error, TEXT("BeginPlay; no pause menu widget class set"));
+		}
 	}
 }
 
