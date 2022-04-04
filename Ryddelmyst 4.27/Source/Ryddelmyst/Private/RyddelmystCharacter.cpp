@@ -67,9 +67,6 @@ void ARyddelmystCharacter::BeginPlay()
 	DamageDelegate.BindUFunction(this, FName("HandleDamage"));
 	OnTakeAnyDamage.Add(DamageDelegate);
 
-	// todo: this gives us a nullptr HUD because (I guess) the cast fails after ClientSetHUD()? 
-	TSubclassOf<ARyddelmystHUD> HUDClass;
-	UGameplayStatics::GetPlayerController(GetWorld(), 0)->ClientSetHUD(HUDClass);
 	HUD = UGameplayStatics::GetPlayerController(GetWorld(), 0)->GetHUD<ARyddelmystHUD>();
 	UE_LOG(LogTemp, Warning, TEXT("BeginPlay; ryddel hud is %p"), HUD);
 
