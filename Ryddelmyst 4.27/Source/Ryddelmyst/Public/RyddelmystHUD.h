@@ -52,8 +52,25 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "Dialogue")
 	void HideDialogue();
 
+	/**
+	 * @brief hides all parts of the HUD
+	 * 
+	 */
 	UFUNCTION(BlueprintCallable, Category = "GameState")
-	void ClearHUD();
+	void HideRyddelmystHUD();
+
+	/**
+	 * @brief shows only the crucial parts of the HUD (i.e. player status)
+	 * 
+	 */
+	UFUNCTION(BlueprintCallable, Category = "GameState")
+	void ShowRyddelmystHUD();
+
+	UFUNCTION(BlueprintCallable, Category = "GameState")
+	void ShowStatus();
+
+	UFUNCTION(BlueprintCallable, Category = "GameState")
+	void HideStatus();
 
 	UFUNCTION(BlueprintCallable, Category = "GameState")
 	void ShowPauseMenu();
