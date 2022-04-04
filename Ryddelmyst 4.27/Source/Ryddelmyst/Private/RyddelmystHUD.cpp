@@ -168,15 +168,8 @@ void ARyddelmystHUD::HideDialogue()
 	}
 }
 
-void ARyddelmystHUD::ClearHUD()
+void ARyddelmystHUD::HideStatus()
 {
-	if (TextWidget)
-	{
-		if (TextWidget->IsInViewport())
-		{
-			TextWidget->RemoveFromViewport();
-		}
-	}
 	if (StatusWidget)
 	{
 		if (StatusWidget->IsInViewport())
@@ -184,7 +177,40 @@ void ARyddelmystHUD::ClearHUD()
 			StatusWidget->RemoveFromViewport();
 		}
 	}
-	Canvas->Reset();
+	else
+	{
+		UE_LOG(LogTemp, Error, TEXT("HideStatus; status widget not created yet"));
+	}
+}
+
+void ARyddelmystHUD::ShowStatus()
+{
+	if (StatusWidget)
+	{
+		if (!StatusWidget->IsInViewport())
+		{
+			StatusWidget->AddToViewport();
+		}
+	}
+	else
+	{
+		UE_LOG(LogTemp, Error, TEXT("ShowStatus; status widget not created yet"));
+	}
+}
+
+void ARyddelmystHUD::HideRyddelmystHUD()
+{
+	HideDialogue();
+	HideStatus();
+	if(Canvas)
+	{
+		Canvas->Reset();
+	}
+}
+
+void ARyddelmystHUD::ShowRyddelmystHUD()
+{
+	ShowStatus();
 }
 
 void ARyddelmystHUD::ShowPauseMenu()
