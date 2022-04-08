@@ -15,6 +15,7 @@
 #include "RyddelmystHUD.h"
 #include "GameFramework/PlayerController.h"
 #include "ItemActor.h"
+#include "Blueprint/WidgetBlueprintLibrary.h"
 
 DEFINE_LOG_CATEGORY_STATIC(LogFPChar, Warning, All);
 
@@ -131,6 +132,9 @@ void ARyddelmystCharacter::PauseGame()
 	UE_LOG(LogTemp, Warning, TEXT("PauseGame"));
 	UGameplayStatics::GetPlayerController(GetWorld(), 0)->SetPause(true);
 	HUD->ShowPauseMenu();
+	APlayerController* PlayerController = UGameplayStatics::GetPlayerController(GetWorld(), 0);
+	PlayerController->SetShowMouseCursor(true);
+	UWidgetBlueprintLibrary::SetInputMode_UIOnlyEx(PlayerController);
 }
 
 void ARyddelmystCharacter::Interact()
