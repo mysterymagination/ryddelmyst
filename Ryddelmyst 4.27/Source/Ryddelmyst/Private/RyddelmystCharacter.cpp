@@ -230,7 +230,7 @@ void ARyddelmystCharacter::Interact()
 			if (Actor->GetClass()->ImplementsInterface(UInteract::StaticClass()))
 			{
 				UE_LOG(LogTemp, Warning, TEXT("Interact; actor is interactable!"));
-				TArray<InteractCapability> capArray = IInteract::Execute_OnInteract(Actor);
+				TArray<InteractCapability> capArray = IInteract::Execute_OnInteract(Actor, this);
 				UE_LOG(LogTemp, Warning, TEXT("Interact; cap array of interactable has %d members"), capArray.Num());
 				int idx = 0;
 				for (auto cap : capArray)
