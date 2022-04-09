@@ -47,10 +47,10 @@
     12.1: Source: https://opengameart.org/content/spyke-trap-low-poly-updated
     12.2: Authors: https://opengameart.org/users/danimal
     12.3: License: http://creativecommons.org/licenses/by/3.0/
- 13. Ryddelmyst/Content/Ryddelmyst_Assets/Textures/Tornado
-    13.1: Source: https://opengameart.org/content/tornado
-    13.2: Authors: https://opengameart.org/users/devnewton
-    13.3: License: https://creativecommons.org/licenses/by/4.0/, http://creativecommons.org/licenses/by/3.0/, http://creativecommons.org/licenses/by-sa/4.0/, http://creativecommons.org/licenses/by-sa/3.0/, http://opengameart.org/content/oga-by-30-faq, http://creativecommons.org/publicdomain/zero/1.0/
+ 13. Ryddelmyst/Content/Ryddelmyst_Assets/Meshes/keyOGA.blend
+    13.1: Source: https://opengameart.org/content/low-poly-key
+    13.2: Authors: https://opengameart.org/users/yd
+    13.3: License: CC0
 
 Textures:
   1. Ryddelmyst/Content/Ryddelmyst_Assets/Textures/snowflake.png 
@@ -77,6 +77,10 @@ Textures:
     6.1 Source: https://opengameart.org/content/forest-background-art
     6.2 Authors: https://opengameart.org/users/ramtam
     6.3 License: http://creativecommons.org/licenses/by-sa/3.0/
+  7. Ryddelmyst/Content/Ryddelmyst_Assets/Textures/Tornado
+    7.1: Source: https://opengameart.org/content/tornado
+    7.2: Authors: https://opengameart.org/users/devnewton
+    7.3: License: https://creativecommons.org/licenses/by/4.0/, http://creativecommons.org/licenses/by/3.0/, http://creativecommons.org/licenses/by-sa/4.0/, http://creativecommons.org/licenses/by-sa/3.0/, http://opengameart.org/content/oga-by-30-faq, http://creativecommons.org/publicdomain/zero/1.0/
 
 Fonts:
   1. Ryddelmyst/Content/Ryddelmyst_Assets/Fonts/alagard_by_pix3m-d6awiwp.ttf
