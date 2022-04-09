@@ -82,6 +82,8 @@ void ARyddelmystCharacter::BeginPlay()
 void ARyddelmystCharacter::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
+
+	// todo: generate overlap events with grabbed actor so that any overlap triggered events will fire, such as damage surface... this may not be practical since UE4's collision system really seems to want to handle itself
 }
 
 //////////////////////////////////////////////////////////////////////////
