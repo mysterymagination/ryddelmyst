@@ -37,8 +37,9 @@ class RYDDELMYST_API IInteract
 public:
 	/**
 	 * Performs the interactable object's automatic interact behavior e.g. a red hot object burns the player on interaction.
+	 * @param Interactor the Actor who instigated the interaction with the interactable object
 	 * @return an InteractCapability array informing the player about how the object can be interacted with.
 	 */
 	UFUNCTION(BlueprintCallable, BlueprintNativeEvent, Category = "Interaction")
-	TArray<InteractCapability> OnInteract();
+	TArray<InteractCapability> OnInteract(AActor* Interactor);
 };
