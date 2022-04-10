@@ -194,8 +194,15 @@ protected:
 	 * Adds a given Item to the inventory.
 	 * @param ItemActor the Actor representing the item in the stage, whose ItemType field defines what actual Item object will be added to the player inventory.
 	 */
-	UFUNCTION()
-	void AddInventoryItem(class AItemActor* ItemActor);
+	UFUNCTION(BlueprintCallable, Category = "Inventory")
+	void AddInventoryItemFromActor(class AItemActor* ItemActor);
+
+	/**
+	 * Adds a given Item to the inventory.
+	 * @param ItemObj the Item object that will be added to the player inventory.
+	 */
+	UFUNCTION(BlueprintCallable, Category = "Inventory")
+	void AddInventoryItem(UObject* ItemObj);
 
 	/** Update Health data and UI */
 	UFUNCTION(BlueprintCallable, Category = "Health")

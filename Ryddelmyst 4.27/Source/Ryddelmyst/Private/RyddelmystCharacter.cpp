@@ -254,7 +254,7 @@ void ARyddelmystCharacter::Interact()
 						if (ItemActor)
 						{
 							UE_LOG(LogTemp, Warning, TEXT("Interact; pocketing item from %s"), *ItemActor->GetName());
-							AddInventoryItem(ItemActor);
+							AddInventoryItemFromActor(ItemActor);
 						}
 					}
 
@@ -569,22 +569,33 @@ void ARyddelmystCharacter::OnOverlapBegin(class UPrimitiveComponent* OverlappedC
 	auto ItemActor = Cast<AItemActor>(OtherActor);
 	if (ItemActor)
 	{
-		AddInventoryItem(ItemActor);
+		AddInventoryItemFromActor(ItemActor);
 	}
 }
 
-void ARyddelmystCharacter::AddInventoryItem(AItemActor* ItemActor)
+void ARyddelmystCharacter::AddInventoryItemFromActor(AItemActor* ItemActor)
+{
+	TSubclassOf<UObject> ItemClass = ItemActor->GetItemType();
+	if (ItemClass->ImplementsInterface(UItem::StaticClass()))
+	{
+		UObject* ItemObj = NewObject<UObject>(this, ItemClass);
+		AddInventoryItem(ItemObj);
+	}
+	else
+	{
+		UE_LOG(LogTemp, Warning, TEXT("AddInventoryItemFromActor; itemactor's item class %s does not implement the item interface"), *ItemClass->GetName());
+	}
+}
+
+void ARyddelmystCharacter::AddInventoryItem(UObject* ItemObj)
 {
 	if (Inventory.Num() < MaxInventory)
 	{
-		TSubclassOf<UObject> ItemClass = ItemActor->GetItemType();
-		if (ItemClass->ImplementsInterface(UItem::StaticClass()))
+		if (ItemObj->GetClass()->ImplementsInterface(UItem::StaticClass()))
 		{
-			UObject* ItemObj = NewObject<UObject>(this, ItemClass);
 			HUD->AddItemIcon(IItem::Execute_GetDisplayIcon(ItemObj));
 			IItem::Execute_OnPickup(ItemObj, this);
 			Inventory.Add(ItemObj);
-			ItemActor->Destroy();
 			if (Inventory.Num() == 1)
 			{
 				// adding first inv item, so auto select it
@@ -594,7 +605,7 @@ void ARyddelmystCharacter::AddInventoryItem(AItemActor* ItemActor)
 		}
 		else
 		{
-			UE_LOG(LogTemp, Warning, TEXT("AddInventoryItem; itemactor's item class %s does not implement the item interface"), *ItemClass->GetName());
+			UE_LOG(LogTemp, Warning, TEXT("AddInventoryItem; item obj %s does not implement the item interface"), *ItemObj->GetName());
 		}
 	}
 	else
@@ -614,25 +625,29 @@ void ARyddelmystCharacter::UseItem()
 	if (SelectedItemIdx >= 0 && SelectedItemIdx < Inventory.Num())
 	{
 		UE_LOG(LogTemp, Warning, TEXT("UseItem; used item is %s and lives at %p"), *Inventory[SelectedItemIdx]->GetName(), Inventory[SelectedItemIdx]);
-		IItem::Execute_OnUse(Inventory[SelectedItemIdx], this);
+		bool UseSuccess = IItem::Execute_OnUse(Inventory[SelectedItemIdx], this);
 		
 		// todo: support non-consumable/multi-use items?
 		
-		// remove the used item from inv
-		Inventory.RemoveAt(SelectedItemIdx);
-		// remove the used item's icon
-		HUD->RemoveItemIcon(SelectedItemIdx);
-		// only need to modify the SelectedItemIdx if we've used the only item in the inv or if we used the last item (i.e. item at highest index) in the inv array
-		if (Inventory.Num() == 0)
+		// only process item consumption if the use succeeded, e.g. a key was used on the correct lock
+		if (UseSuccess)
 		{
-			// empty inv after removing used item, clear selection 
-			HUD->ClearItemSelection();
-		}
-		else if (SelectedItemIdx >= Inventory.Num())
-		{
-			// drop the selected item idx to max since we're now above the max index
-			SelectedItemIdx = Inventory.Num() - 1;
-			HUD->SelectItem(SelectedItemIdx);
+			// remove the used item from inv
+			Inventory.RemoveAt(SelectedItemIdx);
+			// remove the used item's icon
+			HUD->RemoveItemIcon(SelectedItemIdx);
+			// only need to modify the SelectedItemIdx if we've used the only item in the inv or if we used the last item (i.e. item at highest index) in the inv array
+			if (Inventory.Num() == 0)
+			{
+				// empty inv after removing used item, clear selection 
+				HUD->ClearItemSelection();
+			}
+			else if (SelectedItemIdx >= Inventory.Num())
+			{
+				// drop the selected item idx to max since we're now above the max index
+				SelectedItemIdx = Inventory.Num() - 1;
+				HUD->SelectItem(SelectedItemIdx);
+			}
 		}
 	}
 }
