@@ -38,9 +38,10 @@ public:
 	/**
 	 * Function run when the player uses the item from their inventory
 	 * @param User the Actor using the Item
+	 * @return true if the item was used successfully, false otherwise
 	 */
 	UFUNCTION(BlueprintCallable, BlueprintNativeEvent, Category = "Item")
-	void OnUse(AActor* User);
+	bool OnUse(AActor* User);
 
 	/**
 	 * Returns the icon that should represent this item in the player's inventory UI
