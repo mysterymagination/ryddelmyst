@@ -156,27 +156,46 @@ protected:
 	 * @param Rate	This is a normalized rate, i.e. 1.0 means 100% of desired turn rate
 	 */
 	void LookUpAtRate(float Rate);
+
 	void LookUp(float Value);
+
 	/**
 	 * Pauses the game and raises the pause menu.
 	 */ 
 	UFUNCTION()
 	void PauseGame();
+
 	/**
 	 * Handles firing projectiles.
 	 */ 
 	UFUNCTION()
 	void Fire();
+
 	/**
 	 * Handles activating interactable objects.
 	 */
 	UFUNCTION()
 	void Interact();
+
 	/**
 	 * Handles crouch position toggle.
 	 */
 	UFUNCTION()
 	void HandleCrouch();
+
+	/**
+	 * Traces an interact ray from the first person camera and returns the hit result
+	 * @return HitResult a HitResult containing any Actor hit by the interact ray
+	 */
+	UFUNCTION()
+	FHitResult FireInteractRay();
+
+	/**
+	 * Adds a given Item to the inventory.
+	 * @param ItemActor the Actor representing the item in the stage, whose ItemType field defines what actual Item object will be added to the player inventory.
+	 */
+	UFUNCTION()
+	void AddInventoryItem(class AItemActor* ItemActor);
 
 	/** Update Health data and UI */
 	UFUNCTION(BlueprintCallable, Category = "Health")

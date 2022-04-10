@@ -146,6 +146,7 @@ void ARyddelmystHUD::ShowDialogue(const FText& Text)
 {
 	if (TextWidget)
 	{
+
 		TextWidget->SetText(Text);
 		if (!TextWidget->IsInViewport())
 		{
