@@ -187,7 +187,7 @@ protected:
 	 * Traces an interact ray from the first person camera and returns the hit result
 	 * @return HitResult a HitResult containing any Actor hit by the interact ray
 	 */
-	UFUNCTION()
+	UFUNCTION(BlueprintCallable, Category = "Interaction")
 	FHitResult FireInteractRay();
 
 	/**
