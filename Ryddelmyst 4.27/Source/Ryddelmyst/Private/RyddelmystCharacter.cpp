@@ -198,31 +198,7 @@ void ARyddelmystCharacter::Interact()
 	}
 	else
 	{
-		// determine where our ray trace should begin and end
-		const FVector start_trace = FirstPersonCameraComponent->GetComponentLocation();
-		const FVector direction = FirstPersonCameraComponent->GetComponentRotation().Vector();
-		const FVector end_trace = start_trace + (direction * MaxInteractDistance);
-		UE_LOG(LogTemp, Warning, TEXT("Interact; ray start says %s, direction says %s, and ray end says %s"), *start_trace.ToString(), *direction.ToString(), *end_trace.ToString());
-		DrawDebugLine(
-			GetWorld(), 
-			start_trace, 
-			end_trace,
-			FColor(255,0,255,255),
-			false,
-			50000.f,
-			1,
-			12.f
-		);
-		const FName TraceTag("InteractRay");
-		GetWorld()->DebugDrawTraceTag = TraceTag;
-		FCollisionQueryParams TraceParams(FName(TEXT("InteractTrace")), true, this);
-		TraceParams.bReturnPhysicalMaterial = false;
-		TraceParams.bTraceComplex = true;
-		TraceParams.TraceTag = TraceTag;
-
-		// cast our ray out and check for a hit object implementing IInteract
-		FHitResult Hit(ForceInit);
-		GetWorld()->LineTraceSingleByChannel(Hit, start_trace, end_trace, ECollisionChannel::ECC_GameTraceChannel1, TraceParams);
+		FHitResult Hit = FireInteractRay();
 
 		// process any hit actor looking for interactability
 		AActor* Actor = Hit.GetActor();
@@ -267,7 +243,18 @@ void ARyddelmystCharacter::Interact()
 						if (Actor->GetClass()->ImplementsInterface(UDescribable::StaticClass()))
 						{
 							FString DescString = IDescribable::Execute_GenerateDescription(Actor);
+							// todo: the GenerateDescription API should probably return an already localized FText since UE4 doesn't seem to allow for localization of anything but an actual string literal 
+							HUD->ShowDialogue(FText::FromString(DescString));
 							UE_LOG(LogTemp, Warning, TEXT("Interact; description of %s is %s"), *Actor->GetName(), *DescString);
+						}
+					}
+					else if (cap == InteractCapability::POCKETABLE)
+					{
+						AItemActor* ItemActor = Cast<AItemActor>(Actor);
+						if (ItemActor)
+						{
+							UE_LOG(LogTemp, Warning, TEXT("Interact; pocketing item from %s"), *ItemActor->GetName());
+							AddInventoryItem(ItemActor);
 						}
 					}
 
@@ -276,6 +263,36 @@ void ARyddelmystCharacter::Interact()
 			}
 		}
 	}
+}
+
+FHitResult ARyddelmystCharacter::FireInteractRay()
+{
+	// determine where our ray trace should begin and end
+	const FVector start_trace = FirstPersonCameraComponent->GetComponentLocation();
+	const FVector direction = FirstPersonCameraComponent->GetComponentRotation().Vector();
+	const FVector end_trace = start_trace + (direction * MaxInteractDistance);
+	UE_LOG(LogTemp, Warning, TEXT("Interact; ray start says %s, direction says %s, and ray end says %s"), *start_trace.ToString(), *direction.ToString(), *end_trace.ToString());
+	DrawDebugLine(
+		GetWorld(),
+		start_trace,
+		end_trace,
+		FColor(255, 0, 255, 255),
+		false,
+		50000.f,
+		1,
+		12.f
+	);
+	const FName TraceTag("InteractRay");
+	GetWorld()->DebugDrawTraceTag = TraceTag;
+	FCollisionQueryParams TraceParams(FName(TEXT("InteractTrace")), true, this);
+	TraceParams.bReturnPhysicalMaterial = false;
+	TraceParams.bTraceComplex = true;
+	TraceParams.TraceTag = TraceTag;
+
+	// cast our ray out and check for a hit object implementing IInteract
+	FHitResult Hit(ForceInit);
+	GetWorld()->LineTraceSingleByChannel(Hit, start_trace, end_trace, ECollisionChannel::ECC_GameTraceChannel1, TraceParams);
+	return Hit;
 }
 
 void ARyddelmystCharacter::SendControl()
@@ -552,35 +569,38 @@ void ARyddelmystCharacter::OnOverlapBegin(class UPrimitiveComponent* OverlappedC
 	auto ItemActor = Cast<AItemActor>(OtherActor);
 	if (ItemActor)
 	{
-		UE_LOG(LogTemp, Warning, TEXT("OnOverlapBegin; overlapped actor is an Item!"));
-		if (Inventory.Num() < MaxInventory)
+		AddInventoryItem(ItemActor);
+	}
+}
+
+void ARyddelmystCharacter::AddInventoryItem(AItemActor* ItemActor)
+{
+	if (Inventory.Num() < MaxInventory)
+	{
+		TSubclassOf<UObject> ItemClass = ItemActor->GetItemType();
+		if (ItemClass->ImplementsInterface(UItem::StaticClass()))
 		{
-			TSubclassOf<UObject> ItemClass = ItemActor->GetItemType();
-			if (ItemClass->ImplementsInterface(UItem::StaticClass()))
+			UObject* ItemObj = NewObject<UObject>(this, ItemClass);
+			HUD->AddItemIcon(IItem::Execute_GetDisplayIcon(ItemObj));
+			IItem::Execute_OnPickup(ItemObj, this);
+			Inventory.Add(ItemObj);
+			ItemActor->Destroy();
+			if (Inventory.Num() == 1)
 			{
-				UObject* ItemObj = NewObject<UObject>(this, ItemClass);
-				HUD->AddItemIcon(IItem::Execute_GetDisplayIcon(ItemObj));
-				IItem::Execute_OnPickup(ItemObj, this);
-				UE_LOG(LogTemp, Warning, TEXT("OnOverlapBegin; adding item %s whose address is %p"), *ItemObj->GetName(), ItemObj);
-				Inventory.Add(ItemObj);
-				ItemActor->Destroy();
-				if (Inventory.Num() == 1)
-				{
-					// adding first inv item, so auto select it
-					SelectedItemIdx = 0;
-					HUD->SelectItem(SelectedItemIdx);
-				}
-			}
-			else
-			{
-				UE_LOG(LogTemp, Warning, TEXT("OnOverlapBegin; overlapped itemactor's item class %s does not implement the item interface"), *ItemClass->GetName());
+				// adding first inv item, so auto select it
+				SelectedItemIdx = 0;
+				HUD->SelectItem(SelectedItemIdx);
 			}
 		}
 		else
 		{
-			// todo: raise dialog informing the player that their inventory is full
-			UE_LOG(LogTemp, Warning, TEXT("OnOverlapBegin; inventory is full"));
+			UE_LOG(LogTemp, Warning, TEXT("AddInventoryItem; itemactor's item class %s does not implement the item interface"), *ItemClass->GetName());
 		}
+	}
+	else
+	{
+		HUD->ShowDialogue(NSLOCTEXT("NSFeedback", "KeyInvFull", "Your inventory is full!"));
+		UE_LOG(LogTemp, Warning, TEXT("AddInventoryItem; inventory is full"));
 	}
 }
 
