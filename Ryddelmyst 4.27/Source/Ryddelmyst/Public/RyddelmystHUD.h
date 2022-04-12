@@ -27,6 +27,13 @@ public:
 	void AddItemIcon(class UTexture2D* tex);
 
 	/**
+	 * Adds a UImage icon widget to the EquipmentPanel, using the input texture for the image brush
+	 * @param tex the texture representing the item
+	 */
+	UFUNCTION()
+	void AddEquipIcon(class UTexture2D* tex);
+
+	/**
 	 * Removes the UImage icon widget at the given child index from the InventoryPanel
 	 * @param idx the index of the item icon to remove
 	 */
@@ -98,6 +105,10 @@ private:
 	/** Handle to the InventoryPanel UI widget in the HUD */
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Inventory", meta = (AllowPrivateAccess = "true"))
 	class UHorizontalBox* InventoryPanel;
+
+	/** Handle to the EquipmentPanel UI widget in the HUD */
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Inventory", meta = (AllowPrivateAccess = "true"))
+	class UHorizontalBox* EquipmentPanel;
 
 	/** Handle to the InventorySelectionOverlay UI widget in the HUD */
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Inventory", meta = (AllowPrivateAccess = "true"))

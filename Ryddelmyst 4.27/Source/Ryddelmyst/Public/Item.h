@@ -48,4 +48,22 @@ public:
 	 */
 	UFUNCTION(BlueprintCallable, BlueprintNativeEvent, Category = "Item")
 	UTexture2D* GetDisplayIcon();
+
+	/**
+	 * Equips the item to the given Actor, granting any passive effects it offers
+	 */
+	UFUNCTION(BlueprintCallable, BlueprintNativeEvent, Category = "Item")
+	void OnEquip(AActor* EquippedActor);
+
+	/**
+	 * @return true if the item can be equipped, false otherwise
+	 */
+	UFUNCTION(BlueprintCallable, BlueprintNativeEvent, Category = "Item")
+	bool IsEquippable() const;
+
+	/**
+	 * @return the appropriate equipment slot key as a string, e.g. 'head' for a helmet
+	 */
+	UFUNCTION(BlueprintCallable, BlueprintNativeEvent, Category = "Item")
+	FString GetEquipSlot() const;
 };
