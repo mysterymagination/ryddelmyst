@@ -65,6 +65,8 @@ void ARyddelmystHUD::BeginPlay()
 			{
 				StatusWidget->AddToViewport();
 				// UI setup
+				UWidget* EquipmentPanelWidget = StatusWidget->WidgetTree->FindWidget(FName("EquipmentPanel"));
+				EquipmentPanel = Cast<UHorizontalBox>(EquipmentPanelWidget);
 				UWidget* InventoryPanelWidget = StatusWidget->WidgetTree->FindWidget(FName("InventoryPanel"));
 				InventoryPanel = Cast<UHorizontalBox>(InventoryPanelWidget);
 				UWidget* InventorySelectionOverlayWidget = StatusWidget->WidgetTree->FindWidget(FName("InventorySelectionOverlay"));
@@ -106,6 +108,14 @@ void ARyddelmystHUD::BeginPlay()
 UUserWidget* ARyddelmystHUD::GetStatusWidget()
 {
 	return StatusWidget;
+}
+
+void ARyddelmystHUD::AddEquipIcon(class UTexture2D* tex)
+{
+	UImage* IconWidget = StatusWidget->WidgetTree->ConstructWidget<UImage>();
+	IconWidget->SetBrushSize(FVector2D(FIntPoint(96, 96)));
+	IconWidget->SetBrushFromTexture(tex, false);
+	EquipmentPanel->AddChildToHorizontalBox(IconWidget);
 }
 
 void ARyddelmystHUD::AddItemIcon(class UTexture2D* tex)

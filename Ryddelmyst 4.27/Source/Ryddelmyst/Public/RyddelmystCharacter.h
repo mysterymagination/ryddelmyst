@@ -21,6 +21,8 @@ class ARyddelmystCharacter : public AFawnCharacter
 {
 	GENERATED_BODY()
 
+	static const FString EquipSlotsData[];
+
 	/** First person camera */
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Camera, meta = (AllowPrivateAccess = "true"))
 	UCameraComponent* FirstPersonCameraComponent;
@@ -58,6 +60,8 @@ private:
 	FTimerHandle InventoryTimerHandle;
 	UPROPERTY()
 	TArray<UObject*> Inventory;
+	UPROPERTY()
+	TMap<FString, UObject*> Equipment;
 	UPROPERTY()
 	uint8 SelectedItemIdx = 0;
 	UPROPERTY()
@@ -111,6 +115,9 @@ public:
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Magic")
 	float Magic = FullMagic;
+
+	UPROPERTY(EditAnywhere, Category = "Item")
+	TArray<FString> EquipSlots;
 
 protected:
 	// List of weapons
@@ -203,6 +210,13 @@ protected:
 	 */
 	UFUNCTION(BlueprintCallable, Category = "Inventory")
 	void AddInventoryItem(UObject* ItemObj);
+
+	/**
+	 * Adds a given Item to the character's equipment.
+	 * @param ItemObj the Item object that will be added to the player's equipment, granting its passive effect.
+	 */
+	UFUNCTION(BlueprintCallable, Category = "Inventory")
+	void AddEquippedItem(UObject* ItemObj);
 
 	/** Update Health data and UI */
 	UFUNCTION(BlueprintCallable, Category = "Health")

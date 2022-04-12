@@ -22,6 +22,8 @@ DEFINE_LOG_CATEGORY_STATIC(LogFPChar, Warning, All);
 //////////////////////////////////////////////////////////////////////////
 // ARyddelmystCharacter
 
+const FString ARyddelmystCharacter::EquipSlotsData[] = { TEXT("Head"), TEXT("Neck"), TEXT("Hands"), TEXT("Feet") };
+
 ARyddelmystCharacter::ARyddelmystCharacter()
 {
 	// Set size for collision capsule
@@ -45,6 +47,8 @@ ARyddelmystCharacter::ARyddelmystCharacter()
 	ThirdPersonCameraComponent->SetRelativeRotation(FRotator(-20.f, 0.f, 0.f));
 	ThirdPersonCameraComponent->bUsePawnControlRotation = false;
 	ThirdPersonCameraComponent->SetActive(false);
+
+	EquipSlots.Append(EquipSlotsData, UE_ARRAY_COUNT(EquipSlotsData));
 }
 
 void ARyddelmystCharacter::BeginPlay()
@@ -77,6 +81,12 @@ void ARyddelmystCharacter::BeginPlay()
 	FScriptDelegate OverlapEndDelegate;
 	OverlapEndDelegate.BindUFunction(this, FName("OnOverlapEnd"));
 	GetCapsuleComponent()->OnComponentEndOverlap.Add(OverlapEndDelegate);
+
+	// setup equipment mapping with whatever our equip slots are at runtime
+	for (FString key : EquipSlots)
+	{
+		Equipment.Add(key);
+	}
 }
 
 void ARyddelmystCharacter::Tick(float DeltaTime)
@@ -612,6 +622,27 @@ void ARyddelmystCharacter::AddInventoryItem(UObject* ItemObj)
 	{
 		HUD->ShowDialogue(NSLOCTEXT("NSFeedback", "KeyInvFull", "Your inventory is full!"));
 		UE_LOG(LogTemp, Warning, TEXT("AddInventoryItem; inventory is full"));
+	}
+}
+
+void ARyddelmystCharacter::AddEquippedItem(UObject* ItemObj)
+{
+	if (ItemObj->GetClass()->ImplementsInterface(UItem::StaticClass()))
+	{
+		if (IItem::Execute_IsEquippable(ItemObj))
+		{
+			HUD->AddEquipIcon(IItem::Execute_GetDisplayIcon(ItemObj));
+			IItem::Execute_OnEquip(ItemObj, this);
+			Equipment.Add(IItem::Execute_GetEquipSlot(ItemObj), ItemObj);
+		}
+		else
+		{
+			UE_LOG(LogTemp, Warning, TEXT("AddEquippedItem; item obj %s cannot be equipped"), *ItemObj->GetName());
+		}
+	}
+	else
+	{
+		UE_LOG(LogTemp, Warning, TEXT("AddEquippedItem; item obj %s does not implement the item interface"), *ItemObj->GetName());
 	}
 }
 
