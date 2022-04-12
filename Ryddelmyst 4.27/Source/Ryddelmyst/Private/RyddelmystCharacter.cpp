@@ -89,7 +89,10 @@ void ARyddelmystCharacter::BeginPlay()
 	// process any starting equipment effects
 	for (auto& Elem : Equipment)
 	{
-		IItem::Execute_OnEquip(Elem.Value, this);
+		if (Elem.Value)
+		{
+			IItem::Execute_OnEquip(Elem.Value, this);
+		}
 	}
 }
 
@@ -594,6 +597,7 @@ void ARyddelmystCharacter::AddInventoryItemFromActor(AItemActor* ItemActor)
 	{
 		UObject* ItemObj = NewObject<UObject>(this, ItemClass);
 		AddInventoryItem(ItemObj);
+		ItemActor->Destroy();
 	}
 	else
 	{
