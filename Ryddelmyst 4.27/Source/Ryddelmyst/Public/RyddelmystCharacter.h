@@ -197,7 +197,7 @@ protected:
 	FHitResult FireInteractRay();
 
 	/**
-	 * Adds a given Item to the inventory.
+	 * Adds a given Item to the inventory based on the Item class stored in the given ItemActor, then destroys the ItemActor.
 	 * @param ItemActor the Actor representing the item in the stage, whose ItemType field defines what actual Item object will be added to the player inventory.
 	 */
 	UFUNCTION(BlueprintCallable, Category = "Inventory")
