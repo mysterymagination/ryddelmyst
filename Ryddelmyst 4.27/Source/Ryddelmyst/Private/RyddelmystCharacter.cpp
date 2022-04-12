@@ -48,7 +48,11 @@ ARyddelmystCharacter::ARyddelmystCharacter()
 	ThirdPersonCameraComponent->bUsePawnControlRotation = false;
 	ThirdPersonCameraComponent->SetActive(false);
 
-	EquipSlots.Append(EquipSlotsData, UE_ARRAY_COUNT(EquipSlotsData));
+	// setup equipment mapping with our default static equip slots
+	for (FString key : EquipSlotsData)
+	{
+		Equipment.Add(key);
+	}
 }
 
 void ARyddelmystCharacter::BeginPlay()
@@ -82,10 +86,10 @@ void ARyddelmystCharacter::BeginPlay()
 	OverlapEndDelegate.BindUFunction(this, FName("OnOverlapEnd"));
 	GetCapsuleComponent()->OnComponentEndOverlap.Add(OverlapEndDelegate);
 
-	// setup equipment mapping with whatever our equip slots are at runtime
-	for (FString key : EquipSlots)
+	// process any starting equipment effects
+	for (auto& Elem : Equipment)
 	{
-		Equipment.Add(key);
+		IItem::Execute_OnEquip(Elem.Value, this);
 	}
 }
 

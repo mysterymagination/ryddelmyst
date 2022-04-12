@@ -59,10 +59,6 @@ private:
 	UPROPERTY()
 	FTimerHandle InventoryTimerHandle;
 	UPROPERTY()
-	TArray<UObject*> Inventory;
-	UPROPERTY()
-	TMap<FString, UObject*> Equipment;
-	UPROPERTY()
 	uint8 SelectedItemIdx = 0;
 	UPROPERTY()
 	bool IsInventorySleeping = false;
@@ -116,13 +112,16 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Magic")
 	float Magic = FullMagic;
 
-	UPROPERTY(EditAnywhere, Category = "Item")
-	TArray<FString> EquipSlots;
-
 protected:
 	// List of weapons
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Gameplay)
 	TArray<TSubclassOf<ASnowball>> Spells;
+	// Array of inventory items
+	UPROPERTY(EditAnywhere, Category = "Inventory")
+	TArray<UObject*> Inventory;
+	// Mapping of equip slot string keys to equipped item objects
+	UPROPERTY(EditAnywhere, Category = "Equipment")
+	TMap<FString, UObject*> Equipment;
 
 protected:
 	/** Handles switching between our cam and the LookitYouPawn's "3rd person" cam */
