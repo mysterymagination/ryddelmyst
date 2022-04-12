@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "UObject/Interface.h"
+#include "Item.h"
 #include "OpenClose.generated.h"
 
 // This class does not need to be modified.
@@ -27,9 +28,9 @@ public:
 	UFUNCTION(BlueprintCallable, BlueprintNativeEvent, category = "Interaction")
 	void Close(AActor* Closer);
 
-	UFUNCTION(BlueprintCallable, BlueprintNativeEvent, category = "Interaction")
-	FText Lock(AActor* Locker);
+	UFUNCTION(BlueprintCallable, BlueprintNativeEvent, category = "Interaction", meta = (MustImplement = "Item"))
+	FText Lock(AActor* Locker, UObject* Item);
 
-	UFUNCTION(BlueprintCallable, BlueprintNativeEvent, category = "Interaction")
-	FText Unlock(AActor* Unlocker);
+	UFUNCTION(BlueprintCallable, BlueprintNativeEvent, category = "Interaction", meta = (MustImplement = "Item"))
+	FText Unlock(AActor* Unlocker, UObject* Item);
 };
