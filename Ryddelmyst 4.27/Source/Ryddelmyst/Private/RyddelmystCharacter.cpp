@@ -16,6 +16,7 @@
 #include "GameFramework/PlayerController.h"
 #include "ItemActor.h"
 #include "Blueprint/WidgetBlueprintLibrary.h"
+#include "OpenClose.h"
 
 DEFINE_LOG_CATEGORY_STATIC(LogFPChar, Warning, All);
 
@@ -273,6 +274,11 @@ void ARyddelmystCharacter::Interact()
 							UE_LOG(LogTemp, Warning, TEXT("Interact; pocketing item from %s"), *ItemActor->GetName());
 							AddInventoryItemFromActor(ItemActor);
 						}
+					}
+					else if (cap == InteractCapability::OPENABLE)
+					{
+						UE_LOG(LogTemp, Warning, TEXT("Interact; openable object %s found"), *Actor->GetName());
+						IOpenClose::Execute_Open(Actor, this);
 					}
 
 					// todo: extend player collision bounds to encompass the grabbable object; I guess toss a cubeoid around it?  Alternative would be to lean on the existing collision of the object and somehow get a message sent to the player iff the player is holding it that it has collided with something.
