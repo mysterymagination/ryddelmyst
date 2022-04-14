@@ -495,6 +495,19 @@ void ARyddelmystCharacter::Fire()
 				ASnowball* Snowball = World->SpawnActor<ASnowball>(SnowballType, MuzzleLocation, MuzzleRotation, SpawnParams);
 				if (Snowball)
 				{
+					if (SnowballType == AFireSnowball::StaticClass())
+					{
+						MetamagicFireFn(Cast<AFireSnowball>(Snowball));
+					}
+					else if (SnowballType == AElectricSnowball::StaticClass())
+					{
+						MetamagicElectricFn(Cast<AElectricSnowball>(Snowball));
+					}
+					else
+					{
+						MetamagicIceFn(Snowball);
+					}
+
 					// Set the projectile's initial trajectory.
 					FVector LaunchDirection = MuzzleRotation.Vector();
 					Snowball->FireInDirection(LaunchDirection);

@@ -31,6 +31,8 @@ public:
 	{
 		return MagicCost;
 	};
+	// todo: needs damage field
+	// todo: needs EffectOnTarget functor field with an AActor* param so we can do things like have the diadem's fire metamagic both double the FireSnowball damage and set its effect to knock back the target
 
 protected:
 	// Projectile particle FX
