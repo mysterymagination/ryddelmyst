@@ -50,6 +50,12 @@ public:
 	UTexture2D* GetDisplayIcon();
 
 	/**
+	 * Returns the item description for display to the player
+	 */
+	UFUNCTION(BlueprintCallable, BlueprintNativeEvent, Category = "Item")
+	FText GetDisplayDescription();
+
+	/**
 	 * Equips the item to the given Actor, granting any passive effects it offers
 	 */
 	UFUNCTION(BlueprintCallable, BlueprintNativeEvent, Category = "Item")
@@ -59,11 +65,11 @@ public:
 	 * @return true if the item can be equipped, false otherwise
 	 */
 	UFUNCTION(BlueprintCallable, BlueprintNativeEvent, Category = "Item")
-	bool IsEquippable() const;
+	bool IsEquippable();
 
 	/**
 	 * @return the appropriate equipment slot key as a string, e.g. 'head' for a helmet
 	 */
 	UFUNCTION(BlueprintCallable, BlueprintNativeEvent, Category = "Item")
-	FString GetEquipSlot() const;
+	FString GetEquipSlot();
 };
