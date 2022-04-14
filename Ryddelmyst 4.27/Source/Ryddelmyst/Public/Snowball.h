@@ -7,12 +7,17 @@
 #include "Components/SphereComponent.h"
 #include "Particles/ParticleSystemComponent.h"
 #include "GameFramework/ProjectileMovementComponent.h"
+#include <functional>
+#include <vector>
 #include "Snowball.generated.h"
 
 UCLASS()
 class RYDDELMYST_API ASnowball : public AActor
 {
 	GENERATED_BODY()
+
+	// Vector of functions to be run on the target after the spell hits
+	std::vector<std::function<void(AActor*)>> EffectsOnTarget;
 
 public:
 	// Sets default values for this actor's properties
@@ -31,8 +36,6 @@ public:
 	{
 		return MagicCost;
 	};
-	// todo: needs damage field
-	// todo: needs EffectOnTarget functor field with an AActor* param so we can do things like have the diadem's fire metamagic both double the FireSnowball damage and set its effect to knock back the target
 
 protected:
 	// Projectile particle FX
@@ -50,6 +53,10 @@ protected:
 	// mana cost of this spell
 	UPROPERTY(EditAnywhere, Category = Projectile)
 	float MagicCost = 10.f;
+	// base power used along with CalculateDamage() to derive damage dealt by this spell
+	UPROPERTY(EditAnywhere, Category = Projectile)
+	float Power = 25.f;
+
 
 private:
 	// Projectile movement component.
@@ -58,4 +65,7 @@ private:
 	// Custom onhit event handling, destroying the snowball and spawning a flattened snowball actor at the collision point
 	UFUNCTION()
 	void OnHit(UPrimitiveComponent* HitComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit);
+	// Calculates the damage dealt to target
+	UFUNCTION()
+	float CalculateDamage(class ARyddelmystCharacter* Character);
 };
