@@ -81,6 +81,10 @@ Textures:
     7.1: Source: https://opengameart.org/content/tornado
     7.2: Authors: https://opengameart.org/users/devnewton
     7.3: License: https://creativecommons.org/licenses/by/4.0/, http://creativecommons.org/licenses/by/3.0/, http://creativecommons.org/licenses/by-sa/4.0/, http://creativecommons.org/licenses/by-sa/3.0/, http://opengameart.org/content/oga-by-30-faq, http://creativecommons.org/publicdomain/zero/1.0/
+  8. Ryddelmyst/Content/Ryddelmyst_Assets/Textures/gold.png
+    8.1 Source: https://opengameart.org/content/gold-treasure-icons
+    8.2 Authors: Clint Bellanger https://opengameart.org/users/clint-bellanger
+    8.3 License: http://creativecommons.org/licenses/by-sa/3.0/
 
 Fonts:
   1. Ryddelmyst/Content/Ryddelmyst_Assets/Fonts/alagard_by_pix3m-d6awiwp.ttf
