@@ -1,6 +1,7 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 #include "Snowball.h"
+#include "RyddelmystCharacter.h"
 
 // Sets default values
 ASnowball::ASnowball()
@@ -96,5 +97,13 @@ void ASnowball::OnHit(UPrimitiveComponent* HitComp, AActor* OtherActor, UPrimiti
 {
 	Destroy();
 	// todo: leave behind flattened snowball messh?
+}
+
+float ASnowball::CalculateDamage(ARyddelmystCharacter* Character)
+{
+	// todo: how when should metamagic functors that modify damage and effective stats be applied?   
+	float Damage = Power * Character->GetStats().MagPwr;
+	Damage += MathUtils::RollNdM(Character->GetStats().Lvl, 6);
+	return Damage;
 }
 
