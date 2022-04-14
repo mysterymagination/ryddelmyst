@@ -6,7 +6,10 @@
 #include "FawnCharacter.h"
 #include "LookitYouPawn.h"
 #include "Snowball.h"
+#include "FireSnowball.h"
+#include "ElectricSnowball.h"
 #include "Item.h"
+#include <functional>
 #include "Components/TimelineComponent.h"
 #include "Components/BoxComponent.h"
 #include "RyddelmystCharacter.generated.h"
@@ -22,6 +25,18 @@ class ARyddelmystCharacter : public AFawnCharacter
 	GENERATED_BODY()
 
 	static const FString EquipSlotsData[];
+	/**
+	 * Fn applied to fire snowballs prior to spawn 
+	 */
+	std::function<void(AFireSnowball*)> MetamagicFireFn;
+	/**
+	 * Fn applied to snowballs prior to spawn
+	 */
+	std::function<void(ASnowball*)> MetamagicIceFn;
+	/**
+	 * Fn applied to electric snowballs prior to spawn
+	 */
+	std::function<void(AElectricSnowball*)> MetamagicElectricFn;
 
 	/** First person camera */
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Camera, meta = (AllowPrivateAccess = "true"))

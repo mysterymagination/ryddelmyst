@@ -19,6 +19,5 @@ public:
 	/**
 	 * Equips the item to the given Actor, granting any passive effects it offers
 	 */
-	UFUNCTION(BlueprintCallable, BlueprintNativeEvent, Category = "Item")
-	void OnEquip(AActor* EquippedActor);
+	void OnEquip_Implementation(AActor* EquippedActor) override;
 };
