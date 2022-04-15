@@ -2,6 +2,9 @@
 
 #include "Snowball.h"
 #include "RyddelmystCharacter.h"
+#include "MathUtils.h"
+#include "Kismet/GameplayStatics.h"
+#include "IceDamageType.h"
 
 // Sets default values
 ASnowball::ASnowball()
@@ -71,6 +74,8 @@ ASnowball::ASnowball()
 	{
 		SnowballParticles->SetTemplate(ParticleAsset.Object);
 	}
+
+	DamageType = UIceDamageType::StaticClass();
 }
 
 // Called when the game starts or when spawned
@@ -95,15 +100,20 @@ void ASnowball::FireInDirection(const FVector& ShootDirection)
 
 void ASnowball::OnHit(UPrimitiveComponent* HitComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit)
 {
+	for (auto Effect : EffectsOnTarget)
+	{
+		Effect(OtherActor);
+	}
+	// todo: need to pass in the caster of this snowball for dmg calc
+	UGameplayStatics::ApplyPointDamage(OtherActor, CalculateDamage(), NormalImpulse, Hit, UGameplayStatics::GetPlayerController(GetWorld(), 0), this, DamageType);
 	Destroy();
 	// todo: leave behind flattened snowball messh?
 }
 
 float ASnowball::CalculateDamage(ARyddelmystCharacter* Character)
 {
-	// todo: how when should metamagic functors that modify damage and effective stats be applied?   
 	float Damage = Power * Character->GetStats().MagPwr;
 	Damage += MathUtils::RollNdM(Character->GetStats().Lvl, 6);
-	return Damage;
+	return DamageScaleFactor * Damage;
 }
 

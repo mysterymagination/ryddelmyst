@@ -2,6 +2,7 @@
 
 
 #include "ElectricSnowball.h"
+#include "LightningDamageType.h"
 
 // Sets default values
 AElectricSnowball::AElectricSnowball()
@@ -25,5 +26,7 @@ AElectricSnowball::AElectricSnowball()
 
 	// update magic cost for subclass
 	MagicCost = 20.f;
+
+	DamageType = ULightningDamageType::StaticClass();
 }
 

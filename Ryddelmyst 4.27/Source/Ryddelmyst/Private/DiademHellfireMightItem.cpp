@@ -2,9 +2,25 @@
 
 
 #include "DiademHellfireMightItem.h"
+#include "RyddelmystCharacter.h"
+#include "FireSnowball.h"
+#include <vector>
 
 void UDiademHellfireMightItem::OnEquip_Implementation(AActor* EquippedActor)
 {
-	// todo: toss a lambda (std::function or maybe TFunctionRef) over to the EquippedActor cast to RyddelmystCharacter which she'll then apply to fireballs she generates; she'll store this in her MetamagicFire field.
+	ARyddelmystCharacter* Character = Cast<ARyddelmystCharacter>(EquippedActor);
+	if (Character)
+	{
+		Character->SetMetaMagicFire([](AFireSnowball* FireSnowball) 
+			{
+				FireSnowball->SetDamageScaleFactor(2.f);
+				FireSnowball->GetEffectsVector().emplace_back([](AActor* TargetActor)
+					{
+						TargetActor->SetActorRelativeLocation(FVector(-50.f, 0.f, 0.f));
+					}
+				);
+			}
+		);
+	}
 }
 
