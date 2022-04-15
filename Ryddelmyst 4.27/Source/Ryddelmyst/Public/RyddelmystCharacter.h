@@ -19,6 +19,23 @@ class USkeletalMeshComponent;
 class USceneComponent;
 class UCameraComponent;
 
+USTRUCT(BlueprintType)
+struct FBattleStats 
+{
+	GENERATED_BODY()
+	
+	UPROPERTY(EditAnywhere)
+	uint8 Lvl = 1;
+	UPROPERTY(EditAnywhere)
+	float MagPwr = 10.f;
+	UPROPERTY(EditAnywhere)
+	float MagDef = 10.f;
+	UPROPERTY(EditAnywhere)
+	float Atk = 10.f;
+	UPROPERTY(EditAnywhere)
+	float Def = 10.f;
+};
+
 UCLASS(config=Game)
 class ARyddelmystCharacter : public AFawnCharacter
 {
@@ -81,6 +98,11 @@ private:
 public:
 	ARyddelmystCharacter();
 	virtual void OnLostFollower(ILookitYou* lookitYou) override;
+	UFUNCTION(BlueprintCallable, Category = "Statistics")
+	FBattleStats GetStats() { return CharacterStats; }
+	void SetMetaMagicFire(std::function<void(AFireSnowball*)> FireFn) { MetamagicFireFn = FireFn; };
+	void SetMetaMagicIce(std::function<void(ASnowball*)> IceFn) { MetamagicIceFn = IceFn; };
+	void SetMetaMagicLightning(std::function<void(AElectricSnowball*)> ElectricFn) { MetamagicElectricFn = ElectricFn; };
 
 protected:
 	virtual void BeginPlay() override;
@@ -137,6 +159,8 @@ protected:
 	// Mapping of equip slot string keys to equipped item objects
 	UPROPERTY(EditAnywhere, Category = "Equipment")
 	TMap<FString, UObject*> Equipment;
+	UPROPERTY(EditAnywhere, Category = "Statistics")
+	FBattleStats CharacterStats;
 
 protected:
 	/** Handles switching between our cam and the LookitYouPawn's "3rd person" cam */

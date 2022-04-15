@@ -2,6 +2,7 @@
 
 
 #include "FireSnowball.h"
+#include "FireDamageType.h"
 
 AFireSnowball::AFireSnowball()
 {
@@ -20,4 +21,6 @@ AFireSnowball::AFireSnowball()
 	{
 		SnowballParticles->SetTemplate(ParticleAsset.Object);
 	}
+
+	DamageType = UFireDamageType::StaticClass();
 }
