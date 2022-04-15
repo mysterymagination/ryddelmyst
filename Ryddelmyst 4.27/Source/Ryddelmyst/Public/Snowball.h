@@ -36,8 +36,15 @@ public:
 	{
 		return MagicCost;
 	};
+	UFUNCTION()
+	float GetDamageScaleFactor() { return DamageScaleFactor; };
+	UFUNCTION()
+	void SetDamageScaleFactor(float ScaleFactor) { DamageScaleFactor = ScaleFactor; };
+	std::vector<std::function<void(AActor*)>>& GetEffectsVector() { return EffectsOnTarget; };
 
 protected:
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Projectile)
+	TSubclassOf<UDamageType> DamageType;
 	// Projectile particle FX
 	UPROPERTY()
 	UParticleSystemComponent* SnowballParticles;
@@ -56,7 +63,9 @@ protected:
 	// base power used along with CalculateDamage() to derive damage dealt by this spell
 	UPROPERTY(EditAnywhere, Category = Projectile)
 	float Power = 25.f;
-
+	// scale factor for the final calculated damage
+	UPROPERTY(EditAnywhere, Category = Projectile)
+	float DamageScaleFactor = 1.f;
 
 private:
 	// Projectile movement component.
