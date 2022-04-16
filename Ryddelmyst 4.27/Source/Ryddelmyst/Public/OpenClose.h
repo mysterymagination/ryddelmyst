@@ -29,8 +29,8 @@ public:
 	void Close(AActor* Closer);
 
 	UFUNCTION(BlueprintCallable, BlueprintNativeEvent, category = "Interaction", meta = (MustImplement = "Item"))
-	FText Lock(AActor* Locker, UObject* Item);
+	bool Lock(AActor* Locker, UObject* Item);
 
 	UFUNCTION(BlueprintCallable, BlueprintNativeEvent, category = "Interaction", meta = (MustImplement = "Item"))
-	FText Unlock(AActor* Unlocker, UObject* Item);
+	bool Unlock(AActor* Unlocker, UObject* Item);
 };

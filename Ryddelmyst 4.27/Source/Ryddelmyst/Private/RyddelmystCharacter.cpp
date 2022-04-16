@@ -488,25 +488,37 @@ void ARyddelmystCharacter::Fire()
 			if (Magic >= SnowballType.GetDefaultObject()->GetMagicCost())
 			{
 				UE_LOG(LogTemp, Warning, TEXT("Fire; magic is %f and cost is %f so firing"), Magic, SnowballType.GetDefaultObject()->GetMagicCost());
-				FActorSpawnParameters SpawnParams;
-				SpawnParams.Owner = this;
-				SpawnParams.Instigator = GetInstigator();
+				
 				// Spawn the projectile at the muzzle.
-				ASnowball* Snowball = World->SpawnActor<ASnowball>(SnowballType, MuzzleLocation, MuzzleRotation, SpawnParams);
+				FTransform SpawnTransform;
+				SpawnTransform.SetLocation(MuzzleLocation);
+				SpawnTransform.SetRotation(FQuat(MuzzleRotation));
+				SpawnTransform.SetScale3D(FVector(1.f));
+				ASnowball* Snowball = World->SpawnActorDeferred<ASnowball>(SnowballType, SpawnTransform, this, GetInstigator());
+				
 				if (Snowball)
 				{
-					if (SnowballType == AFireSnowball::StaticClass())
+					Snowball->SetCaster(this);
+					try
 					{
-						MetamagicFireFn(Cast<AFireSnowball>(Snowball));
+						if (SnowballType == AFireSnowball::StaticClass())
+						{
+							MetamagicFireFn(Cast<AFireSnowball>(Snowball));
+						}
+						else if (SnowballType == AElectricSnowball::StaticClass())
+						{
+							MetamagicElectricFn(Cast<AElectricSnowball>(Snowball));
+						}
+						else
+						{
+							MetamagicIceFn(Snowball);
+						}
 					}
-					else if (SnowballType == AElectricSnowball::StaticClass())
+					catch (const std::bad_function_call& e)
 					{
-						MetamagicElectricFn(Cast<AElectricSnowball>(Snowball));
+						UE_LOG(LogTemp, Log, TEXT("Fire; ignoring attempt to invoke unset metamagic fn.  Details: %s"), *FString(e.what()));
 					}
-					else
-					{
-						MetamagicIceFn(Snowball);
-					}
+					Snowball->FinishSpawning(SpawnTransform);
 
 					// Set the projectile's initial trajectory.
 					FVector LaunchDirection = MuzzleRotation.Vector();
