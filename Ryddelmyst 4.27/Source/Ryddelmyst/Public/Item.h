@@ -56,6 +56,12 @@ public:
 	FText GetDisplayDescription();
 
 	/**
+	 * Returns the item name for display to the player
+	 */
+	UFUNCTION(BlueprintCallable, BlueprintNativeEvent, Category = "Item")
+	FText GetDisplayName();
+
+	/**
 	 * Equips the item to the given Actor, granting any passive effects it offers
 	 */
 	UFUNCTION(BlueprintCallable, BlueprintNativeEvent, Category = "Item")

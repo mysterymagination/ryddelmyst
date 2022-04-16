@@ -41,6 +41,10 @@ public:
 	UFUNCTION()
 	void SetDamageScaleFactor(float ScaleFactor) { DamageScaleFactor = ScaleFactor; };
 	std::vector<std::function<void(AActor*)>>& GetEffectsVector() { return EffectsOnTarget; };
+	UFUNCTION()
+	void SetCaster(class ARyddelmystCharacter* CastingCharacter) { Caster = CastingCharacter; };
+	UFUNCTION()
+	class ARyddelmystCharacter* GetCaster() { return Caster; };
 
 protected:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Projectile)
@@ -68,6 +72,8 @@ protected:
 	float DamageScaleFactor = 1.f;
 
 private:
+	UPROPERTY()
+	class ARyddelmystCharacter* Caster;
 	// Projectile movement component.
 	UPROPERTY(VisibleAnywhere, Category = Movement)
 	UProjectileMovementComponent* ProjectileMovementComponent;
