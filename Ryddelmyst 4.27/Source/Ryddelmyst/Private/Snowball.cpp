@@ -89,7 +89,6 @@ void ASnowball::BeginPlay()
 void ASnowball::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
-
 }
 
 // Function that initializes the projectile's velocity in the shoot direction.
@@ -105,7 +104,7 @@ void ASnowball::OnHit(UPrimitiveComponent* HitComp, AActor* OtherActor, UPrimiti
 		Effect(OtherActor);
 	}
 	// todo: need to pass in the caster of this snowball for dmg calc
-	UGameplayStatics::ApplyPointDamage(OtherActor, CalculateDamage(), NormalImpulse, Hit, UGameplayStatics::GetPlayerController(GetWorld(), 0), this, DamageType);
+	UGameplayStatics::ApplyPointDamage(OtherActor, CalculateDamage(Caster), NormalImpulse, Hit, UGameplayStatics::GetPlayerController(GetWorld(), 0), this, DamageType);
 	Destroy();
 	// todo: leave behind flattened snowball messh?
 }
