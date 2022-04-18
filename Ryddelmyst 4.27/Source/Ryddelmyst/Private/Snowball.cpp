@@ -103,8 +103,9 @@ void ASnowball::OnHit(UPrimitiveComponent* HitComp, AActor* OtherActor, UPrimiti
 	{
 		Effect(OtherActor);
 	}
-	// todo: need to pass in the caster of this snowball for dmg calc
-	UGameplayStatics::ApplyPointDamage(OtherActor, CalculateDamage(Caster), NormalImpulse, Hit, UGameplayStatics::GetPlayerController(GetWorld(), 0), this, DamageType);
+	float dmg = CalculateDamage(Caster);
+	UE_LOG(LogTemp, Warning, TEXT("OnHit; damage is %f"),dmg);
+	UGameplayStatics::ApplyPointDamage(OtherActor, dmg, NormalImpulse, Hit, UGameplayStatics::GetPlayerController(GetWorld(), 0), this, DamageType);
 	Destroy();
 	// todo: leave behind flattened snowball messh?
 }
