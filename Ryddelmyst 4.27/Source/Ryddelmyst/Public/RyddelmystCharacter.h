@@ -203,6 +203,10 @@ protected:
 	void LookUpAtRate(float Rate);
 
 	void LookUp(float Value);
+	/**
+	 * Translates the character by 100 units in the direction they're facing to help escape stuck in geometry situations  
+	 */
+	void FixMe();
 
 	/**
 	 * Pauses the game and raises the pause menu.

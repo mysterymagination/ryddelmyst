@@ -111,7 +111,7 @@ void ARyddelmystCharacter::SetupPlayerInputComponent(class UInputComponent* Play
 {
 	// set up gameplay key bindings
 	check(PlayerInputComponent);
-
+	PlayerInputComponent->BindAction("FixMe", IE_Pressed, this, &ARyddelmystCharacter::FixMe);
 	PlayerInputComponent->BindAction("Pause", IE_Pressed, this, &ARyddelmystCharacter::PauseGame);
 
 	// Bind jump events
@@ -145,6 +145,16 @@ void ARyddelmystCharacter::SetupPlayerInputComponent(class UInputComponent* Play
 
 	PlayerInputComponent->BindAxis("Select Item", this, &ARyddelmystCharacter::CycleItem);
 	PlayerInputComponent->BindAction("Use Item", IE_Released, this, &ARyddelmystCharacter::UseItem);
+}
+
+void ARyddelmystCharacter::FixMe()
+{
+	UE_LOG(LogTemp, Warning, TEXT("FixMe; player pos before is %s"), *GetActorLocation().ToString());
+	// oops, position in world i.e. relative to world origin is NOT considered part of the transform hierarchy, so for a root component not attached to any transform parent SetActorRelativeLocation and SetActorLocation are equivalent.
+	//SetActorRelativeLocation(FVector(100.f, 100.f, 100.f));
+	//SetActorLocation(FVector(100.f, 100.f, 100.f));
+	SetActorLocation(GetActorLocation() + GetActorForwardVector() * 100.f);
+	UE_LOG(LogTemp, Warning, TEXT("FixMe; player pos after is %s"), *GetActorLocation().ToString());
 }
 
 void ARyddelmystCharacter::PauseGame()

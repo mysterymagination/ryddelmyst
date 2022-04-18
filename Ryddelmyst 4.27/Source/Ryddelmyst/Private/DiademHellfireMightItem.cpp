@@ -13,9 +13,11 @@ void UDiademHellfireMightItem::OnEquip_Implementation(AActor* EquippedActor)
 	{
 		Character->SetMetaMagicFire([](AFireSnowball* FireSnowball) 
 			{
+				UE_LOG(LogTemp, Warning, TEXT("Metamagic Fire lambda; modifier effect"));
 				FireSnowball->SetDamageScaleFactor(2.f);
 				FireSnowball->GetEffectsVector().emplace_back([](AActor* TargetActor)
 					{
+						UE_LOG(LogTemp, Warning, TEXT("Metamagic Fire lambda; onhit effect"));
 						TargetActor->SetActorRelativeLocation(FVector(-50.f, 0.f, 0.f));
 					}
 				);
