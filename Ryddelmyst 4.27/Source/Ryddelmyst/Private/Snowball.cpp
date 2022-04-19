@@ -99,6 +99,7 @@ void ASnowball::FireInDirection(const FVector& ShootDirection)
 
 void ASnowball::OnHit(UPrimitiveComponent* HitComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit)
 {
+	// todo: need to define default effects, e.g. Snowball freezes for FreezeDuration and spawns snowflakes particle FX around the target
 	for (auto Effect : EffectsOnTarget)
 	{
 		Effect(OtherActor, Hit);

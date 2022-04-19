@@ -497,6 +497,8 @@ void ARyddelmystCharacter::Fire()
 			TSubclassOf<ASnowball> SnowballType = Spells[SelectedWeaponIdx];
 			if (Magic >= SnowballType.GetDefaultObject()->GetMagicCost())
 			{
+				// todo: try to run the metamagiclaunch fn and do the default launch in the bad_function_call exception
+
 				UE_LOG(LogTemp, Warning, TEXT("Fire; magic is %f and cost is %f so firing"), Magic, SnowballType.GetDefaultObject()->GetMagicCost());
 				
 				// Spawn the projectile at the muzzle.
