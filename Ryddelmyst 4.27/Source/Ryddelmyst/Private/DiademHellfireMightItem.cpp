@@ -20,7 +20,7 @@ void UDiademHellfireMightItem::OnEquip_Implementation(AActor* EquippedActor)
 						UE_LOG(LogTemp, Warning, TEXT("Metamagic Fire lambda; onhit effect"));
 						if (TargetActor->IsRootComponentMovable())
 						{
-							TargetActor->SetActorLocation(TargetActor->GetActorLocation() + HitResult.ImpactNormal * -50.f);
+							TargetActor->SetActorLocation(TargetActor->GetActorLocation() + HitResult.ImpactNormal * -250.f);
 						}
 						else
 						{
