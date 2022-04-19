@@ -85,6 +85,10 @@ Textures:
     8.1 Source: https://opengameart.org/content/gold-treasure-icons
     8.2 Authors: Clint Bellanger https://opengameart.org/users/clint-bellanger
     8.3 License: http://creativecommons.org/licenses/by-sa/3.0/
+  9. Ryddelmyst/Content/Ryddelmyst_Assets/Textures/lightning_sword.png
+    9.1 Source: https://opengameart.org/content/fantasy-sword-set
+    9.2 Authors: https://opengameart.org/users/melle
+    9.3 License: CC0
 
 Fonts:
   1. Ryddelmyst/Content/Ryddelmyst_Assets/Fonts/alagard_by_pix3m-d6awiwp.ttf
