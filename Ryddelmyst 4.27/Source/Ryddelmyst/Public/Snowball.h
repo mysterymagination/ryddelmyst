@@ -17,7 +17,7 @@ class RYDDELMYST_API ASnowball : public AActor
 	GENERATED_BODY()
 
 	// Vector of functions to be run on the target after the spell hits
-	std::vector<std::function<void(AActor*)>> EffectsOnTarget;
+	std::vector<std::function<void(AActor*, const FHitResult&)>> EffectsOnTarget;
 
 public:
 	// Sets default values for this actor's properties
@@ -40,7 +40,7 @@ public:
 	float GetDamageScaleFactor() { return DamageScaleFactor; };
 	UFUNCTION()
 	void SetDamageScaleFactor(float ScaleFactor) { DamageScaleFactor = ScaleFactor; };
-	std::vector<std::function<void(AActor*)>>& GetEffectsVector() { return EffectsOnTarget; };
+	std::vector<std::function<void(AActor*, const FHitResult&)>>& GetEffectsVector() { return EffectsOnTarget; };
 	UFUNCTION()
 	void SetCaster(class ARyddelmystCharacter* CastingCharacter) { Caster = CastingCharacter; };
 	UFUNCTION()

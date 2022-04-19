@@ -101,7 +101,7 @@ void ASnowball::OnHit(UPrimitiveComponent* HitComp, AActor* OtherActor, UPrimiti
 {
 	for (auto Effect : EffectsOnTarget)
 	{
-		Effect(OtherActor);
+		Effect(OtherActor, Hit);
 	}
 	float dmg = CalculateDamage(Caster);
 	UE_LOG(LogTemp, Warning, TEXT("OnHit; damage is %f"),dmg);
