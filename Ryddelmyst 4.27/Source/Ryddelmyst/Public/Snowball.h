@@ -39,6 +39,10 @@ public:
 	UFUNCTION()
 	float GetDamageScaleFactor() { return DamageScaleFactor; };
 	UFUNCTION()
+	float GetFreezeDuration() { return FreezeDuration; };
+	UFUNCTION()
+	void SetFreezeDuration(float Duration) { FreezeDuration = Duration; };
+	UFUNCTION()
 	void SetDamageScaleFactor(float ScaleFactor) { DamageScaleFactor = ScaleFactor; };
 	std::vector<std::function<void(AActor*, const FHitResult&)>>& GetEffectsVector() { return EffectsOnTarget; };
 	UFUNCTION()
@@ -47,6 +51,9 @@ public:
 	class ARyddelmystCharacter* GetCaster() { return Caster; };
 
 protected:
+	// Duration during which the effected Actor will be unable to move
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Projectile)
+	float FreezeDuration = 5.f;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Projectile)
 	TSubclassOf<UDamageType> DamageType;
 	// Projectile particle FX

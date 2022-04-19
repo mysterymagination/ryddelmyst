@@ -54,6 +54,10 @@ class ARyddelmystCharacter : public AFawnCharacter
 	 * Fn applied to electric snowballs prior to spawn
 	 */
 	std::function<void(AElectricSnowball*)> MetamagicElectricFn;
+	/**
+	 * Fn applied to snowballs at launch, e.g. spreadshot instead of single shot
+	 */
+	std::function<void(ASnowball*)> MetamagicLaunchFn;
 
 	/** First person camera */
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Camera, meta = (AllowPrivateAccess = "true"))
@@ -103,6 +107,7 @@ public:
 	void SetMetaMagicFire(std::function<void(AFireSnowball*)> FireFn) { MetamagicFireFn = FireFn; };
 	void SetMetaMagicIce(std::function<void(ASnowball*)> IceFn) { MetamagicIceFn = IceFn; };
 	void SetMetaMagicLightning(std::function<void(AElectricSnowball*)> ElectricFn) { MetamagicElectricFn = ElectricFn; };
+	void SetMetaMagicLaunchBehavior(std::function<void(ASnowball*)> LaunchFn) { MetamagicLaunchFn = LaunchFn; };
 
 protected:
 	virtual void BeginPlay() override;
