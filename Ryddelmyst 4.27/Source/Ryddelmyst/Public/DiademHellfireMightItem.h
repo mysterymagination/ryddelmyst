@@ -10,7 +10,7 @@
 /**
  * 
  */
-UCLASS()
+UCLASS(BlueprintType, Blueprintable)
 class RYDDELMYST_API UDiademHellfireMightItem : public UObject, public IItem
 {
 	GENERATED_BODY()
