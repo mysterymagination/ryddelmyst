@@ -15,10 +15,17 @@ void UDiademHellfireMightItem::OnEquip_Implementation(AActor* EquippedActor)
 			{
 				UE_LOG(LogTemp, Warning, TEXT("Metamagic Fire lambda; modifier effect"));
 				FireSnowball->SetDamageScaleFactor(2.f);
-				FireSnowball->GetEffectsVector().emplace_back([](AActor* TargetActor)
+				FireSnowball->GetEffectsVector().emplace_back([](AActor* TargetActor, const FHitResult& HitResult)
 					{
 						UE_LOG(LogTemp, Warning, TEXT("Metamagic Fire lambda; onhit effect"));
-						TargetActor->SetActorRelativeLocation(FVector(-50.f, 0.f, 0.f));
+						if (TargetActor->IsRootComponentMovable())
+						{
+							TargetActor->SetActorLocation(TargetActor->GetActorLocation() + HitResult.ImpactNormal * -50.f);
+						}
+						else
+						{
+							UE_LOG(LogTemp, Warning, TEXT("Metamagic Fire lambda; can't apply transform onhit effect to stationary target actor %s"), *TargetActor->GetName());
+						}
 					}
 				);
 			}
