@@ -1,11 +1,11 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 
-#include "SlippersOfLongWintersNight.h"
+#include "SlippersOfLongWintersNapItem.h"
 #include "RyddelmystCharacter.h"
 #include "Snowball.h"
 
-void USlippersOfLongWintersNight::OnEquip_Implementation(AActor* EquippedActor)
+void USlippersOfLongWintersNapItem::OnEquip_Implementation(AActor* EquippedActor)
 {
 	ARyddelmystCharacter* Character = Cast<ARyddelmystCharacter>(EquippedActor);
 	if (Character)
