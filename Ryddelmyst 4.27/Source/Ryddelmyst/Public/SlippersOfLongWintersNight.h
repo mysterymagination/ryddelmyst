@@ -8,9 +8,9 @@
 #include "SlippersOfLongWintersNight.generated.h"
 
 /**
- * 
+ * A lovely pair of soft slippers that lull an ice mage's enemies into THE long slumber
  */
-UCLASS()
+UCLASS(BlueprintType, Blueprintable)
 class RYDDELMYST_API USlippersOfLongWintersNight : public UObject, public IItem
 {
 	GENERATED_BODY()
