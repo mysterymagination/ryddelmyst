@@ -8,7 +8,7 @@
 #include "DiademHellfireMightItem.generated.h"
 
 /**
- * 
+ * A mighty tiara that powers up fire spells with extra damage output and knockback
  */
 UCLASS(BlueprintType, Blueprintable)
 class RYDDELMYST_API UDiademHellfireMightItem : public UObject, public IItem
