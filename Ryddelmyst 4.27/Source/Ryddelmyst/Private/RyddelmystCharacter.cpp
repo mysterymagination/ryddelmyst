@@ -497,7 +497,7 @@ void ARyddelmystCharacter::Fire()
 			TSubclassOf<ASnowball> SnowballType = Spells[SelectedWeaponIdx];
 			if (Magic >= SnowballType.GetDefaultObject()->GetMagicCost())
 			{
-				// todo: try to run the metamagiclaunch fn and do the default launch in the bad_function_call exception
+				// todo: try to run the metamagiclaunch fn and do the default launch in the bad_function_call exception.  However, we also need a way to limit apply the metamagiclaunch to only relevant spells e.g. electric snowball.  The easiest way to do that would be three different metamagiclaunch functions, like we're doing for general modifiers, but then we've lost all control of scaling.  Ideal thing would be, instead of a complicated arch change, simply shoving additional modifications into the existing per-element functions; that could be achieved easily enough with a function vector or something, but then we have a problem in that the firing behavior currently lives here in the character rather than the spell.  If we move that into ASnowball as ASnowball::Launch(), we could also add a metamagiclaunch function there that the ASnowball::Launch() will call similarly to the above proposed failover to default model.
 
 				UE_LOG(LogTemp, Warning, TEXT("Fire; magic is %f and cost is %f so firing"), Magic, SnowballType.GetDefaultObject()->GetMagicCost());
 				
@@ -534,7 +534,7 @@ void ARyddelmystCharacter::Fire()
 
 					// Set the projectile's initial trajectory.
 					FVector LaunchDirection = MuzzleRotation.Vector();
-					Snowball->FireInDirection(LaunchDirection);
+					Snowball->Cast(this, LaunchDirection);
 					UpdateMagic(-Snowball->GetMagicCost());
 				}
 			}
