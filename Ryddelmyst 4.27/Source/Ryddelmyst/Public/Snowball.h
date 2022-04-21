@@ -17,7 +17,9 @@ class RYDDELMYST_API ASnowball : public AActor
 	GENERATED_BODY()
 
 	// Vector of functions to be run on the target after the spell hits
-	std::vector<std::function<void(AActor*, const FHitResult&)>> EffectsOnTarget;
+	std::vector<std::function<void(AActor* TargetActor, const FHitResult& HitResult)>> EffectsOnTarget;
+	// Function that provides custom launch behavior
+	std::function<void(AActor* LaunchingActor, const FVector& LaunchDirection)> LaunchFn;
 
 public:
 	// Sets default values for this actor's properties
@@ -31,7 +33,7 @@ public:
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 	// Initializes the projectile's velocity in the shoot direction.
-	void FireInDirection(const FVector& ShootDirection);
+	void Cast(class ARyddelmystCharacter* CastingCharacter, const FVector& LaunchDirection);
 	float GetMagicCost()
 	{
 		return MagicCost;
@@ -45,10 +47,14 @@ public:
 	UFUNCTION()
 	void SetDamageScaleFactor(float ScaleFactor) { DamageScaleFactor = ScaleFactor; };
 	std::vector<std::function<void(AActor*, const FHitResult&)>>& GetEffectsVector() { return EffectsOnTarget; };
+	std::function<void(AActor* LaunchingActor, const FVector& LaunchDirection)> GetLaunchFunction() { return LaunchFn; };
+	void SetLaunchFunction(std::function<void(AActor* LaunchingActor, const FVector& LaunchDirection)> Function) { LaunchFn = Function; };
 	UFUNCTION()
 	void SetCaster(class ARyddelmystCharacter* CastingCharacter) { Caster = CastingCharacter; };
 	UFUNCTION()
 	class ARyddelmystCharacter* GetCaster() { return Caster; };
+	UFUNCTION()
+	void ProcessCost(class ARyddelmystCharacter* CasterCharacter);
 
 protected:
 	// Duration during which the effected Actor will be unable to move
