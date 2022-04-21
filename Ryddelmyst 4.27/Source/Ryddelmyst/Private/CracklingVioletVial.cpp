@@ -11,7 +11,8 @@ void UCracklingVioletVial::OnEquip_Implementation(AActor* EquippedActor)
 	if (Character)
 	{
 		// todo: we'll want to be able to apply projectile spawn behavior per element of snowball; TBD how best to achieve this
-		Character->SetMetaMagicLightning([=](AElectricSnowball* ElectricSnowball)
+		Character->GetMetamagicMap()[ARyddelmystCharacter::Spell_ElectricSnowball][ARyddelmystCharacter::Metamagic_]
+			->SetMetaMagicLightning([=](AElectricSnowball* ElectricSnowball)
 			{
 				UE_LOG(LogTemp, Warning, TEXT("Metamagic Electric lambda; modifier effect"));
 			}
