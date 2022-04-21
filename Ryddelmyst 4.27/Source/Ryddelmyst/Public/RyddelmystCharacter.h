@@ -58,13 +58,24 @@ class ARyddelmystCharacter : public AFawnCharacter
 	 * Fn applied to snowballs at launch, e.g. spreadshot instead of single shot
 	 */
 	std::function<void(ASnowball*)> MetamagicLaunchFn;
-	// todo: multidimensional mapping of spell names to categorical metamagic to the actual function to run e.g.
+	// todo: multidimensional mapping of spell names to metamagic source id to spell aspect (which informs the timing and manner of lambda calling/application) to categorical metamagic fx to the actual function to run e.g.
 	// {
 	//   "snowball" : {
-	//     "InstanceModifier" : ...actual lambda fn that doubles damage or duration,
-	//     "SpawnModifier" : ...actual lambda fn that defines how/how many/where/when etc. the spell Actor is spawned, if relevant...
+	//     "ID_CracklingVioletVial" : {
+	//       "Evocation" : {
+	//         "DamageModifier" : lambda fn that doubles damage,
+	//	       "DurationModifier" : lambda fn that doubles duration
+	//       },
+	//       "Transmutation" : {
+	//         "EffectModifier" : lambda fn that applies an effect when the spell hits a target
+	//       },
+	//       "Conjuration" : {
+	//         "SpawnModifier" : lambda fn that defines how/how many/where/when etc. the spell Actor is spawned, if relevant...
+	//       }
+	//     }
 	//   } 
 	// }
+	// In this example we'd cast a Snowball and see that we have a DamageModifier and DurationModifier functions under Evocation map, so those get called right away at instance creation and prior to spawning in the map.  Then we see we an EffectModifier under Transmutation and so we add its function to the spell's OnHit effects.  Finally we see we have a SpawnModifier under Conjuration so we run that instead of the default spawn behavior.
 	std::function<void()> MetamagicElectricLaunchFn;
 	std::function<void()> MetamagicIceLaunchFn;
 	std::function<void()> MetamagicFireLaunchFn;
