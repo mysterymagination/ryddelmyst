@@ -92,9 +92,26 @@ void ASnowball::Tick(float DeltaTime)
 }
 
 // Function that initializes the projectile's velocity in the shoot direction.
-void ASnowball::FireInDirection(const FVector& ShootDirection)
+void ASnowball::Cast(ARyddelmystCharacter* LaunchingCharacter, const FVector& LaunchDirection)
 {
-	ProjectileMovementComponent->Velocity = ShootDirection * ProjectileMovementComponent->InitialSpeed;
+	try
+	{
+		LaunchFn(LaunchingCharacter, LaunchDirection);
+	}
+	catch(const std::bad_function_call& e)
+	{
+		UE_LOG(LogTemp, Log, TEXT("Cast; customized launch fn is not set, so using default launch.  Details: %s"), *FString(e.what()));
+		// default launch behavior
+		ProjectileMovementComponent->Velocity = LaunchDirection * ProjectileMovementComponent->InitialSpeed;
+	}
+
+	ProcessCost(LaunchingCharacter);
+}
+
+void ASnowball::ProcessCost(ARyddelmystCharacter* CasterCharacter)
+{
+	// todo: add a Cost struct that's blueprintable with cost values corresponding to various character stats, normally MP but could be HP etc.  Ideally we'd have a mapping of some sort that would see e.g. that Snowball has an MP cost of 20 and therefore triggers an event OnMpCost(20) that RyddelmystCharacter handles by calling her UpdateMagic(-20).  That way we could have variable casting costs and abstract away the specific details of how interested parties handle the cost event. 
+	// todo: the above Cost could even include custom behavior e.g. the caster flies back N meters or their HP is halved for N seconds; that would have to work outside the blueprint ecosystem tho I think since blueprints don't really support lambda functions.
 }
 
 void ASnowball::OnHit(UPrimitiveComponent* HitComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit)

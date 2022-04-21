@@ -58,6 +58,16 @@ class ARyddelmystCharacter : public AFawnCharacter
 	 * Fn applied to snowballs at launch, e.g. spreadshot instead of single shot
 	 */
 	std::function<void(ASnowball*)> MetamagicLaunchFn;
+	// todo: multidimensional mapping of spell names to categorical metamagic to the actual function to run e.g.
+	// {
+	//   "snowball" : {
+	//     "InstanceModifier" : ...actual lambda fn that doubles damage or duration,
+	//     "SpawnModifier" : ...actual lambda fn that defines how/how many/where/when etc. the spell Actor is spawned, if relevant...
+	//   } 
+	// }
+	std::function<void()> MetamagicElectricLaunchFn;
+	std::function<void()> MetamagicIceLaunchFn;
+	std::function<void()> MetamagicFireLaunchFn;
 
 	/** First person camera */
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Camera, meta = (AllowPrivateAccess = "true"))
