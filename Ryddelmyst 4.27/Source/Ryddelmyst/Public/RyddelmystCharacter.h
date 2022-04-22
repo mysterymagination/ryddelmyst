@@ -58,7 +58,7 @@ class ARyddelmystCharacter : public AFawnCharacter
 	 * Fn applied to snowballs at launch, e.g. spreadshot instead of single shot
 	 */
 	std::function<void(ASnowball*)> MetamagicLaunchFn;
-	// todo: multidimensional mapping of spell names to metamagic source id to spell aspect (which informs the timing and manner of lambda calling/application) to categorical metamagic fx to the actual function to run e.g.
+	// todo: multidimensional mapping of spell names to metamagic source id to spell aspect (borrowed fun names from the Pathfinder schools o' magic; they just serve to inform the timing and manner of lambda calling/application) to categorical metamagic fx to the actual function to run e.g.
 	// {
 	//   "snowball" : {
 	//     "ID_CracklingVioletVial" : {
@@ -75,7 +75,7 @@ class ARyddelmystCharacter : public AFawnCharacter
 	//     }
 	//   } 
 	// }
-	// In this example we'd cast a Snowball and see that we have a DamageModifier and DurationModifier functions under Evocation map, so those get called right away at instance creation and prior to spawning in the map.  Then we see we an EffectModifier under Transmutation and so we add its function to the spell's OnHit effects.  Finally we see we have a SpawnModifier under Conjuration so we run that instead of the default spawn behavior.
+	// In this example we'd cast a Snowball and see that we have a DamageModifier and DurationModifier functions under Evocation map (behavior modifying instance creation params), so those get called right away at instance creation and prior to spawning in the map.  Then we see we an EffectModifier under Transmutation map (behavior applied after the spell is completed/hits a target) and so we add its function to the spell's OnHit effects.  Finally we see we have a SpawnModifier under Conjuration map (behavior modifying how/where/when an Actor related to the spell is spawned in the map, if relevant) so we run that instead of the default spawn behavior.
 	std::function<void()> MetamagicElectricLaunchFn;
 	std::function<void()> MetamagicIceLaunchFn;
 	std::function<void()> MetamagicFireLaunchFn;
