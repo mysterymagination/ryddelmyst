@@ -501,6 +501,8 @@ void ARyddelmystCharacter::Fire()
 
 				UE_LOG(LogTemp, Warning, TEXT("Fire; magic is %f and cost is %f so firing"), Magic, SnowballType.GetDefaultObject()->GetMagicCost());
 				
+				// todo: we want Evocation, Transmutation, and Conjuration phases for metamagic application HOWEVER the Evocation (construction/init) and Conjuration (actual spawning) phases are somewhat coupled since we need to create and provision during Evocation the same number of snowballs that we eventually spawn during Conjuration. 
+
 				// Spawn the projectile at the muzzle.
 				FTransform SpawnTransform;
 				SpawnTransform.SetLocation(MuzzleLocation);
