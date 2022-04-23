@@ -62,14 +62,17 @@ class ARyddelmystCharacter : public AFawnCharacter
 	// {
 	//   "snowball" : {
 	//     "ID_CracklingVioletVial" : {
+	//       "Conjuration" : {
+	//         "CreationModifier" : lambda fn that creates one or more bullet Actors and returns the resultant ASnowball array 
+	//       }
 	//       "Evocation" : {
 	//         "DamageModifier" : lambda fn that doubles damage,
 	//	       "DurationModifier" : lambda fn that doubles duration
 	//       },
-	//       "Transmutation" : {
+	//       "Enchantment" : {
 	//         "EffectModifier" : lambda fn that applies an effect when the spell hits a target
 	//       },
-	//       "Conjuration" : {
+	//       "Transmutation" : {
 	//         "SpawnModifier" : lambda fn that defines how/how many/where/when etc. the spell Actor is spawned, if relevant...
 	//       }
 	//     }
