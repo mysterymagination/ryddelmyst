@@ -16,6 +16,7 @@ class RYDDELMYST_API UCracklingVioletVial : public UObject, public IItem
 	GENERATED_BODY()
 
 public:
+	static const FString ID;
 	/**
 	 * Equips the item to the given Actor, granting any passive effects it offers
 	 */
