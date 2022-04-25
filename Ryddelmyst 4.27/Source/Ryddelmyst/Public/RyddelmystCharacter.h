@@ -10,6 +10,7 @@
 #include "ElectricSnowball.h"
 #include "Item.h"
 #include <functional>
+#include <unordered_map>
 #include "Components/TimelineComponent.h"
 #include "Components/BoxComponent.h"
 #include "RyddelmystCharacter.generated.h"
@@ -42,22 +43,15 @@ class ARyddelmystCharacter : public AFawnCharacter
 	GENERATED_BODY()
 
 	static const FString EquipSlotsData[];
-	/**
-	 * Fn applied to fire snowballs prior to spawn 
-	 */
-	std::function<void(AFireSnowball*)> MetamagicFireFn;
-	/**
-	 * Fn applied to snowballs prior to spawn
-	 */
-	std::function<void(ASnowball*)> MetamagicIceFn;
-	/**
-	 * Fn applied to electric snowballs prior to spawn
-	 */
-	std::function<void(AElectricSnowball*)> MetamagicElectricFn;
-	/**
-	 * Fn applied to snowballs at launch, e.g. spreadshot instead of single shot
-	 */
-	std::function<void(ASnowball*)> MetamagicLaunchFn;
+
+	// todo: how do we make it so the final functor can accept varying params?  e.g. creation mods may need the character pointer but evocation may only need the snowball pointer.  Maybe make a MetaMetaMagic class or something that uses variadic template parameter packs e.g. typename... Ts and takes a functor with the relevant templated params as a ctor arg?
+	std::unordered_map<FString /*SpellID*/,
+		std::unordered_map<FString /*SourceID*/,
+			std::unordered_map<FString /*AspectID*/,
+				std::unordered_map<FString /*MetamagicID*/, std::function<void()>>
+			>
+		>
+	> MetamagicMap;
 	// todo: multidimensional mapping of spell names to metamagic source id to spell aspect (borrowed fun names from the Pathfinder schools o' magic; they just serve to inform the timing and manner of lambda calling/application) to categorical metamagic fx to the actual function to run e.g.
 	// {
 	//   "snowball" : {
@@ -79,9 +73,7 @@ class ARyddelmystCharacter : public AFawnCharacter
 	//   } 
 	// }
 	// In this example we'd cast a Snowball and see that we have a DamageModifier and DurationModifier functions under Evocation map (behavior modifying instance creation params), so those get called right away at instance creation and prior to spawning in the map.  Then we see we an EffectModifier under Transmutation map (behavior applied after the spell is completed/hits a target) and so we add its function to the spell's OnHit effects.  Finally we see we have a SpawnModifier under Conjuration map (behavior modifying how/where/when an Actor related to the spell is spawned in the map, if relevant) so we run that instead of the default spawn behavior.
-	std::function<void()> MetamagicElectricLaunchFn;
-	std::function<void()> MetamagicIceLaunchFn;
-	std::function<void()> MetamagicFireLaunchFn;
+	
 
 	/** First person camera */
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Camera, meta = (AllowPrivateAccess = "true"))
@@ -138,6 +130,17 @@ protected:
 	virtual void Tick(float DeltaTime) override;
 
 public:
+	static const FString ID_SPELL_ELECTRICSNOWBALL;
+	static const FString ID_SPELL_ASPECT_CONJURATION;
+	static const FString ID_SPELL_ASPECT_EVOCATION;
+	static const FString ID_SPELL_ASPECT_ENCHANTMENT;
+	static const FString ID_SPELL_ASPECT_TRANSMUTATION;
+	static const FString ID_METAMAGIC_CATEGORY_CREATION;
+	static const FString ID_METAMAGIC_CATEGORY_DAMAGE;
+	static const FString ID_METAMAGIC_CATEGORY_DURATION;
+	static const FString ID_METAMAGIC_CATEGORY_EFFECT;
+	static const FString ID_METAMAGIC_CATEGORY_SPAWN;
+
 	/** Base turn rate, in deg/sec. Other scaling may affect final turn rate. */
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category=Camera)
 	float BaseTurnRate;
