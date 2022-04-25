@@ -13,6 +13,7 @@
 #include <unordered_map>
 #include "Components/TimelineComponent.h"
 #include "Components/BoxComponent.h"
+#include "MetamagicDescriptor.h"
 #include "RyddelmystCharacter.generated.h"
 
 class UInputComponent;
@@ -44,11 +45,14 @@ class ARyddelmystCharacter : public AFawnCharacter
 
 	static const FString EquipSlotsData[];
 
-	// todo: how do we make it so the final functor can accept varying params?  e.g. creation mods may need the character pointer but evocation may only need the snowball pointer.  Maybe make a MetaMetaMagic class or something that uses variadic template parameter packs e.g. typename... Ts and takes a functor with the relevant templated params as a ctor arg?
+	// todo: how do we make it so the final functor can accept varying params?  e.g. creation mods may need the character pointer but evocation may only need the snowball pointer.  Maybe make a MetaMetaMagic class or something that uses variadic template parameter packs e.g. typename... Ts and takes a functor with the relevant templated params as a ctor arg?  That doesn't quite work because we would still need explicit types at the map declaration stage here.  Workarounds:
+	// 1. MetamagicDescriptor class with a pure virtual generatefn function that uses template param packs and a bare run() function; subclasses could then have an std::function field with the appropriate sig that their generatefn override sets with in input lambda conforming to the same sig.  The equipment that knows the metamagic behavior could then instantiate and configure the MetamagicDescriptor subclass and shove it in the map as just a top level MetamagicDescriptor.  Then the downstream client code could simply look it up and call the bare run() function.  The disadvantage here is that we couldn't support a variable return type from run() as far as I can see, and we already want to be able to return stuff from e.g. the Conjuration functions.
+	// 2. Mappings could be as generic and variadic as possible e.g. std::function<TArray<UObject>(UObject...)> to allow for specificity when desired behavior is known and generality in the map itself.  The disadvantage here is that we need a generic type, which UObject mostly satisfies but only within the UE ecosystem.
+	// 3. Kitchen sink params: make the std::function explicit type in the map below be something like std::function<TArray<ASnowball*>(Character*, ASnowball*, FSpawnParams, FVector, std::vector<ASnowball*>, uint8) to support all use cases.  We would just default everything and then let the instantiator populate only what was needed.  Main disadvantages here are that C++ defaulting behavior would make this rough to use, and of course it's ugly AF, and it doesn't scale at all.
 	std::unordered_map<FString /*SpellID*/,
 		std::unordered_map<FString /*SourceID*/,
 			std::unordered_map<FString /*AspectID*/,
-				std::unordered_map<FString /*MetamagicID*/, std::function<void()>>
+				std::unordered_map<FString /*MetamagicID*/, std::function<TArray<UObject>(UObject...)>>
 			>
 		>
 	> MetamagicMap;
