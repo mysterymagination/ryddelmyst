@@ -25,16 +25,16 @@ DEFINE_LOG_CATEGORY_STATIC(LogFPChar, Warning, All);
 
 const FString ARyddelmystCharacter::EquipSlotsData[] = { TEXT("Head"), TEXT("Neck"), TEXT("Hands"), TEXT("Feet") };
 
-const FString ARyddelmystCharacter::ID_SPELL_ELECTRICSNOWBALL = TEXT("ElectricSnowball");
-const FString ARyddelmystCharacter::ID_SPELL_ASPECT_CONJURATION = TEXT("Conjuration");
-const FString ARyddelmystCharacter::ID_SPELL_ASPECT_EVOCATION = TEXT("Evocation");
-const FString ARyddelmystCharacter::ID_SPELL_ASPECT_ENCHANTMENT = TEXT("Enchantment");
-const FString ARyddelmystCharacter::ID_SPELL_ASPECT_TRANSMUTATION = TEXT("Transmutation");
-const FString ARyddelmystCharacter::ID_METAMAGIC_CATEGORY_CREATION = TEXT("Creation");
-const FString ARyddelmystCharacter::ID_METAMAGIC_CATEGORY_DAMAGE = TEXT("Damage");
-const FString ARyddelmystCharacter::ID_METAMAGIC_CATEGORY_DURATION = TEXT("Duration");
-const FString ARyddelmystCharacter::ID_METAMAGIC_CATEGORY_EFFECT = TEXT("Effect");
-const FString ARyddelmystCharacter::ID_METAMAGIC_CATEGORY_SPAWN = TEXT("Spawn");
+const std::string ARyddelmystCharacter::ID_SPELL_ELECTRICSNOWBALL = "ElectricSnowball";
+const std::string ARyddelmystCharacter::ID_SPELL_ASPECT_CONJURATION = "Conjuration";
+const std::string ARyddelmystCharacter::ID_SPELL_ASPECT_EVOCATION = "Evocation";
+const std::string ARyddelmystCharacter::ID_SPELL_ASPECT_ENCHANTMENT = "Enchantment";
+const std::string ARyddelmystCharacter::ID_SPELL_ASPECT_TRANSMUTATION = "Transmutation";
+const std::string ARyddelmystCharacter::ID_METAMAGIC_CATEGORY_CREATION = "Creation";
+const std::string ARyddelmystCharacter::ID_METAMAGIC_CATEGORY_DAMAGE = "Damage";
+const std::string ARyddelmystCharacter::ID_METAMAGIC_CATEGORY_DURATION = "Duration";
+const std::string ARyddelmystCharacter::ID_METAMAGIC_CATEGORY_EFFECT = "Effect";
+const std::string ARyddelmystCharacter::ID_METAMAGIC_CATEGORY_SPAWN = "Spawn";
 
 ARyddelmystCharacter::ARyddelmystCharacter()
 {
