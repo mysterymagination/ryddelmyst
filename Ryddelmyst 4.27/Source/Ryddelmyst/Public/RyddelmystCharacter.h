@@ -47,7 +47,7 @@ class ARyddelmystCharacter : public AFawnCharacter
 	static const FString EquipSlotsData[];
 
 	// mapping of string to inner maps that eventually terminate in a leaf node value of an std::function with a generic array return type and variadic generic params to support variable function details for various metamagic effects.
-	// todo: getting crazy compile error here, maybe due to variadic param in std::function?
+	// todo: maybe a MetamagicWand class with a Wave() templated function that does nothing in the top level (could even be pure virtual) but is overriden with template specialization for the actual relevant functor return type and expected input params with a function that executes the functor field with the input params and returns whatever it returns?
 	std::unordered_map<std::string /*SpellID*/,
 		std::unordered_map<std::string /*SourceID*/,
 			std::unordered_map<std::string /*AspectID*/,
