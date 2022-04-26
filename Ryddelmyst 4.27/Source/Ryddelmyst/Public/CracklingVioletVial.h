@@ -5,6 +5,7 @@
 #include "CoreMinimal.h"
 #include "UObject/NoExportTypes.h"
 #include "Item.h"
+#include <string>
 #include "CracklingVioletVial.generated.h"
 
 /**
@@ -16,7 +17,7 @@ class RYDDELMYST_API UCracklingVioletVial : public UObject, public IItem
 	GENERATED_BODY()
 
 public:
-	static const FString ID;
+	static const std::string ID;
 	/**
 	 * Equips the item to the given Actor, granting any passive effects it offers
 	 */
