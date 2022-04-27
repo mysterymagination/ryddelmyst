@@ -526,6 +526,7 @@ void ARyddelmystCharacter::Fire()
 					Snowball->SetCaster(this);
 					try
 					{
+						/*
 						if (SnowballType == AFireSnowball::StaticClass())
 						{
 							MetamagicFireFn(Cast<AFireSnowball>(Snowball));
@@ -538,6 +539,7 @@ void ARyddelmystCharacter::Fire()
 						{
 							MetamagicIceFn(Snowball);
 						}
+						*/
 					}
 					catch (const std::bad_function_call& e)
 					{
@@ -646,22 +648,31 @@ void ARyddelmystCharacter::OnOverlapBegin(class UPrimitiveComponent* OverlappedC
 	}
 }
 
-void ARyddelmystCharacter::AddInventoryItemFromActor(AItemActor* ItemActor)
+bool ARyddelmystCharacter::AddInventoryItemFromActor(AItemActor* ItemActor)
 {
 	TSubclassOf<UObject> ItemClass = ItemActor->GetItemType();
 	if (ItemClass->ImplementsInterface(UItem::StaticClass()))
 	{
 		UObject* ItemObj = NewObject<UObject>(this, ItemClass);
-		AddInventoryItem(ItemObj);
-		ItemActor->Destroy();
+		if (AddInventoryItem(ItemObj))
+		{
+			ItemActor->Destroy();
+			return true;
+		}
+		else
+		{
+			UE_LOG(LogTemp, Warning, TEXT("AddInventoryItemFromActor; failed to add item %s"), *ItemObj->GetName());
+			return false;
+		}
 	}
 	else
 	{
 		UE_LOG(LogTemp, Warning, TEXT("AddInventoryItemFromActor; itemactor's item class %s does not implement the item interface"), *ItemClass->GetName());
+		return false;
 	}
 }
 
-void ARyddelmystCharacter::AddInventoryItem(UObject* ItemObj)
+bool ARyddelmystCharacter::AddInventoryItem(UObject* ItemObj)
 {
 	if (Inventory.Num() < MaxInventory)
 	{
@@ -676,16 +687,19 @@ void ARyddelmystCharacter::AddInventoryItem(UObject* ItemObj)
 				SelectedItemIdx = 0;
 				HUD->SelectItem(SelectedItemIdx);
 			}
+			return true;
 		}
 		else
 		{
 			UE_LOG(LogTemp, Warning, TEXT("AddInventoryItem; item obj %s does not implement the item interface"), *ItemObj->GetName());
+			return false;
 		}
 	}
 	else
 	{
 		HUD->ShowDialogue(NSLOCTEXT("NSFeedback", "KeyInvFull", "Your inventory is full!"));
 		UE_LOG(LogTemp, Warning, TEXT("AddInventoryItem; inventory is full"));
+		return false;
 	}
 }
 
