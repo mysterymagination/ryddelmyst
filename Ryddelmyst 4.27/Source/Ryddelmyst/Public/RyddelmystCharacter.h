@@ -13,6 +13,7 @@
 #include <unordered_map>
 #include <vector>
 #include <string>
+#include <variant>
 #include "Components/TimelineComponent.h"
 #include "Components/BoxComponent.h"
 #include "RyddelmystCharacter.generated.h"
@@ -48,13 +49,22 @@ class ARyddelmystCharacter : public AFawnCharacter
 
 	// mapping of string to inner maps that eventually terminate in a leaf node value of an std::function with a generic array return type and variadic generic params to support variable function details for various metamagic effects.
 	// todo: maybe a MetamagicWand class with a Wave() templated function that does nothing in the top level (could even be pure virtual) but is overriden with template specialization for the actual relevant functor return type and expected input params with a function that executes the functor field with the input params and returns whatever it returns?
+	// todo: try the following:
+	// 1. Use MetaMagicWand as the mapped value and then subclasses thereof will host our specific std::functions with whatever their required signatures may be, and they'll have a template specialization with appropriate types for the associated std::function EDIT: turns out you can't really do this because templated member functions can't be virtual, and when you're making a specialization of the parent class's templated function you can't reference fields of the child.
+	// 2. Make multiple maps for the various signatures required for different metamagic effects (may require having one field (probably an std::pair) for each metamagic id, which breaks our nesting architecture a fair bit; we'd need to do something like have the metamagic id be the leaf node and then enumerating those under a given aspect will inform a big giant switch or something which std::pair<string id, function> we need to look up and run...)
+	// 3. Use std::variant to create a union that can be any function with any known signatures
 	std::unordered_map<std::string /*SpellID*/,
 		std::unordered_map<std::string /*SourceID*/,
 			std::unordered_map<std::string /*AspectID*/,
-				std::unordered_map<std::string /*MetamagicID*/, std::function<std::vector<UObject*>(std::vector<UObject*>)>>
+				std::unordered_map<std::string /*MetamagicID*/, std::variant<
+						std::function<void()>,
+						std::function<std::vector<ASnowball*>(ARyddelmystCharacter*)>
+					>
+				>
 			>
 		>
 	> MetamagicMap;
+	
 	// todo: multidimensional mapping of spell names to metamagic source id to spell aspect (borrowed fun names from the Pathfinder schools o' magic; they just serve to inform the timing and manner of lambda calling/application) to categorical metamagic fx to the actual function to run e.g.
 	// {
 	//   "snowball" : {
@@ -123,13 +133,7 @@ public:
 	virtual void OnLostFollower(ILookitYou* lookitYou) override;
 	UFUNCTION(BlueprintCallable, Category = "Statistics")
 	FBattleStats GetStats() { return CharacterStats; }
-	std::unordered_map<std::string /*SpellID*/,
-			std::unordered_map<std::string /*SourceID*/,
-				std::unordered_map<std::string /*AspectID*/,
-					std::unordered_map<std::string /*MetamagicID*/, std::function<std::vector<UObject*>(std::vector<UObject*>)>>
-					>
-				>
-			>& GetMetamagicMap() { return MetamagicMap; };
+	auto& GetMetamagicMap() { return MetamagicMap; };
 
 protected:
 	virtual void BeginPlay() override;
@@ -280,16 +284,18 @@ protected:
 	/**
 	 * Adds a given Item to the inventory based on the Item class stored in the given ItemActor, then destroys the ItemActor.
 	 * @param ItemActor the Actor representing the item in the stage, whose ItemType field defines what actual Item object will be added to the player inventory.
+	 * @return true if the item was successfully added to inventory, false otherwise
 	 */
 	UFUNCTION(BlueprintCallable, Category = "Inventory")
-	void AddInventoryItemFromActor(class AItemActor* ItemActor);
+	bool AddInventoryItemFromActor(class AItemActor* ItemActor);
 
 	/**
 	 * Adds a given Item to the inventory.
 	 * @param ItemObj the Item object that will be added to the player inventory.
+	 * @return true if the item was successfully added to inventory, false otherwise
 	 */
 	UFUNCTION(BlueprintCallable, Category = "Inventory")
-	void AddInventoryItem(UObject* ItemObj);
+	bool AddInventoryItem(UObject* ItemObj);
 
 	/**
 	 * Adds a given Item to the character's equipment.

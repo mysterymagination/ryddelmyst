@@ -11,6 +11,7 @@ void UDiademHellfireMightItem::OnEquip_Implementation(AActor* EquippedActor)
 	ARyddelmystCharacter* Character = Cast<ARyddelmystCharacter>(EquippedActor);
 	if (Character)
 	{
+		/*
 		Character->SetMetaMagicFire([](AFireSnowball* FireSnowball) 
 			{
 				UE_LOG(LogTemp, Warning, TEXT("Metamagic Fire lambda; modifier effect"));
@@ -30,6 +31,7 @@ void UDiademHellfireMightItem::OnEquip_Implementation(AActor* EquippedActor)
 				);
 			}
 		);
+		*/
 	}
 }
 
