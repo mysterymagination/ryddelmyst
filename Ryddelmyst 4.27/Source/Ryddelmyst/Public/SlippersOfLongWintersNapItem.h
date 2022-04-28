@@ -5,6 +5,7 @@
 #include "CoreMinimal.h"
 #include "UObject/NoExportTypes.h"
 #include "Item.h"
+#include <string>
 #include "SlippersOfLongWintersNapItem.generated.h"
 
 /**
@@ -16,6 +17,7 @@ class RYDDELMYST_API USlippersOfLongWintersNapItem : public UObject, public IIte
 	GENERATED_BODY()
 	
 public:
+	static const std::string ID;
 	/**
 	 * Equips the item to the given Actor, granting any passive effects it offers
 	 */
