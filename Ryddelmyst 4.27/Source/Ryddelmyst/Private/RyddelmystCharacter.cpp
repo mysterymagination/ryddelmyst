@@ -28,10 +28,10 @@ const FString ARyddelmystCharacter::EquipSlotsData[] = { TEXT("Head"), TEXT("Nec
 const std::string ARyddelmystCharacter::ID_SPELL_ELECTRICSNOWBALL = "ElectricSnowball";
 const std::string ARyddelmystCharacter::ID_SPELL_FIRESNOWBALL = "FireSnowball";
 const std::string ARyddelmystCharacter::ID_SPELL_SNOWBALL = "Snowball";
-const std::string ARyddelmystCharacter::ID_SPELL_ASPECT_CONJURATION = "Conjuration";
-const std::string ARyddelmystCharacter::ID_SPELL_ASPECT_EVOCATION = "Evocation";
-const std::string ARyddelmystCharacter::ID_SPELL_ASPECT_ENCHANTMENT = "Enchantment";
-const std::string ARyddelmystCharacter::ID_SPELL_ASPECT_TRANSMUTATION = "Transmutation";
+const std::string ARyddelmystCharacter::ID_SPELL_PHASE_CONJURATION = "Conjuration";
+const std::string ARyddelmystCharacter::ID_SPELL_PHASE_EVOCATION = "Evocation";
+const std::string ARyddelmystCharacter::ID_SPELL_PHASE_ENCHANTMENT = "Enchantment";
+const std::string ARyddelmystCharacter::ID_SPELL_PHASE_TRANSMUTATION = "Transmutation";
 const std::string ARyddelmystCharacter::ID_METAMAGIC_CATEGORY_CREATION = "Creation";
 const std::string ARyddelmystCharacter::ID_METAMAGIC_CATEGORY_ATTR = "Attributes";
 const std::string ARyddelmystCharacter::ID_METAMAGIC_CATEGORY_DAMAGE = "Damage";
@@ -511,11 +511,12 @@ void ARyddelmystCharacter::Fire()
 			TSubclassOf<ASnowball> SnowballType = Spells[SelectedWeaponIdx];
 			if (Magic >= SnowballType.GetDefaultObject()->GetMagicCost())
 			{
-				// todo: try to run the metamagiclaunch fn and do the default launch in the bad_function_call exception.  However, we also need a way to limit apply the metamagiclaunch to only relevant spells e.g. electric snowball.  The easiest way to do that would be three different metamagiclaunch functions, like we're doing for general modifiers, but then we've lost all control of scaling.  Ideal thing would be, instead of a complicated arch change, simply shoving additional modifications into the existing per-element functions; that could be achieved easily enough with a function vector or something, but then we have a problem in that the firing behavior currently lives here in the character rather than the spell.  If we move that into ASnowball as ASnowball::Launch(), we could also add a metamagiclaunch function there that the ASnowball::Launch() will call similarly to the above proposed failover to default model.
-
 				UE_LOG(LogTemp, Warning, TEXT("Fire; magic is %f and cost is %f so firing"), Magic, SnowballType.GetDefaultObject()->GetMagicCost());
 				
-				// todo: we want Evocation, Transmutation, and Conjuration phases for metamagic application HOWEVER the Evocation (construction/init) and Conjuration (actual spawning) phases are somewhat coupled since we need to create and provision during Evocation the same number of snowballs that we eventually spawn during Conjuration. 
+				// todo: Conjuration phase: lookup conjuration effects for the current spell and apply them, storing the returned bullet array.  If there are none, run the default creation behavior.
+				// todo: Evocation phase: lookup evocation effects for the current spell and apply them to each instance in the bullet array created above.
+				// todo: Enchantment phase: lookup enchantment effects for the current spell and store them for later OnHit application in each bullet instance in the bullet array created above.
+				// todo: Transmutation phase: lookup transmutation effects for the current spell and run them on each bullet instance in the bullet array created above.
 
 				// Spawn the projectile at the muzzle.
 				FTransform SpawnTransform;

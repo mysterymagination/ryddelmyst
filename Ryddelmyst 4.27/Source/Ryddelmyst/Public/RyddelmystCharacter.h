@@ -148,10 +148,10 @@ public:
 	static const std::string ID_SPELL_ELECTRICSNOWBALL;
 	static const std::string ID_SPELL_FIRESNOWBALL;
 	static const std::string ID_SPELL_SNOWBALL;
-	static const std::string ID_SPELL_ASPECT_CONJURATION;
-	static const std::string ID_SPELL_ASPECT_EVOCATION;
-	static const std::string ID_SPELL_ASPECT_ENCHANTMENT;
-	static const std::string ID_SPELL_ASPECT_TRANSMUTATION;
+	static const std::string ID_SPELL_PHASE_CONJURATION;
+	static const std::string ID_SPELL_PHASE_EVOCATION;
+	static const std::string ID_SPELL_PHASE_ENCHANTMENT;
+	static const std::string ID_SPELL_PHASE_TRANSMUTATION;
 	static const std::string ID_METAMAGIC_CATEGORY_CREATION;
 	/**
 	 * Modifies a given spell instance in some way, which is a black box to the caller 
