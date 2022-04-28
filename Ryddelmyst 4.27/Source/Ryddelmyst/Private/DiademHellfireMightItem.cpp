@@ -13,13 +13,13 @@ void UDiademHellfireMightItem::OnEquip_Implementation(AActor* EquippedActor)
 	ARyddelmystCharacter* Character = Cast<ARyddelmystCharacter>(EquippedActor);
 	if (Character)
 	{
-		Character->GetMetamagicMap()[ARyddelmystCharacter::ID_SPELL_FIRESNOWBALL][UDiademHellfireMightItem::ID][ARyddelmystCharacter::ID_SPELL_ASPECT_EVOCATION][ARyddelmystCharacter::ID_METAMAGIC_CATEGORY_ATTR] = [](ASnowball* Snowball)
+		Character->GetMetamagicMap()[ARyddelmystCharacter::ID_SPELL_FIRESNOWBALL][UDiademHellfireMightItem::ID][ARyddelmystCharacter::ID_SPELL_PHASE_EVOCATION][ARyddelmystCharacter::ID_METAMAGIC_CATEGORY_ATTR] = [](ASnowball* Snowball)
 		{
 			UE_LOG(LogTemp, Warning, TEXT("Metamagic Fire lambda; attr modifier effect"));
 			Snowball->SetDamageScaleFactor(2.f);
 		};
 				
-		Character->GetMetamagicMap()[ARyddelmystCharacter::ID_SPELL_FIRESNOWBALL][UDiademHellfireMightItem::ID][ARyddelmystCharacter::ID_SPELL_ASPECT_ENCHANTMENT][ARyddelmystCharacter::ID_METAMAGIC_CATEGORY_EFFECT] = [](AActor* TargetActor, const FHitResult& HitResult)
+		Character->GetMetamagicMap()[ARyddelmystCharacter::ID_SPELL_FIRESNOWBALL][UDiademHellfireMightItem::ID][ARyddelmystCharacter::ID_SPELL_PHASE_ENCHANTMENT][ARyddelmystCharacter::ID_METAMAGIC_CATEGORY_EFFECT] = [](AActor* TargetActor, const FHitResult& HitResult)
 		{
 			UE_LOG(LogTemp, Warning, TEXT("Metamagic Fire lambda; onhit effect"));
 			if (TargetActor->IsRootComponentMovable())
