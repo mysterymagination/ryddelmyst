@@ -26,11 +26,14 @@ DEFINE_LOG_CATEGORY_STATIC(LogFPChar, Warning, All);
 const FString ARyddelmystCharacter::EquipSlotsData[] = { TEXT("Head"), TEXT("Neck"), TEXT("Hands"), TEXT("Feet") };
 
 const std::string ARyddelmystCharacter::ID_SPELL_ELECTRICSNOWBALL = "ElectricSnowball";
+const std::string ARyddelmystCharacter::ID_SPELL_FIRESNOWBALL = "FireSnowball";
+const std::string ARyddelmystCharacter::ID_SPELL_SNOWBALL = "Snowball";
 const std::string ARyddelmystCharacter::ID_SPELL_ASPECT_CONJURATION = "Conjuration";
 const std::string ARyddelmystCharacter::ID_SPELL_ASPECT_EVOCATION = "Evocation";
 const std::string ARyddelmystCharacter::ID_SPELL_ASPECT_ENCHANTMENT = "Enchantment";
 const std::string ARyddelmystCharacter::ID_SPELL_ASPECT_TRANSMUTATION = "Transmutation";
 const std::string ARyddelmystCharacter::ID_METAMAGIC_CATEGORY_CREATION = "Creation";
+const std::string ARyddelmystCharacter::ID_METAMAGIC_CATEGORY_ATTR = "Attributes";
 const std::string ARyddelmystCharacter::ID_METAMAGIC_CATEGORY_DAMAGE = "Damage";
 const std::string ARyddelmystCharacter::ID_METAMAGIC_CATEGORY_DURATION = "Duration";
 const std::string ARyddelmystCharacter::ID_METAMAGIC_CATEGORY_EFFECT = "Effect";

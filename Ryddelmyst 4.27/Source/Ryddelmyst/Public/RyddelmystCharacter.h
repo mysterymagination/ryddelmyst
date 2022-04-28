@@ -47,18 +47,23 @@ class ARyddelmystCharacter : public AFawnCharacter
 
 	static const FString EquipSlotsData[];
 
-	// mapping of string to inner maps that eventually terminate in a leaf node value of an std::function with a generic array return type and variadic generic params to support variable function details for various metamagic effects.
-	// todo: maybe a MetamagicWand class with a Wave() templated function that does nothing in the top level (could even be pure virtual) but is overriden with template specialization for the actual relevant functor return type and expected input params with a function that executes the functor field with the input params and returns whatever it returns?
-	// todo: try the following:
-	// 1. Use MetaMagicWand as the mapped value and then subclasses thereof will host our specific std::functions with whatever their required signatures may be, and they'll have a template specialization with appropriate types for the associated std::function EDIT: turns out you can't really do this because templated member functions can't be virtual, and when you're making a specialization of the parent class's templated function you can't reference fields of the child.
-	// 2. Make multiple maps for the various signatures required for different metamagic effects (may require having one field (probably an std::pair) for each metamagic id, which breaks our nesting architecture a fair bit; we'd need to do something like have the metamagic id be the leaf node and then enumerating those under a given aspect will inform a big giant switch or something which std::pair<string id, function> we need to look up and run...)
-	// 3. Use std::variant to create a union that can be any function with any known signatures
+	// mapping of string to inner maps that eventually terminate in a leaf node value of one of a set of unioned std::functions with various signatures as required for various effects.
 	std::unordered_map<std::string /*SpellID*/,
 		std::unordered_map<std::string /*SourceID*/,
 			std::unordered_map<std::string /*AspectID*/,
 				std::unordered_map<std::string /*MetamagicID*/, std::variant<
-						std::function<void()>,
-						std::function<std::vector<ASnowball*>(ARyddelmystCharacter*)>
+						/*creation function*/
+						std::function<std::vector<ASnowball*>/*created instances*/(ARyddelmystCharacter* /*creating character*/)>,
+						/*spawn function*/
+						std::function<void(ARyddelmystCharacter* /*TransmutingCharacter*/, const FTransform& /*SpawnTransform*/, const FVector& /*LaunchDirection*/, const std::vector<ASnowball*>& /*Bullets spawned in map*/)>,
+						/*attr modifier function*/
+						std::function<void(ASnowball* /*bullet to modify*/)>,
+						/*damage modifier function*/
+						std::function<void(ASnowball* /*bullet to modify*/, float /*damage scaling factor*/, TSubclassOf<UDamageType> /*changing the damage type*/)>,
+						/*duration modifier function*/
+						std::function<void(ASnowball* /*bullet to modify*/, float /*duration scaling factor*/)>,
+						/*enchantment function*/
+						std::function<void(AActor* /*EnchantedActor*/, const FHitResult& /*HitResult data*/)>
 					>
 				>
 			>
@@ -141,11 +146,17 @@ protected:
 
 public:
 	static const std::string ID_SPELL_ELECTRICSNOWBALL;
+	static const std::string ID_SPELL_FIRESNOWBALL;
+	static const std::string ID_SPELL_SNOWBALL;
 	static const std::string ID_SPELL_ASPECT_CONJURATION;
 	static const std::string ID_SPELL_ASPECT_EVOCATION;
 	static const std::string ID_SPELL_ASPECT_ENCHANTMENT;
 	static const std::string ID_SPELL_ASPECT_TRANSMUTATION;
 	static const std::string ID_METAMAGIC_CATEGORY_CREATION;
+	/**
+	 * Modifies a given spell instance in some way, which is a black box to the caller 
+	 */
+	static const std::string ID_METAMAGIC_CATEGORY_ATTR;
 	static const std::string ID_METAMAGIC_CATEGORY_DAMAGE;
 	static const std::string ID_METAMAGIC_CATEGORY_DURATION;
 	static const std::string ID_METAMAGIC_CATEGORY_EFFECT;
