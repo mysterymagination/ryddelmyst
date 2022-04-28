@@ -13,10 +13,9 @@ void UCracklingVioletVial::OnEquip_Implementation(AActor* EquippedActor)
 	if (Character)
 	{
 		// first for spreadshot we need to install conjuration metamagic to make the electric snowball spell create 5 AElectricSnowball Actors and return them in an array.  Later phases will then operate on that array.
-		/*
-		Character->GetMetamagicMap()[ARyddelmystCharacter::ID_SPELL_ELECTRICSNOWBALL][UCracklingVioletVial::ID][ARyddelmystCharacter::ID_SPELL_ASPECT_CONJURATION][ARyddelmystCharacter::ID_METAMAGIC_CATEGORY_CREATION] = [=](ARyddelmystCharacter* ConjuringCharacter) -> std::vector<AElectricSnowball*>
+		Character->GetMetamagicMap()[ARyddelmystCharacter::ID_SPELL_ELECTRICSNOWBALL][UCracklingVioletVial::ID][ARyddelmystCharacter::ID_SPELL_ASPECT_CONJURATION][ARyddelmystCharacter::ID_METAMAGIC_CATEGORY_CREATION] = [=](ARyddelmystCharacter* ConjuringCharacter) -> std::vector<ASnowball*>
 		{
-			std::vector<AElectricSnowball*> ResultArray;
+			std::vector<ASnowball*> ResultArray;
 			FTransform SpawnTransform;
 			SpawnTransform.SetIdentity();
 			for (int idx = 0; idx < 5; idx++)
@@ -25,13 +24,9 @@ void UCracklingVioletVial::OnEquip_Implementation(AActor* EquippedActor)
 			}
 			return ResultArray;
 		};
-		*/
 
 		// finally for spreadshot we need to install transmutation metamagic that causes the electric snowball spell's 5 Actors to launch in direction vectors that have been rotated procedurally to form a fan shaped uniform distribution of rotation angles from the primary launch direction given by the caster's forward vector
-		Character->GetMetamagicMap()[ARyddelmystCharacter::ID_SPELL_ELECTRICSNOWBALL][UCracklingVioletVial::ID][ARyddelmystCharacter::ID_SPELL_ASPECT_TRANSMUTATION][ARyddelmystCharacter::ID_METAMAGIC_CATEGORY_SPAWN] = []() { int i = 1; };
-		Character->GetMetamagicMap()[ARyddelmystCharacter::ID_SPELL_ELECTRICSNOWBALL][UCracklingVioletVial::ID][ARyddelmystCharacter::ID_SPELL_ASPECT_TRANSMUTATION][ARyddelmystCharacter::ID_METAMAGIC_CATEGORY_SPAWN] = [](ARyddelmystCharacter* Character) -> std::vector<ASnowball*> { return std::vector<ASnowball*>(); };
-			
-			/*[=](ARyddelmystCharacter* TransmutingCharacter, const FTransform& SpawnTransform, const FVector& LaunchDirection, const std::vector<AElectricSnowball*>& Bullets) -> std::vector<UObject*>
+		Character->GetMetamagicMap()[ARyddelmystCharacter::ID_SPELL_ELECTRICSNOWBALL][UCracklingVioletVial::ID][ARyddelmystCharacter::ID_SPELL_ASPECT_TRANSMUTATION][ARyddelmystCharacter::ID_METAMAGIC_CATEGORY_SPAWN] = [=](ARyddelmystCharacter* TransmutingCharacter, const FTransform& SpawnTransform, const FVector& LaunchDirection, const std::vector<ASnowball*>& Bullets)
 		{
 			UE_LOG(LogTemp, Warning, TEXT("Metamagic Electric lambda; conjuration behavior"));
 			// we want our spreadshot pattern to spawn N electric snowballs in a uniform distribution arc; assuming N is odd, take the actual given launch direction and use it as the center snowball (0 degrees rotation), then make (N-1)/2 vectors rotated ccw and the same number rotated cw.  The angle between each 'fanning' vector will be 90/((N-1)/2 + 1) degrees (the +1 to account for the fact that we don't want to actually reach a full 90 degrees so we're creating a sort of phantom extra vector for the distribution that doesn't actually get used), so for 5 snowballs we'd have 0 degrees, 30 degrees, 60 degrees, -30 degrees, and -60 degrees vectors.
@@ -48,10 +43,6 @@ void UCracklingVioletVial::OnEquip_Implementation(AActor* EquippedActor)
 				Bullet->FinishSpawning(SpawnTransform);
 				Bullet->Cast(TransmutingCharacter, DistRotation.RotateVector(LaunchDirection));
 			}
-
-			// dummy ret val since we don't actually want to return anything
-			return std::vector<UObject*>();
 		};
-		*/
 	}
 }
