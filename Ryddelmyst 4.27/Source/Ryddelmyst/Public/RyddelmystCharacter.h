@@ -48,9 +48,9 @@ class ARyddelmystCharacter : public AFawnCharacter
 	static const FString EquipSlotsData[];
 
 	// mapping of string to inner maps that eventually terminate in a leaf node value of one of a set of unioned std::functions with various signatures as required for various effects.
-	std::unordered_map<std::string /*SpellID*/,
-		std::unordered_map<std::string /*SourceID*/,
-			std::unordered_map<std::string /*AspectID*/,
+	std::unordered_map<std::string /*SpellID, which is derived from the UClass::GetName() result for classes like AFireSnowball*/,
+		std::unordered_map<std::string /*SourceID, which is derived from the UClass:GetName() result for classes like UDiademHellfireMightItem*/,
+			std::unordered_map<std::string /*PhaseID*/,
 				std::unordered_map<std::string /*MetamagicID*/, std::variant<
 						/*creation function*/
 						std::function<std::vector<ASnowball*>/*created instances*/(ARyddelmystCharacter* /*creating character*/)>,

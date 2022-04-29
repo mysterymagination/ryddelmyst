@@ -513,7 +513,28 @@ void ARyddelmystCharacter::Fire()
 			{
 				UE_LOG(LogTemp, Warning, TEXT("Fire; magic is %f and cost is %f so firing"), Magic, SnowballType.GetDefaultObject()->GetMagicCost());
 				
-				// todo: Conjuration phase: lookup conjuration effects for the current spell and apply them, storing the returned bullet array.  If there are none, run the default creation behavior.
+				// todo: order of operations may be a problem with this metamagic model -- say I have a one evocation fx that multiplies damage by 2 and another that adds 2; you'll have different result values depending on which fx is applied first, since PEMDAS isn't factored into this model at all.  Commutativity isn't so much of an issue since that's re: operands rather than operations, and the operands are encapsulated within the function fx.  One possible fix would be to use an ordered map of some sort (or sort the pairs you would iterate over prior to iteration or something) based on a PEMDAS derived priority?  
+
+				// Conjuration phase: lookup conjuration effects for the current spell and apply them, storing the returned bullet array.  If there are none, run the default creation behavior.
+				std::vector<ASnowball*> Bullets;
+				const auto& SpellMap = MetamagicMap[std::string(TCHAR_TO_UTF8(*SnowballType->GetName()))];
+				for(const auto& Source : SpellMap)
+				{
+					// check the current Source for Conjuration effects and run them
+					const auto& ConjurationMap = Source.second.at(ARyddelmystCharacter::ID_SPELL_PHASE_CONJURATION);
+					// todo: obviously this architecture only really supports one Conjuration[Creation] function, so how should the case of multiple creation functions from multiple sources interoperate?  Maybe the best method would be to check for incompatibilities at the OnEquip stage and disable the incompatible part of the newly added source or refuse to equip it entirely? 
+
+					// since Creation is currently the only Conjuration phase effect (and any additional effects would likely need a different function sig), there's no need to iterate
+					const auto& CreationFnVariant = ConjurationMap.at(ARyddelmystCharacter::ID_METAMAGIC_CATEGORY_CREATION);
+					Bullets = std::get<std::function<std::vector<ASnowball*>/*created instances*/(ARyddelmystCharacter* /*creating character*/)>>(CreationFnVariant)(this); 
+				}
+				// If we didn't have any Conjuration[Creation] functions to run, we'll need to use the default
+				if(Bullets.size() == 0)
+				{
+					FTransform SpawnTransform;
+					SpawnTransform.SetIdentity();
+					Bullets.emplace_back(World->SpawnActorDeferred<ASnowball>(SnowballType, SpawnTransform, this, GetInstigator()));
+				}
 				// todo: Evocation phase: lookup evocation effects for the current spell and apply them to each instance in the bullet array created above.
 				// todo: Enchantment phase: lookup enchantment effects for the current spell and store them for later OnHit application in each bullet instance in the bullet array created above.
 				// todo: Transmutation phase: lookup transmutation effects for the current spell and run them on each bullet instance in the bullet array created above.
