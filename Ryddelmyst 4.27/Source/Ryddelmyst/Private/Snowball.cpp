@@ -94,6 +94,7 @@ void ASnowball::Tick(float DeltaTime)
 // Function that initializes the projectile's velocity in the shoot direction.
 void ASnowball::Cast(ARyddelmystCharacter* LaunchingCharacter, const FVector& LaunchDirection)
 {
+	Caster = LaunchingCharacter;
 	try
 	{
 		LaunchFn(LaunchingCharacter, LaunchDirection);
@@ -116,6 +117,7 @@ void ASnowball::ProcessCost(ARyddelmystCharacter* CasterCharacter)
 
 void ASnowball::OnHit(UPrimitiveComponent* HitComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit)
 {
+	UE_LOG(LogTemp, Warning, TEXT("OnHit; EffectsOnTarget has size %d"), EffectsOnTarget.size());
 	// todo: need to define default effects, e.g. Snowball freezes for FreezeDuration and spawns snowflakes particle FX around the target
 	for (auto Effect : EffectsOnTarget)
 	{

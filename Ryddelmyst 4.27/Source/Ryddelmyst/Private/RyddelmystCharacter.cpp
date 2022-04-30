@@ -561,6 +561,7 @@ void ARyddelmystCharacter::Fire()
 						const auto& EnchantmentFn = std::get<std::function<void(AActor* /*EnchantedActor*/, const FHitResult& /*HitResult data*/)>>(Enchantment.second);
 						for(auto Bullet : Bullets)
 						{
+							UE_LOG(LogTemp, Warning, TEXT("Fire; adding enchantment from %s"), Source.first.c_str());
 							Bullet->GetEffectsVector().emplace_back(EnchantmentFn);
 						}
 					}
