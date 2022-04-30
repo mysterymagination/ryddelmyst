@@ -107,7 +107,8 @@
 			"hash_set": "cpp",
 			"*.tcc": "cpp",
 			"filesystem": "cpp",
-			"memory_resource": "cpp"
+			"memory_resource": "cpp",
+			"*.inc": "cpp"
 		}
 	},
 	"extensions": {
