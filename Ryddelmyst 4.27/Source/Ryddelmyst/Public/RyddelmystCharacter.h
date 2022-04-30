@@ -47,7 +47,10 @@ class ARyddelmystCharacter : public AFawnCharacter
 
 	static const FString EquipSlotsData[];
 
-	// mapping of string to inner maps that eventually terminate in a leaf node value of one of a set of unioned std::functions with various signatures as required for various effects.
+	/**
+	 * @brief mapping of string to inner maps that eventually terminate in a leaf node value of one of a set of unioned std::functions with various signatures as required for various effects. Phase order is Conjuration -> Evocation -> Enchantment -> Transmutation
+	 * 
+	 */
 	std::unordered_map<std::string /*SpellID, which is derived from the UClass::GetName() result for classes like AFireSnowball*/,
 		std::unordered_map<std::string /*SourceID, which is derived from the UClass:GetName() result for classes like UDiademHellfireMightItem*/,
 			std::unordered_map<std::string /*PhaseID*/,
@@ -56,6 +59,8 @@ class ARyddelmystCharacter : public AFawnCharacter
 						std::function<std::vector<ASnowball*>/*created instances*/(ARyddelmystCharacter* /*creating character*/)>,
 						/*spawn function*/
 						std::function<void(ARyddelmystCharacter* /*TransmutingCharacter*/, const FTransform& /*SpawnTransform*/, const FVector& /*LaunchDirection*/, const std::vector<ASnowball*>& /*Bullets spawned in map*/)>,
+						/*transform function*/
+						std::function<void(ASnowball* /*TransformedActor*/, const FTransform& /*transform data*/)>,
 						/*attr modifier function*/
 						std::function<void(ASnowball* /*bullet to modify*/)>,
 						/*damage modifier function*/
@@ -148,19 +153,60 @@ public:
 	static const std::string ID_SPELL_ELECTRICSNOWBALL;
 	static const std::string ID_SPELL_FIRESNOWBALL;
 	static const std::string ID_SPELL_SNOWBALL;
+	/**
+	 * @brief Phase associated with creating one or more Actors to represent the spell effect in the world e.g. creating enough Actors for a spread shot pattern
+	 * 
+	 */
 	static const std::string ID_SPELL_PHASE_CONJURATION;
+	/**
+	 * @brief Phase associated with determining and modifying the parameters of a spell's Actors e.g. damage dealt
+	 * 
+	 */
 	static const std::string ID_SPELL_PHASE_EVOCATION;
+	/**
+	 * @brief Phase associated with installing behavior in the spell's Actors to be run later in their OnHit callback e.g. applying knockback to a target
+	 * 
+	 */
 	static const std::string ID_SPELL_PHASE_ENCHANTMENT;
+	/**
+	 * @brief Phase associated with spawning and positioning the spell's Actors e.g. arranging bullets in a spread shot pattern
+	 * 
+	 */
 	static const std::string ID_SPELL_PHASE_TRANSMUTATION;
+	/**
+	 * @brief Run during the Conjuration phase, Creation functions determine how many/which Actors will be spawned to represent the spell effect.  Only one Creation function can be active for a given spell at one time.
+	 * 
+	 */
 	static const std::string ID_METAMAGIC_CATEGORY_CREATION;
 	/**
-	 * Modifies a given spell instance in some way, which is a black box to the caller 
+	 * Run during the Evocation phase, Attribute functions modify a given spell instance in some way, which is a black box to the caller 
 	 */
 	static const std::string ID_METAMAGIC_CATEGORY_ATTR;
+	/**
+	 * @brief Run during the Evocation phase, Damage functions modify spell damage specifically; std::bind can be used to pre-package the desired scaling factor etc. so that the resultant signature looks like that of ATTR above.
+	 * 
+	 */
 	static const std::string ID_METAMAGIC_CATEGORY_DAMAGE;
+	/**
+	 * @brief Run during the Evocation phase, Duration functions modify spell duration specifically; std::bind can be used to pre-package the desired scaling factor etc. so that the resultant signature looks like that of ATTR above.
+	 * 
+	 */
 	static const std::string ID_METAMAGIC_CATEGORY_DURATION;
+	/**
+	 * @brief Installed during the Enchantment phase and run at spell Actors' OnHit callback, Effect functions apply their behavior to a target Actor stricken by the spell bullet e.g. knocking the stricken Actor back with a physics impulse.
+	 * 
+	 */
 	static const std::string ID_METAMAGIC_CATEGORY_EFFECT;
+	/**
+	 * @brief Run during the Transmutation phase, Spawn functions determine how/where the spell should spawn its representative Actor(s).  Only one Spawn function can be active for a given spell at one time; further transforms can be applied with ID_METAMAGIC_CATEGORY_TRANSFORM.
+	 * 
+	 */
 	static const std::string ID_METAMAGIC_CATEGORY_SPAWN;
+	/**
+	 * @brief Run during the Transmutation phase, Transform functions apply post-spawn transforms to the spell's Actor(s)
+	 * 
+	 */
+	static const std::string ID_METAMAGIC_CATEGORY_TRANSFORM;
 
 	/** Base turn rate, in deg/sec. Other scaling may affect final turn rate. */
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category=Camera)
