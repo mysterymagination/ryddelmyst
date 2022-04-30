@@ -571,29 +571,49 @@ void ARyddelmystCharacter::Fire()
 				SpawnTransform.SetRotation(FQuat(MuzzleRotation));
 				SpawnTransform.SetScale3D(FVector(1.f));
 				FVector LaunchDirection = MuzzleRotation.Vector();
+				bool Spawned = false;
 				for(const auto& Source : SpellMap)
 				{
-					// todo: Transmutation[Spawn] is another cat that could use discrete handling and OnEquip compat checks since it involves a sort of terminal state -- after we call that metamagic, we've actually spawned the Actor.  That doesn't stop us from applying further transforms, but it does (or should) stop us spawning it again.
-
 					// check the current Source for Evocation effects and install them for invocation in OnHit later
 					const auto& TransmutationMap = Source.second.at(ARyddelmystCharacter::ID_SPELL_PHASE_TRANSMUTATION);
-					for(const auto& Transmutation : TransmutationMap)
+					try 
 					{
-						const auto& TransmutationFn = std::get<std::function<void(ARyddelmystCharacter* /*TransmutingCharacter*/, const FTransform& /*SpawnTransform*/, const FVector& /*LaunchDirection*/, const std::vector<ASnowball*>& /*Bullets spawned in map*/)>>(Transmutation.second);
-						TransmutationFn(this, SpawnTransform, LaunchDirection, Bullets);
+						const auto& SpawnFnVariant = TransmutationMap.at(ARyddelmystCharacter::ID_METAMAGIC_CATEGORY_SPAWN);
+						const auto& SpawnFn = std::get<std::function<void(ARyddelmystCharacter* /*TransmutingCharacter*/, const FTransform& /*SpawnTransform*/, const FVector& /*LaunchDirection*/, const std::vector<ASnowball*>& /*Bullets spawned in map*/)>>(SpawnFnVariant);
+						SpawnFn(this, SpawnTransform, LaunchDirection, Bullets);
+						Spawned = true;
+					}
+					catch(const std::out_of_range& e)
+					{
+						UE_LOG(LogTemp, Warning, TEXT("Fire; no Spawn function from %s"), Source.first.c_str());
 					}
 				}
-				// check if any Bullet needs default spawning
-				for(auto Bullet : Bullets)
+				
+				// run default spawning behavior iff none of our metamagic sources had a Transmutation[Spawn] function
+				if(!Spawned)
 				{
-					// World pointer should be null if a given Bullet Actor has not actually been spawned in the level yet
-					if(!Bullet->GetWorld())
+					for(auto Bullet : Bullets)
 					{
 						Bullet->FinishSpawning(SpawnTransform);
 						Bullet->Cast(this, LaunchDirection);
 					}
 				}
 
+				// apply any other post-spawn metamagic transforms
+				for(const auto& Source : SpellMap)
+				{
+					// check the current Source for Evocation effects and install them for invocation in OnHit later
+					const auto& TransmutationMap = Source.second.at(ARyddelmystCharacter::ID_SPELL_PHASE_TRANSMUTATION);
+					for(const auto& Transmutation : TransmutationMap)
+					{
+						const auto& TransmutationFn = std::get<std::function<void(ASnowball* /*spell actor to transform*//*, Transform to apply is expected to already be bound or to be created within the lambda*/)>>(Transmutation.second);
+						for(auto Bullet : Bullets)
+						{
+							TransmutationFn(Bullet);
+						}
+					}
+				}
+				
 				// todo: use ASnowball::ProcessCost() instead, which will be called as part of ASnowball::Cast()
 				// todo: support metamagic fx modifying casting cost 
 				UpdateMagic(Bullets[0]->GetMagicCost());
