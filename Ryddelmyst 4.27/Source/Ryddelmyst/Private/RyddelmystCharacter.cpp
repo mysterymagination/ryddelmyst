@@ -538,17 +538,17 @@ void ARyddelmystCharacter::Fire()
 							}
 							catch (std::bad_variant_access const& ex)
 							{
-								UE_LOG(LogTemp, Warning, TEXT("Fire; no Conjuration[Creation] function with expected signature from %s.  Details are: %s"), Source.first.c_str(), ex.what());
+								UE_LOG(LogTemp, Warning, TEXT("Fire; no Conjuration[Creation] function with expected signature from %s.  Details are: %s"), *FString(Source.first.c_str()), *FString(ex.what()));
 							}
 						}
 						catch(const std::out_of_range& e)
 						{
-							UE_LOG(LogTemp, Warning, TEXT("Fire; no Conjuration[Creation] function from %s"), Source.first.c_str());
+							UE_LOG(LogTemp, Warning, TEXT("Fire; no Conjuration[Creation] function from %s"), *FString(Source.first.c_str()));
 						}
 					}
 					catch(const std::out_of_range& e)
 					{
-						UE_LOG(LogTemp, Warning, TEXT("Fire; no Conjuration functions from %s"), Source.first.c_str());
+						UE_LOG(LogTemp, Warning, TEXT("Fire; no Conjuration functions from %s"), *FString(Source.first.c_str()));
 					}
 				}
 				// If we didn't have any Conjuration[Creation] functions to run, we'll need to use the default
@@ -565,7 +565,6 @@ void ARyddelmystCharacter::Fire()
 					{
 						// check the current Source for Evocation effects and run them
 						const auto& EvocationMap = Source.second.at(ARyddelmystCharacter::ID_SPELL_PHASE_EVOCATION);
-						
 						for(const auto& Evocation : EvocationMap)
 						{
 							try 
@@ -578,13 +577,13 @@ void ARyddelmystCharacter::Fire()
 							}
 							catch (std::bad_variant_access const& ex)
 							{
-								UE_LOG(LogTemp, Warning, TEXT("Fire; no evocation function with expected signature from %s.  Details are: %s"), Source.first.c_str(), ex.what());
+								UE_LOG(LogTemp, Warning, TEXT("Fire; no evocation function with expected signature from %s.  Details are: %s"), *FString(Source.first.c_str()), *FString(ex.what()));
 							}
 						}
 					}
 					catch(const std::out_of_range& e)
 					{
-						UE_LOG(LogTemp, Warning, TEXT("Fire; no evocation functions from %s"), Source.first.c_str());
+						UE_LOG(LogTemp, Warning, TEXT("Fire; no evocation functions from %s"), *FString(Source.first.c_str()));
 					}
 				}
 				// Enchantment phase: lookup enchantment effects for the current spell and store them for later OnHit application in each bullet instance in the bullet array created above.
@@ -602,19 +601,19 @@ void ARyddelmystCharacter::Fire()
 								const auto& EnchantmentFn = std::get<std::function<void(AActor* /*EnchantedActor*/, const FHitResult& /*HitResult data*/)>>(Enchantment.second);
 								for(auto Bullet : Bullets)
 								{
-									UE_LOG(LogTemp, Warning, TEXT("Fire; adding enchantment from %s"), Source.first.c_str());
+									UE_LOG(LogTemp, Warning, TEXT("Fire; adding enchantment from %s"), *FString(Source.first.c_str()));
 									Bullet->GetEffectsVector().emplace_back(EnchantmentFn);
 								}
 							}
 							catch (std::bad_variant_access const& ex)
 							{
-								UE_LOG(LogTemp, Warning, TEXT("Fire; no enchantment function with expected signature from %s.  Details are: %s"), Source.first.c_str(), ex.what());
+								UE_LOG(LogTemp, Warning, TEXT("Fire; no enchantment function with expected signature from %s.  Details are: %s"), *FString(Source.first.c_str()), *FString(ex.what()));
 							}
 						}
 					}
 					catch(const std::out_of_range& e)
 					{
-						UE_LOG(LogTemp, Warning, TEXT("Fire; no enchantment functions from %s"), Source.first.c_str());
+						UE_LOG(LogTemp, Warning, TEXT("Fire; no enchantment functions from %s"), *FString(Source.first.c_str()));
 					}
 				}
 				// Transmutation[Spawn] phase: lookup spawn effects for the current spell and run them on each bullet instance in the bullet array created above.
@@ -639,12 +638,12 @@ void ARyddelmystCharacter::Fire()
 						}
 						catch (std::bad_variant_access const& ex)
 						{
-							UE_LOG(LogTemp, Warning, TEXT("Fire; no spawn transmutation function with expected signature from %s.  Details are: %s"), Source.first.c_str(), ex.what());
+							UE_LOG(LogTemp, Warning, TEXT("Fire; no spawn transmutation function with expected signature from %s.  Details are: %s"), *FString(Source.first.c_str()), *FString(ex.what()));
 						}
 					}
 					catch(const std::out_of_range& e)
 					{
-						UE_LOG(LogTemp, Warning, TEXT("Fire; no Spawn function from %s"), Source.first.c_str());
+						UE_LOG(LogTemp, Warning, TEXT("Fire; no Spawn function from %s"), *FString(Source.first.c_str()));
 					}
 				}
 				
@@ -677,13 +676,13 @@ void ARyddelmystCharacter::Fire()
 							}
 							catch (std::bad_variant_access const& ex)
 							{
-								UE_LOG(LogTemp, Warning, TEXT("Fire; no post-spawn transmutation function with expected signature from %s.  Details are: %s"), Source.first.c_str(), ex.what());
+								UE_LOG(LogTemp, Warning, TEXT("Fire; no post-spawn transmutation function with expected signature from %s.  Details are: %s"), *FString(Source.first.c_str()), *FString(ex.what()));
 							}
 						}
 					}
 					catch(const std::out_of_range& e)
 					{
-						UE_LOG(LogTemp, Warning, TEXT("Fire; (post-spawn) no transmutation functions from %s"), Source.first.c_str());
+						UE_LOG(LogTemp, Warning, TEXT("Fire; (post-spawn) no transmutation functions from %s"), *FString(Source.first.c_str()));
 					}
 				}
 				
