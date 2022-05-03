@@ -569,7 +569,7 @@ void ARyddelmystCharacter::Fire()
 						}
 					}
 				}
-				// Transmutation phase: lookup transmutation effects for the current spell and run them on each bullet instance in the bullet array created above.
+				// Transmutation[Spawn] phase: lookup spawn effects for the current spell and run them on each bullet instance in the bullet array created above.
 				FTransform SpawnTransform;
 				SpawnTransform.SetLocation(MuzzleLocation);
 				SpawnTransform.SetRotation(FQuat(MuzzleRotation));
@@ -606,15 +606,22 @@ void ARyddelmystCharacter::Fire()
 				// apply any other post-spawn metamagic transforms
 				for(const auto& Source : SpellMap)
 				{
-					// check the current Source for Evocation effects and install them for invocation in OnHit later
-					const auto& TransmutationMap = Source.second.at(ARyddelmystCharacter::ID_SPELL_PHASE_TRANSMUTATION);
-					for(const auto& Transmutation : TransmutationMap)
+					try
 					{
-						const auto& TransmutationFn = std::get<std::function<void(ASnowball* /*spell actor to transform*//*, Transform to apply is expected to already be bound or to be created within the lambda*/)>>(Transmutation.second);
-						for(auto Bullet : Bullets)
+						const auto& TransmutationMap = Source.second.at(ARyddelmystCharacter::ID_SPELL_PHASE_TRANSMUTATION);
+						for(const auto& Transmutation : TransmutationMap)
 						{
-							TransmutationFn(Bullet);
+							// check the current Source for post-spawn Transmutation effects, which should only need the Bullet pointer as input and output nothing, and run them
+							const auto& TransmutationFn = std::get<std::function<void(ASnowball* /*spell actor to transform*//*, Transform to apply is expected to already be bound or to be created within the lambda*/)>>(Transmutation.second);
+							for(auto Bullet : Bullets)
+							{
+								TransmutationFn(Bullet);
+							}
 						}
+					}
+					catch(const std::out_of_range& e)
+					{
+						UE_LOG(LogTemp, Warning, TEXT("Fire; no post-spawn transmutation function from %s"), Source.first.c_str());
 					}
 				}
 				
