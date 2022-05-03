@@ -9,9 +9,9 @@
 #include "CracklingVioletVial.generated.h"
 
 /**
- * 
+ * Secured to a glittering gold chain is a bubbling vial of liquid lightning with violet arcs constantly striking at their confinement as they search endlessly for ground!  This necklace turns the already mighty ElectricSnowball into a spreadshot.
  */
-UCLASS()
+UCLASS(BlueprintType, Blueprintable)
 class RYDDELMYST_API UCracklingVioletVial : public UObject, public IItem
 {
 	GENERATED_BODY()
