@@ -152,36 +152,39 @@ void ARyddelmystHUD::ClearItemSelection()
 	InventorySelectionOverlay->ClearChildren();
 }
 
-void ARyddelmystHUD::ShowDialogue(const FText& Text)
+bool ARyddelmystHUD::ShowDialogue(const FText& Text)
 {
 	if (TextWidget)
 	{
-
 		TextWidget->SetText(Text);
 		if (!TextWidget->IsInViewport())
 		{
 			TextWidget->AddToViewport();
+			return true;
 		}
 	}
 	else
 	{
 		UE_LOG(LogTemp, Error, TEXT("ShowDialogue; text widget not created yet"));
 	}
+	return false;
 }
 
-void ARyddelmystHUD::HideDialogue()
+bool ARyddelmystHUD::HideDialogue()
 {
 	if (TextWidget)
 	{
 		if (TextWidget->IsInViewport())
 		{
 			TextWidget->RemoveFromViewport();
+			return true;
 		}
 	}
 	else
 	{
 		UE_LOG(LogTemp, Error, TEXT("HideDialogue; text widget not created yet"));
 	}
+	return false;
 }
 
 void ARyddelmystHUD::HideStatus()
