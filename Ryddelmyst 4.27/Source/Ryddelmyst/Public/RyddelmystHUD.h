@@ -53,11 +53,20 @@ public:
 	UFUNCTION()
 	void ClearItemSelection();
 
+	/**
+	 * @brief Attempts to show a display dialogue, if one is not already showing
+	 * @return true if a dialogue was shown, false otherwise 
+	 * 
+	 */
 	UFUNCTION(BlueprintCallable, Category = "Dialogue")
-	void ShowDialogue(const FText& Text);
+	bool ShowDialogue(const FText& Text);
 
+	/**
+	 * @brief Attempts to hide a display dialogue, if one is showing
+	 * @return true if a showing dialogue was hidden, false otherwise
+	 */
 	UFUNCTION(BlueprintCallable, Category = "Dialogue")
-	void HideDialogue();
+	bool HideDialogue();
 
 	/**
 	 * @brief hides all parts of the HUD

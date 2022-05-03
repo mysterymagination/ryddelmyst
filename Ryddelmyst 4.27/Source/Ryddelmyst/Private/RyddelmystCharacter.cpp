@@ -183,8 +183,11 @@ void ARyddelmystCharacter::PauseGame()
 
 void ARyddelmystCharacter::Interact()
 {
-	// hide dialogue if showing
-	HUD->HideDialogue();
+	// hide dialogue if showing, and return early so we don't potentially trigger a new dialogue
+	if(HUD->HideDialogue())
+	{
+		return;
+	}
 
 	// if we're already engaged with an interactable, end that engagement e.g. by dropping a GRABBABLE Actor.
 	if (GrabbedActor)
