@@ -652,6 +652,7 @@ void ARyddelmystCharacter::Fire()
 				{
 					for(auto Bullet : Bullets)
 					{
+						UE_LOG(LogTemp, Warning, TEXT("Fire; default spawning Bullet %s"), *Bullet->GetName());
 						Bullet->FinishSpawning(SpawnTransform);
 						Bullet->Cast(this, LaunchDirection);
 					}
