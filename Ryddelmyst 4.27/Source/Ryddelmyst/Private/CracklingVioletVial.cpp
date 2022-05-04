@@ -35,16 +35,22 @@ void UCracklingVioletVial::OnEquip_Implementation(AActor* EquippedActor)
 			size_t NumBulletsPerSide = (NumBullets - 1) / 2;
 			// Distribution angle is the angle between our uniformly distributed vectors.  We calculate this per-side as 90 degrees divided by number of bullets per side +1 since we don't want to actually fire bullets at a 90 degree angle to the central launch direction vector (e.g. out to the side of the character) so we pretend there's an extra item in the per-side distribution when calculating the angle per bullet.  Another way of putting it is that we're calculating the angle of the sectors between the bullet 'edges' in our fan, which will be N+1 where N is the number of edges.
 			float DistAngle = 90 / (NumBulletsPerSide + 1);
-			UE_LOG(LogTemp, Warning, TEXT("Metamagic Electric lambda; transmutation behavior -- NumBullets is %uz, NumBulletsPerSide is %uz, and DistAngle is %f"), NumBullets, NumBulletsPerSide, DistAngle);
+			UE_LOG(LogTemp, Warning, TEXT("Metamagic Electric lambda; transmutation behavior -- NumBullets is %u, NumBulletsPerSide is %u, and DistAngle is %f"), NumBullets, NumBulletsPerSide, DistAngle);
 			float CurrentAngle = -90;
 			for (auto Bullet : Bullets)
 			{
+				UE_LOG(LogTemp, Warning, TEXT("Metamagic Electric lambda; custom spawning Bullet %s"), *Bullet->GetName());
+				/*
 				CurrentAngle += DistAngle;
 				FRotator DistRotation(0.f, CurrentAngle, 0.f);
 				Bullet->FinishSpawning(SpawnTransform);
 				FVector ModifiedLaunchDirection = DistRotation.RotateVector(LaunchDirection);
 				Bullet->Cast(TransmutingCharacter, ModifiedLaunchDirection);
 				UE_LOG(LogTemp, Warning, TEXT("Metamagic Electric lambda; transmutation behavior -- current angle is %f, DistRotation is %s, SpawnTransform is %s, LaunchDirection is %s and ModifiedLaunchDirection is %s"), CurrentAngle, *DistRotation.ToString(), *SpawnTransform.ToString(), *LaunchDirection.ToString(), *ModifiedLaunchDirection.ToString());
+				*/
+				Bullet->FinishSpawning(SpawnTransform);
+				Bullet->Cast(TransmutingCharacter, LaunchDirection);
+				UE_LOG(LogTemp, Warning, TEXT("Metamagic Electric lambda; transmutation behavior -- Launch Direction says %s"), *LaunchDirection.ToString());
 			}
 		};
 	}
