@@ -490,7 +490,7 @@ void ARyddelmystCharacter::CycleWeaponDown()
 		}
 	}
 }
-
+int FireCount = 0;
 void ARyddelmystCharacter::Fire()
 {
 	UE_LOG(LogTemp, Warning, TEXT("Fire; attempting to fire snowball... using weapon idx %u"), SelectedWeaponIdx);
@@ -520,102 +520,115 @@ void ARyddelmystCharacter::Fire()
 
 				// Conjuration phase: lookup conjuration effects for the current spell and apply them, storing the returned bullet array.  If there are none, run the default creation behavior.
 				std::vector<ASnowball*> Bullets;
-				const auto& SpellMap = MetamagicMap[std::string(TCHAR_TO_UTF8(*SnowballType->GetName()))];
-				for(const auto& Source : SpellMap)
+				 const auto& SpellMap = MetamagicMap[std::string(TCHAR_TO_UTF8(*SnowballType->GetName()))];
+				// for(const auto& Source : SpellMap)
+				// {
+				// 	try 
+				// 	{
+				// 		// check the current Source for Conjuration effects and run them
+				// 		const auto& ConjurationMap = Source.second.at(ARyddelmystCharacter::ID_SPELL_PHASE_CONJURATION);
+				// 		// todo: obviously this architecture only really supports one Conjuration[Creation] function, so how should the case of multiple creation functions from multiple sources interoperate?  Maybe the best method would be to check for incompatibilities at the OnEquip stage and disable the incompatible part of the newly added source or refuse to equip it entirely? 
+				// 		try 
+				// 		{
+				// 			// since Creation is currently the only Conjuration phase effect (and any additional effects would likely need a different function sig), there's no need to iterate
+				// 			const auto& CreationFnVariant = ConjurationMap.at(ARyddelmystCharacter::ID_METAMAGIC_CATEGORY_CREATION);
+				// 			try
+				// 			{
+				// 				Bullets = std::get<std::function<std::vector<ASnowball*>/*created instances*/(ARyddelmystCharacter* /*creating character*/)>>(CreationFnVariant)(this); 
+				// 			}
+				// 			catch (std::bad_variant_access const& ex)
+				// 			{
+				// 				UE_LOG(LogTemp, Warning, TEXT("Fire; no Conjuration[Creation] function with expected signature from %s.  Details are: %s"), *FString(Source.first.c_str()), *FString(ex.what()));
+				// 			}
+				// 		}
+				// 		catch(const std::out_of_range& e)
+				// 		{
+				// 			UE_LOG(LogTemp, Warning, TEXT("Fire; no Conjuration[Creation] function from %s"), *FString(Source.first.c_str()));
+				// 		}
+				// 	}
+				// 	catch(const std::out_of_range& e)
+				// 	{
+				// 		UE_LOG(LogTemp, Warning, TEXT("Fire; no Conjuration functions from %s"), *FString(Source.first.c_str()));
+				// 	}
+				// }
+				// // If we didn't have any Conjuration[Creation] functions to run, we'll need to use the default
+				// if(Bullets.size() == 0)
+				// {
+				// 	FTransform SpawnTransform;
+				// 	SpawnTransform.SetIdentity();
+				// 	Bullets.emplace_back(World->SpawnActorDeferred<ASnowball>(SnowballType, SpawnTransform, this, GetInstigator()));
+				// }
+
+
+				/// BEGIN DEBUG ONLY ///
+				// I wanna see what happens if we create 5 of every type of snowball right here in the character and then default spawn them below
+				FTransform SpawnTransformId;
+				SpawnTransformId.SetIdentity();
+				for (int idx = 0; idx < 5; idx++)
 				{
-					try 
-					{
-						// check the current Source for Conjuration effects and run them
-						const auto& ConjurationMap = Source.second.at(ARyddelmystCharacter::ID_SPELL_PHASE_CONJURATION);
-						// todo: obviously this architecture only really supports one Conjuration[Creation] function, so how should the case of multiple creation functions from multiple sources interoperate?  Maybe the best method would be to check for incompatibilities at the OnEquip stage and disable the incompatible part of the newly added source or refuse to equip it entirely? 
-						try 
-						{
-							// since Creation is currently the only Conjuration phase effect (and any additional effects would likely need a different function sig), there's no need to iterate
-							const auto& CreationFnVariant = ConjurationMap.at(ARyddelmystCharacter::ID_METAMAGIC_CATEGORY_CREATION);
-							try
-							{
-								Bullets = std::get<std::function<std::vector<ASnowball*>/*created instances*/(ARyddelmystCharacter* /*creating character*/)>>(CreationFnVariant)(this); 
-							}
-							catch (std::bad_variant_access const& ex)
-							{
-								UE_LOG(LogTemp, Warning, TEXT("Fire; no Conjuration[Creation] function with expected signature from %s.  Details are: %s"), *FString(Source.first.c_str()), *FString(ex.what()));
-							}
-						}
-						catch(const std::out_of_range& e)
-						{
-							UE_LOG(LogTemp, Warning, TEXT("Fire; no Conjuration[Creation] function from %s"), *FString(Source.first.c_str()));
-						}
-					}
-					catch(const std::out_of_range& e)
-					{
-						UE_LOG(LogTemp, Warning, TEXT("Fire; no Conjuration functions from %s"), *FString(Source.first.c_str()));
-					}
+					Bullets.emplace_back(GetWorld()->SpawnActorDeferred<ASnowball>(SnowballType, SpawnTransformId, this, GetInstigator()));
 				}
-				// If we didn't have any Conjuration[Creation] functions to run, we'll need to use the default
-				if(Bullets.size() == 0)
-				{
-					FTransform SpawnTransform;
-					SpawnTransform.SetIdentity();
-					Bullets.emplace_back(World->SpawnActorDeferred<ASnowball>(SnowballType, SpawnTransform, this, GetInstigator()));
-				}
+				/// END DEBUG ONLY ///
+
+
 				// Evocation phase: lookup evocation effects for the current spell and apply them to each instance in the bullet array created above.
-				for(const auto& Source : SpellMap)
-				{
-					try 
-					{
-						// check the current Source for Evocation effects and run them
-						const auto& EvocationMap = Source.second.at(ARyddelmystCharacter::ID_SPELL_PHASE_EVOCATION);
-						for(const auto& Evocation : EvocationMap)
-						{
-							try 
-							{
-								const auto& EvocationFn = std::get<std::function<void(ASnowball*)>>(Evocation.second);
-								for(auto Bullet : Bullets)
-								{
-									EvocationFn(Bullet);
-								}
-							}
-							catch (std::bad_variant_access const& ex)
-							{
-								UE_LOG(LogTemp, Warning, TEXT("Fire; no evocation function with expected signature from %s.  Details are: %s"), *FString(Source.first.c_str()), *FString(ex.what()));
-							}
-						}
-					}
-					catch(const std::out_of_range& e)
-					{
-						UE_LOG(LogTemp, Warning, TEXT("Fire; no evocation functions from %s"), *FString(Source.first.c_str()));
-					}
-				}
-				// Enchantment phase: lookup enchantment effects for the current spell and store them for later OnHit application in each bullet instance in the bullet array created above.
-				for(const auto& Source : SpellMap)
-				{
-					try 
-					{
-						// check the current Source for Enchantment effects and install them for invocation in OnHit later
-						const auto& EnchantmentMap = Source.second.at(ARyddelmystCharacter::ID_SPELL_PHASE_ENCHANTMENT);
+				// for(const auto& Source : SpellMap)
+				// {
+				// 	try 
+				// 	{
+				// 		// check the current Source for Evocation effects and run them
+				// 		const auto& EvocationMap = Source.second.at(ARyddelmystCharacter::ID_SPELL_PHASE_EVOCATION);
+				// 		for(const auto& Evocation : EvocationMap)
+				// 		{
+				// 			try 
+				// 			{
+				// 				const auto& EvocationFn = std::get<std::function<void(ASnowball*)>>(Evocation.second);
+				// 				for(auto Bullet : Bullets)
+				// 				{
+				// 					EvocationFn(Bullet);
+				// 				}
+				// 			}
+				// 			catch (std::bad_variant_access const& ex)
+				// 			{
+				// 				UE_LOG(LogTemp, Warning, TEXT("Fire; no evocation function with expected signature from %s.  Details are: %s"), *FString(Source.first.c_str()), *FString(ex.what()));
+				// 			}
+				// 		}
+				// 	}
+				// 	catch(const std::out_of_range& e)
+				// 	{
+				// 		UE_LOG(LogTemp, Warning, TEXT("Fire; no evocation functions from %s"), *FString(Source.first.c_str()));
+				// 	}
+				// }
+				// // Enchantment phase: lookup enchantment effects for the current spell and store them for later OnHit application in each bullet instance in the bullet array created above.
+				// for(const auto& Source : SpellMap)
+				// {
+				// 	try 
+				// 	{
+				// 		// check the current Source for Enchantment effects and install them for invocation in OnHit later
+				// 		const auto& EnchantmentMap = Source.second.at(ARyddelmystCharacter::ID_SPELL_PHASE_ENCHANTMENT);
 						
-						for(const auto& Enchantment : EnchantmentMap)
-						{
-							try 
-							{
-								const auto& EnchantmentFn = std::get<std::function<void(AActor* /*EnchantedActor*/, const FHitResult& /*HitResult data*/)>>(Enchantment.second);
-								for(auto Bullet : Bullets)
-								{
-									UE_LOG(LogTemp, Warning, TEXT("Fire; adding enchantment from %s"), *FString(Source.first.c_str()));
-									Bullet->GetEffectsVector().emplace_back(EnchantmentFn);
-								}
-							}
-							catch (std::bad_variant_access const& ex)
-							{
-								UE_LOG(LogTemp, Warning, TEXT("Fire; no enchantment function with expected signature from %s.  Details are: %s"), *FString(Source.first.c_str()), *FString(ex.what()));
-							}
-						}
-					}
-					catch(const std::out_of_range& e)
-					{
-						UE_LOG(LogTemp, Warning, TEXT("Fire; no enchantment functions from %s"), *FString(Source.first.c_str()));
-					}
-				}
+				// 		for(const auto& Enchantment : EnchantmentMap)
+				// 		{
+				// 			try 
+				// 			{
+				// 				const auto& EnchantmentFn = std::get<std::function<void(AActor* /*EnchantedActor*/, const FHitResult& /*HitResult data*/)>>(Enchantment.second);
+				// 				for(auto Bullet : Bullets)
+				// 				{
+				// 					UE_LOG(LogTemp, Warning, TEXT("Fire; adding enchantment from %s"), *FString(Source.first.c_str()));
+				// 					Bullet->GetEffectsVector().emplace_back(EnchantmentFn);
+				// 				}
+				// 			}
+				// 			catch (std::bad_variant_access const& ex)
+				// 			{
+				// 				UE_LOG(LogTemp, Warning, TEXT("Fire; no enchantment function with expected signature from %s.  Details are: %s"), *FString(Source.first.c_str()), *FString(ex.what()));
+				// 			}
+				// 		}
+				// 	}
+				// 	catch(const std::out_of_range& e)
+				// 	{
+				// 		UE_LOG(LogTemp, Warning, TEXT("Fire; no enchantment functions from %s"), *FString(Source.first.c_str()));
+				// 	}
+				// }
 				// Transmutation[Spawn] phase: lookup spawn effects for the current spell and run them on each bullet instance in the bullet array created above.
 				FTransform SpawnTransform;
 				SpawnTransform.SetLocation(MuzzleLocation);
@@ -623,69 +636,108 @@ void ARyddelmystCharacter::Fire()
 				SpawnTransform.SetScale3D(FVector(1.f));
 				FVector LaunchDirection = MuzzleRotation.Vector();
 				bool Spawned = false;
-				for(const auto& Source : SpellMap)
-				{
-					// check the current Source for Evocation effects and install them for invocation in OnHit later
-					const auto& TransmutationMap = Source.second.at(ARyddelmystCharacter::ID_SPELL_PHASE_TRANSMUTATION);
-					try 
-					{
-						const auto& SpawnFnVariant = TransmutationMap.at(ARyddelmystCharacter::ID_METAMAGIC_CATEGORY_SPAWN);
-						try 
-						{
-							const auto& SpawnFn = std::get<std::function<void(ARyddelmystCharacter* /*TransmutingCharacter*/, const FTransform& /*SpawnTransform*/, const FVector& /*LaunchDirection*/, const std::vector<ASnowball*>& /*Bullets spawned in map*/)>>(SpawnFnVariant);
-							SpawnFn(this, SpawnTransform, LaunchDirection, Bullets);
-							Spawned = true;
-						}
-						catch (std::bad_variant_access const& ex)
-						{
-							UE_LOG(LogTemp, Warning, TEXT("Fire; no spawn transmutation function with expected signature from %s.  Details are: %s"), *FString(Source.first.c_str()), *FString(ex.what()));
-						}
-					}
-					catch(const std::out_of_range& e)
-					{
-						UE_LOG(LogTemp, Warning, TEXT("Fire; no Spawn function from %s"), *FString(Source.first.c_str()));
-					}
-				}
+				// for(const auto& Source : SpellMap)
+				// {
+				// 	// check the current Source for Evocation effects and install them for invocation in OnHit later
+				// 	const auto& TransmutationMap = Source.second.at(ARyddelmystCharacter::ID_SPELL_PHASE_TRANSMUTATION);
+				// 	try 
+				// 	{
+				// 		const auto& SpawnFnVariant = TransmutationMap.at(ARyddelmystCharacter::ID_METAMAGIC_CATEGORY_SPAWN);
+				// 		try 
+				// 		{
+				// 			const auto& SpawnFn = std::get<std::function<void(ARyddelmystCharacter* /*TransmutingCharacter*/, const FTransform& /*SpawnTransform*/, const FVector& /*LaunchDirection*/, const std::vector<ASnowball*>& /*Bullets spawned in map*/)>>(SpawnFnVariant);
+				// 			SpawnFn(this, SpawnTransform, LaunchDirection, Bullets);
+				// 			Spawned = true;
+				// 		}
+				// 		catch (std::bad_variant_access const& ex)
+				// 		{
+				// 			UE_LOG(LogTemp, Warning, TEXT("Fire; no spawn transmutation function with expected signature from %s.  Details are: %s"), *FString(Source.first.c_str()), *FString(ex.what()));
+				// 		}
+				// 	}
+				// 	catch(const std::out_of_range& e)
+				// 	{
+				// 		UE_LOG(LogTemp, Warning, TEXT("Fire; no Spawn function from %s"), *FString(Source.first.c_str()));
+				// 	}
+				// }
 				
 				// run default spawning behavior iff none of our metamagic sources had a Transmutation[Spawn] function
-				if(!Spawned)
-				{
-					for(auto Bullet : Bullets)
-					{
-						UE_LOG(LogTemp, Warning, TEXT("Fire; default spawning Bullet %s"), *Bullet->GetName());
-						Bullet->FinishSpawning(SpawnTransform);
-						Bullet->Cast(this, LaunchDirection);
-					}
-				}
+				// if(!Spawned)
+				// {
+				 	// for(auto Bullet : Bullets)
+				 	// {
+						 // todo: my wonky spawns behavior does not seem to be endemic to having multiple bullets created above; I can cycle through them like this and they all fire exactly along the launch direction as expected.  Therefore the problem would seem to be squarely with spawning multiple bullets in the same fire() call.
+						UE_LOG(LogTemp, Warning, TEXT("Fire; default spawning Bullet %s, which is FireCount %d"), *Bullets[FireCount]->GetName(), FireCount);
+						// todo: should I be using UGameplayStatics::FinishSpawningActor instead here?
+						Bullets[FireCount]->FinishSpawning(SpawnTransform);
+						Bullets[FireCount]->Cast(this, LaunchDirection);
+						
+						if(FireCount == Bullets.size() - 1)
+						{
+							FireCount = 0;
+						}
+						else
+						{
+							FireCount++;
+						}
+
+						UE_LOG(LogTemp, Warning, TEXT("Fire; default spawning Bullet %s, which is FireCount %d"), *Bullets[FireCount]->GetName(), FireCount);
+						// todo: should I be using UGameplayStatics::FinishSpawningActor instead here?
+						Bullets[FireCount]->FinishSpawning(SpawnTransform);
+						Bullets[FireCount]->Cast(this, LaunchDirection);
+						
+						if(FireCount == Bullets.size() - 1)
+						{
+							FireCount = 0;
+						}
+						else
+						{
+							FireCount++;
+						}
+
+						UE_LOG(LogTemp, Warning, TEXT("Fire; default spawning Bullet %s, which is FireCount %d"), *Bullets[FireCount]->GetName(), FireCount);
+						// todo: should I be using UGameplayStatics::FinishSpawningActor instead here?
+						Bullets[FireCount]->FinishSpawning(SpawnTransform);
+						Bullets[FireCount]->Cast(this, LaunchDirection);
+						
+						if(FireCount == Bullets.size() - 1)
+						{
+							FireCount = 0;
+						}
+						else
+						{
+							FireCount++;
+						}
+				// // 	}
+				//    }
 
 				// apply any other post-spawn metamagic transforms
-				for(const auto& Source : SpellMap)
-				{
-					try
-					{
-						const auto& TransmutationMap = Source.second.at(ARyddelmystCharacter::ID_SPELL_PHASE_TRANSMUTATION);
-						for(const auto& Transmutation : TransmutationMap)
-						{
-							try 
-							{
-								// check the current Source for post-spawn Transmutation effects, which should only need the Bullet pointer as input and output nothing, and run them
-								const auto& TransmutationFn = std::get<std::function<void(ASnowball* /*spell actor to transform*//*, Transform to apply is expected to already be bound or to be created within the lambda*/)>>(Transmutation.second);
-								for(auto Bullet : Bullets)
-								{
-									TransmutationFn(Bullet);
-								}
-							}
-							catch (std::bad_variant_access const& ex)
-							{
-								UE_LOG(LogTemp, Warning, TEXT("Fire; no post-spawn transmutation function with expected signature from %s.  Details are: %s"), *FString(Source.first.c_str()), *FString(ex.what()));
-							}
-						}
-					}
-					catch(const std::out_of_range& e)
-					{
-						UE_LOG(LogTemp, Warning, TEXT("Fire; (post-spawn) no transmutation functions from %s"), *FString(Source.first.c_str()));
-					}
-				}
+				// for(const auto& Source : SpellMap)
+				// {
+				// 	try
+				// 	{
+				// 		const auto& TransmutationMap = Source.second.at(ARyddelmystCharacter::ID_SPELL_PHASE_TRANSMUTATION);
+				// 		for(const auto& Transmutation : TransmutationMap)
+				// 		{
+				// 			try 
+				// 			{
+				// 				// check the current Source for post-spawn Transmutation effects, which should only need the Bullet pointer as input and output nothing, and run them
+				// 				const auto& TransmutationFn = std::get<std::function<void(ASnowball* /*spell actor to transform*//*, Transform to apply is expected to already be bound or to be created within the lambda*/)>>(Transmutation.second);
+				// 				for(auto Bullet : Bullets)
+				// 				{
+				// 					TransmutationFn(Bullet);
+				// 				}
+				// 			}
+				// 			catch (std::bad_variant_access const& ex)
+				// 			{
+				// 				UE_LOG(LogTemp, Warning, TEXT("Fire; no post-spawn transmutation function with expected signature from %s.  Details are: %s"), *FString(Source.first.c_str()), *FString(ex.what()));
+				// 			}
+				// 		}
+				// 	}
+				// 	catch(const std::out_of_range& e)
+				// 	{
+				// 		UE_LOG(LogTemp, Warning, TEXT("Fire; (post-spawn) no transmutation functions from %s"), *FString(Source.first.c_str()));
+				// 	}
+				// }
 				
 				// todo: use ASnowball::ProcessCost() instead, which will be called as part of ASnowball::Cast()
 				// todo: support metamagic fx modifying casting cost 
