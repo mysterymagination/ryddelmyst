@@ -109,6 +109,18 @@ void ARyddelmystCharacter::BeginPlay()
 			IItem::Execute_OnEquip(Elem.Value, this);
 		}
 	}
+
+/// begin debug only ///
+FActorSpawnParameters SpawnParams;
+		SpawnParams.Owner = this;
+		SpawnParams.Instigator = GetInstigator();
+	FTransform SpawnTransformId;
+				SpawnTransformId.SetIdentity();
+				for (int idx = 0; idx < 5; idx++)
+				{
+					Bullets.Add(GetWorld()->SpawnActor<ASnowball>(ASnowball::StaticClass(), SpawnTransformId.GetLocation(), FRotator(SpawnTransformId.GetRotation()), SpawnParams));
+				}
+/// end debug only ///
 }
 
 void ARyddelmystCharacter::Tick(float DeltaTime)
@@ -519,8 +531,8 @@ void ARyddelmystCharacter::Fire()
 				// todo: order of operations may be a problem with this metamagic model -- say I have a one evocation fx that multiplies damage by 2 and another that adds 2; you'll have different result values depending on which fx is applied first, since PEMDAS isn't factored into this model at all.  Commutativity isn't so much of an issue since that's re: operands rather than operations, and the operands are encapsulated within the function fx.  One possible fix would be to use an ordered map of some sort (or sort the pairs you would iterate over prior to iteration or something) based on a PEMDAS derived priority?  
 
 				// Conjuration phase: lookup conjuration effects for the current spell and apply them, storing the returned bullet array.  If there are none, run the default creation behavior.
-				std::vector<ASnowball*> Bullets;
-				 const auto& SpellMap = MetamagicMap[std::string(TCHAR_TO_UTF8(*SnowballType->GetName()))];
+				// std::vector<ASnowball*> Bullets;
+				// const auto& SpellMap = MetamagicMap[std::string(TCHAR_TO_UTF8(*SnowballType->GetName()))];
 				// for(const auto& Source : SpellMap)
 				// {
 				// 	try 
@@ -562,12 +574,12 @@ void ARyddelmystCharacter::Fire()
 
 				/// BEGIN DEBUG ONLY ///
 				// I wanna see what happens if we create 5 of every type of snowball right here in the character and then default spawn them below
-				FTransform SpawnTransformId;
-				SpawnTransformId.SetIdentity();
-				for (int idx = 0; idx < 5; idx++)
-				{
-					Bullets.emplace_back(GetWorld()->SpawnActorDeferred<ASnowball>(SnowballType, SpawnTransformId, this, GetInstigator()));
-				}
+				// FTransform SpawnTransformId;
+				// SpawnTransformId.SetIdentity();
+				// for (int idx = 0; idx < 5; idx++)
+				// {
+				// 	Bullets.emplace_back(GetWorld()->SpawnActorDeferred<ASnowball>(SnowballType, SpawnTransformId, this, GetInstigator()));
+				// }
 				/// END DEBUG ONLY ///
 
 
@@ -671,35 +683,7 @@ void ARyddelmystCharacter::Fire()
 						Bullets[FireCount]->FinishSpawning(SpawnTransform);
 						Bullets[FireCount]->Cast(this, LaunchDirection);
 						
-						if(FireCount == Bullets.size() - 1)
-						{
-							FireCount = 0;
-						}
-						else
-						{
-							FireCount++;
-						}
-
-						UE_LOG(LogTemp, Warning, TEXT("Fire; default spawning Bullet %s, which is FireCount %d"), *Bullets[FireCount]->GetName(), FireCount);
-						// todo: should I be using UGameplayStatics::FinishSpawningActor instead here?
-						Bullets[FireCount]->FinishSpawning(SpawnTransform);
-						Bullets[FireCount]->Cast(this, LaunchDirection);
-						
-						if(FireCount == Bullets.size() - 1)
-						{
-							FireCount = 0;
-						}
-						else
-						{
-							FireCount++;
-						}
-
-						UE_LOG(LogTemp, Warning, TEXT("Fire; default spawning Bullet %s, which is FireCount %d"), *Bullets[FireCount]->GetName(), FireCount);
-						// todo: should I be using UGameplayStatics::FinishSpawningActor instead here?
-						Bullets[FireCount]->FinishSpawning(SpawnTransform);
-						Bullets[FireCount]->Cast(this, LaunchDirection);
-						
-						if(FireCount == Bullets.size() - 1)
+						if(FireCount == Bullets.Num() - 1)
 						{
 							FireCount = 0;
 						}
