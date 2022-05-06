@@ -123,7 +123,15 @@ void ASnowball::OnHit(UPrimitiveComponent* HitComp, AActor* OtherActor, UPrimiti
 	{
 		Effect(OtherActor, Hit);
 	}
-	float dmg = CalculateDamage(Caster);
+	float dmg = 0.f;
+	if(Caster)
+	{
+		dmg = CalculateDamage(Caster);
+	}
+	else
+	{
+		UE_LOG(LogTemp, Error, TEXT("OnHit; caster unset, so we cannot calc damage"));
+	}
 	UE_LOG(LogTemp, Warning, TEXT("OnHit; damage is %f"),dmg);
 	UGameplayStatics::ApplyPointDamage(OtherActor, dmg, NormalImpulse, Hit, UGameplayStatics::GetPlayerController(GetWorld(), 0), this, DamageType);
 	Destroy();
