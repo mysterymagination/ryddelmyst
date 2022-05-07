@@ -93,6 +93,13 @@ Textures:
     10.1 Source: https://opengameart.org/content/rotating-gems-for-match3
     10.2 Authors: https://opengameart.org/users/bondoki
     10.3 License: CC0
+  11. Ryddelmyst/Content/Ryddelmyst_Assets/Textures/cracklingvioletvial.png (a combination of images from two sources)
+    11.1 Source (vial): https://opengameart.org/content/game-icons-of-fantasy-potions-pack-1
+    11.2 Authors (vial): https://opengameart.org/users/craftpixnet-2d-game-assets
+    11.3 License (vial): http://opengameart.org/content/oga-by-30-faq
+    11.4 Source (chain): https://opengameart.org/content/wesnoth-items
+    11.5 Authors (chain): https://opengameart.org/users/blarumyrran
+    11.6 License (chain): CC0
 
 Fonts:
   1. Ryddelmyst/Content/Ryddelmyst_Assets/Fonts/alagard_by_pix3m-d6awiwp.ttf
