@@ -48,8 +48,8 @@ class ARyddelmystCharacter : public AFawnCharacter
 	static const FString EquipSlotsData[];
 
 	/// begin debug only ///
-	UPROPERTY()
-	TArray<ASnowball*> Bullets;
+	// UPROPERTY()
+	// TArray<ASnowball*> Bullets;
 	/// end debug only ///
 
 	/**

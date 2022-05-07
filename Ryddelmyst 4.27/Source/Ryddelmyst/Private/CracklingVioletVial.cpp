@@ -40,17 +40,12 @@ void UCracklingVioletVial::OnEquip_Implementation(AActor* EquippedActor)
 			for (auto Bullet : Bullets)
 			{
 				UE_LOG(LogTemp, Warning, TEXT("Metamagic Electric lambda; custom spawning Bullet %s"), *Bullet->GetName());
-				/*
 				CurrentAngle += DistAngle;
 				FRotator DistRotation(0.f, CurrentAngle, 0.f);
 				Bullet->FinishSpawning(SpawnTransform);
 				FVector ModifiedLaunchDirection = DistRotation.RotateVector(LaunchDirection);
 				Bullet->Cast(TransmutingCharacter, ModifiedLaunchDirection);
 				UE_LOG(LogTemp, Warning, TEXT("Metamagic Electric lambda; transmutation behavior -- current angle is %f, DistRotation is %s, SpawnTransform is %s, LaunchDirection is %s and ModifiedLaunchDirection is %s"), CurrentAngle, *DistRotation.ToString(), *SpawnTransform.ToString(), *LaunchDirection.ToString(), *ModifiedLaunchDirection.ToString());
-				*/
-				Bullet->FinishSpawning(SpawnTransform);
-				Bullet->Cast(TransmutingCharacter, LaunchDirection);
-				UE_LOG(LogTemp, Warning, TEXT("Metamagic Electric lambda; transmutation behavior -- Launch Direction says %s"), *LaunchDirection.ToString());
 			}
 		};
 	}

@@ -23,16 +23,16 @@ ASnowball::ASnowball()
 		
 		// todo: trying to lower the impact force of the snowball; maybe mass derives from the radius of the physics sphere?
 		CollisionComponent->InitSphereRadius(15.0f);
-		CollisionComponent->SetMassOverrideInKg(NAME_None, 0.1f, true);
+		// CollisionComponent->SetMassOverrideInKg(NAME_None, 0.1f, true);
 
 		// On hit event handling
-		CollisionComponent->SetSimulatePhysics(true);
-		CollisionComponent->SetNotifyRigidBodyCollision(true);
-		CollisionComponent->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
-		CollisionComponent->SetCollisionProfileName("BlockAllDynamic");
-		FScriptDelegate onHitDelegate;
-		onHitDelegate.BindUFunction(this, FName("OnHit"));
-		CollisionComponent->OnComponentHit.Add(onHitDelegate);
+		// CollisionComponent->SetSimulatePhysics(true);
+		// CollisionComponent->SetNotifyRigidBodyCollision(true);
+		// CollisionComponent->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
+		// CollisionComponent->SetCollisionProfileName("BlockAllDynamic");
+		// FScriptDelegate onHitDelegate;
+		// onHitDelegate.BindUFunction(this, FName("OnHit"));
+		// CollisionComponent->OnComponentHit.Add(onHitDelegate);
 
 		// Set the root component to be the collision component.
 		RootComponent = CollisionComponent;
@@ -134,7 +134,9 @@ void ASnowball::OnHit(UPrimitiveComponent* HitComp, AActor* OtherActor, UPrimiti
 	}
 	UE_LOG(LogTemp, Warning, TEXT("OnHit; damage is %f"),dmg);
 	UGameplayStatics::ApplyPointDamage(OtherActor, dmg, NormalImpulse, Hit, UGameplayStatics::GetPlayerController(GetWorld(), 0), this, DamageType);
-	Destroy();
+	// Destroy();
+	UE_LOG(LogTemp, Warning, TEXT("OnHit; actor would normally be destroyed"));
+	UE_LOG(LogTemp, Warning, TEXT("OnHit; breaktime!"));
 	// todo: leave behind flattened snowball messh?
 }
 
