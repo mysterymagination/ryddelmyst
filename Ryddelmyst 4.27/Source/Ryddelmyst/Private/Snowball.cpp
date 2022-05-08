@@ -23,16 +23,16 @@ ASnowball::ASnowball()
 		
 		// todo: trying to lower the impact force of the snowball; maybe mass derives from the radius of the physics sphere?
 		CollisionComponent->InitSphereRadius(15.0f);
-		// CollisionComponent->SetMassOverrideInKg(NAME_None, 0.1f, true);
+		CollisionComponent->SetMassOverrideInKg(NAME_None, 0.1f, true);
 
 		// On hit event handling
-		// CollisionComponent->SetSimulatePhysics(true);
-		// CollisionComponent->SetNotifyRigidBodyCollision(true);
-		// CollisionComponent->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
-		// CollisionComponent->SetCollisionProfileName("BlockAllDynamic");
-		// FScriptDelegate onHitDelegate;
-		// onHitDelegate.BindUFunction(this, FName("OnHit"));
-		// CollisionComponent->OnComponentHit.Add(onHitDelegate);
+		CollisionComponent->SetSimulatePhysics(true);
+		CollisionComponent->SetNotifyRigidBodyCollision(true);
+		CollisionComponent->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
+		CollisionComponent->SetCollisionProfileName("BlockAllDynamic");
+		FScriptDelegate onHitDelegate;
+		onHitDelegate.BindUFunction(this, FName("OnHit"));
+		CollisionComponent->OnComponentHit.Add(onHitDelegate);
 
 		// Set the root component to be the collision component.
 		RootComponent = CollisionComponent;
