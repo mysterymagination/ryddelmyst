@@ -109,19 +109,6 @@ void ARyddelmystCharacter::BeginPlay()
 			IItem::Execute_OnEquip(Elem.Value, this);
 		}
 	}
-
-/// begin debug only ///
-	// FActorSpawnParameters SpawnParams;
-	// SpawnParams.Owner = this;
-	// SpawnParams.Instigator = GetInstigator();
-	// FTransform SpawnTransformId;
-	// 			SpawnTransformId.SetIdentity();
-	// 			for (int idx = 0; idx < 5; idx++)
-	// 			{
-	// 				// Bullets.Add(GetWorld()->SpawnActor<ASnowball>(ASnowball::StaticClass(), SpawnTransformId.GetLocation(), FRotator(SpawnTransformId.GetRotation()), SpawnParams));
-	// 				Bullets.Add(GetWorld()->SpawnActorDeferred<ASnowball>(ASnowball::StaticClass(), SpawnTransformId, this, GetInstigator()));
-	//			}
-/// end debug only ///
 }
 
 void ARyddelmystCharacter::Tick(float DeltaTime)
@@ -409,7 +396,6 @@ void ARyddelmystCharacter::Run()
 
 void ARyddelmystCharacter::HandleCrouch()
 {
-	// todo: reposition any grabbed object based on crouch/uncrouch eye height etc.
 	if (bIsCrouched)
 	{
 		UE_LOG(LogTemp, Warning, TEXT("HandleCrouch; uncrouching"));
@@ -572,18 +558,6 @@ void ARyddelmystCharacter::Fire()
 					Bullets.emplace_back(World->SpawnActorDeferred<ASnowball>(SnowballType, SpawnTransform, this, GetInstigator()));
 				}
 
-
-				/// BEGIN DEBUG ONLY ///
-				// I wanna see what happens if we create 5 of every type of snowball right here in the character and then default spawn them below EDIT: the same wonky trajectories!
-				// FTransform SpawnTransformId;
-				// SpawnTransformId.SetIdentity();
-				// for (int idx = 0; idx < 5; idx++)
-				// {
-				// 	Bullets.emplace_back(GetWorld()->SpawnActorDeferred<ASnowball>(SnowballType, SpawnTransformId, this, GetInstigator()));
-				// }
-				/// END DEBUG ONLY ///
-
-
 				// Evocation phase: lookup evocation effects for the current spell and apply them to each instance in the bullet array created above.
 				for(const auto& Source : SpellMap)
 				{
@@ -612,7 +586,7 @@ void ARyddelmystCharacter::Fire()
 						UE_LOG(LogTemp, Warning, TEXT("Fire; no evocation functions from %s"), *FString(Source.first.c_str()));
 					}
 				}
-				
+
 				// Enchantment phase: lookup enchantment effects for the current spell and store them for later OnHit application in each bullet instance in the bullet array created above.
 				for(const auto& Source : SpellMap)
 				{
@@ -680,27 +654,10 @@ void ARyddelmystCharacter::Fire()
 				{
 				 	for(auto Bullet : Bullets)
 				 	{
-						 // todo: my wonky spawns behavior does not seem to be endemic to having multiple bullets created above; I can cycle through them like this and they all fire exactly along the launch direction as expected.  Therefore the problem would seem to be squarely with spawning multiple bullets in the same fire() call. Might be something odd with the transform, or maybe even the physics of the snowballs? 
-						 // todox: I wanted to test if the same held true if we had an array of the same snowball objects that we iterate through one per Fire() call, but UE4 is fighting me on spawning an actor deferred up in BeginPlay() and then finishing the spawning here (assertion failure !IsPendingKill() -- not sure why it would be pending kill). We know that fully spawning the snowballs earlier and then launching them from here is ok, though, so let's try the test with that approach. EDIT: this gave a weird result, with only snowball #1 and #5 actually showing up and eventually crashing over segfault for some reason even though we never destroy these snowballs and they're fully spawned and they're in a upropped tarray owned by another actor in the map so they should be VERY safe from GC... EDIT: weird, now I've gone back to the spawndeferred and later finishspawning approach and it's no longer crashing over the assertion failure !IsPendingKill() but rather simply printing an error once we get back around to trying to call FinishSpawning() on Actors for a second time.  Although, for some reason we only see that error once no matter how many times I press Fire() and should be iterating through the snowball array.  OH SNAP, maybe stuff was hitting the kill plane before and getting destroyed?  But why wouldn't it be doing so now?  I smell Linux hot reload failure shenanigans.  ANyway, I've seen enough wonky trajectories and inexplicably spinning snowballs to convince me that our problem is with the spawn transform somehow, not the fact that we're housing our snowballs in an array, either a single array field or one we create here on the fly.
-
 						UE_LOG(LogTemp, Warning, TEXT("Fire; default spawning Bullet %s"), *Bullet->GetName());
 						// todo: should I be using UGameplayStatics::FinishSpawningActor instead here?
 						Bullet->FinishSpawning(SpawnTransform);
 						Bullet->Cast(this, LaunchDirection);
-
-						// UE_LOG(LogTemp, Warning, TEXT("Fire; default spawning Bullet %s, which is FireCount %d"), *Bullets[FireCount]->GetName(), FireCount);
-						// // todo: should I be using UGameplayStatics::FinishSpawningActor instead here?
-						// Bullets[FireCount]->FinishSpawning(SpawnTransform);
-						// Bullets[FireCount]->Cast(this, LaunchDirection);
-						
-						// if(FireCount == Bullets.Num() - 1)
-						// {
-						// 	FireCount = 0;
-						// }
-						// else
-						// {
-						// 	FireCount++;
-						// }
 				 	}
 				}
 

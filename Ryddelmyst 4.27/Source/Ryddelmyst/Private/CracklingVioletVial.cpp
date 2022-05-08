@@ -37,15 +37,20 @@ void UCracklingVioletVial::OnEquip_Implementation(AActor* EquippedActor)
 			float DistAngle = 90 / (NumBulletsPerSide + 1);
 			UE_LOG(LogTemp, Warning, TEXT("Metamagic Electric lambda; transmutation behavior -- NumBullets is %u, NumBulletsPerSide is %u, and DistAngle is %f"), NumBullets, NumBulletsPerSide, DistAngle);
 			float CurrentAngle = -90;
+			// to avoid wonky physics, we need to move the bullets' spawn points incrementally away from the central spawn point (muzzle location, and the actual SpawnTransform location);  we'll proceed as we do with the angle distribution per side, at the far negative and swinging eventually 'round to far positive offset.  The offset value is going to be the bullet radius times this incremental offset factor.
+			int BulletOffsetFactor = -NumBulletsPerSide;
 			for (auto Bullet : Bullets)
 			{
 				UE_LOG(LogTemp, Warning, TEXT("Metamagic Electric lambda; custom spawning Bullet %s"), *Bullet->GetName());
 				CurrentAngle += DistAngle;
 				FRotator DistRotation(0.f, CurrentAngle, 0.f);
-				Bullet->FinishSpawning(SpawnTransform);
+				FTransform FinalTransform = SpawnTransform;
+				FinalTransform.AddToTranslation((Bullet->GetSimpleCollisionRadius() * BulletOffsetFactor) * TransmutingCharacter->GetActorRightVector());
+				Bullet->FinishSpawning(FinalTransform);
 				FVector ModifiedLaunchDirection = DistRotation.RotateVector(LaunchDirection);
 				Bullet->Cast(TransmutingCharacter, ModifiedLaunchDirection);
 				UE_LOG(LogTemp, Warning, TEXT("Metamagic Electric lambda; transmutation behavior -- current angle is %f, DistRotation is %s, SpawnTransform is %s, LaunchDirection is %s and ModifiedLaunchDirection is %s"), CurrentAngle, *DistRotation.ToString(), *SpawnTransform.ToString(), *LaunchDirection.ToString(), *ModifiedLaunchDirection.ToString());
+				BulletOffsetFactor++;
 			}
 		};
 	}
