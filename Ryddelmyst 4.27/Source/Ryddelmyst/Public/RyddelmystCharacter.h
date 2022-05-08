@@ -47,11 +47,6 @@ class ARyddelmystCharacter : public AFawnCharacter
 
 	static const FString EquipSlotsData[];
 
-	/// begin debug only ///
-	// UPROPERTY()
-	// TArray<ASnowball*> Bullets;
-	/// end debug only ///
-
 	/**
 	 * @brief mapping of string to inner maps that eventually terminate in a leaf node value of one of a set of unioned std::functions with various signatures as required for various effects. Phase order is Conjuration -> Evocation -> Enchantment -> Transmutation
 	 * 
