@@ -628,24 +628,31 @@ void ARyddelmystCharacter::Fire()
 				for(const auto& Source : SpellMap)
 				{
 					// check the current Source for Evocation effects and install them for invocation in OnHit later
-					const auto& TransmutationMap = Source.second.at(ARyddelmystCharacter::ID_SPELL_PHASE_TRANSMUTATION);
-					try 
+					try
 					{
-						const auto& SpawnFnVariant = TransmutationMap.at(ARyddelmystCharacter::ID_METAMAGIC_CATEGORY_SPAWN);
+						const auto& TransmutationMap = Source.second.at(ARyddelmystCharacter::ID_SPELL_PHASE_TRANSMUTATION);
 						try 
 						{
-							const auto& SpawnFn = std::get<std::function<void(ARyddelmystCharacter* /*TransmutingCharacter*/, const FTransform& /*SpawnTransform*/, const FVector& /*LaunchDirection*/, const std::vector<ASnowball*>& /*Bullets spawned in map*/)>>(SpawnFnVariant);
-							SpawnFn(this, SpawnTransform, LaunchDirection, Bullets);
-							Spawned = true;
+							const auto& SpawnFnVariant = TransmutationMap.at(ARyddelmystCharacter::ID_METAMAGIC_CATEGORY_SPAWN);
+							try 
+							{
+								const auto& SpawnFn = std::get<std::function<void(ARyddelmystCharacter* /*TransmutingCharacter*/, const FTransform& /*SpawnTransform*/, const FVector& /*LaunchDirection*/, const std::vector<ASnowball*>& /*Bullets spawned in map*/)>>(SpawnFnVariant);
+								SpawnFn(this, SpawnTransform, LaunchDirection, Bullets);
+								Spawned = true;
+							}
+							catch (std::bad_variant_access const& ex)
+							{
+								UE_LOG(LogTemp, Warning, TEXT("Fire; no spawn transmutation function with expected signature from %s.  Details are: %s"), *FString(Source.first.c_str()), *FString(ex.what()));
+							}
 						}
-						catch (std::bad_variant_access const& ex)
+						catch(const std::out_of_range& e)
 						{
-							UE_LOG(LogTemp, Warning, TEXT("Fire; no spawn transmutation function with expected signature from %s.  Details are: %s"), *FString(Source.first.c_str()), *FString(ex.what()));
+							UE_LOG(LogTemp, Warning, TEXT("Fire; no Spawn function from %s"), *FString(Source.first.c_str()));
 						}
 					}
 					catch(const std::out_of_range& e)
 					{
-						UE_LOG(LogTemp, Warning, TEXT("Fire; no Spawn function from %s"), *FString(Source.first.c_str()));
+						UE_LOG(LogTemp, Warning, TEXT("Fire; no Transmutation functions from %s"), *FString(Source.first.c_str()));
 					}
 				}
 				

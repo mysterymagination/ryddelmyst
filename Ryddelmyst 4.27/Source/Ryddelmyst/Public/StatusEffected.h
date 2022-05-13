@@ -21,8 +21,25 @@ class RYDDELMYST_API IStatusEffected
 {
 	GENERATED_BODY()
 
-	// Add interface functions to this class. This is the class that will be inherited to implement this interface.
 public:
-	
-	
+	/**
+	 * @brief Iterates through the effected Actor's StatusEffect container, running StatusEffect::OnEffect() for each
+	 * 
+	 */
+	UFUNCTION(BlueprintCallable, BlueprintNativeEvent, Category = "Magic")
+	void ProcessStatusEffects();
+
+	/**
+	 * @brief Add a given StatusEffect to the Actor's StatusEffect container
+	 * 
+	 */
+	UFUNCTION(BlueprintCallable, BlueprintNativeEvent, Category = "Magic")
+	void AddStatusEffect(const StatusEffect& Effect);
+
+	/**
+	 * @brief Remove a given StatusEffect from the Actor's StatusEffect container
+	 * 
+	 */
+	UFUNCTION(BlueprintCallable, BlueprintNativeEvent, Category = "Magic")
+	void RemoveStatusEffects(const StatusEffect& Effect);
 };
