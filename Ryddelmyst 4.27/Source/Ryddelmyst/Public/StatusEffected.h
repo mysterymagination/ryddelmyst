@@ -4,7 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "UObject/Interface.h"
-
+#include "StatusEffect.h"
 #include "StatusEffected.generated.h"
 
 // This class does not need to be modified.
@@ -34,12 +34,12 @@ public:
 	 * 
 	 */
 	UFUNCTION(BlueprintCallable, BlueprintNativeEvent, Category = "Magic")
-	void AddStatusEffect(const StatusEffect& Effect);
+	void AddStatusEffect(UStatusEffect* Effect);
 
 	/**
 	 * @brief Remove a given StatusEffect from the Actor's StatusEffect container
 	 * 
 	 */
 	UFUNCTION(BlueprintCallable, BlueprintNativeEvent, Category = "Magic")
-	void RemoveStatusEffects(const StatusEffect& Effect);
+	void RemoveStatusEffect(const FString& EffectId);
 };
