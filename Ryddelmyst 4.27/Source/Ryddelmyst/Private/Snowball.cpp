@@ -5,6 +5,7 @@
 #include "MathUtils.h"
 #include "Kismet/GameplayStatics.h"
 #include "IceDamageType.h"
+#include "FrozenStatusEffect.h"
 
 // Sets default values
 ASnowball::ASnowball()
@@ -76,6 +77,7 @@ ASnowball::ASnowball()
 	}
 
 	DamageType = UIceDamageType::StaticClass();
+	StatusEffect = CreateDefaultSubobject<UFrozenStatusEffect>(TEXT("SnowballFreezeEffect"));
 }
 
 // Called when the game starts or when spawned
@@ -118,7 +120,18 @@ void ASnowball::ProcessCost(ARyddelmystCharacter* CasterCharacter)
 void ASnowball::OnHit(UPrimitiveComponent* HitComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit)
 {
 	UE_LOG(LogTemp, Warning, TEXT("OnHit; EffectsOnTarget has size %d"), EffectsOnTarget.size());
-	// todo: need to define default effects, e.g. Snowball freezes for FreezeDuration and spawns snowflakes particle FX around the target
+	
+	// primary StatusEffect
+	if(StatusEffect)
+	{
+		StatusEffect->OnEffectApplied(OtherActor);
+	}
+	else
+	{
+		UE_LOG(LogTemp, Warning, TEXT("OnHit; primary StatusEffect is not set"));
+	}
+
+	// auxiliary effect lambdas
 	for (auto Effect : EffectsOnTarget)
 	{
 		Effect(OtherActor, Hit);
@@ -134,9 +147,7 @@ void ASnowball::OnHit(UPrimitiveComponent* HitComp, AActor* OtherActor, UPrimiti
 	}
 	UE_LOG(LogTemp, Warning, TEXT("OnHit; damage is %f"),dmg);
 	UGameplayStatics::ApplyPointDamage(OtherActor, dmg, NormalImpulse, Hit, UGameplayStatics::GetPlayerController(GetWorld(), 0), this, DamageType);
-	// Destroy();
-	UE_LOG(LogTemp, Warning, TEXT("OnHit; actor would normally be destroyed"));
-	UE_LOG(LogTemp, Warning, TEXT("OnHit; breaktime!"));
+	Destroy();
 	// todo: leave behind flattened snowball messh?
 }
 
