@@ -8,6 +8,10 @@ void UFrozenStatusEffect::OnEffectApplied(AActor* EffectedActor)
     UE_LOG(LogTemp, Warning, TEXT("OnEffectApplied; freezing the actor: %s"), *EffectedActor->GetName());
     // disable Actor tick
     EffectedActor->SetActorTickEnabled(false);
+    if(UMovementComponent* MovementComponent = EffectedActor->FindComponentByClass<UMovementComponent>())
+    {
+        MovementComponent->SetComponentTickEnabled(false);
+    }
 
     // todo: create a snowflake particle effect around the effected actor
 
@@ -25,6 +29,10 @@ void UFrozenStatusEffect::OnEffectRemoved(AActor* EffectedActor)
 
     // re-enable Actor tick
     EffectedActor->SetActorTickEnabled(true);
+    if(UMovementComponent* MovementComponent = EffectedActor->FindComponentByClass<UMovementComponent>())
+    {
+        MovementComponent->SetComponentTickEnabled(true);
+    }
 }
 
 
