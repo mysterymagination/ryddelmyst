@@ -18,11 +18,14 @@ class RYDDELMYST_API UStatusEffect : public UObject
 
 public:
 	UFUNCTION(BlueprintCallable, Category = "Magic")
-	void OnEffect(AActor* EffectedActor){};
+	void OnEffectApplied(AActor* EffectedActor){};
 
 	UFUNCTION(BlueprintCallable, Category = "Magic")
-	void SetId(const FString& Id){ this.Id = Id; };
+	void OnEffectRemoved(AActor* EffectedActor){};
 
 	UFUNCTION(BlueprintCallable, Category = "Magic")
-	const FString& GetId(){ return this.Id; };
+	void SetId(const FString& EffectId){ Id = EffectId; };
+
+	UFUNCTION(BlueprintCallable, Category = "Magic")
+	const FString& GetId(){ return Id; };
 };
