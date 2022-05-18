@@ -9,6 +9,7 @@
 #include "GameFramework/ProjectileMovementComponent.h"
 #include <functional>
 #include <vector>
+#include "StatusEffect.h"
 #include "Snowball.generated.h"
 
 UCLASS()
@@ -45,6 +46,10 @@ public:
 	UFUNCTION()
 	void SetFreezeDuration(float Duration) { FreezeDuration = Duration; };
 	UFUNCTION()
+	UStatusEffect* GetStatusEffect() { return StatusEffect; };
+	UFUNCTION()
+	void SetStatusEffect(UStatusEffect* Effect) { StatusEffect = Effect; };
+	UFUNCTION()
 	void SetDamageScaleFactor(float ScaleFactor) { DamageScaleFactor = ScaleFactor; };
 	std::vector<std::function<void(AActor*, const FHitResult&)>>& GetEffectsVector() { return EffectsOnTarget; };
 	std::function<void(AActor* LaunchingActor, const FVector& LaunchDirection)> GetLaunchFunction() { return LaunchFn; };
@@ -57,6 +62,9 @@ public:
 	void ProcessCost(class ARyddelmystCharacter* CasterCharacter);
 
 protected:
+	// StatusEffect to be applied OnHit
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Magic")
+	UStatusEffect* StatusEffect;
 	// Duration during which the effected Actor will be unable to move
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Projectile)
 	float FreezeDuration = 5.f;
