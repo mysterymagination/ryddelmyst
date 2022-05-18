@@ -77,7 +77,14 @@ ASnowball::ASnowball()
 	}
 
 	DamageType = UIceDamageType::StaticClass();
+	UE_LOG(LogTemp, Warning, TEXT("Ctor; creating default frozen status effect for snowball"));
 	StatusEffect = CreateDefaultSubobject<UFrozenStatusEffect>(TEXT("SnowballFreezeEffect"));
+	StatusEffect->SetId("FreezeStatusEffect");
+	auto FreezeEffect = ::Cast<UFrozenStatusEffect>(StatusEffect);
+	if(FreezeEffect)
+	{
+		FreezeEffect->SetDuration(FreezeDuration);
+	}
 }
 
 // Called when the game starts or when spawned
@@ -124,6 +131,7 @@ void ASnowball::OnHit(UPrimitiveComponent* HitComp, AActor* OtherActor, UPrimiti
 	// primary StatusEffect
 	if(StatusEffect)
 	{
+		UE_LOG(LogTemp, Warning, TEXT("OnHit; applying primary StatusEffect with id %s"), *StatusEffect->GetId());
 		StatusEffect->OnEffectApplied(OtherActor);
 	}
 	else

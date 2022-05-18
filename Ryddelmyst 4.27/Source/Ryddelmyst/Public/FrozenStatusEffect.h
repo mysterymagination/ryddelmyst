@@ -29,13 +29,13 @@ public:
 	 * 
 	 * @param EffectedActor the Actor who should be frozen
 	 */
-	void OnEffectApplied(AActor* EffectedActor);
+	void OnEffectApplied(AActor* EffectedActor) override;
 	/**
 	 * @brief Re-enables the EffectedActor's tick() so they are unfrozen
 	 * 
 	 * @param EffectedActor the Actor who should be unfrozen
 	 */
-	void OnEffectRemoved(AActor* EffectedActor);
+	void OnEffectRemoved(AActor* EffectedActor) override;
 	
 	UFUNCTION(BlueprintCallable, Category = "Magic")
 	void SetDuration(float Duration) { FreezeDuration = Duration; };
