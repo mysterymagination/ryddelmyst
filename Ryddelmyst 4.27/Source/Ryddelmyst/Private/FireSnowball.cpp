@@ -23,4 +23,6 @@ AFireSnowball::AFireSnowball()
 	}
 
 	DamageType = UFireDamageType::StaticClass();
+	StatusEffect = CreateDefaultSubobject<UBurnedStatusEffect>(TEXT("FireSnowballBurnEffect"));
+	StatusEffect->SetId("BurnedStatusEffect");
 }
