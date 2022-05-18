@@ -18,7 +18,7 @@ class RYDDELMYST_API UFrozenStatusEffect : public UStatusEffect
 	 * @brief Duration for which the effected Actor should remain frozen (tick() disabled)
 	 * 
 	 */
-	UPROPERTY()
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Magic", meta = (AllowPrivateAccess = "true"))
 	float FreezeDuration = 1.f;
 	UPROPERTY()
 	FTimerHandle FreezeTimerHandle;
