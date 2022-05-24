@@ -24,7 +24,8 @@ class RYDDELMYST_API IStatusEffected
 public:
 	/**
 	 * @brief Iterates through the effected Actor's StatusEffect container, running StatusEffect::OnEffect() for each
-	 * 
+	 * todo: do we need this?  So far StatusEffect objects have been able to get away with being self-driven with timers and we call their OnEffectApplied() as we assign them to effected Actors.
+	 * Something like this makes a lot more sense in a fully turn based context, and indeed may be needed when we switch to turn based mode (once that's a thing).
 	 */
 	UFUNCTION(BlueprintCallable, BlueprintNativeEvent, Category = "Magic")
 	void ProcessStatusEffects();

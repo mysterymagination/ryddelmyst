@@ -3,6 +3,8 @@
 
 #include "FrozenStatusEffect.h"
 
+UFrozenStatusEffect::UFrozenStatusEffect() : Id("FrozenStatusEffect") {}
+
 void UFrozenStatusEffect::OnEffectApplied(AActor* EffectedActor)
 {
     UE_LOG(LogTemp, Warning, TEXT("OnEffectApplied; freeze duration is %f and the time is %s.  We are freezing the actor: %s from frozen status effect %p"), FreezeDuration, *FDateTime::Now().ToString(), *EffectedActor->GetName(), this);

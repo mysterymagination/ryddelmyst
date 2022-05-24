@@ -58,33 +58,13 @@ ASnowball::ASnowball()
 			ProjectileMeshComponent->SetStaticMesh(Mesh.Object);
 		}
 	}
-	static ConstructorHelpers::FObjectFinder<UMaterial> Material(TEXT("'/Game/Ryddelmyst_Assets/Materials/SnowballMaterial.SnowballMaterial'"));
-	if (Material.Succeeded())
-	{
-		ProjectileMaterialInstance = UMaterialInstanceDynamic::Create(Material.Object, ProjectileMeshComponent);
-	}
-	ProjectileMeshComponent->SetMaterial(0, ProjectileMaterialInstance);
+	
 	ProjectileMeshComponent->SetRelativeScale3D(FVector(0.09f, 0.09f, 0.09f));
 	ProjectileMeshComponent->SetupAttachment(RootComponent);
-	// Create a snowy particle system
+	// Create a particle system, whose asset details will be filled in by subclasses
 	SnowballParticles = CreateDefaultSubobject<UParticleSystemComponent>(TEXT("SnowballParticles"));
 	SnowballParticles->SetupAttachment(RootComponent);
 	SnowballParticles->bAutoActivate = true;
-	static ConstructorHelpers::FObjectFinder<UParticleSystem> ParticleAsset(TEXT("/Game/Ryddelmyst_Assets/Particles/P_Snowflakes.P_Snowflakes"));
-	if (ParticleAsset.Succeeded())
-	{
-		SnowballParticles->SetTemplate(ParticleAsset.Object);
-	}
-
-	DamageType = UIceDamageType::StaticClass();
-	UE_LOG(LogTemp, Warning, TEXT("Ctor; creating default frozen status effect for snowball"));
-	StatusEffect = CreateDefaultSubobject<UFrozenStatusEffect>(TEXT("SnowballFreezeEffect"));
-	StatusEffect->SetId("FrozenStatusEffect");
-	auto FreezeEffect = ::Cast<UFrozenStatusEffect>(StatusEffect);
-	if(FreezeEffect)
-	{
-		FreezeEffect->SetDuration(FreezeDuration);
-	}
 }
 
 // Called when the game starts or when spawned
@@ -127,18 +107,6 @@ void ASnowball::ProcessCost(ARyddelmystCharacter* CasterCharacter)
 void ASnowball::OnHit(UPrimitiveComponent* HitComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit)
 {
 	UE_LOG(LogTemp, Warning, TEXT("OnHit; EffectsOnTarget has size %d"), EffectsOnTarget.size());
-	
-	// primary StatusEffect
-	if(StatusEffect)
-	{
-		UE_LOG(LogTemp, Warning, TEXT("OnHit; applying primary StatusEffect with id %s"), *StatusEffect->GetId());
-		StatusEffect->OnEffectApplied(OtherActor);
-	}
-	else
-	{
-		UE_LOG(LogTemp, Warning, TEXT("OnHit; primary StatusEffect is not set"));
-	}
-
 	// auxiliary effect lambdas
 	for (auto Effect : EffectsOnTarget)
 	{
