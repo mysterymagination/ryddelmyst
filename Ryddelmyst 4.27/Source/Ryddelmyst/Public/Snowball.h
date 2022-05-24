@@ -46,10 +46,6 @@ public:
 	UFUNCTION()
 	void SetFreezeDuration(float Duration) { FreezeDuration = Duration; };
 	UFUNCTION()
-	UStatusEffect* GetStatusEffect() { return StatusEffect; };
-	UFUNCTION()
-	void SetStatusEffect(UStatusEffect* Effect) { StatusEffect = Effect; };
-	UFUNCTION()
 	void SetDamageScaleFactor(float ScaleFactor) { DamageScaleFactor = ScaleFactor; };
 	std::vector<std::function<void(AActor*, const FHitResult&)>>& GetEffectsVector() { return EffectsOnTarget; };
 	std::function<void(AActor* LaunchingActor, const FVector& LaunchDirection)> GetLaunchFunction() { return LaunchFn; };
@@ -62,9 +58,6 @@ public:
 	void ProcessCost(class ARyddelmystCharacter* CasterCharacter);
 
 protected:
-	// StatusEffect to be applied OnHit
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Magic")
-	UStatusEffect* StatusEffect;
 	// Duration during which the effected Actor will be unable to move
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Projectile)
 	float FreezeDuration = 5.f;
@@ -91,6 +84,12 @@ protected:
 	// scale factor for the final calculated damage
 	UPROPERTY(EditAnywhere, Category = Projectile)
 	float DamageScaleFactor = 1.f;
+	/**
+	 * @brief Actual damage calculated in OnHit() using CalculateDamage() with the Caster field as input
+	 * 
+	 */
+	UPROPERTY(VisibleAnywhere, Category = Projectile)
+	float Damage = 0.f;
 
 private:
 	UPROPERTY()
@@ -98,9 +97,11 @@ private:
 	// Projectile movement component.
 	UPROPERTY(VisibleAnywhere, Category = Movement)
 	UProjectileMovementComponent* ProjectileMovementComponent;
+
+protected:
 	// Custom onhit event handling, destroying the snowball and spawning a flattened snowball actor at the collision point
 	UFUNCTION()
-	void OnHit(UPrimitiveComponent* HitComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit);
+	virtual void OnHit(UPrimitiveComponent* HitComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit);
 	// Calculates the damage dealt to target
 	UFUNCTION()
 	float CalculateDamage(class ARyddelmystCharacter* Character);

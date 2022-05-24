@@ -24,6 +24,7 @@ class RYDDELMYST_API UFrozenStatusEffect : public UStatusEffect
 	FTimerHandle FreezeTimerHandle;
 	
 public: 
+	UFrozenStatusEffect();
 	/**
 	 * @brief Disables the EffectedActor's tick() so they are frozen for FreezeDuration seconds
 	 * 
