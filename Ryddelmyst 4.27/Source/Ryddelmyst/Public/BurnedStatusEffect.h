@@ -55,21 +55,21 @@ public:
 	void OnEffectRemoved(AActor* EffectedActor) override;
 	
 	UFUNCTION(BlueprintCallable, Category = "Magic")
-	void SetDuration(float Duration) { BurnDuration = Duration; };
+	void SetBurnDuration(float Duration) { BurnDuration = Duration; };
 
 	UFUNCTION(BlueprintCallable, Category = "Magic")
-	float GetDuration() { return BurnDuration; };
+	float GetBurnDuration() { return BurnDuration; };
 
 	UFUNCTION(BlueprintCallable, Category = "Magic")
-	void SetPeriod(float Period) { BurnPeriod = Period; };
+	void SetBurnPeriod(float Period) { BurnPeriod = Period; };
 
 	UFUNCTION(BlueprintCallable, Category = "Magic")
-	float GetPeriod() { return BurnPeriod; };
+	float GetBurnPeriod() { return BurnPeriod; };
 
 	UFUNCTION(BlueprintCallable, Category = "Magic")
-	void SetDamage(float Damage) { BurnDamage = Damage; };
+	void SetBurnDamage(float Damage) { BurnDamage = Damage; };
 
 	UFUNCTION(BlueprintCallable, Category = "Magic")
-	float GetDamage() { return BurnDamage; };
+	float GetBurnDamage() { return BurnDamage; };
 	
 };
