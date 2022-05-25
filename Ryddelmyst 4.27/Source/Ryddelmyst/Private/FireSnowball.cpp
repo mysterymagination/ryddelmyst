@@ -28,13 +28,13 @@ AFireSnowball::AFireSnowball()
 void AFireSnowball::OnHit(UPrimitiveComponent* HitComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit)
 {
 	ASnowball::OnHit(HitComp, OtherActor, OtherComp, NormalImpulse, Hit);
-	// primary StatusEffect
+	// elemental StatusEffect
 	if(OtherActor::StaticClass()->ImplementsInterface(UStatusEffected::StaticClass()))
     {
         // todo: does making OtherActor the outer/owner and then also adding the status effect to a uprop'd tarray inside OtherActor cause the StatusEffect to be doubly referenced by OtherActor?  I want the StatusEffect to be owned by the target TArray, which itself is owned by OtherActor; StatusEffects removed from that array should be garbage collected.
         UBurnedStatusEffect* StatusEffect = NewObject<UBurnedStatusEffect>(OtherActor, UBurnedStatusEffect::StaticClass());
         StatusEffect->SetId("BurnedStatusEffect");
-        StatusEffect->SetDuration(FreezeDuration);
+        StatusEffect->SetDuration(BurnDuration);
 		StatusEffect->SetPeriod(0.5f);
 		// ongoing damage will be init calculated damage over 2
 		StatusEffect->SetDamage(Damage/2.f);
