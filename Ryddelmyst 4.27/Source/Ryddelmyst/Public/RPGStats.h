@@ -3,26 +3,25 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "UObject/Interface.h"
-
 #include "RPGStats.generated.h"
 
-// This class does not need to be modified.
-UINTERFACE(MinimalAPI)
-class URPGStats : public UInterface
-{
-	GENERATED_BODY()
-};
-
 /**
- * 
+ * Class wrapping common RPG statistics e.g. strength, defense...
  */
-class RYDDELMYST_API IRPGStats
+UCLASS(BlueprintType, Blueprintable)
+class RYDDELMYST_API URPGStats : public UObject
 {
 	GENERATED_BODY()
-
-	// Add interface functions to this class. This is the class that will be inherited to implement this interface.
+	
 public:
-	
-	
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "RPG")
+	float Strength = 10.f;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "RPG")
+	float Defense = 10.f;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "RPG")
+	float Dexterity = 10.f;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "RPG")
+	float Magic = 10.f;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "RPG")
+	float Spirit = 10.f;
 };
