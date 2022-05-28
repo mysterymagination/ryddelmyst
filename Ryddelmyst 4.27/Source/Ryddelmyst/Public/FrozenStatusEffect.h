@@ -39,8 +39,8 @@ public:
 	void OnEffectRemoved(AActor* EffectedActor) override;
 	
 	UFUNCTION(BlueprintCallable, Category = "Magic")
-	void SetDuration(float Duration) { FreezeDuration = Duration; };
+	void SetFreezeDuration(float Duration) { FreezeDuration = Duration; };
 
 	UFUNCTION(BlueprintCallable, Category = "Magic")
-	float GetDuration() { return FreezeDuration; };
+	float GetFreezeDuration() { return FreezeDuration; };
 };

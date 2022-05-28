@@ -13,7 +13,8 @@ class RYDDELMYST_API URPGStats : public UObject
 {
 	GENERATED_BODY()
 	
-public:
+public: 
+	// todo: map instead of individual variables
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "RPG")
 	float Strength = 10.f;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "RPG")
@@ -24,4 +25,14 @@ public:
 	float Magic = 10.f;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "RPG")
 	float Spirit = 10.f;
+	
+	UFUNCTION(BlueprintCallable, Category = "RPG")
+	void ScaleStats(float ScaleFactor)
+	{
+		Strength *= ScaleFactor;
+		Defense *= ScaleFactor;
+		Dexterity *= ScaleFactor;
+		Magic *= ScaleFactor;
+		Spirit *= ScaleFactor;
+	}
 };

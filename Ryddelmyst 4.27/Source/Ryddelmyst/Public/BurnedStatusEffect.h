@@ -41,6 +41,7 @@ class RYDDELMYST_API UBurnedStatusEffect : public UStatusEffect
 	void Burn(AActor* EffectedActor);
 	
 public:
+	UBurnedStatusEffect();
 	/**
 	 * @brief Starts a timer whose function applies fire damage at a set period for a set duration
 	 * 
