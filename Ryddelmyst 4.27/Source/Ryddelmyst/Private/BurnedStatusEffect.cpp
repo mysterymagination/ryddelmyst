@@ -5,6 +5,11 @@
 #include "FireDamageType.h"
 #include "Kismet/GameplayStatics.h"
 
+UBurnedStatusEffect::UBurnedStatusEffect()
+{
+    Id = "BurnedStatusEffect";
+}
+
 void UBurnedStatusEffect::OnEffectApplied(AActor* EffectedActor)
 {
     // start a timer that runs a function to apply fire damage at the given period

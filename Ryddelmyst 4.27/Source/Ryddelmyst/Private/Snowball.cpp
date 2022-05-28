@@ -112,25 +112,24 @@ void ASnowball::OnHit(UPrimitiveComponent* HitComp, AActor* OtherActor, UPrimiti
 	{
 		Effect(OtherActor, Hit);
 	}
-	float dmg = 0.f;
 	if(Caster)
 	{
-		dmg = CalculateDamage(Caster);
+		Damage = CalculateDamage(Caster);
 	}
 	else
 	{
 		UE_LOG(LogTemp, Error, TEXT("OnHit; caster unset, so we cannot calc damage"));
 	}
-	UE_LOG(LogTemp, Warning, TEXT("OnHit; damage is %f"),dmg);
-	UGameplayStatics::ApplyPointDamage(OtherActor, dmg, NormalImpulse, Hit, UGameplayStatics::GetPlayerController(GetWorld(), 0), this, DamageType);
+	UE_LOG(LogTemp, Warning, TEXT("OnHit; damage is %f"), Damage);
+	UGameplayStatics::ApplyPointDamage(OtherActor, Damage, NormalImpulse, Hit, UGameplayStatics::GetPlayerController(GetWorld(), 0), this, DamageType);
 	Destroy();
 	// todo: leave behind flattened snowball messh?
 }
 
 float ASnowball::CalculateDamage(ARyddelmystCharacter* Character)
 {
-	float Damage = Power * Character->GetStats().MagPwr;
-	Damage += MathUtils::RollNdM(Character->GetStats().Lvl, 6);
-	return DamageScaleFactor * Damage;
+	float BaseDamage = Power * Character->GetStats().MagPwr;
+	BaseDamage += MathUtils::RollNdM(Character->GetStats().Lvl, 6);
+	return DamageScaleFactor * BaseDamage;
 }
 

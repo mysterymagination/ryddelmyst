@@ -30,6 +30,7 @@ class RYDDELMYST_API UShockedStatusEffect : public UStatusEffect
 	FTimerHandle ShockTimerHandle;
 	
 public:	
+	UShockedStatusEffect();
 	UFUNCTION(BlueprintCallable, Category = "Magic")
 	void SetShockDuration(float Duration) { ShockDuration = Duration; };
 	UFUNCTION(BlueprintCallable, Category = "Magic")

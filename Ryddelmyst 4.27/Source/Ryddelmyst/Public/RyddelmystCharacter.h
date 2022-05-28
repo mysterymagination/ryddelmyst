@@ -6,6 +6,7 @@
 #include "FawnCharacter.h"
 #include "LookitYouPawn.h"
 #include "Snowball.h"
+#include "IceySnowball.h"
 #include "FireSnowball.h"
 #include "ElectricSnowball.h"
 #include "Item.h"
@@ -63,6 +64,8 @@ class ARyddelmystCharacter : public AFawnCharacter
 						std::function<void(ASnowball* /*TransformedActor*/, const FTransform& /*transform data*/)>,
 						/*attr modifier function*/
 						std::function<void(ASnowball* /*bullet to modify*/)>,
+						/*attr modifier function for FireSnowball specifically*/
+						//std::function<void(AFireSnowball* /*bullet to modify*/)>, // todo: why tf does this not work?  With it uncommented all of sudden everyone trying to install lambdas with the ASnowball sig throw "error no viable overloaded '='..."
 						/*damage modifier function*/
 						std::function<void(ASnowball* /*bullet to modify*/, float /*damage scaling factor*/, TSubclassOf<UDamageType> /*changing the damage type*/)>,
 						/*duration modifier function*/
