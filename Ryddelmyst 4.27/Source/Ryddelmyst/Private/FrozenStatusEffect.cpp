@@ -3,7 +3,10 @@
 
 #include "FrozenStatusEffect.h"
 
-UFrozenStatusEffect::UFrozenStatusEffect() : Id("FrozenStatusEffect") {}
+UFrozenStatusEffect::UFrozenStatusEffect()
+{
+    Id = "FrozenStatusEffect";
+}
 
 void UFrozenStatusEffect::OnEffectApplied(AActor* EffectedActor)
 {
