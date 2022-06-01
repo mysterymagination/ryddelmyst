@@ -17,6 +17,8 @@
 #include <variant>
 #include "Components/TimelineComponent.h"
 #include "Components/BoxComponent.h"
+#include "BattleStats.h"
+#include "BattleStatsBearer.h"
 #include "RyddelmystCharacter.generated.h"
 
 class UInputComponent;
@@ -24,25 +26,8 @@ class USkeletalMeshComponent;
 class USceneComponent;
 class UCameraComponent;
 
-USTRUCT(BlueprintType)
-struct FBattleStats 
-{
-	GENERATED_BODY()
-	
-	UPROPERTY(EditAnywhere)
-	uint8 Lvl = 1;
-	UPROPERTY(EditAnywhere)
-	float MagPwr = 10.f;
-	UPROPERTY(EditAnywhere)
-	float MagDef = 10.f;
-	UPROPERTY(EditAnywhere)
-	float Atk = 10.f;
-	UPROPERTY(EditAnywhere)
-	float Def = 10.f;
-};
-
 UCLASS(config=Game)
-class ARyddelmystCharacter : public AFawnCharacter
+class ARyddelmystCharacter : public AFawnCharacter, public IBattleStatsBearer
 {
 	GENERATED_BODY()
 
@@ -145,7 +130,7 @@ public:
 	ARyddelmystCharacter();
 	virtual void OnLostFollower(ILookitYou* lookitYou) override;
 	UFUNCTION(BlueprintCallable, Category = "Statistics")
-	FBattleStats GetStats() { return CharacterStats; }
+	FBattleStats& GetStats() override { return CharacterStats; }
 	auto& GetMetamagicMap() { return MetamagicMap; };
 
 protected:
@@ -261,7 +246,7 @@ protected:
 	// Mapping of equip slot string keys to equipped item objects
 	UPROPERTY(EditAnywhere, Category = "Equipment")
 	TMap<FString, UObject*> Equipment;
-	UPROPERTY(EditAnywhere, Category = "Statistics")
+	UPROPERTY(EditAnywhere, Category = "RPG")
 	FBattleStats CharacterStats;
 
 protected:

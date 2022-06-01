@@ -5,27 +5,27 @@
 #include "CoreMinimal.h"
 #include "UObject/Interface.h"
 
-#include "RPGStatsBearer.generated.h"
+#include "BattleStatsBearer.generated.h"
 
 // This class does not need to be modified.
 UINTERFACE(MinimalAPI)
-class URPGStatsBearer : public UInterface
+class UBattleStatsBearer : public UInterface
 {
 	GENERATED_BODY()
 };
 
 /**
- * 
+ * An Actor with BattleStats is one who can participate in RPG combat and provide info to support same
  */
-class RYDDELMYST_API IRPGStatsBearer
+class RYDDELMYST_API IBattleStatsBearer
 {
 	GENERATED_BODY()
 
 public:
 	/**
-	 * @return the RPGStats object describing an Actor's RPG capabilities e.g. strength, defense...
+	 * @return the BattleStats object describing an Actor's RPG capabilities e.g. strength, defense...
 	 * 
 	 */
 	UFUNCTION(BlueprintCallable, BlueprintNativeEvent, Category = "RPG")
-	URPGStats* GetStats();
+	virtual UBattleStats& GetStats();
 };
