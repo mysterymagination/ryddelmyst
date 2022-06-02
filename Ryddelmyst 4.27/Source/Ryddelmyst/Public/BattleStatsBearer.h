@@ -27,5 +27,5 @@ public:
 	 * 
 	 */
 	UFUNCTION(BlueprintCallable, BlueprintNativeEvent, Category = "RPG")
-	UBattleStats& GetStats();
+	UBattleStats* GetStats();
 };
