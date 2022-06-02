@@ -130,7 +130,7 @@ public:
 	ARyddelmystCharacter();
 	virtual void OnLostFollower(ILookitYou* lookitYou) override;
 	UFUNCTION(BlueprintCallable, Category = "Statistics")
-	UBattleStats& GetStats() override { return CharacterStats; }
+	UBattleStats* GetStats() override { return CharacterStats; }
 	auto& GetMetamagicMap() { return MetamagicMap; };
 
 protected:
@@ -247,7 +247,7 @@ protected:
 	UPROPERTY(EditAnywhere, Category = "Equipment")
 	TMap<FString, UObject*> Equipment;
 	UPROPERTY(EditAnywhere, Category = "RPG")
-	UBattleStats CharacterStats;
+	UBattleStats* CharacterStats;
 
 protected:
 	/** Handles switching between our cam and the LookitYouPawn's "3rd person" cam */
