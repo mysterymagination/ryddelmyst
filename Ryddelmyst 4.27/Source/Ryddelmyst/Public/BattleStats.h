@@ -1,9 +1,12 @@
 #include "CoreMinimal.h"
+#include "BattleStats.generated.h"
 
-USTRUCT(BlueprintType)
-struct FBattleStats 
+UCLASS(BlueprintType, Blueprintable)
+class RYDDELMYST_API UBattleStats : public UObject
 {
 	GENERATED_BODY()
+
+public:
 	// todo: map instead of individual variables
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="RPG")
 	uint8 Lvl = 1;

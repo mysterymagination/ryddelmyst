@@ -4,7 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "UObject/Interface.h"
-
+#include "BattleStats.h"
 #include "BattleStatsBearer.generated.h"
 
 // This class does not need to be modified.
@@ -27,5 +27,5 @@ public:
 	 * 
 	 */
 	UFUNCTION(BlueprintCallable, BlueprintNativeEvent, Category = "RPG")
-	virtual UBattleStats& GetStats();
+	UBattleStats& GetStats();
 };
