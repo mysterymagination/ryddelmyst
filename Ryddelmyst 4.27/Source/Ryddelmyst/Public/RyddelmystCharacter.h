@@ -129,7 +129,7 @@ private:
 public:
 	ARyddelmystCharacter();
 	virtual void OnLostFollower(ILookitYou* lookitYou) override;
-	UBattleStats* GetStats() override { return CharacterStats; }
+	UBattleStats* GetStats_Implementation() { return CharacterStats; }
 	auto& GetMetamagicMap() { return MetamagicMap; };
 
 protected:
