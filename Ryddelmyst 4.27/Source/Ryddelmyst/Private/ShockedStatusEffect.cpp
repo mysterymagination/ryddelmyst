@@ -2,8 +2,8 @@
 
 
 #include "ShockedStatusEffect.h"
-#include "RPGStatsBearer.h"
-#include "RPGStats.h"
+#include "BattleStatsBearer.h"
+#include "BattleStats.h"
 
 UShockedStatusEffect::UShockedStatusEffect()
 {
@@ -13,11 +13,11 @@ UShockedStatusEffect::UShockedStatusEffect()
 void UShockedStatusEffect::OnEffectApplied(AActor* EffectedActor)
 {
     UE_LOG(LogTemp, Warning, TEXT("OnEffectApplied; shock duration is %f and the time is %s.  We are shocking the actor: %s from shock status effect %p"), ShockDuration, *FDateTime::Now().ToString(), *EffectedActor->GetName(), this);
-    // check if actor is an IRPGStatsBearer
-    if(EffectedActor->GetClass()->ImplementsInterface(URPGStatsBearer::StaticClass()))
+    // check if actor is an IBattleStatsBearer
+    if(EffectedActor->GetClass()->ImplementsInterface(UBattleStatsBearer::StaticClass()))
     {
         // apply stat scaling
-        IRPGStatsBearer::Execute_GetStats(EffectedActor)->ScaleStats(StatScaleFactor);
+        IBattleStatsBearer::Execute_GetStats(EffectedActor)->ScaleStats(StatScaleFactor);
         // todo: create a lightning particle effect around the effected actor
         // start a clock that after ShockDuration seconds re-enables Actor tick
         FTimerDelegate TimerDelegate;
@@ -30,7 +30,7 @@ void UShockedStatusEffect::OnEffectRemoved(AActor* EffectedActor)
 {
     UE_LOG(LogTemp, Warning, TEXT("OnEffectRemoved; shock duration is %f and the time is %s.  We are unshocking the actor: %s from shock status effect %p"), ShockDuration, *FDateTime::Now().ToString(), *EffectedActor->GetName(), this);
     // restore stats to normal from cached values
-    IRPGStatsBearer::Execute_GetStats(EffectedActor)->ScaleStats(1.f/StatScaleFactor);
+    IBattleStatsBearer::Execute_GetStats(EffectedActor)->ScaleStats(1.f/StatScaleFactor);
     // todo: remove lightning particle effect around the effected actor
 }
 

@@ -1,3 +1,5 @@
+#pragma once
+
 #include "CoreMinimal.h"
 #include "BattleStats.generated.h"
 
@@ -44,7 +46,7 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "RPG")
 	void ScaleStats(float ScaleFactor)
 	{
-		Strength *= ScaleFactor;
+		Attack *= ScaleFactor;
 		Defense *= ScaleFactor;
 		Speed *= ScaleFactor;
 		Magic *= ScaleFactor;

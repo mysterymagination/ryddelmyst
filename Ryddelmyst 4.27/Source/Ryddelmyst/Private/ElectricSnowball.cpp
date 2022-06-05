@@ -5,7 +5,7 @@
 #include "LightningDamageType.h"
 #include "StatusEffected.h"
 #include "ShockedStatusEffect.h"
-#include "RPGStats.h"
+#include "BattleStatsBearer.h"
 
 // Sets default values
 AElectricSnowball::AElectricSnowball()
@@ -39,8 +39,8 @@ void AElectricSnowball::OnHit(UPrimitiveComponent* HitComp, AActor* OtherActor, 
 	// elemental StatusEffect
 	if(OtherActor->GetClass()->ImplementsInterface(UStatusEffected::StaticClass()))
     {
-        // todo: check that OtherActor implements the IRPGStats interface and iff he does then pull down the stats for modification by ShockedStatusEffect (modifications which will be removed when the shocked effect ends)
-		if(OtherActor->GetClass()->ImplementsInterface(URPGStats::StaticClass()))
+        // todo: check that OtherActor implements the IBattleStatsBearer interface and iff he does then pull down the stats for modification by ShockedStatusEffect (modifications which will be removed when the shocked effect ends)
+		if(OtherActor->GetClass()->ImplementsInterface(UBattleStatsBearer::StaticClass()))
 		{
 			// todo: does making OtherActor the outer/owner and then also adding the status effect to a uprop'd tarray inside OtherActor cause the StatusEffect to be doubly referenced by OtherActor?  I want the StatusEffect to be owned by the target TArray, which itself is owned by OtherActor; StatusEffects removed from that array should be garbage collected.
 			UShockedStatusEffect* StatusEffect = NewObject<UShockedStatusEffect>(OtherActor, UShockedStatusEffect::StaticClass());
