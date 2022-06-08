@@ -16,6 +16,7 @@ void UShockedStatusEffect::OnEffectApplied(AActor* EffectedActor)
     // check if actor is an IBattleStatsBearer
     if(EffectedActor->GetClass()->ImplementsInterface(UBattleStatsBearer::StaticClass()))
     {
+        UE_LOG(LogTemp, Warning, TEXT("ShockedStatusEffect::OnEffectApplied; apply shock to %s"), *EffectedActor->GetName());
         // apply stat scaling
         IBattleStatsBearer::Execute_GetStats(EffectedActor)->ScaleStats(StatScaleFactor);
         // todo: create a lightning particle effect around the effected actor
@@ -23,6 +24,10 @@ void UShockedStatusEffect::OnEffectApplied(AActor* EffectedActor)
         FTimerDelegate TimerDelegate;
         TimerDelegate.BindUFunction(this, FName("OnEffectRemoved"), EffectedActor);
         EffectedActor->GetWorldTimerManager().SetTimer(ShockTimerHandle, TimerDelegate, ShockDuration, false);
+    }
+    else 
+    {
+        UE_LOG(LogTemp, Warning, TEXT("ShockedStatusEffect::OnEffectApplied; cannot apply shock to %s because they are not a battlestatsbearer"), *EffectedActor->GetName());
     }
 }
 
