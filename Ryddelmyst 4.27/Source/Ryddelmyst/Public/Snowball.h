@@ -81,7 +81,7 @@ protected:
 	 * @brief Actual damage calculated in OnHit() using CalculateDamage() with the Caster field as input
 	 * 
 	 */
-	UPROPERTY(VisibleAnywhere, Category = Projectile)
+	UPROPERTY()
 	float Damage = 0.f;
 
 private:

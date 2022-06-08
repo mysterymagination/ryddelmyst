@@ -128,8 +128,8 @@ void ASnowball::OnHit(UPrimitiveComponent* HitComp, AActor* OtherActor, UPrimiti
 
 float ASnowball::CalculateDamage(ARyddelmystCharacter* Character)
 {
-	float BaseDamage = Power * Character->GetStats()->Magic;
-	BaseDamage += MathUtils::RollNdM(Character->GetStats()->Lvl, 6);
+	float BaseDamage = Power * IBattleStatsBearer::Execute_GetStats(Character)->Magic;
+	BaseDamage += MathUtils::RollNdM(IBattleStatsBearer::Execute_GetStats(Character)->Lvl, 6);
 	return DamageScaleFactor * BaseDamage;
 }
 
