@@ -68,9 +68,6 @@ ARyddelmystCharacter::ARyddelmystCharacter()
 	{
 		Equipment.Add(key);
 	}
-
-	// battle stats!
-	CharacterStats = CreateDefaultSubobject<UBattleStats>(TEXT("PlayerStats"));
 }
 
 void ARyddelmystCharacter::BeginPlay()
