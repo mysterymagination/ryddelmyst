@@ -19,6 +19,7 @@
 #include "Components/BoxComponent.h"
 #include "BattleStats.h"
 #include "BattleStatsBearer.h"
+#include "StatusEffected.h"
 #include "RyddelmystCharacter.generated.h"
 
 class UInputComponent;
@@ -27,7 +28,7 @@ class USceneComponent;
 class UCameraComponent;
 
 UCLASS(config=Game)
-class ARyddelmystCharacter : public AFawnCharacter, public IBattleStatsBearer
+class ARyddelmystCharacter : public AFawnCharacter, public IBattleStatsBearer, public IStatusEffected
 {
 	GENERATED_BODY()
 
@@ -125,11 +126,24 @@ private:
 	uint8 SelectedItemIdx = 0;
 	UPROPERTY()
 	bool IsInventorySleeping = false;
+	UPROPERTY()
+	TArray<const UStatusEffect*> StatusEffects;
 
 public:
 	ARyddelmystCharacter();
 	virtual void OnLostFollower(ILookitYou* lookitYou) override;
 	UBattleStats* GetStats_Implementation() { UE_LOG(LogTemp, Warning, TEXT("GetStats; getting ryddelmystcharacter stats")); return CharacterStats; }
+	void ProcessStatusEffects_Implementation() {UE_LOG(LogTemp, Warning, TEXT("ProcessStatusEffects; dummy impl for RyddelmystCharacter"));}
+	void AddStatusEffect_Implementation(UStatusEffect* Effect) { StatusEffects.Add(Effect); }
+	void RemoveStatusEffect_Implmenetation(const FString& EffectId) 
+	{ 
+		const UStatusEffect* StatusToRemove = *StatusEffects.FindByPredicate([&](const UStatusEffect* Effect)
+			{
+				return Effect->GetName().Equals(EffectId);
+			}
+		); 
+		StatusEffects.RemoveAt(StatusEffects.Find(StatusToRemove));
+	}
 	auto& GetMetamagicMap() { return MetamagicMap; };
 
 protected:
@@ -245,7 +259,7 @@ protected:
 	// Mapping of equip slot string keys to equipped item objects
 	UPROPERTY(EditAnywhere, Category = "Equipment")
 	TMap<FString, UObject*> Equipment;
-	UPROPERTY(EditAnywhere, Category = "RPG")
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "RPG")
 	UBattleStats* CharacterStats;
 
 protected:
