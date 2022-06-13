@@ -28,4 +28,11 @@ public:
 	 */
 	UFUNCTION(BlueprintCallable, BlueprintNativeEvent, Category = "RPG")
 	UBattleStats* GetStats();
+
+	/**
+	 * @brief performs implementation specific modification to the Actor's speed e.g. CharacterMovementComponent->MaxWalkSpeed for Character subclasses.
+	 * 
+	 */
+	UFUNCTION(BlueprintCallable, BlueprintNativeEvent, Category = "RPG")
+	void ModifySpeed();
 };
