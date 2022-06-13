@@ -109,6 +109,16 @@ void ARyddelmystCharacter::BeginPlay()
 			IItem::Execute_OnEquip(Elem.Value, this);
 		}
 	}
+
+	if(CharacterStatsType)
+	{
+		CharacterStats = NewObject<UBattleStats>(this, CharacterStatsType);
+		UE_LOG(LogTemp, Warning, TEXT("ryddelmystcharacter ctor; character stats set to %s"), *CharacterStats->ToString());
+	}
+	else
+	{
+		UE_LOG(LogTemp, Warning, TEXT("ryddelmystcharacter ctor; character stats undefined"));
+	}
 }
 
 void ARyddelmystCharacter::Tick(float DeltaTime)

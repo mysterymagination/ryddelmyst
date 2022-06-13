@@ -52,4 +52,9 @@ public:
 		Magic *= ScaleFactor;
 		Spirit *= ScaleFactor;
 	}
+	UFUNCTION(BlueprintCallable, Category = "RPG")
+	FString ToString()
+	{
+		return FString::Printf(TEXT("{\nAttack: %f,\nDefense: %f,\nSpeed: %f,\nMagic: %f,\nSpirit: %f\n}"), Attack, Defense, Speed, Magic, Spirit);
+	}
 };
