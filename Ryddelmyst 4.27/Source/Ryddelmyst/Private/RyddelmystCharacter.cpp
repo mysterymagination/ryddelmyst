@@ -394,12 +394,12 @@ void ARyddelmystCharacter::Run()
 	if (IsRunning)
 	{
 		// toggle to walk speed
-		GetCharacterMovement()->MaxWalkSpeed = 600.f;
+		GetCharacterMovement()->MaxWalkSpeed = CharacterStats->Speed * 600.f;
 	}
 	else
 	{
 		// toggle to run speed
-		GetCharacterMovement()->MaxWalkSpeed = 1800.f;
+		GetCharacterMovement()->MaxWalkSpeed = CharacterStats->Speed * 1800.f;
 	}
 	IsRunning = !IsRunning;
 }

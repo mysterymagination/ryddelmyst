@@ -18,7 +18,7 @@ void UShockedStatusEffect::OnEffectApplied(AActor* EffectedActor)
     {
         UE_LOG(LogTemp, Warning, TEXT("ShockedStatusEffect::OnEffectApplied; apply shock to %s"), *EffectedActor->GetName());
         // apply stat scaling
-        IBattleStatsBearer::Execute_GetStats(EffectedActor)->ScaleStats(StatScaleFactor);
+        IBattleStatsBearer::Execute_GetStats(EffectedActor)->ScaleStats(StatScaleFactor, EffectedActor);
         // todo: create a lightning particle effect around the effected actor
         // start a clock that after ShockDuration seconds re-enables Actor tick
         FTimerDelegate TimerDelegate;
