@@ -135,10 +135,10 @@ public:
 	ARyddelmystCharacter();
 	virtual void OnLostFollower(ILookitYou* lookitYou) override;
 	UBattleStats* GetStats_Implementation() { UE_LOG(LogTemp, Warning, TEXT("GetStats; getting ryddelmystcharacter stats")); return CharacterStats; }
-	void ModifySpeed_Implementation() 
-	{ // todo: this still aint great since we set MaxWalkSpeed to a constant in the Run action; that will override any mods we make here.  I think we need either this plus a usage of CharacterStats->Speed scaling factor in the Run action OR we need to store the walk and run speeds in a constant var someplace and we set MaxWalkSpeed in Tick() to {current run/walk mode appropriate base speed} * speed scaling factor
+	void UpdateSpeed_Implementation() 
+	{ 
 		GetCharacterMovement()->MaxWalkSpeed *= CharacterStats->Speed;
-		UE_LOG(LogTemp, Warning, TEXT("tick; max walk speed %f and speed factor %f"), GetCharacterMovement()->MaxWalkSpeed, CharacterStats->Speed); 
+		UE_LOG(LogTemp, Warning, TEXT("UpdateSpeed; max walk speed %f and speed factor %f"), GetCharacterMovement()->MaxWalkSpeed, CharacterStats->Speed); 
 	}
 	void ProcessStatusEffects_Implementation() {UE_LOG(LogTemp, Warning, TEXT("ProcessStatusEffects; dummy impl for RyddelmystCharacter"));}
 	void AddStatusEffect_Implementation(UStatusEffect* Effect) 

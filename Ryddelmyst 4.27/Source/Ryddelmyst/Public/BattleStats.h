@@ -44,14 +44,8 @@ public:
 	float Speed = 1.f;
 
 	UFUNCTION(BlueprintCallable, Category = "RPG")
-	void ScaleStats(float ScaleFactor)
-	{
-		Attack *= ScaleFactor;
-		Defense *= ScaleFactor;
-		Speed *= ScaleFactor;
-		Magic *= ScaleFactor;
-		Spirit *= ScaleFactor;
-	}
+	void ScaleStats(float ScaleFactor, AActor* BattleStatsBearer);
+	
 	UFUNCTION(BlueprintCallable, Category = "RPG")
 	FString ToString()
 	{
