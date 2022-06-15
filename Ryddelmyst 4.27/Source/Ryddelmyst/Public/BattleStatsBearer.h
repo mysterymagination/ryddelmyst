@@ -34,5 +34,5 @@ public:
 	 * 
 	 */
 	UFUNCTION(BlueprintCallable, BlueprintNativeEvent, Category = "RPG")
-	void ModifySpeed();
+	void UpdateSpeed();
 };
