@@ -1,7 +1,7 @@
 #include "BattleStats.h"
 #include "BattleStatsBearer.h"
 
-void BattleStats::ScaleStats(float ScaleFactor, AActor* BattleStatsBearer);
+void UBattleStats::ScaleStats(float ScaleFactor, AActor* BattleStatsBearer)
 {
     Attack *= ScaleFactor;
     Defense *= ScaleFactor;

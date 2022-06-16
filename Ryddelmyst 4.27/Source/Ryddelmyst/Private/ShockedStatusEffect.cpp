@@ -35,7 +35,7 @@ void UShockedStatusEffect::OnEffectRemoved(AActor* EffectedActor)
 {
     UE_LOG(LogTemp, Warning, TEXT("OnEffectRemoved; shock duration is %f and the time is %s.  We are unshocking the actor: %s from shock status effect %p"), ShockDuration, *FDateTime::Now().ToString(), *EffectedActor->GetName(), this);
     // restore stats to normal from cached values
-    IBattleStatsBearer::Execute_GetStats(EffectedActor)->ScaleStats(1.f/StatScaleFactor);
+    IBattleStatsBearer::Execute_GetStats(EffectedActor)->ScaleStats(1.f/StatScaleFactor, EffectedActor);
     // todo: remove lightning particle effect around the effected actor
 }
 
