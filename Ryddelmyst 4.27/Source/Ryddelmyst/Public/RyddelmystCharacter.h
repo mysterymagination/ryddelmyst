@@ -20,6 +20,7 @@
 #include "BattleStats.h"
 #include "BattleStatsBearer.h"
 #include "StatusEffected.h"
+#include "GameFramework/CharacterMovementComponent.h"
 #include "RyddelmystCharacter.generated.h"
 
 class UInputComponent;
@@ -137,8 +138,9 @@ public:
 	UBattleStats* GetStats_Implementation() { UE_LOG(LogTemp, Warning, TEXT("GetStats; getting ryddelmystcharacter stats")); return CharacterStats; }
 	void UpdateSpeed_Implementation() 
 	{ 
-		GetCharacterMovement()->MaxWalkSpeed *= CharacterStats->Speed;
-		UE_LOG(LogTemp, Warning, TEXT("UpdateSpeed; max walk speed %f and speed factor %f"), GetCharacterMovement()->MaxWalkSpeed, CharacterStats->Speed); 
+		GetCharacterMovement()->MaxWalkSpeed =  IsRunning ? CharacterStats->Speed * BaseWalkSpeed * RunSpeedFactor : CharacterStats->Speed * BaseWalkSpeed;
+		UE_LOG(LogTemp, Warning, TEXT("UpdateSpeed; max walk speed became %f from speed factor %f times BaseWalkSpeed %f %s"), 
+			GetCharacterMovement()->MaxWalkSpeed, CharacterStats->Speed, BaseWalkSpeed, (IsRunning ? *FString::Printf(TEXT("and running factor of %f"), RunSpeedFactor) : *FString(TEXT("")))); 
 	}
 	void ProcessStatusEffects_Implementation() {UE_LOG(LogTemp, Warning, TEXT("ProcessStatusEffects; dummy impl for RyddelmystCharacter"));}
 	void AddStatusEffect_Implementation(UStatusEffect* Effect) 
@@ -218,6 +220,20 @@ public:
 	 * 
 	 */
 	static const std::string ID_METAMAGIC_CATEGORY_TRANSFORM;
+
+	/**
+	 * @brief The cm/s walking speed we use for character base speed
+	 * 
+	 */
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Movement)
+	float BaseWalkSpeed = 600.f;
+
+	/**
+	 * @brief The scaling factor by which running increases base speed
+	 * 
+	 */
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Movement)
+	float RunSpeedFactor = 3.f;
 
 	/** Base turn rate, in deg/sec. Other scaling may affect final turn rate. */
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category=Camera)

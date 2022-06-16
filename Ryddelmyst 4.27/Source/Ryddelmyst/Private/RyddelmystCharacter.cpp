@@ -10,7 +10,6 @@
 #include "Describable.h"
 #include "Kismet/KismetMathLibrary.h"
 #include "TimerManager.h"
-#include "GameFramework/CharacterMovementComponent.h"
 #include "DrawDebugHelpers.h"
 #include "RyddelmystHUD.h"
 #include "GameFramework/PlayerController.h"
@@ -390,16 +389,17 @@ void ARyddelmystCharacter::CameraToggle()
 
 void ARyddelmystCharacter::Run()
 {
-	UE_LOG(LogTemp, Warning, TEXT("Run; speed is %f and we are %s"), GetCharacterMovement()->Velocity.Size(), IsRunning ? TEXT("running") : TEXT("walking"));
 	if (IsRunning)
 	{
 		// toggle to walk speed
-		GetCharacterMovement()->MaxWalkSpeed = CharacterStats->Speed * 600.f;
+		GetCharacterMovement()->MaxWalkSpeed = CharacterStats->Speed * BaseWalkSpeed;
+		UE_LOG(LogTemp, Warning, TEXT("Run; after switching to walk mode, MaxWalkSpeed is %f from speed stat %f times BaseWalkSpeed %f"), GetCharacterMovement()->MaxWalkSpeed, CharacterStats->Speed, BaseWalkSpeed);
 	}
 	else
 	{
 		// toggle to run speed
-		GetCharacterMovement()->MaxWalkSpeed = CharacterStats->Speed * 1800.f;
+		GetCharacterMovement()->MaxWalkSpeed = CharacterStats->Speed * BaseWalkSpeed * RunSpeedFactor;
+		UE_LOG(LogTemp, Warning, TEXT("Run; after switching to run mode, MaxWalkSpeed is %f from speed stat %f times BaseWalkSpeed %f times run speed factor %f"), GetCharacterMovement()->MaxWalkSpeed, CharacterStats->Speed, BaseWalkSpeed, RunSpeedFactor);
 	}
 	IsRunning = !IsRunning;
 }
