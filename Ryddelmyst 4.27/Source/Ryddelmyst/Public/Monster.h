@@ -3,14 +3,15 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "Animation/SkeletalMeshActor.h"
+#include "GameFramework/Pawn.h"
+#include "MonsterAI.h"
 #include "Monster.generated.h"
 
 /**
- * 
+ * A Pawn controlled by MonsterAI
  */
-UCLASS()
-class RYDDELMYST_API AMonster : public ASkeletalMeshActor
+UCLASS(BlueprintType, Blueprintable)
+class RYDDELMYST_API AMonster : public APawn
 {
 	GENERATED_BODY()
 	
