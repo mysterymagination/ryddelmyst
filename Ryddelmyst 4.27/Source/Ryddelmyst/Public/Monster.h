@@ -45,12 +45,13 @@ public:
 	float RunSpeedFactor = 10.f;
 
 public:
+	AMonster();
 	UBattleStats* GetStats_Implementation() { UE_LOG(LogTemp, Warning, TEXT("GetStats; getting monster stats")); return MonsterStats; }
 	void UpdateSpeed_Implementation() 
 	{ 
-		GetCharacterMovement()->MaxWalkSpeed =  IsRunning ? CharacterStats->Speed * BaseWalkSpeed * RunSpeedFactor : CharacterStats->Speed * BaseWalkSpeed;
+		GetCharacterMovement()->MaxWalkSpeed =  IsRunning ? MonsterStats->Speed * BaseWalkSpeed * RunSpeedFactor : MonsterStats->Speed * BaseWalkSpeed;
 		UE_LOG(LogTemp, Warning, TEXT("UpdateSpeed; monster max walk speed became %f from speed factor %f times BaseWalkSpeed %f %s"), 
-			GetCharacterMovement()->MaxWalkSpeed, CharacterStats->Speed, BaseWalkSpeed, (IsRunning ? *FString::Printf(TEXT("and running factor of %f"), RunSpeedFactor) : *FString(TEXT(""))));
+			GetCharacterMovement()->MaxWalkSpeed, MonsterStats->Speed, BaseWalkSpeed, (IsRunning ? *FString::Printf(TEXT("and running factor of %f"), RunSpeedFactor) : *FString(TEXT(""))));
 	}
 	void AddStatusEffect_Implementation(UStatusEffect* Effect) 
 	{ 
