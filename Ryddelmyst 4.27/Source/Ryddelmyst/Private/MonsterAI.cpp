@@ -11,5 +11,5 @@ void AMonsterAI::BeginPlay()
 
 void AMonsterAI::TrackPlayer()
 {
-    // todo: ape AI Move To node
+    // todo: use AIController::MoveToActor() to ape AI Move To node
 }
