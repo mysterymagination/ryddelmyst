@@ -3,7 +3,8 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "GameFramework/Pawn.h"
+#include "GameFramework/Character.h"
+#include "GameFramework/CharacterMovementComponent.h"
 #include "MonsterAI.h"
 #include "BattleStats.h"
 #include "BattleStatsBearer.h"
@@ -11,27 +12,45 @@
 #include "Monster.generated.h"
 
 /**
- * A Pawn controlled by MonsterAI
+ * A Character controlled by MonsterAI
  */
 UCLASS(BlueprintType, Blueprintable)
-class RYDDELMYST_API AMonster : public APawn, public IBattleStatsBearer, public IStatusEffected
+class RYDDELMYST_API AMonster : public ACharacter, public IBattleStatsBearer, public IStatusEffected
 {
 	GENERATED_BODY()
 	UPROPERTY()
 	UBattleStats* MonsterStats;
 	UPROPERTY()
 	TArray<const UStatusEffect*> StatusEffects;
+	UPROPERTY()
+	bool IsRunning = false;
 
 protected:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "RPG")
 	TSubclassOf<UBattleStats> MonsterStatsType;
 
 public:
+	/**
+	 * @brief The cm/s walking speed we use for character base speed
+	 * 
+	 */
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Movement)
+	float BaseWalkSpeed = 300.f;
+
+	/**
+	 * @brief The scaling factor by which running increases base speed
+	 * 
+	 */
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Movement)
+	float RunSpeedFactor = 10.f;
+
+public:
 	UBattleStats* GetStats_Implementation() { UE_LOG(LogTemp, Warning, TEXT("GetStats; getting monster stats")); return MonsterStats; }
 	void UpdateSpeed_Implementation() 
 	{ 
-		// todo: figure out speed for a generic MovementComponent and/or make a custom monster movementcomponent
-		UE_LOG(LogTemp, Warning, TEXT("UpdateSpeed; not yet implemented for monster")); 
+		GetCharacterMovement()->MaxWalkSpeed =  IsRunning ? CharacterStats->Speed * BaseWalkSpeed * RunSpeedFactor : CharacterStats->Speed * BaseWalkSpeed;
+		UE_LOG(LogTemp, Warning, TEXT("UpdateSpeed; monster max walk speed became %f from speed factor %f times BaseWalkSpeed %f %s"), 
+			GetCharacterMovement()->MaxWalkSpeed, CharacterStats->Speed, BaseWalkSpeed, (IsRunning ? *FString::Printf(TEXT("and running factor of %f"), RunSpeedFactor) : *FString(TEXT(""))));
 	}
 	void AddStatusEffect_Implementation(UStatusEffect* Effect) 
 	{ 
