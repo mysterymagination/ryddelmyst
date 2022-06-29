@@ -112,7 +112,9 @@ void ARyddelmystCharacter::BeginPlay()
 	if(CharacterStatsType)
 	{
 		CharacterStats = NewObject<UBattleStats>(this, CharacterStatsType);
-		UE_LOG(LogTemp, Warning, TEXT("BeginPlay; character stats set to %s"), *CharacterStats->ToString());
+		// init other vars based on stats
+		IBattleStatsBearer::Execute_UpdateSpeed(this);
+		UE_LOG(LogTemp, Warning, TEXT("BeginPlay; character stats set to %s, and maxwalkspeed shows %f"), *CharacterStats->ToString(), GetCharacterMovement()->MaxWalkSpeed);
 	}
 	else
 	{
