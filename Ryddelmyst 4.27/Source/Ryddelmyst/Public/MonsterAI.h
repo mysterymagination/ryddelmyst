@@ -28,6 +28,7 @@ protected:
 	virtual void BeginPlay() override;
 
 public: 
+	AMonsterAI();
 	void TrackPlayer();
 	
 	
