@@ -16,6 +16,7 @@
 #include "ItemActor.h"
 #include "Blueprint/WidgetBlueprintLibrary.h"
 #include "OpenClose.h"
+#include <stdexcept>
 
 DEFINE_LOG_CATEGORY_STATIC(LogFPChar, Warning, All);
 
@@ -534,14 +535,17 @@ void ARyddelmystCharacter::Fire()
 				const auto& SpellMap = MetamagicMap[std::string(TCHAR_TO_UTF8(*SnowballType->GetName()))];
 				for(const auto& Source : SpellMap)
 				{
-					try 
+					// check the current Source for Conjuration effects and run them
+					const auto SourceConjurationItr = Source.second.find(ARyddelmystCharacter::ID_SPELL_PHASE_CONJURATION);
+					if(SourceConjurationItr != Source.second.end())
 					{
-						// check the current Source for Conjuration effects and run them
-						const auto& ConjurationMap = Source.second.at(ARyddelmystCharacter::ID_SPELL_PHASE_CONJURATION);
 						// todo: obviously this architecture only really supports one Conjuration[Creation] function, so how should the case of multiple creation functions from multiple sources interoperate?  Maybe the best method would be to check for incompatibilities at the OnEquip stage and disable the incompatible part of the newly added source or refuse to equip it entirely? 
-						try 
+						const auto& ConjurationMap = SourceConjurationItr->second;
+						const auto ConjurationMapItr = ConjurationMap.find(ARyddelmystCharacter::ID_METAMAGIC_CATEGORY_CREATION);
+						if (ConjurationMapItr != ConjurationMap.end())
 						{
 							// since Creation is currently the only Conjuration phase effect (and any additional effects would likely need a different function sig), there's no need to iterate
+								const auto& CreationFnVariant = ConjurationMapItr->second;
 							const auto& CreationFnVariant = ConjurationMap.at(ARyddelmystCharacter::ID_METAMAGIC_CATEGORY_CREATION);
 							try
 							{
@@ -552,14 +556,6 @@ void ARyddelmystCharacter::Fire()
 								UE_LOG(LogTemp, Warning, TEXT("Fire; no Conjuration[Creation] function with expected signature from %s.  Details are: %s"), *FString(Source.first.c_str()), *FString(ex.what()));
 							}
 						}
-						catch(const std::out_of_range& e)
-						{
-							UE_LOG(LogTemp, Warning, TEXT("Fire; no Conjuration[Creation] function from %s"), *FString(Source.first.c_str()));
-						}
-					}
-					catch(const std::out_of_range& e)
-					{
-						UE_LOG(LogTemp, Warning, TEXT("Fire; no Conjuration functions from %s"), *FString(Source.first.c_str()));
 					}
 				}
 				// If we didn't have any Conjuration[Creation] functions to run, we'll need to use the default
