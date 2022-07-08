@@ -569,10 +569,11 @@ void ARyddelmystCharacter::Fire()
 				// Evocation phase: lookup evocation effects for the current spell and apply them to each instance in the bullet array created above.
 				for(const auto& Source : SpellMap)
 				{
-					try 
-					{
-						// check the current Source for Evocation effects and run them
-						const auto& EvocationMap = Source.second.at(ARyddelmystCharacter::ID_SPELL_PHASE_EVOCATION);
+					// check the current Source for Evocation effects and run them
+						auto SourceEvocationItr = Source.second.find(ARyddelmystCharacter::ID_SPELL_PHASE_EVOCATION);
+						if(SourceEvocationItr != Source.second.end())
+						{
+							const auto& EvocationMap = SourceEvocationItr->second;
 						for(const auto& Evocation : EvocationMap)
 						{
 							try 
@@ -589,20 +590,16 @@ void ARyddelmystCharacter::Fire()
 							}
 						}
 					}
-					catch(const std::out_of_range& e)
-					{
-						UE_LOG(LogTemp, Warning, TEXT("Fire; no evocation functions from %s"), *FString(Source.first.c_str()));
-					}
 				}
 
 				// Enchantment phase: lookup enchantment effects for the current spell and store them for later OnHit application in each bullet instance in the bullet array created above.
 				for(const auto& Source : SpellMap)
 				{
-					try 
+					// check the current Source for Enchantment effects and install them for invocation in OnHit later
+					auto SourceEnchantmentItr = Source.second.find(ARyddelmystCharacter::ID_SPELL_PHASE_ENCHANTMENT);
+					if(SourceEnchantmentItr != Source.second.end())
 					{
-						// check the current Source for Enchantment effects and install them for invocation in OnHit later
-						const auto& EnchantmentMap = Source.second.at(ARyddelmystCharacter::ID_SPELL_PHASE_ENCHANTMENT);
-						
+						const auto& EnchantmentMap = SourceEnchantmentItr->second;
 						for(const auto& Enchantment : EnchantmentMap)
 						{
 							try 
@@ -620,10 +617,6 @@ void ARyddelmystCharacter::Fire()
 							}
 						}
 					}
-					catch(const std::out_of_range& e)
-					{
-						UE_LOG(LogTemp, Warning, TEXT("Fire; no enchantment functions from %s"), *FString(Source.first.c_str()));
-					}
 				}
 
 				// Transmutation[Spawn] phase: lookup spawn effects for the current spell and run them on each bullet instance in the bullet array created above.
@@ -636,12 +629,14 @@ void ARyddelmystCharacter::Fire()
 				for(const auto& Source : SpellMap)
 				{
 					// check the current Source for Evocation effects and install them for invocation in OnHit later
-					try
+					auto SourceTransmutationItr = Source.second.find(ARyddelmystCharacter::ID_SPELL_PHASE_TRANSMUTATION);
+					if(SourceTransmutationItr != Source.second.end())
 					{
-						const auto& TransmutationMap = Source.second.at(ARyddelmystCharacter::ID_SPELL_PHASE_TRANSMUTATION);
-						try 
+						const auto& TransmutationMap = SourceTransmutationItr->second;
+						auto TransmutationSpawnItr = TransmutationMap.find(ARyddelmystCharacter::ID_METAMAGIC_CATEGORY_SPAWN);
+						if(TransmutationSpawnItr != TransmutationMap.end())
 						{
-							const auto& SpawnFnVariant = TransmutationMap.at(ARyddelmystCharacter::ID_METAMAGIC_CATEGORY_SPAWN);
+							const auto& SpawnFnVariant = TransmutationSpawnItr->second;
 							try 
 							{
 								const auto& SpawnFn = std::get<std::function<void(ARyddelmystCharacter* /*TransmutingCharacter*/, const FTransform& /*SpawnTransform*/, const FVector& /*LaunchDirection*/, const std::vector<ASnowball*>& /*Bullets spawned in map*/)>>(SpawnFnVariant);
@@ -653,14 +648,6 @@ void ARyddelmystCharacter::Fire()
 								UE_LOG(LogTemp, Warning, TEXT("Fire; no spawn transmutation function with expected signature from %s.  Details are: %s"), *FString(Source.first.c_str()), *FString(ex.what()));
 							}
 						}
-						catch(const std::out_of_range& e)
-						{
-							UE_LOG(LogTemp, Warning, TEXT("Fire; no Spawn function from %s"), *FString(Source.first.c_str()));
-						}
-					}
-					catch(const std::out_of_range& e)
-					{
-						UE_LOG(LogTemp, Warning, TEXT("Fire; no Transmutation functions from %s"), *FString(Source.first.c_str()));
 					}
 				}
 				
@@ -679,9 +666,10 @@ void ARyddelmystCharacter::Fire()
 				// apply any other post-spawn metamagic transforms
 				for(const auto& Source : SpellMap)
 				{
-					try
+					auto SourceTransmutationItr = Source.second.find(ARyddelmystCharacter::ID_SPELL_PHASE_TRANSMUTATION);
+					if(SourceTransmutationItr != Source.second.end())
 					{
-						const auto& TransmutationMap = Source.second.at(ARyddelmystCharacter::ID_SPELL_PHASE_TRANSMUTATION);
+						const auto& TransmutationMap = SourceTransmutationItr->second;
 						for(const auto& Transmutation : TransmutationMap)
 						{
 							try 
@@ -698,10 +686,6 @@ void ARyddelmystCharacter::Fire()
 								UE_LOG(LogTemp, Warning, TEXT("Fire; no post-spawn transmutation function with expected signature from %s.  Details are: %s"), *FString(Source.first.c_str()), *FString(ex.what()));
 							}
 						}
-					}
-					catch(const std::out_of_range& e)
-					{
-						UE_LOG(LogTemp, Warning, TEXT("Fire; (post-spawn) no transmutation functions from %s"), *FString(Source.first.c_str()));
 					}
 				}
 				
