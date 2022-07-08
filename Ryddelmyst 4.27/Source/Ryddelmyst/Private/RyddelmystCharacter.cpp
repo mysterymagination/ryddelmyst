@@ -541,12 +541,11 @@ void ARyddelmystCharacter::Fire()
 					{
 						// todo: obviously this architecture only really supports one Conjuration[Creation] function, so how should the case of multiple creation functions from multiple sources interoperate?  Maybe the best method would be to check for incompatibilities at the OnEquip stage and disable the incompatible part of the newly added source or refuse to equip it entirely? 
 						const auto& ConjurationMap = SourceConjurationItr->second;
-						const auto ConjurationMapItr = ConjurationMap.find(ARyddelmystCharacter::ID_METAMAGIC_CATEGORY_CREATION);
-						if (ConjurationMapItr != ConjurationMap.end())
+						const auto ConjurationCreationItr = ConjurationMap.find(ARyddelmystCharacter::ID_METAMAGIC_CATEGORY_CREATION);
+						if (ConjurationCreationItr != ConjurationMap.end())
 						{
 							// since Creation is currently the only Conjuration phase effect (and any additional effects would likely need a different function sig), there's no need to iterate
-								const auto& CreationFnVariant = ConjurationMapItr->second;
-							const auto& CreationFnVariant = ConjurationMap.at(ARyddelmystCharacter::ID_METAMAGIC_CATEGORY_CREATION);
+								const auto& CreationFnVariant = ConjurationCreationItr->second;
 							try
 							{
 								Bullets = std::get<std::function<std::vector<ASnowball*>/*created instances*/(ARyddelmystCharacter* /*creating character*/)>>(CreationFnVariant)(this); 
