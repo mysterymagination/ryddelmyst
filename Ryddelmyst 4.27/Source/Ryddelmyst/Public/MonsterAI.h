@@ -15,6 +15,8 @@ class RYDDELMYST_API AMonsterAI : public AAIController
 	GENERATED_BODY()
 	UPROPERTY()
 	FTimerHandle TrackingTimerHandle;
+	UPROPERTY()
+	FTimerHandle TeleportTimerHandle;
 
 protected:
 	/**
@@ -23,6 +25,18 @@ protected:
 	 */
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = AI)
 	float TrackingPeriod = 1.f;
+	/**
+	 * @brief The period at which we teleport near the player, in seconds.
+	 * 
+	 */
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = AI)
+	float TeleportPeriod = 30.f;
+	/**
+	 * @brief The vector offset from the player which determines the location we teleport to.
+	 * 
+	 */
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = AI)
+	FVector TeleportOffset;
 
 protected:
 	virtual void BeginPlay() override;
@@ -30,6 +44,5 @@ protected:
 public: 
 	AMonsterAI();
 	void TrackPlayer();
-	
-	
+	void TeleportNearPlayer();
 };
