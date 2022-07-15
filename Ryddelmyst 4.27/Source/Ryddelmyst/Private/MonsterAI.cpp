@@ -22,19 +22,22 @@ void AMonsterAI::TrackPlayer()
 {
     UE_LOG(LogTemp, Warning, TEXT("TrackPlayer; refreshing player track behavior"));
     AActor* PursuedActor = UGameplayStatics::GetPlayerCharacter(GetWorld(), 0);
-    // turn towards player 1
-    FRotator LookAtRotation = (PursuedActor->GetActorLocation() - GetCharacter()->GetActorLocation()).Rotation();
-    GetCharacter()->SetActorRotation(LookAtRotation);
-    // pursue player 1
-    MoveToActor(
-        PursuedActor,
-        100.f,
-        true,
-        true,
-        false,
-        nullptr,
-        true
-    );
+    if(PursuedActor)
+    {
+        // turn towards player 1
+        FRotator LookAtRotation = (PursuedActor->GetActorLocation() - GetCharacter()->GetActorLocation()).Rotation();
+        GetCharacter()->SetActorRotation(LookAtRotation);
+        // pursue player 1
+        MoveToActor(
+            PursuedActor,
+            100.f,
+            true,
+            true,
+            false,
+            nullptr,
+            true
+        );
+    }
 }
 
 void AMonsterAI::TeleportNearPlayer()
