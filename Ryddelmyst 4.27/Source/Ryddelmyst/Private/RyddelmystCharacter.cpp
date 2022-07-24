@@ -316,8 +316,16 @@ void ARyddelmystCharacter::Interact()
 					}
 					else if (cap == InteractCapability::OPENABLE)
 					{
+						// todo: add a check for open status to IOpenClose so we know whether our action should be opening or closing
 						UE_LOG(LogTemp, Warning, TEXT("Interact; openable object %s found"), *Actor->GetName());
-						IOpenClose::Execute_Open(Actor, this);
+						if(!IOpenClose::Execute_IsOpen(Actor))
+						{
+							IOpenClose::Execute_Open(Actor, this);
+						}
+						else 
+						{
+							IOpenClose::Execute_Close(Actor, this);
+						}
 					}
 
 					// todo: extend player collision bounds to encompass the grabbable object; I guess toss a cubeoid around it?  Alternative would be to lean on the existing collision of the object and somehow get a message sent to the player iff the player is holding it that it has collided with something.
