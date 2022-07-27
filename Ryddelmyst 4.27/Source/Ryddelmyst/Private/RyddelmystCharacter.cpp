@@ -316,14 +316,14 @@ void ARyddelmystCharacter::Interact()
 					}
 					else if (cap == InteractCapability::OPENABLE)
 					{
-						// todo: add a check for open status to IOpenClose so we know whether our action should be opening or closing
-						UE_LOG(LogTemp, Warning, TEXT("Interact; openable object %s found"), *Actor->GetName());
 						if(!IOpenClose::Execute_IsOpen(Actor))
 						{
+							UE_LOG(LogTemp, Warning, TEXT("Interact; opening opencloseable object %s"), *Actor->GetName());
 							IOpenClose::Execute_Open(Actor, this);
 						}
 						else 
 						{
+							UE_LOG(LogTemp, Warning, TEXT("Interact; closing opencloseable object %s"), *Actor->GetName());
 							IOpenClose::Execute_Close(Actor, this);
 						}
 					}

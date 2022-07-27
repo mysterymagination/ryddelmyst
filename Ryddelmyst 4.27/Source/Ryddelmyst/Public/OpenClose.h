@@ -34,6 +34,6 @@ public:
 	UFUNCTION(BlueprintCallable, BlueprintNativeEvent, category = "Interaction", meta = (MustImplement = "Item"))
 	bool Unlock(AActor* Unlocker, UObject* Item);
 
-	UFUNCTION(BlueprintCallable, BlueprintNativeEvent, category = "Interaction"))
+	UFUNCTION(BlueprintCallable, BlueprintNativeEvent, category = "Interaction")
 	bool IsOpen();
 };
