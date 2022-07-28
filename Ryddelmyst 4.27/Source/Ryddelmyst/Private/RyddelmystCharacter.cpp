@@ -698,7 +698,7 @@ void ARyddelmystCharacter::Fire()
 				
 				// todo: use ASnowball::ProcessCost() instead, which will be called as part of ASnowball::Cast()
 				// todo: support metamagic fx modifying casting cost 
-				UpdateMagic(Bullets[0]->GetMagicCost());
+				UpdateMagic(-Bullets[0]->GetMagicCost());
 			}
 		}
 	}
