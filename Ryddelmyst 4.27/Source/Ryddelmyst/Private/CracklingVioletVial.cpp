@@ -45,7 +45,7 @@ void UCracklingVioletVial::OnEquip_Implementation(AActor* EquippedActor)
 				CurrentAngle += DistAngle;
 				FRotator DistRotation(0.f, CurrentAngle, 0.f);
 				FTransform FinalTransform = SpawnTransform;
-				FinalTransform.AddToTranslation((Bullet->GetSimpleCollisionRadius() * BulletOffsetFactor) * TransmutingCharacter->GetActorRightVector());
+				//FinalTransform.AddToTranslation((Bullet->GetSimpleCollisionRadius() * BulletOffsetFactor * 5) * TransmutingCharacter->GetActorRightVector());
 				Bullet->FinishSpawning(FinalTransform);
 				FVector ModifiedLaunchDirection = DistRotation.RotateVector(LaunchDirection);
 				Bullet->Cast(TransmutingCharacter, ModifiedLaunchDirection);

@@ -27,10 +27,10 @@ ASnowball::ASnowball()
 		CollisionComponent->SetMassOverrideInKg(NAME_None, 0.1f, true);
 
 		// On hit event handling
-		CollisionComponent->SetSimulatePhysics(true);
-		CollisionComponent->SetNotifyRigidBodyCollision(true);
-		CollisionComponent->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
-		CollisionComponent->SetCollisionProfileName("BlockAllDynamic");
+		CollisionComponent->SetSimulatePhysics(true);//(false);
+		CollisionComponent->SetNotifyRigidBodyCollision(true);//(false);
+		CollisionComponent->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);//(ECollisionEnabled::NoCollision);
+		CollisionComponent->SetCollisionProfileName("BlockAllDynamic");//("NoCollision");
 		FScriptDelegate onHitDelegate;
 		onHitDelegate.BindUFunction(this, FName("OnHit"));
 		CollisionComponent->OnComponentHit.Add(onHitDelegate);
