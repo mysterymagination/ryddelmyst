@@ -1,8 +1,8 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
+#include "MonsterAI.h"
 #include "Kismet/GameplayStatics.h"
 #include "Math/UnrealMathUtility.h"
-#include "MonsterAI.h"
 
 AMonsterAI::AMonsterAI() 
 :
