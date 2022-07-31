@@ -24,7 +24,7 @@ ASnowball::ASnowball()
 		
 		// todo: trying to lower the impact force of the snowball; maybe mass derives from the radius of the physics sphere?
 		CollisionComponent->InitSphereRadius(15.0f);
-		CollisionComponent->SetMassOverrideInKg(NAME_None, 0.1f, true);
+		CollisionComponent->SetMassOverrideInKg(NAME_None, 0.5f, true);
 
 		// On hit event handling
 		CollisionComponent->SetSimulatePhysics(true);//(false);
@@ -83,6 +83,7 @@ void ASnowball::Tick(float DeltaTime)
 // Function that initializes the projectile's velocity in the shoot direction.
 void ASnowball::Cast(ARyddelmystCharacter* LaunchingCharacter, const FVector& LaunchDirection)
 {
+	UE_LOG(LogTemp, Warning, TEXT("Cast; launchingchar is %s and launchdir is %s"), *LaunchingCharacter->GetName(), *LaunchDirection.ToString());
 	Caster = LaunchingCharacter;
 	try
 	{
@@ -90,7 +91,7 @@ void ASnowball::Cast(ARyddelmystCharacter* LaunchingCharacter, const FVector& La
 	}
 	catch(const std::bad_function_call& e)
 	{
-		UE_LOG(LogTemp, Log, TEXT("Cast; customized launch fn is not set, so using default launch.  Details: %s"), *FString(e.what()));
+		UE_LOG(LogTemp, Warning, TEXT("Cast; customized launch fn is not set, so using default launch.  Details: %s"), *FString(e.what()));
 		// default launch behavior
 		ProjectileMovementComponent->Velocity = LaunchDirection * ProjectileMovementComponent->InitialSpeed;
 	}
