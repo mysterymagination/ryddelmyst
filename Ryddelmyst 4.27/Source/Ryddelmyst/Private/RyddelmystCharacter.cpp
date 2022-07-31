@@ -647,6 +647,7 @@ void ARyddelmystCharacter::Fire()
 							try 
 							{
 								const auto& SpawnFn = std::get<std::function<void(ARyddelmystCharacter* /*TransmutingCharacter*/, const FTransform& /*SpawnTransform*/, const FVector& /*LaunchDirection*/, const std::vector<ASnowball*>& /*Bullets spawned in map*/)>>(SpawnFnVariant);
+								UE_LOG(LogTemp, Warning, TEXT("Fire; custom spawn function discovered.  Running it..."));
 								SpawnFn(this, SpawnTransform, LaunchDirection, Bullets);
 								Spawned = true;
 							}

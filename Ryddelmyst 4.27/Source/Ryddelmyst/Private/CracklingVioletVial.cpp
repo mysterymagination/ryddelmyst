@@ -43,13 +43,32 @@ void UCracklingVioletVial::OnEquip_Implementation(AActor* EquippedActor)
 			{
 				UE_LOG(LogTemp, Warning, TEXT("Metamagic Electric lambda; custom spawning Bullet %s"), *Bullet->GetName());
 				CurrentAngle += DistAngle;
-				FRotator DistRotation(0.f, CurrentAngle, 0.f);
+
+				// todo: remove this coarse angle override business once we've sorted issue #49.  The goal here is to give unsubtle angles to the spread so we can see more clearly the effect physics is having.
+				float DebugAngle = 0.f;
+				if(CurrentAngle < 0)
+				{
+					DebugAngle = -90.f;
+				}
+				else if(CurrentAngle > 0)
+				{
+					DebugAngle = 90.f;
+				}
+
+
+				FRotator DistRotation(0.f, DebugAngle, 0.f);///(0.f, CurrentAngle, 0.f);
 				FTransform FinalTransform = SpawnTransform;
-				//FinalTransform.AddToTranslation((Bullet->GetSimpleCollisionRadius() * BulletOffsetFactor * 5) * TransmutingCharacter->GetActorRightVector());
+				float FudgeFactor = 15.f;
+				UE_LOG(LogTemp, Warning, TEXT("Metamagic Electric lambda; transmutation behavior -- prior to modding the spawn location transform, it looks like %s"), *FinalTransform.ToString());
+				FinalTransform.AddToTranslation((Bullet->GetSimpleCollisionRadius() * BulletOffsetFactor * FudgeFactor) * TransmutingCharacter->GetActorRightVector());
+				UE_LOG(LogTemp, Warning, TEXT("Metamagic Electric lambda; transmutation behavior -- we're adding (bullet radius %f times bullet offset factor %d times fudge factor %f) times character right vector of %s as a translation vector to the spawn transform which is now %s"),
+					Bullet->GetSimpleCollisionRadius(), BulletOffsetFactor, FudgeFactor, *TransmutingCharacter->GetActorRightVector().ToString(), *FinalTransform.ToString());
 				Bullet->FinishSpawning(FinalTransform);
 				FVector ModifiedLaunchDirection = DistRotation.RotateVector(LaunchDirection);
-				Bullet->Cast(TransmutingCharacter, ModifiedLaunchDirection);
-				UE_LOG(LogTemp, Warning, TEXT("Metamagic Electric lambda; transmutation behavior -- current angle is %f, DistRotation is %s, SpawnTransform is %s, LaunchDirection is %s and ModifiedLaunchDirection is %s"), CurrentAngle, *DistRotation.ToString(), *SpawnTransform.ToString(), *LaunchDirection.ToString(), *ModifiedLaunchDirection.ToString());
+				///Bullet->Cast(TransmutingCharacter, ModifiedLaunchDirection);
+				///UE_LOG(LogTemp, Warning, TEXT("Metamagic Electric lambda; transmutation behavior -- current angle is %f, DistRotation is %s, SpawnTransform is %s, LaunchDirection is %s and ModifiedLaunchDirection is %s"), CurrentAngle, *DistRotation.ToString(), *SpawnTransform.ToString(), *LaunchDirection.ToString(), *ModifiedLaunchDirection.ToString());
+				Bullet->Cast(TransmutingCharacter, FVector(1.f,1.f,1.f));
+				UE_LOG(LogTemp, Warning, TEXT("Metamagic Electric lambda; transmutation behavior -- current spread angle is %f, DistRotation is %s, SpawnTransform is %s, LaunchDirection is %s and ModifiedLaunchDirection is %s"), DebugAngle, *DistRotation.ToString(), *SpawnTransform.ToString(), *LaunchDirection.ToString(), *ModifiedLaunchDirection.ToString());
 				BulletOffsetFactor++;
 			}
 		};
