@@ -78,6 +78,7 @@ void ASnowball::BeginPlay()
 void ASnowball::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
+	UE_LOG(LogTemp, Warning, TEXT("Tick; projectile velocity is %s"), *ProjectileMovementComponent->Velocity.ToString());
 }
 
 // Function that initializes the projectile's velocity in the shoot direction.
@@ -94,6 +95,8 @@ void ASnowball::Cast(ARyddelmystCharacter* LaunchingCharacter, const FVector& La
 		UE_LOG(LogTemp, Warning, TEXT("Cast; customized launch fn is not set, so using default launch.  Details: %s"), *FString(e.what()));
 		// default launch behavior
 		ProjectileMovementComponent->Velocity = LaunchDirection * ProjectileMovementComponent->InitialSpeed;
+		UE_LOG(LogTemp, Warning, TEXT("Cast; launching in direction vector %s scaled by speed %f for resultant velocity %s"), 
+			*LaunchDirection.ToString(), ProjectileMovementComponent->InitialSpeed, *ProjectileMovementComponent->Velocity.ToString());
 	}
 
 	ProcessCost(LaunchingCharacter);
