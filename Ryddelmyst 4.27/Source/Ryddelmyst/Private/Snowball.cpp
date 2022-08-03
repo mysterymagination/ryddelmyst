@@ -81,6 +81,17 @@ void ASnowball::Tick(float DeltaTime)
 	UE_LOG(LogTemp, Warning, TEXT("Tick; projectile velocity is %s"), *ProjectileMovementComponent->Velocity.ToString());
 }
 
+void ASnowball::BreakPhysics()
+{
+	CollisionComponent->SetSimulatePhysics(false);
+	GetWorldTimerManager().SetTimer(BrokenPhysicsTimerHandle, this, &ASnowball::FixPhysics, BrokenPhysicsPeriod, false);
+}
+
+void ASnowball::FixPhysics()
+{
+	CollisionComponent->SetSimulatePhysics(true);
+}
+
 // Function that initializes the projectile's velocity in the shoot direction.
 void ASnowball::Cast(ARyddelmystCharacter* LaunchingCharacter, const FVector& LaunchDirection)
 {

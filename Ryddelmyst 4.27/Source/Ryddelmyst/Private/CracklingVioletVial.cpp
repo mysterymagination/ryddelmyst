@@ -41,11 +41,15 @@ void UCracklingVioletVial::OnEquip_Implementation(AActor* EquippedActor)
 			int BulletOffsetFactor = -NumBulletsPerSide;
 			for (auto Bullet : Bullets)
 			{
+				// todo: start a clock that turns physics back on after 3 seconds or something
+				Bullet->BreakPhysics();
+				
+
 				UE_LOG(LogTemp, Warning, TEXT("Metamagic Electric lambda; custom spawning Bullet %s"), *Bullet->GetName());
 				CurrentAngle += DistAngle;
 				FRotator DistRotation(0.f, CurrentAngle, 0.f);
 				FTransform FinalTransform = SpawnTransform;
-				float FudgeFactor = 15.f;
+				float FudgeFactor = 3.f;
 				UE_LOG(LogTemp, Warning, TEXT("Metamagic Electric lambda; transmutation behavior -- prior to modding the spawn location transform, it looks like %s"), *FinalTransform.ToString());
 				FinalTransform.AddToTranslation((Bullet->GetSimpleCollisionRadius() * BulletOffsetFactor * FudgeFactor) * TransmutingCharacter->GetActorRightVector());
 				UE_LOG(LogTemp, Warning, TEXT("Metamagic Electric lambda; transmutation behavior -- we're adding (bullet radius %f times bullet offset factor %d times fudge factor %f) times character right vector of %s as a translation vector to the spawn transform which is now %s"),
