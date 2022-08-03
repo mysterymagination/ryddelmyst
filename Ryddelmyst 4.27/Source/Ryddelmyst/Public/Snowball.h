@@ -21,6 +21,8 @@ class RYDDELMYST_API ASnowball : public AActor
 	std::vector<std::function<void(AActor* TargetActor, const FHitResult& HitResult)>> EffectsOnTarget;
 	// Function that provides custom launch behavior
 	std::function<void(AActor* LaunchingActor, const FVector& LaunchDirection)> LaunchFn;
+	UPROPERTY()
+	FTimerHandle BrokenPhysicsTimerHandle;
 
 public:
 	// Sets default values for this actor's properties
@@ -52,6 +54,20 @@ public:
 	class ARyddelmystCharacter* GetCaster() { return Caster; };
 	UFUNCTION()
 	void ProcessCost(class ARyddelmystCharacter* CasterCharacter);
+	/**
+	 * @brief Temporarily disables physics for this Snowball instance, for a duration of BrokenPhysicsPeriod
+	 * 
+	 */
+	UFUNCTION()
+	void BreakPhysics();
+
+private:
+	/**
+	 * @brief re-enables simulated physics on this snowball
+	 * 
+	 */
+	UFUNCTION()
+	void FixPhysics();
 
 protected:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Projectile)
@@ -77,6 +93,12 @@ protected:
 	// scale factor for the final calculated damage
 	UPROPERTY(EditAnywhere, Category = Projectile)
 	float DamageScaleFactor = 1.f;
+	/**
+	 * @brief Time in seconds for which the Snowball should fly without physics enabled before re-enabling it
+	 * 
+	 */
+	UPROPERTY(EditAnywhere, Category = Projectile)
+	float BrokenPhysicsPeriod = 0.5f;
 	/**
 	 * @brief Actual damage calculated in OnHit() using CalculateDamage() with the Caster field as input
 	 * 

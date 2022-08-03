@@ -15,7 +15,7 @@ UCLASS(BlueprintType, Blueprintable)
 class RYDDELMYST_API UCracklingVioletVial : public UObject, public IItem
 {
 	GENERATED_BODY()
-
+	
 public:
 	static const std::string ID;
 	/**
