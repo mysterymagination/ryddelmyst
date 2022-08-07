@@ -42,6 +42,18 @@ public:
 	 */
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="RPG")
 	float Speed = 1.f;
+	/**
+	 * @brief This is the character's health points; lte 0 means death.
+	 * 
+	 */
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="RPG")
+	float HP = 100.f;
+	/**
+	 * @brief This is the character's mana points; a value gte a spell's cost is required to cast the spell.
+	 * 
+	 */
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="RPG")
+	float MP = 100.f;
 
 	UFUNCTION(BlueprintCallable, Category = "RPG")
 	void ScaleStats(float ScaleFactor, AActor* BattleStatsBearer);
