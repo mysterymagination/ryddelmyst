@@ -7,7 +7,7 @@
 #include "MonsterAI.generated.h"
 
 /**
- * 
+ * AI Controller intended for general Ryddelmyst monster behavior
  */
 UCLASS()
 class RYDDELMYST_API AMonsterAI : public AAIController
