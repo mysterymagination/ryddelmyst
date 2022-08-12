@@ -96,7 +96,8 @@ void ASnowball::FixPhysics()
 void ASnowball::Cast(ARyddelmystCharacter* LaunchingCharacter, const FVector& LaunchDirection)
 {
 	UE_LOG(LogTemp, Warning, TEXT("Cast; launchingchar is %s and launchdir is %s"), *LaunchingCharacter->GetName(), *LaunchDirection.ToString());
-	Caster = LaunchingCharacter;
+	Damage = CalculateDamage(LaunchingCharacter);
+	UE_LOG(LogTemp, Warning, TEXT("Cast; final damage is %f"), Damage);
 	try
 	{
 		LaunchFn(LaunchingCharacter, LaunchDirection);
@@ -121,22 +122,16 @@ void ASnowball::ProcessCost(ARyddelmystCharacter* CasterCharacter)
 
 void ASnowball::OnHit(UPrimitiveComponent* HitComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit)
 {
+	UE_LOG(LogTemp, Warning, TEXT("OnHit; HitComp says %s, OtherActor says %s, OtherComp says %s, normal impulse says %s, hitres says %s"), 
+		*HitComp->GetName(), *OtherActor->GetName(), *OtherComp->GetName(), *NormalImpulse.ToString(), *Hit.ToString());
 	UE_LOG(LogTemp, Warning, TEXT("OnHit; EffectsOnTarget has size %d"), EffectsOnTarget.size());
 	// auxiliary effect lambdas
 	for (auto Effect : EffectsOnTarget)
 	{
 		Effect(OtherActor, Hit);
 	}
-	if(Caster)
-	{
-		Damage = CalculateDamage(Caster);
-	}
-	else
-	{
-		UE_LOG(LogTemp, Error, TEXT("OnHit; caster unset, so we cannot calc damage"));
-	}
-	UE_LOG(LogTemp, Warning, TEXT("OnHit; final damage is %f"), Damage);
-	UGameplayStatics::ApplyPointDamage(OtherActor, Damage, NormalImpulse, Hit, UGameplayStatics::GetPlayerController(GetWorld(), 0), this, DamageType);
+	// todo: move the actual damage processing to the damaged actor/component rather than keeping it here; that way we can have different handling based on head shots, disabling leg shots etc. 
+	//UGameplayStatics::ApplyPointDamage(OtherActor, Damage, NormalImpulse, Hit, UGameplayStatics::GetPlayerController(GetWorld(), 0), this, DamageType);
 	Destroy();
 	// todo: leave behind flattened snowball messh?
 }
