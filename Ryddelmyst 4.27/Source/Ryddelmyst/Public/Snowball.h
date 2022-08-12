@@ -41,6 +41,8 @@ public:
 	{
 		return MagicCost;
 	};
+	UFUNCTION(BlueprintCallable, Category = "Magic")
+	float GetDamage() { return Damage; };
 	UFUNCTION()
 	float GetDamageScaleFactor() { return DamageScaleFactor; };
 	UFUNCTION()
@@ -48,10 +50,6 @@ public:
 	std::vector<std::function<void(AActor*, const FHitResult&)>>& GetEffectsVector() { return EffectsOnTarget; };
 	std::function<void(AActor* LaunchingActor, const FVector& LaunchDirection)> GetLaunchFunction() { return LaunchFn; };
 	void SetLaunchFunction(std::function<void(AActor* LaunchingActor, const FVector& LaunchDirection)> Function) { LaunchFn = Function; };
-	UFUNCTION()
-	void SetCaster(class ARyddelmystCharacter* CastingCharacter) { Caster = CastingCharacter; };
-	UFUNCTION()
-	class ARyddelmystCharacter* GetCaster() { return Caster; };
 	UFUNCTION()
 	void ProcessCost(class ARyddelmystCharacter* CasterCharacter);
 	/**
@@ -107,14 +105,19 @@ protected:
 	float Damage = 0.f;
 
 private:
-	UPROPERTY()
-	class ARyddelmystCharacter* Caster;
 	// Projectile movement component.
 	UPROPERTY(VisibleAnywhere, Category = Movement)
 	UProjectileMovementComponent* ProjectileMovementComponent;
 
 protected:
-	// Custom onhit event handling, destroying the snowball and spawning a flattened snowball actor at the collision point
+	/**
+	 * @brief Custom onhit event handling, applying any effects and damage, and then destroying the snowball 
+	 * @param HitComp this is the UPrimitiveComponent doing the hitting, e.g. the snowball
+	 * @param OtherActor this is the AActor instance we hit
+	 * @param OtherComp this is the specific UPrimitiveComponent of the OtherActor that we hit
+	 * @param NormalImpulse impulse vector of HitComp relative to OtherComp
+	 * @param Hit FHitResult data about the collision
+	 */
 	UFUNCTION()
 	virtual void OnHit(UPrimitiveComponent* HitComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit);
 	// Calculates the damage dealt to target
