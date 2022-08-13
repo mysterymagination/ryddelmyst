@@ -18,7 +18,8 @@ class RYDDELMYST_API UHitHandlerComponent : public UActorComponent
 
 protected:
 	// todo: should this maybe be an array of UShapeComponent subclasses like we make a UClawComponent or something that subclasses UCapsuleComponent so that we can install actual claws on
-	//  the treant and other monsters and then have the player be vulnerable to claws, teeth, hooves etc. (and maybe some monsters as well, for in-fighting?).  I'm looking for a way to avoid 
+	//  the treant and other monsters and then have the player be vulnerable to claws, teeth, hooves etc. (and maybe some monsters as well, for in-fighting?).TRhese could obvs be customizeable
+	//  per-instance with base damage etc. and take a reference to the host's BattleStats.  I'm looking for a way to avoid 
 	//  having a string lookup or a cast or something to id if we're looking at a player or a monster and then hardcoding a lookup of ASnowball's damage or a great big switch statement of ways
 	//  to look up monster damage sources.  Another way might be to put a CalculateDamage(FString Attackname) on Monster.h, but then we're talking about potentially more code with less coherence
 	//  for less benefit; in that case we'd still need to know if we're dealing with a player or monster as the damaging AActor (or at least whether or not we're being hit by a ASnowball since
