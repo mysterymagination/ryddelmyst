@@ -33,12 +33,14 @@ private:
 	 * @param BaseDamage the base damage the incoming hit inflicts before anatomy is taken into account
 	 * @return the rx damage adjusted for anatomy
 	 */
+	/* todo: this should go in an interface IDefender (and CalculateDamageTx() will go in IAttacker)
 	UFUNCTION()
 	float CalculateDamageRx(float BaseDamage);
+	*/
 	/**
 	 * @brief Applies a timed BattleStats modification to the damaged AActor based on the stricken anatomy e.g. a stricken leg may reduce speed by half
 	 * 
 	 */
 	UFUNCTION()
-	void Debilitate();
+	void Debilitate(){};
 };
