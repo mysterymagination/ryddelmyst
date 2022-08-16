@@ -25,6 +25,9 @@ protected:
 	//  for less benefit; in that case we'd still need to know if we're dealing with a player or monster as the damaging AActor (or at least whether or not we're being hit by a ASnowball since
 	//  that is the player's only means of attack).  I kinda like the notion of encapsulating the attack all the way down in the attacking anatomy, effectively, with form classes that subclass UShapeComponent
 	//  to work beside our function UAnatomyUnit classes.  
+	//  On that note, maybe instead of having a loose association via string IDs in this component between stock UShapeComponent subclasses and our various damage dealing and receiving logic we should
+	//  just go ahead and make e.g. UArmComponent subclass of UCapsuleComponent with configurable properties and its own UExtremityUnit data member with handlers for transmitting and receiving damage?  Seems like
+	//  the mapping indirection we have going on here is a hamfisted attempt at forcing a(nother) component and level of abstraction in the middle that isn't really needed.
 	/**
 	 * @brief Array of recognized damage sources e.g. ASnowball objects damage the treant and the treant's claws damage the player.  For simplicity and versatility, we'll use simple key strings
 	 * that will be substrings of the names of UPrimitiveComponents involved in the collision. 
