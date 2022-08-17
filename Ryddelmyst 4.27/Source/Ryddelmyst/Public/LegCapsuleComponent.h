@@ -13,7 +13,7 @@
  * A CapsuleComponent representing a creature's leg and processing hits delivered and received via the leg
  */
 UCLASS()
-class RYDDELMYST_API ULegCapsuleComponent : public UCapsuleComponent, public IAttacker, public IDefender
+class RYDDELMYST_API ULegCapsuleComponent : public UCapsuleComponent, public IAttacker, public IDefender // todo: probably the AnatomyUnit should implement these to separate the damage rx/tx logic (function) from the shape component (form)
 {
 	GENERATED_BODY()
 	
@@ -27,6 +27,6 @@ protected:
 	 */
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Combat")
 	TArray<TSubclassOf<UDamageType>> DamageTypes;
-	
-	
+	TArray<TSubclassOf<UDamageType>> GetDamageTypes_Implementation() { return DamageTypes; }
+	float CalculateDamageTx_Implementation(FString AttackName, AActor* BattleStatsBearer);
 };
