@@ -27,7 +27,7 @@ public:
 	 * @param BattleStatsBearer the instigator of the attack, whose stats determine its damage output
 	 */
 	UFUNCTION(BlueprintCallable, BlueprintNativeEvent, Category = "Combat")
-	float CalculateDamageTx(AActor* BattleStatsBearer);
+	float CalculateDamageTx(FString AttackName, AActor* BattleStatsBearer);
 	/**
 	 * @return the types of damage dealt by this attacking object
 	 */

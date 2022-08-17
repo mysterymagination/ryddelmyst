@@ -53,7 +53,4 @@ public:
 	 */
 	UFUNCTION(BlueprintCallable, BlueprintNativeEvent, Category = "Combat")
 	float GetVulnerabilityFactor();
-
-
-	
 };
