@@ -14,7 +14,7 @@
 #include "Snowball.generated.h"
 
 UCLASS()
-class RYDDELMYST_API ASnowball : public AActor, IAttacker
+class RYDDELMYST_API ASnowball : public AActor, public IAttacker
 {
 	GENERATED_BODY()
 
@@ -67,6 +67,12 @@ private:
 	void FixPhysics();
 
 protected:
+	/**
+	 * @brief Cache of most recently calculated damage
+	 * 
+	 */
+	UPROPERTY()
+	float Damage = 0.f;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Projectile)
 	TSubclassOf<UDamageType> DamageType;
 	// Projectile particle FX
@@ -114,5 +120,5 @@ protected:
 	UFUNCTION()
 	virtual void OnHit(UPrimitiveComponent* HitComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit);
 	float CalculateDamageTx_Implementation(const FString& AttackName, AActor* BattleStatsBearer);
-	const TArray<TSubclassOf<UDamageType>> GetDamageTypes_Implementation() {TArray<TSubclassOf<UDamageType>> DamageTypeArray = {DamageType}; return DamageTypeArray;}
+	const TArray<TSubclassOf<UDamageType>> GetDamageTypes_Implementation(const FString& AttackName) {TArray<TSubclassOf<UDamageType>> DamageTypeArray = {DamageType}; return DamageTypeArray;}
 };

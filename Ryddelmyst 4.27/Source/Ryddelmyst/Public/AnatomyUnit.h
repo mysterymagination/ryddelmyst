@@ -36,9 +36,9 @@ protected:
 	 */
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Combat")
 	TArray<TSubclassOf<UDamageType>> DamageTypes;
-	const TArray<TSubclassOf<UDamageType>> GetDamageTypes_Implementation() { return DamageTypes; }
+	const TArray<TSubclassOf<UDamageType>> GetDamageTypes_Implementation(const FString& AttackName) { return DamageTypes; }
 	float CalculateDamageTx_Implementation(const FString& AttackName, AActor* BattleStatsBearer) {return 0.f;}
-	float CalculateDamageRx_Implementation(float BaseDamage, const TArray<TSubclassOf<UDamageType>>& DamageTypes) {return BaseDamage;}
+	float CalculateDamageRx_Implementation(float BaseDamage, const TArray<TSubclassOf<UDamageType>>& IncomingDamageTypes) {return BaseDamage;}
 	const TArray<TSubclassOf<UDamageType>> GetResistances() {TArray<TSubclassOf<UDamageType>> Resistances; return Resistances;}
 	float GetResistanceFactor() {return 1.f;}
 	const TArray<TSubclassOf<UDamageType>> GetVulnerabilities() {TArray<TSubclassOf<UDamageType>> Vulnerabilities; return Vulnerabilities;}
