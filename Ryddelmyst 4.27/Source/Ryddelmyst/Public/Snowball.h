@@ -10,10 +10,11 @@
 #include <functional>
 #include <vector>
 #include "StatusEffect.h"
+#include "IAttacker.h"
 #include "Snowball.generated.h"
 
 UCLASS()
-class RYDDELMYST_API ASnowball : public AActor
+class RYDDELMYST_API ASnowball : public AActor, IAttacker
 {
 	GENERATED_BODY()
 
@@ -41,8 +42,6 @@ public:
 	{
 		return MagicCost;
 	};
-	UFUNCTION(BlueprintCallable, Category = "Magic")
-	float GetDamage() { return Damage; };
 	UFUNCTION()
 	float GetDamageScaleFactor() { return DamageScaleFactor; };
 	UFUNCTION()
@@ -85,7 +84,7 @@ protected:
 	// mana cost of this spell
 	UPROPERTY(EditAnywhere, Category = Projectile)
 	float MagicCost = 10.f;
-	// base power used along with CalculateDamage() to derive damage dealt by this spell
+	// base power used in CalculateDamageTx() to derive damage dealt by this spell
 	UPROPERTY(EditAnywhere, Category = Projectile)
 	float Power = 25.f;
 	// scale factor for the final calculated damage
@@ -97,12 +96,6 @@ protected:
 	 */
 	UPROPERTY(EditAnywhere, Category = Projectile)
 	float BrokenPhysicsPeriod = 0.5f;
-	/**
-	 * @brief Actual damage calculated in OnHit() using CalculateDamage() with the Caster field as input
-	 * 
-	 */
-	UPROPERTY()
-	float Damage = 0.f;
 
 private:
 	// Projectile movement component.
@@ -120,7 +113,6 @@ protected:
 	 */
 	UFUNCTION()
 	virtual void OnHit(UPrimitiveComponent* HitComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit);
-	// Calculates the damage dealt to target
-	UFUNCTION()
-	float CalculateDamage(class ARyddelmystCharacter* Character);
+	float CalculateDamageTx_Implementation(const FString& AttackName, AActor* BattleStatsBearer);
+	const TArray<TSubclassOf<UDamageType>> GetDamageTypes_Implementation() {TArray<TSubclassOf<UDamageType>> DamageTypeArray = {DamageType}; return DamageTypeArray;}
 };

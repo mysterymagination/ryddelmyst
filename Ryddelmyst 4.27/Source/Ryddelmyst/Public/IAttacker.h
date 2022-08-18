@@ -9,7 +9,7 @@
 
 // This class does not need to be modified.
 UINTERFACE(MinimalAPI)
-class UIAttacker : public UInterface
+class UAttacker : public UInterface
 {
 	GENERATED_BODY()
 };
@@ -17,7 +17,7 @@ class UIAttacker : public UInterface
 /**
  * Interface allowing objects to provide info about how much damage their attack deals and what type of damage it is
  */
-class RYDDELMYST_API IIAttacker
+class RYDDELMYST_API IAttacker
 {
 	GENERATED_BODY()
 
@@ -27,10 +27,10 @@ public:
 	 * @param BattleStatsBearer the instigator of the attack, whose stats determine its damage output
 	 */
 	UFUNCTION(BlueprintCallable, BlueprintNativeEvent, Category = "Combat")
-	float CalculateDamageTx(FString AttackName, AActor* BattleStatsBearer);
+	float CalculateDamageTx(const FString& AttackName, AActor* BattleStatsBearer);
 	/**
 	 * @return the types of damage dealt by this attacking object
 	 */
 	UFUNCTION(BlueprintCallable, BlueprintNativeEvent, Category = "Combat")
-	TArray<TSubclassOf<UDamageType>> GetDamageTypes();
+	const TArray<TSubclassOf<UDamageType>> GetDamageTypes();
 };

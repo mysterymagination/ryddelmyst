@@ -9,7 +9,7 @@
 
 // This class does not need to be modified.
 UINTERFACE(MinimalAPI)
-class UIDefender : public UInterface
+class UDefender : public UInterface
 {
 	GENERATED_BODY()
 };
@@ -17,7 +17,7 @@ class UIDefender : public UInterface
 /**
  * Interface allowing objects subject to damage to determine how much actual damage is received after factoring in e.g. armor or non-vital anatomy 
  */
-class RYDDELMYST_API IIDefender
+class RYDDELMYST_API IDefender
 {
 	GENERATED_BODY()
 
@@ -28,13 +28,13 @@ public:
 	 * @param DamageTypes the types of damage the incoming attack deals
 	 */
 	UFUNCTION(BlueprintCallable, BlueprintNativeEvent, Category = "Combat")
-	float CalculateDamageRx(float BaseDamage, TArray<TSubclassOf<UDamageType>> DamageTypes);
+	float CalculateDamageRx(float BaseDamage, const TArray<TSubclassOf<UDamageType>>& DamageTypes);
 	/**
 	 * @return an array of damage types that this defending object resists
 	 * 
 	 */
 	UFUNCTION(BlueprintCallable, BlueprintNativeEvent, Category = "Combat")
-	TArray<TSubclassOf<UDamageType>> GetResistances();
+	const TArray<TSubclassOf<UDamageType>> GetResistances();
 	/**
 	 * @return the scaling factor applied to resisted damage types, e.g. 0.5f reduces resisted damage by half
 	 * 
@@ -46,7 +46,7 @@ public:
 	 * 
 	 */
 	UFUNCTION(BlueprintCallable, BlueprintNativeEvent, Category = "Combat")
-	TArray<TSubclassOf<UDamageType>> GetVulnerabilities();
+	const TArray<TSubclassOf<UDamageType>> GetVulnerabilities();
 	/**
 	 * @return the scaling factor applied to vulnerable damage types, e.g. 1.5f increases vulnerable damage to 150%
 	 * 
