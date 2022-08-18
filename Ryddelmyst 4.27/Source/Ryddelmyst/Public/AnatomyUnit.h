@@ -4,6 +4,8 @@
 
 #include "CoreMinimal.h"
 #include "UObject/NoExportTypes.h"
+#include "IAttacker.h"
+#include "IDefender.h"
 #include "AnatomyUnit.generated.h"
 
 /**
@@ -11,7 +13,7 @@
  * with customization options for different types of creatures.
  */
 UCLASS()
-class RYDDELMYST_API UAnatomyUnit : public UObject
+class RYDDELMYST_API UAnatomyUnit : public UObject, public IAttacker, public IDefender
 {
 	GENERATED_BODY()
 	
@@ -27,16 +29,21 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "Collision")
 	void ProcessHit(UPrimitiveComponent* HittingComp, AActor* HitActor, UPrimitiveComponent* HitComp, FVector NormalImpulse, const FHitResult& HitInfo);
 	
-private:
+protected:
 	/**
-	 * @brief Calculates the damage received from the given base damage, e.g. hit to the arm might be reduced to base damage * 0.25f
-	 * @param BaseDamage the base damage the incoming hit inflicts before anatomy is taken into account
-	 * @return the rx damage adjusted for anatomy
+	 * @brief Damage types dealt by this (absolute) unit of anatomy, e.g. Bludgeoning for kicks/stomps or Slashing for talons
+	 * 
 	 */
-	/* todo: this should go in an interface IDefender (and CalculateDamageTx() will go in IAttacker)
-	UFUNCTION()
-	float CalculateDamageRx(float BaseDamage);
-	*/
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Combat")
+	TArray<TSubclassOf<UDamageType>> DamageTypes;
+	const TArray<TSubclassOf<UDamageType>> GetDamageTypes_Implementation() { return DamageTypes; }
+	float CalculateDamageTx_Implementation(const FString& AttackName, AActor* BattleStatsBearer) {return 0.f;}
+	float CalculateDamageRx_Implementation(float BaseDamage, const TArray<TSubclassOf<UDamageType>>& DamageTypes) {return BaseDamage;}
+	const TArray<TSubclassOf<UDamageType>> GetResistances() {TArray<TSubclassOf<UDamageType>> Resistances; return Resistances;}
+	float GetResistanceFactor() {return 1.f;}
+	const TArray<TSubclassOf<UDamageType>> GetVulnerabilities() {TArray<TSubclassOf<UDamageType>> Vulnerabilities; return Vulnerabilities;}
+	float GetVulnerabilityFactor() {return 1.f;}
+private:
 	/**
 	 * @brief Applies a timed BattleStats modification to the damaged AActor based on the stricken anatomy e.g. a stricken leg may reduce speed by half
 	 * 

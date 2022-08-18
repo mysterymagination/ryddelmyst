@@ -96,8 +96,6 @@ void ASnowball::FixPhysics()
 void ASnowball::Cast(ARyddelmystCharacter* LaunchingCharacter, const FVector& LaunchDirection)
 {
 	UE_LOG(LogTemp, Warning, TEXT("Cast; launchingchar is %s and launchdir is %s"), *LaunchingCharacter->GetName(), *LaunchDirection.ToString());
-	Damage = CalculateDamage(LaunchingCharacter);
-	UE_LOG(LogTemp, Warning, TEXT("Cast; final damage is %f"), Damage);
 	try
 	{
 		LaunchFn(LaunchingCharacter, LaunchDirection);
@@ -136,11 +134,11 @@ void ASnowball::OnHit(UPrimitiveComponent* HitComp, AActor* OtherActor, UPrimiti
 	// todo: leave behind flattened snowball messh?
 }
 
-float ASnowball::CalculateDamage(ARyddelmystCharacter* Character)
+float ASnowball::CalculateDamageTx_Implementation(const FString& AttackName, AActor* BattleStatsBearer)
 {
-	float BaseDamage = Power * IBattleStatsBearer::Execute_GetStats(Character)->Magic;
-	UE_LOG(LogTemp, Warning, TEXT("CalculateDamage; Power (%f) * Magic (%f) = BaseDamage (%f)"), Power, IBattleStatsBearer::Execute_GetStats(Character)->Magic, BaseDamage);
-	BaseDamage += MathUtils::RollNdM(IBattleStatsBearer::Execute_GetStats(Character)->Lvl, 6);
+	float BaseDamage = Power * IBattleStatsBearer::Execute_GetStats(BattleStatsBearer)->Magic;
+	UE_LOG(LogTemp, Warning, TEXT("CalculateDamage; Power (%f) * Magic (%f) = BaseDamage (%f)"), Power, IBattleStatsBearer::Execute_GetStats(BattleStatsBearer)->Magic, BaseDamage);
+	BaseDamage += MathUtils::RollNdM(IBattleStatsBearer::Execute_GetStats(BattleStatsBearer)->Lvl, 6);
 	return DamageScaleFactor * BaseDamage;
 }
 
