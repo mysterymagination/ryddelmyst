@@ -5,6 +5,7 @@
 #include "MathUtils.h"
 #include "Kismet/GameplayStatics.h"
 #include "IceDamageType.h"
+#include "IDefender.h"
 #include "FrozenStatusEffect.h"
 
 // Sets default values
@@ -118,6 +119,10 @@ void ASnowball::ProcessCost(ARyddelmystCharacter* CasterCharacter)
 	// todo: the above Cost could even include custom behavior e.g. the caster flies back N meters or their HP is halved for N seconds; that would have to work outside the blueprint ecosystem tho I think since blueprints don't really support lambda functions.
 }
 
+// todo (later): make a UBulletSphereComponent class that subclasses USphereComponent and implements IAttacker (and maybe IDefender for cases of e.g. target is making a swipe attack to destroy a bullet which might otherwise linger?)
+//  and have that be our Snowball collision component instead of stock USphereComponent.  That way we could move closer to potentially having a common hit handler function that works through
+//  common interfaces.
+// todo (later): move the status effects application code to IAttacker and IDefender, with the latter processing immunities etc.
 void ASnowball::OnHit(UPrimitiveComponent* HitComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit)
 {
 	UE_LOG(LogTemp, Warning, TEXT("OnHit; HitComp says %s, OtherActor says %s, OtherComp says %s, normal impulse says %s, hitres says %s"), 
@@ -130,6 +135,21 @@ void ASnowball::OnHit(UPrimitiveComponent* HitComp, AActor* OtherActor, UPrimiti
 	}
 	// todo: move the actual damage processing to the damaged actor/component rather than keeping it here; that way we can have different handling based on head shots, disabling leg shots etc. 
 	//UGameplayStatics::ApplyPointDamage(OtherActor, Damage, NormalImpulse, Hit, UGameplayStatics::GetPlayerController(GetWorld(), 0), this, DamageType);
+	
+	// todo: do the IAttacker x IDefender dance here?  Currently ASnowball IS the IAttacker so I guess just ignore the striker arg here.  That's fine since ASnowball has some other snowball 
+	//  specific things it needs to do, and this is its own specialized hit handler function.
+	if(OtherComp->GetClass()->ImplementsInterface(UDefender::StaticClass()))
+	{
+		// Damage setter is inside the IDefender target check so that we only bother calc/cache of damage if we can actually apply the damage
+		UE_LOG(LogTemp, Warning, TEXT("OnHit; using attack name %s"), *GetName());
+		Damage = IAttacker::Execute_CalculateDamageTx(this, GetName(), this);
+		IDefender::Execute_CalculateDamageRx(OtherComp, Damage, IAttacker::Execute_GetDamageTypes(this, GetName()));
+	}
+	else 
+	{
+		UE_LOG(LogTemp, Error, TEXT("OnHit; the stricken component %s does not implement IDefender, so we can't move forward communicating damage"), *OtherComp->GetName()); 
+	}
+
 	Destroy();
 	// todo: leave behind flattened snowball messh?
 }

@@ -29,8 +29,9 @@ public:
 	UFUNCTION(BlueprintCallable, BlueprintNativeEvent, Category = "Combat")
 	float CalculateDamageTx(const FString& AttackName, AActor* BattleStatsBearer);
 	/**
+	 * @param AttackName the string name of the attack for which we wish to query damage types; most attacks will only have one, but they could have multiples so we return an array
 	 * @return the types of damage dealt by this attacking object
 	 */
 	UFUNCTION(BlueprintCallable, BlueprintNativeEvent, Category = "Combat")
-	const TArray<TSubclassOf<UDamageType>> GetDamageTypes();
+	const TArray<TSubclassOf<UDamageType>> GetDamageTypes(const FString& AttackName);
 };
