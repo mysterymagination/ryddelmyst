@@ -15,7 +15,9 @@ class RYDDELMYST_API UExtremityUnit : public UAnatomyUnit
 {
 	GENERATED_BODY()
 	
-	
-	
-	
+protected:
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Combat)
+	bool IsUsedForLocomotion = false;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Combat)
+	bool IsUsedForAttack = false;
 };

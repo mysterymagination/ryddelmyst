@@ -16,18 +16,21 @@ UCLASS()
 class RYDDELMYST_API UAnatomyUnit : public UObject, public IAttacker, public IDefender
 {
 	GENERATED_BODY()
+
+	UPROPERTY()
+	FString CurrentAttack;
 	
 public:
 	/**
 	 * @brief applies damage and possibly status effects depending on the particular anatomy unit subclass
-	 * @param HittingComponent the UPrimitiveComponent that is the instigator of the collision
-	 * @param HitActor the AActor being hit
-	 * @param HitComp the UPrimitiveComponent of the HitActor that is specifically being hit by the HittingComponent
+	 * @param StrikingComponent the UPrimitiveComponent that is the instigator of the collision
+	 * @param StrickenActor the AActor being hit
+	 * @param StrickenComp the UPrimitiveComponent of the HitActor that is specifically being hit by the HittingComponent
 	 * @param NormalImpulse impulse vector of the HittingComponent
 	 * @param HitInfo FHitResult data
 	 */
 	UFUNCTION(BlueprintCallable, Category = "Collision")
-	void ProcessHit(UPrimitiveComponent* HittingComp, AActor* HitActor, UPrimitiveComponent* HitComp, FVector NormalImpulse, const FHitResult& HitInfo);
+	void OnHit(UPrimitiveComponent* StrikingComp, AActor* StrickenActor, UPrimitiveComponent* StrickenComp, FVector NormalImpulse, const FHitResult& HitInfo);
 	
 protected:
 	/**

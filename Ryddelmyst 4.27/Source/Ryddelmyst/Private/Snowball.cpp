@@ -147,7 +147,7 @@ void ASnowball::OnHit(UPrimitiveComponent* HitComp, AActor* OtherActor, UPrimiti
 	}
 	else 
 	{
-		UE_LOG(LogTemp, Error, TEXT("OnHit; the stricken component %s does not implement IDefender, so we can't move forward communicating damage"), *OtherComp->GetName()); 
+		UE_LOG(LogTemp, Warning, TEXT("OnHit; the stricken component %s does not implement IDefender, so we can't move forward communicating damage"), *OtherComp->GetName()); 
 	}
 
 	Destroy();
