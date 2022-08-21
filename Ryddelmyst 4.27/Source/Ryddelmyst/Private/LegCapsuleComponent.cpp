@@ -8,7 +8,7 @@ void ULegCapsuleComponent::OnHit_Implementation(UPrimitiveComponent* StrikingCom
 	if (StrickenComp->GetClass()->ImplementsInterface(UDefender::StaticClass()))
 	{
 		// Damage setter is inside the IDefender target check so that we only bother calc/cache of damage if we can actually apply the damage
-		UE_LOG(LogTemp, Warning, TEXT("OnHit; using attack name %s"), LegUnit->GetCurrentAttack());
+		UE_LOG(LogTemp, Warning, TEXT("OnHit; using attack name %s"), *LegUnit->GetCurrentAttack());
 		float dmg = IAttacker::Execute_CalculateDamageTx(this, LegUnit->GetCurrentAttack(), StrikingComp->GetOwner());
 		IDefender::Execute_CalculateDamageRx(StrickenComp, dmg, IAttacker::Execute_GetDamageTypes(this, LegUnit->GetCurrentAttack()));
 	}

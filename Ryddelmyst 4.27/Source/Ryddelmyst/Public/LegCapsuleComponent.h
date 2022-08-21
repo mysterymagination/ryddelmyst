@@ -22,7 +22,7 @@ class RYDDELMYST_API ULegCapsuleComponent : public UCapsuleComponent, public IAn
 public: 
 	UAnatomyUnit* GetAnatomyUnit_Implementation() {return LegUnit;}
 	void OnHit_Implementation(UPrimitiveComponent* StrikingComp, AActor* StrickenActor, UPrimitiveComponent* StrickenComp, FVector NormalImpulse, const FHitResult& HitInfo);
-	const TArray<TSubclassOf<UDamageType>>& GetDamageTypes_Implementation(const FString& AttackName) { return LegUnit->GetDamageTypes(); }
+	TArray<TSubclassOf<UDamageType>> GetDamageTypes_Implementation(const FString& AttackName) { return LegUnit->GetDamageTypes(); }
 	float CalculateDamageTx_Implementation(const FString& AttackName, AActor* BattleStatsBearer) { return 0.f; }
 	float CalculateDamageRx_Implementation(float BaseDamage, const TArray<TSubclassOf<UDamageType>>& IncomingDamageTypes) { return BaseDamage; }
 	const TArray<TSubclassOf<UDamageType>> GetResistances() { TArray<TSubclassOf<UDamageType>> Resistances; return Resistances; }

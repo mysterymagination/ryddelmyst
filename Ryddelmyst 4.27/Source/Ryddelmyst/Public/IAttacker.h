@@ -43,5 +43,5 @@ public:
 	 * @return the types of damage dealt by this attacking object
 	 */
 	UFUNCTION(BlueprintCallable, BlueprintNativeEvent, Category = "Combat")
-	const TArray<TSubclassOf<UDamageType>>& GetDamageTypes(const FString& AttackName);
+	TArray<TSubclassOf<UDamageType>> GetDamageTypes(const FString& AttackName);
 };

@@ -119,5 +119,5 @@ protected:
 	 */
 	virtual void OnHit_Implementation(UPrimitiveComponent* HitComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit);
 	float CalculateDamageTx_Implementation(const FString& AttackName, AActor* BattleStatsBearer);
-	const TArray<TSubclassOf<UDamageType>>& GetDamageTypes_Implementation(const FString& AttackName) {TArray<TSubclassOf<UDamageType>> DamageTypeArray = {DamageType}; return DamageTypeArray;}
+	TArray<TSubclassOf<UDamageType>> GetDamageTypes_Implementation(const FString& AttackName) {TArray<TSubclassOf<UDamageType>> DamageTypeArray = {DamageType}; return DamageTypeArray;}
 };
