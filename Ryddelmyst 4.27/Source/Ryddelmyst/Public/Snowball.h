@@ -117,8 +117,7 @@ protected:
 	 * @param NormalImpulse impulse vector of HitComp relative to OtherComp
 	 * @param Hit FHitResult data about the collision
 	 */
-	UFUNCTION()
-	virtual void OnHit(UPrimitiveComponent* HitComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit);
+	virtual void OnHit_Implementation(UPrimitiveComponent* HitComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit);
 	float CalculateDamageTx_Implementation(const FString& AttackName, AActor* BattleStatsBearer);
-	const TArray<TSubclassOf<UDamageType>> GetDamageTypes_Implementation(const FString& AttackName) {TArray<TSubclassOf<UDamageType>> DamageTypeArray = {DamageType}; return DamageTypeArray;}
+	const TArray<TSubclassOf<UDamageType>>& GetDamageTypes_Implementation(const FString& AttackName) {TArray<TSubclassOf<UDamageType>> DamageTypeArray = {DamageType}; return DamageTypeArray;}
 };

@@ -23,6 +23,16 @@ class RYDDELMYST_API IAttacker
 
 public:
 	/**
+	 * @brief Processes a hit by this attacker on the given defender
+	 * @param StrikingComp the component doing the hitting; this is the IAttacker impl
+	 * @param StrickenActor the AActor we hit
+	 * @param StrickenComp the UPrimitiveComponent we hit; this is the IDefender impl
+	 * @param NormalImpulse the impulse vector normal to our strike point
+	 * @param HitInfo collision data
+	 */
+	UFUNCTION(BlueprintCallable, BlueprintNativeEvent, Category = "Combat")
+	void OnHit(UPrimitiveComponent* StrikingComp, AActor* StrickenActor, UPrimitiveComponent* StrickenComp, FVector NormalImpulse, const FHitResult& HitInfo);
+	/**
 	 * @brief Calculates the base damage of our attack from the stats of the input IBattleStatsBearer implementor
 	 * @param BattleStatsBearer the instigator of the attack, whose stats determine its damage output
 	 */
@@ -33,5 +43,5 @@ public:
 	 * @return the types of damage dealt by this attacking object
 	 */
 	UFUNCTION(BlueprintCallable, BlueprintNativeEvent, Category = "Combat")
-	const TArray<TSubclassOf<UDamageType>> GetDamageTypes(const FString& AttackName);
+	const TArray<TSubclassOf<UDamageType>>& GetDamageTypes(const FString& AttackName);
 };
