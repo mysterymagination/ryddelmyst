@@ -13,24 +13,12 @@
  * with customization options for different types of creatures.
  */
 UCLASS()
-class RYDDELMYST_API UAnatomyUnit : public UObject, public IAttacker, public IDefender
+class RYDDELMYST_API UAnatomyUnit : public UObject
 {
 	GENERATED_BODY()
 
 	UPROPERTY()
 	FString CurrentAttack;
-	
-public:
-	/**
-	 * @brief applies damage and possibly status effects depending on the particular anatomy unit subclass
-	 * @param StrikingComponent the UPrimitiveComponent that is the instigator of the collision
-	 * @param StrickenActor the AActor being hit
-	 * @param StrickenComp the UPrimitiveComponent of the HitActor that is specifically being hit by the HittingComponent
-	 * @param NormalImpulse impulse vector of the HittingComponent
-	 * @param HitInfo FHitResult data
-	 */
-	UFUNCTION(BlueprintCallable, Category = "Collision")
-	void OnHit(UPrimitiveComponent* StrikingComp, AActor* StrickenActor, UPrimitiveComponent* StrickenComp, FVector NormalImpulse, const FHitResult& HitInfo);
 	
 protected:
 	/**
@@ -39,13 +27,10 @@ protected:
 	 */
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Combat")
 	TArray<TSubclassOf<UDamageType>> DamageTypes;
-	const TArray<TSubclassOf<UDamageType>> GetDamageTypes_Implementation(const FString& AttackName) { return DamageTypes; }
-	float CalculateDamageTx_Implementation(const FString& AttackName, AActor* BattleStatsBearer) {return 0.f;}
-	float CalculateDamageRx_Implementation(float BaseDamage, const TArray<TSubclassOf<UDamageType>>& IncomingDamageTypes) {return BaseDamage;}
-	const TArray<TSubclassOf<UDamageType>> GetResistances() {TArray<TSubclassOf<UDamageType>> Resistances; return Resistances;}
-	float GetResistanceFactor() {return 1.f;}
-	const TArray<TSubclassOf<UDamageType>> GetVulnerabilities() {TArray<TSubclassOf<UDamageType>> Vulnerabilities; return Vulnerabilities;}
-	float GetVulnerabilityFactor() {return 1.f;}
+
+public:
+	const TArray<TSubclassOf<UDamageType>>& GetDamageTypes() { return DamageTypes; }
+	const FString& GetCurrentAttack() { return CurrentAttack; }
 private:
 	/**
 	 * @brief Applies a timed BattleStats modification to the damaged AActor based on the stricken anatomy e.g. a stricken leg may reduce speed by half

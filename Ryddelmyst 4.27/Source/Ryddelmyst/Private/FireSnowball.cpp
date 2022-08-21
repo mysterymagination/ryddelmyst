@@ -25,7 +25,7 @@ AFireSnowball::AFireSnowball()
 	DamageType = UFireDamageType::StaticClass();
 }
 
-void AFireSnowball::OnHit(UPrimitiveComponent* HitComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit)
+void AFireSnowball::OnHit_Implementation(UPrimitiveComponent* HitComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit)
 {
 	// todo: for some reason hitting the cozy bunker or something thereabouts gives me a nullptr OtherActor?
     if(OtherActor)
