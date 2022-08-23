@@ -38,7 +38,7 @@ void AElectricSnowball::OnHit_Implementation(UPrimitiveComponent* HitComp, AActo
 	// todo: for some reason hitting the cozy bunker or something thereabouts gives me a nullptr OtherActor?
     if(OtherActor)
     {
-		ASnowball::OnHit(HitComp, OtherActor, OtherComp, NormalImpulse, Hit);
+		ASnowball::OnHit_Implementation(HitComp, OtherActor, OtherComp, NormalImpulse, Hit);
 		// elemental StatusEffect
 		if(OtherActor->GetClass()->ImplementsInterface(UStatusEffected::StaticClass()))
 		{
