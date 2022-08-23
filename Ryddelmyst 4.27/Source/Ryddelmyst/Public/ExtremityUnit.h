@@ -20,4 +20,8 @@ protected:
 	bool IsUsedForLocomotion = false;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Combat)
 	bool IsUsedForAttack = false;
+	/**
+	 * Cuts the relevant stats in half corresponding to the IsUsedForLocomotion (Speed) and IsUsedForAttack (Attack) members 
+	 */
+	void Debilitate(AActor* BattleStatsBearer);
 };
