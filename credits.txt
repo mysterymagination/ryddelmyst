@@ -51,6 +51,10 @@
     13.1: Source: https://opengameart.org/content/low-poly-key
     13.2: Authors: https://opengameart.org/users/yd
     13.3: License: CC0
+ 14. Ryddelmyst/Content/Ryddelmyst_Assets/Meshes/Maya.blend
+    14.1: Source: https://www.artstation.com/artwork/LeGqkv
+    14.2: Authors: https://www.artstation.com/ruslanholonko
+    14.3: License: CC-BY-SA-4.0
 
 Textures:
   1. Ryddelmyst/Content/Ryddelmyst_Assets/Textures/snowflake.png 
