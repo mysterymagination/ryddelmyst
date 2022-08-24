@@ -19,6 +19,11 @@ class RYDDELMYST_API UAnatomyUnit : public UObject
 	GENERATED_BODY()
 	
 protected:
+	/**
+	 * This is a mapping of debilitated stat names to their original values 
+	 */
+	UPROPERTY()
+	TMap<FString,float> CachedStats;
 	UPROPERTY()
 	FString CurrentAttack;
 	UPROPERTY()
