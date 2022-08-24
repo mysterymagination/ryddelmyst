@@ -9,7 +9,18 @@ class RYDDELMYST_API UBattleStats : public UObject
 	GENERATED_BODY()
 
 public:
-	// todo: map instead of individual variables
+	// todo: create map of stat modifier sources to arrays of pairs of stat name and associated modifier scale factor.
+	//  e.g. 
+	// {
+	//   "leftArmDebilitate" : [
+	//     {"attack", 0.5f},
+	//     {"magic", 0.25f}
+	//   ]
+	// }
+	// this way we can allow for multiple things to modify stats concurrently and timeout clocks will reverse the modifiers intelligently instead of
+	// setting a concrete value irrespective of any unknown modifiers.  The order in which modifiers are applied and removed shouldn't matter since they're
+	// discrete operations.
+	// todo: stat map of stat name strings to float values instead of individual variables
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="RPG")
 	uint8 Lvl = 1;
 	/**
