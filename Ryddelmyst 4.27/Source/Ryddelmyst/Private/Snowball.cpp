@@ -156,9 +156,9 @@ void ASnowball::OnHit_Implementation(UPrimitiveComponent* HitComp, AActor* Other
 
 float ASnowball::CalculateDamageTx_Implementation(const FString& AttackName, AActor* BattleStatsBearer)
 {
-	float BaseDamage = Power * IBattleStatsBearer::Execute_GetStats(BattleStatsBearer)->Magic;
-	UE_LOG(LogTemp, Warning, TEXT("CalculateDamage; Power (%f) * Magic (%f) = BaseDamage (%f)"), Power, IBattleStatsBearer::Execute_GetStats(BattleStatsBearer)->Magic, BaseDamage);
-	BaseDamage += MathUtils::RollNdM(IBattleStatsBearer::Execute_GetStats(BattleStatsBearer)->Lvl, 6);
+	float BaseDamage = Power * IBattleStatsBearer::Execute_GetStats(BattleStatsBearer)->StatsMap["Magic"];
+	UE_LOG(LogTemp, Warning, TEXT("CalculateDamage; Power (%f) * Magic (%f) = BaseDamage (%f)"), Power, IBattleStatsBearer::Execute_GetStats(BattleStatsBearer)->StatsMap["Magic"], BaseDamage);
+	BaseDamage += MathUtils::RollNdM(IBattleStatsBearer::Execute_GetStats(BattleStatsBearer)->StatsMap["Level"], 6);
 	return DamageScaleFactor * BaseDamage;
 }
 

@@ -403,14 +403,14 @@ void ARyddelmystCharacter::Run()
 	if (IsRunning)
 	{
 		// toggle to walk speed
-		GetCharacterMovement()->MaxWalkSpeed = CharacterStats->Speed * BaseWalkSpeed;
-		UE_LOG(LogTemp, Warning, TEXT("Run; after switching to walk mode, MaxWalkSpeed is %f from speed stat %f times BaseWalkSpeed %f"), GetCharacterMovement()->MaxWalkSpeed, CharacterStats->Speed, BaseWalkSpeed);
+		GetCharacterMovement()->MaxWalkSpeed = CharacterStats->StatsMap["Speed"] * BaseWalkSpeed;
+		UE_LOG(LogTemp, Warning, TEXT("Run; after switching to walk mode, MaxWalkSpeed is %f from speed stat %f times BaseWalkSpeed %f"), GetCharacterMovement()->MaxWalkSpeed, CharacterStats->StatsMap["Speed"], BaseWalkSpeed);
 	}
 	else
 	{
 		// toggle to run speed
-		GetCharacterMovement()->MaxWalkSpeed = CharacterStats->Speed * BaseWalkSpeed * RunSpeedFactor;
-		UE_LOG(LogTemp, Warning, TEXT("Run; after switching to run mode, MaxWalkSpeed is %f from speed stat %f times BaseWalkSpeed %f times run speed factor %f"), GetCharacterMovement()->MaxWalkSpeed, CharacterStats->Speed, BaseWalkSpeed, RunSpeedFactor);
+		GetCharacterMovement()->MaxWalkSpeed = CharacterStats->StatsMap["Speed"] * BaseWalkSpeed * RunSpeedFactor;
+		UE_LOG(LogTemp, Warning, TEXT("Run; after switching to run mode, MaxWalkSpeed is %f from speed stat %f times BaseWalkSpeed %f times run speed factor %f"), GetCharacterMovement()->MaxWalkSpeed, CharacterStats->StatsMap["Speed"], BaseWalkSpeed, RunSpeedFactor);
 	}
 	IsRunning = !IsRunning;
 }
