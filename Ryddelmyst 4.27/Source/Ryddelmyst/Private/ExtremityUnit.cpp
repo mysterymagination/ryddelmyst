@@ -14,11 +14,11 @@ void UExtremityUnit::Debilitate(AActor* BattleStatsBearer)
 			UBattleStats* BattleStats = IBattleStatsBearer::Execute_GetStats(BattleStatsBearer);
 			if (IsUsedForAttack)
 			{
-				BattleStats->Attack *= DebilitateScaleFactor;
+				BattleStats->StatsMap["Attack"] *= DebilitateScaleFactor;
 			}
 			if (IsUsedForLocomotion)
 			{
-				BattleStats->Speed *= DebilitateScaleFactor;
+				BattleStats->StatsMap["Speed"] *= DebilitateScaleFactor;
 				IBattleStatsBearer::Execute_UpdateSpeed(BattleStatsBearer);
 			}
 		}
