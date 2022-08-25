@@ -58,9 +58,9 @@ public:
 	// todo: refactor and create a common Character subclass for both Maya and monsters, with the common functionality like this so we can avoid copy/paste.  TBD what reparenting like that will do to my poor idiot blueprints, but it will be painful.
 	void UpdateSpeed_Implementation() 
 	{ 
-		GetCharacterMovement()->MaxWalkSpeed =  IsRunning ? MonsterStats->Speed * BaseWalkSpeed * RunSpeedFactor : MonsterStats->Speed * BaseWalkSpeed;
+		GetCharacterMovement()->MaxWalkSpeed =  IsRunning ? MonsterStats->StatsMap["Speed"] * BaseWalkSpeed * RunSpeedFactor : MonsterStats->StatsMap["Speed"] * BaseWalkSpeed;
 		UE_LOG(LogTemp, Warning, TEXT("UpdateSpeed; monster max walk speed became %f from speed factor %f times BaseWalkSpeed %f %s"), 
-			GetCharacterMovement()->MaxWalkSpeed, MonsterStats->Speed, BaseWalkSpeed, (IsRunning ? *FString::Printf(TEXT("and running factor of %f"), RunSpeedFactor) : *FString(TEXT(""))));
+			GetCharacterMovement()->MaxWalkSpeed, MonsterStats->StatsMap["Speed"], BaseWalkSpeed, (IsRunning ? *FString::Printf(TEXT("and running factor of %f"), RunSpeedFactor) : *FString(TEXT(""))));
 	}
 	void AddStatusEffect_Implementation(UStatusEffect* Effect) 
 	{ 
