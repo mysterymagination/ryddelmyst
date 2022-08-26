@@ -1,6 +1,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "Containers/Map.h"
 #include "BattleStats.generated.h"
 
 UCLASS(BlueprintType, Blueprintable)

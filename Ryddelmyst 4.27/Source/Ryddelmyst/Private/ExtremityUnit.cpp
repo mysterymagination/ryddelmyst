@@ -1,8 +1,7 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
-
-#include "BattleStats.h"
 #include "ExtremityUnit.h"
+#include "BattleStats.h"
 
 void UExtremityUnit::Debilitate(AActor* BattleStatsBearer)
 {
