@@ -19,13 +19,9 @@ class RYDDELMYST_API UAnatomyUnit : public UObject
 	GENERATED_BODY()
 	
 protected:
-	/**
-	 * This is a mapping of debilitated stat names to their original values 
-	 */
-	UPROPERTY()
-	TMap<FString,float> CachedStats;
 	UPROPERTY()
 	FString CurrentAttack;
+	// todo: do we want to maybe parse the BattleStats StatMods map to see if there's an existing key for our debilitate modifier instead of tracking manually?
 	UPROPERTY()
 	bool IsDebilitated = false;
 	/**

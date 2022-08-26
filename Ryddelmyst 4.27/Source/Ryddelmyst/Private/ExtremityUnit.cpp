@@ -6,7 +6,7 @@
 
 void UExtremityUnit::Debilitate(AActor* BattleStatsBearer)
 {
-	// todo: need to cache the old stat value and set a clock to restore it after debilitate period expires
+	// todo: need to set a clock to restore it after debilitate period expires
 	if (!IsDebilitated)
 	{
 		if (BattleStatsBearer->GetClass()->ImplementsInterface(UBattleStatsBearer::StaticClass()))
@@ -15,11 +15,13 @@ void UExtremityUnit::Debilitate(AActor* BattleStatsBearer)
 			if (IsUsedForAttack)
 			{
 				BattleStats->StatsMap["Attack"] *= DebilitateScaleFactor;
+				BattleStats->StatMods["anatomyunit_debilitate_" + GetName() + "_" + FormName].Add(TPair<FString, float>("Attack", DebilitateScaleFactor));
 			}
 			if (IsUsedForLocomotion)
 			{
 				BattleStats->StatsMap["Speed"] *= DebilitateScaleFactor;
 				IBattleStatsBearer::Execute_UpdateSpeed(BattleStatsBearer);
+				BattleStats->StatMods["anatomyunit_debilitate_" + GetName() + "_" + FormName].Add(TPair<FString, float>("Speed", DebilitateScaleFactor));
 			}
 		}
 		else
