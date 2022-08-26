@@ -46,6 +46,7 @@ void AMonsterAI::TeleportNearPlayer()
     float RandAngle = FMath::RandRange(0.f, 360.f);
     FRotator OffsetRot = FRotator(0.f, RandAngle, 0.f);
     FVector ScaryOffset = OffsetRot.RotateVector(TeleportOffset);
+    // todo: this segfaults if we're using the LookitYouPawn, though we're probably going to phase that out anyway in favor simply circumventing the player's UCharacterMovementComponent and sending input commands instead to move about the 3PP camera alone.  That or a Morrowind-style axis-bound set of camera rails you can slide along.
     AActor* PursuedActor = UGameplayStatics::GetPlayerCharacter(GetWorld(), 0);
     GetCharacter()->SetActorLocation(PursuedActor->GetActorLocation() + ScaryOffset);
     // todo: play a creepy noise when he teleports
