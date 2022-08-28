@@ -30,9 +30,9 @@ public:
 	UBattleStats* GetStats();
 
 	/**
-	 * @brief performs implementation specific modification to the Actor's speed e.g. CharacterMovementComponent->MaxWalkSpeed for Character subclasses.
+	 * @brief performs implementation specific modification to the Actor's stat of the given name e.g. "Speed" modification on an ACharacter subclass would likely do something like CharacterMovementComponent->MaxWalkSpeed *= the updated speed value
 	 * 
 	 */
 	UFUNCTION(BlueprintCallable, BlueprintNativeEvent, Category = "RPG")
-	void UpdateSpeed();
+	void HandleStatModification(const FString& StatName);
 };
