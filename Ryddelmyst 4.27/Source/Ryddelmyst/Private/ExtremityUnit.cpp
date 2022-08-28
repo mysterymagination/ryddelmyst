@@ -14,14 +14,17 @@ void UExtremityUnit::Debilitate(AActor* BattleStatsBearer)
 			if (IsUsedForAttack)
 			{
 				BattleStats->StatsMap["Attack"] *= DebilitateScaleFactor;
-				BattleStats->StatMods["anatomyunit_debilitate_" + GetName() + "_" + FormName].Add(TPair<FString, float>("Attack", DebilitateScaleFactor));
+				BattleStats->StatMods["anatomyunit_debilitate_" + std::string(TCHAR_TO_UTF8(*GetName())) + "_" + std::string(TCHAR_TO_UTF8(*FormName))].push_back({std::string("Attack"), DebilitateScaleFactor});
 			}
 			if (IsUsedForLocomotion)
 			{
 				BattleStats->StatsMap["Speed"] *= DebilitateScaleFactor;
 				IBattleStatsBearer::Execute_UpdateSpeed(BattleStatsBearer);
-				BattleStats->StatMods["anatomyunit_debilitate_" + GetName() + "_" + FormName].Add(TPair<FString, float>("Speed", DebilitateScaleFactor));
+				BattleStats->StatMods["anatomyunit_debilitate_" + std::string(TCHAR_TO_UTF8(*GetName())) + "_" + std::string(TCHAR_TO_UTF8(*FormName))].push_back({ std::string("Speed"), DebilitateScaleFactor });
 			}
+			FTimerDelegate TimerDelegate;
+			TimerDelegate.BindUFunction(this, FName("OnEffectRemoved"), EffectedActor);
+			EffectedActor->GetWorldTimerManager().SetTimer(ShockTimerHandle, TimerDelegate, ShockDuration, false);
 		}
 		else
 		{
