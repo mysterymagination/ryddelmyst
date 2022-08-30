@@ -114,7 +114,7 @@ void ARyddelmystCharacter::BeginPlay()
 	{
 		CharacterStats = NewObject<UBattleStats>(this, CharacterStatsType);
 		// init other vars based on stats
-		IBattleStatsBearer::Execute_UpdateSpeed(this);
+		IBattleStatsBearer::Execute_HandleStatModification(this, "Speed");
 		UE_LOG(LogTemp, Warning, TEXT("BeginPlay; character stats set to %s, and maxwalkspeed shows %f"), *CharacterStats->ToString(), GetCharacterMovement()->MaxWalkSpeed);
 	}
 	else
@@ -361,7 +361,7 @@ FHitResult ARyddelmystCharacter::FireInteractRay()
 
 	// cast our ray out and check for a hit object implementing IInteract
 	FHitResult Hit(ForceInit);
-	GetWorld()->LineTraceSingleByChannel(Hit, start_trace, end_trace, ECollisionChannel::ECC_GameTraceChannel1, TraceParams);
+	GetWorld()->LineTraceSingleByChannel(Hit, start_trace, end_trace, ECollisionChannel::ECC_WorldDynamic, TraceParams);
 	return Hit;
 }
 

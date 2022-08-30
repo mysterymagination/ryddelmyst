@@ -55,25 +55,34 @@ void UBattleStats::ScaleStats(float ScaleFactor, AActor* BattleStatsBearer)
     StatsMap["Speed"] *= ScaleFactor;
     StatsMap["Magic"] *= ScaleFactor;
     StatsMap["Spirit"] *= ScaleFactor;
-    IBattleStatsBearer::Execute_UpdateSpeed(BattleStatsBearer);
+    IBattleStatsBearer::Execute_HandleStatModification(BattleStatsBearer, "Attack");
+    IBattleStatsBearer::Execute_HandleStatModification(BattleStatsBearer, "Defense");
+    IBattleStatsBearer::Execute_HandleStatModification(BattleStatsBearer, "Speed");
+    IBattleStatsBearer::Execute_HandleStatModification(BattleStatsBearer, "Magic");
+    IBattleStatsBearer::Execute_HandleStatModification(BattleStatsBearer, "Spirit");
 }
 
 void UBattleStats::ModifyStatByAttribution(const FString& AttributionName, const FString& StatName, float ScaleFactor, float Duration, AActor* BattleStatsBearer)
 {
     StatsMap[StatName] *= ScaleFactor;
     StatMods[std::string(TCHAR_TO_UTF8(*AttributionName))].push_back({ TCHAR_TO_UTF8(*StatName), ScaleFactor});
-    IBattleStatsBearer::Execute_HandleStatMod(BattleStatsBearer, StatName);
-    FTimerDelegate DebilitateTimerDelegate;
-    DebilitateTimerDelegate.BindUFunction(this, FName("UnmodifyStatsByAttribution"), AttributionName, BattleStatsBearer);
-    // todo: record this timer handle in a struct or something alongside the stat and scalefactor values mapped to attribution name?  I don't anticipate needing to lookup these clocks after we start them, but it might come in handy.
-    BattleStatsBearer->GetWorldTimerManager().SetTimer(FTimerHandle(), DebilitateTimerDelegate, Duration, false);
+    IBattleStatsBearer::Execute_HandleStatModification(BattleStatsBearer, StatName);
+    if (Duration > 0.f)
+    {
+        FTimerDelegate DebilitateTimerDelegate;
+        DebilitateTimerDelegate.BindUFunction(this, FName("UnmodifyStatsByAttribution"), AttributionName, BattleStatsBearer);
+        // todo: record this timer handle in a struct or something alongside the stat and scalefactor values mapped to attribution name?  I don't anticipate needing to lookup these clocks after we start them, but it might come in handy.
+        FTimerHandle TossawayHandle;
+        BattleStatsBearer->GetWorldTimerManager().SetTimer(TossawayHandle, DebilitateTimerDelegate, Duration, false);
+    }
 }
 
-void UnmodifyStatsByAttribution(const FString& AttributionName, AActor* BattleStatsBearer)
+void UBattleStats::UnmodifyStatsByAttribution(const FString& AttributionName, AActor* BattleStatsBearer)
 {
     auto AttributionString = std::string(TCHAR_TO_UTF8(*AttributionName));
     // lookup our stat mods attributed to this effect and reverse them
     auto ModVector = StatMods[AttributionString];
+    // todo: mixing std::string from the mods with FString in the map...
     for (auto Mod : ModVector)
     {
         // scale the stat named by the first element of the pair by the inverse of the scaling factor given in the second element of the pair

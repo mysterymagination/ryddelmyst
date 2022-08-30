@@ -54,13 +54,16 @@ public:
 	virtual void Tick(float DeltaTime) override;
 	// Called to bind functionality to input
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
-	UBattleStats* GetStats_Implementation() { UE_LOG(LogTemp, Warning, TEXT("GetStats; getting monster stats")); return MonsterStats; }
+	UBattleStats* GetStats_Implementation() { return MonsterStats; }
 	// todo: refactor and create a common Character subclass for both Maya and monsters, with the common functionality like this so we can avoid copy/paste.  TBD what reparenting like that will do to my poor idiot blueprints, but it will be painful.
-	void UpdateSpeed_Implementation() 
+	void HandleStatModification_Implementation(const FString& StatName) 
 	{ 
-		GetCharacterMovement()->MaxWalkSpeed =  IsRunning ? MonsterStats->StatsMap["Speed"] * BaseWalkSpeed * RunSpeedFactor : MonsterStats->StatsMap["Speed"] * BaseWalkSpeed;
-		UE_LOG(LogTemp, Warning, TEXT("UpdateSpeed; monster max walk speed became %f from speed factor %f times BaseWalkSpeed %f %s"), 
-			GetCharacterMovement()->MaxWalkSpeed, MonsterStats->StatsMap["Speed"], BaseWalkSpeed, (IsRunning ? *FString::Printf(TEXT("and running factor of %f"), RunSpeedFactor) : *FString(TEXT(""))));
+		if (StatName.Equals("Speed"))
+		{
+			GetCharacterMovement()->MaxWalkSpeed = IsRunning ? MonsterStats->StatsMap["Speed"] * BaseWalkSpeed * RunSpeedFactor : MonsterStats->StatsMap["Speed"] * BaseWalkSpeed;
+			UE_LOG(LogTemp, Warning, TEXT("UpdateSpeed; monster max walk speed became %f from speed factor %f times BaseWalkSpeed %f %s"),
+				GetCharacterMovement()->MaxWalkSpeed, MonsterStats->StatsMap["Speed"], BaseWalkSpeed, (IsRunning ? *FString::Printf(TEXT("and running factor of %f"), RunSpeedFactor) : *FString(TEXT(""))));
+		}
 	}
 	void AddStatusEffect_Implementation(UStatusEffect* Effect) 
 	{ 
