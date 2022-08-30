@@ -136,11 +136,14 @@ public:
 	ARyddelmystCharacter();
 	virtual void OnLostFollower(ILookitYou* lookitYou) override;
 	UBattleStats* GetStats_Implementation() { UE_LOG(LogTemp, Warning, TEXT("GetStats; getting ryddelmystcharacter stats")); return CharacterStats; }
-	void UpdateSpeed_Implementation() 
+	void HandleStatModification_Implementation(const FString& StatName) 
 	{ 
-		GetCharacterMovement()->MaxWalkSpeed =  IsRunning ? CharacterStats->StatsMap["Speed"] * BaseWalkSpeed * RunSpeedFactor : CharacterStats->StatsMap["Speed"] * BaseWalkSpeed;
-		UE_LOG(LogTemp, Warning, TEXT("UpdateSpeed; max walk speed became %f from speed factor %f times BaseWalkSpeed %f %s"), 
-			GetCharacterMovement()->MaxWalkSpeed, CharacterStats->StatsMap["Speed"], BaseWalkSpeed, (IsRunning ? *FString::Printf(TEXT("and running factor of %f"), RunSpeedFactor) : *FString(TEXT(""))));
+		if (StatName.Equals("Speed"))
+		{
+			GetCharacterMovement()->MaxWalkSpeed = IsRunning ? CharacterStats->StatsMap["Speed"] * BaseWalkSpeed * RunSpeedFactor : CharacterStats->StatsMap["Speed"] * BaseWalkSpeed;
+			UE_LOG(LogTemp, Warning, TEXT("UpdateSpeed; max walk speed became %f from speed factor %f times BaseWalkSpeed %f %s"),
+				GetCharacterMovement()->MaxWalkSpeed, CharacterStats->StatsMap["Speed"], BaseWalkSpeed, (IsRunning ? *FString::Printf(TEXT("and running factor of %f"), RunSpeedFactor) : *FString(TEXT(""))));
+		}
 	}
 	void ProcessStatusEffects_Implementation() {UE_LOG(LogTemp, Warning, TEXT("ProcessStatusEffects; dummy impl for RyddelmystCharacter"));}
 	void AddStatusEffect_Implementation(UStatusEffect* Effect) 
