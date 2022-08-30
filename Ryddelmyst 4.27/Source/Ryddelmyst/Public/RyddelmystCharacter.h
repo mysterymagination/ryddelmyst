@@ -135,7 +135,7 @@ private:
 public:
 	ARyddelmystCharacter();
 	virtual void OnLostFollower(ILookitYou* lookitYou) override;
-	UBattleStats* GetStats_Implementation() { UE_LOG(LogTemp, Warning, TEXT("GetStats; getting ryddelmystcharacter stats")); return CharacterStats; }
+	UBattleStats* GetStats_Implementation() { return CharacterStats; }
 	void HandleStatModification_Implementation(const FString& StatName) 
 	{ 
 		if (StatName.Equals("Speed"))

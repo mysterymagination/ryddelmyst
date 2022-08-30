@@ -71,7 +71,7 @@ void UBattleStats::ModifyStatByAttribution(const FString& AttributionName, const
     {
         FTimerDelegate DebilitateTimerDelegate;
         DebilitateTimerDelegate.BindUFunction(this, FName("UnmodifyStatsByAttribution"), AttributionName, BattleStatsBearer);
-        // todo: record this timer handle in a struct or something alongside the stat and scalefactor values mapped to attribution name?  I don't anticipate needing to lookup these clocks after we start them, but it might come in handy.
+        // todo: record this timer handle in a struct or something alongside the stat and scalefactor values mapped to attribution name?  I don't anticipate needing to lookup these clocks after we start them, but it might come in handy.  Also if the timermanager actually requires the TimerHandle reference it takes to be valid internally for any purpose...
         FTimerHandle TossawayHandle;
         BattleStatsBearer->GetWorldTimerManager().SetTimer(TossawayHandle, DebilitateTimerDelegate, Duration, false);
     }
