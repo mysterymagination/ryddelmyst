@@ -41,9 +41,6 @@ const std::string ARyddelmystCharacter::ID_METAMAGIC_CATEGORY_SPAWN = "Spawn";
 
 ARyddelmystCharacter::ARyddelmystCharacter()
 {
-	// Set size for collision capsule
-	GetCapsuleComponent()->InitCapsuleSize(55.f, 96.0f);
-
 	// set our turn rates for input
 	BaseTurnRate = 45.f;
 	BaseLookUpRate = 45.f;
@@ -338,8 +335,10 @@ void ARyddelmystCharacter::Interact()
 FHitResult ARyddelmystCharacter::FireInteractRay()
 {
 	// determine where our ray trace should begin and end
-	const FVector start_trace = FirstPersonCameraComponent->GetComponentLocation();
+	const FVector InitLocation = FirstPersonCameraComponent->GetComponentLocation();
 	const FVector direction = FirstPersonCameraComponent->GetComponentRotation().Vector();
+	const FVector start_trace = InitLocation + direction * GetCapsuleComponent()->GetScaledCapsuleRadius();
+	UE_LOG(LogTemp, Warning, TEXT("Interact; FPP camera forward vec is %s and rotation.vector is %s"), *FirstPersonCameraComponent->GetForwardVector().ToString(), *direction.ToString());
 	const FVector end_trace = start_trace + (direction * MaxInteractDistance);
 	UE_LOG(LogTemp, Warning, TEXT("Interact; ray start says %s, direction says %s, and ray end says %s"), *start_trace.ToString(), *direction.ToString(), *end_trace.ToString());
 	DrawDebugLine(
@@ -354,7 +353,7 @@ FHitResult ARyddelmystCharacter::FireInteractRay()
 	);
 	const FName TraceTag("InteractRay");
 	GetWorld()->DebugDrawTraceTag = TraceTag;
-	FCollisionQueryParams TraceParams(FName(TEXT("InteractTrace")), true, this);
+	FCollisionQueryParams TraceParams(FName(TEXT("InteractTrace")), true, nullptr);
 	TraceParams.bReturnPhysicalMaterial = false;
 	TraceParams.bTraceComplex = true;
 	TraceParams.TraceTag = TraceTag;
