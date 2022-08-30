@@ -82,11 +82,12 @@ void UBattleStats::UnmodifyStatsByAttribution(const FString& AttributionName, AA
     auto AttributionString = std::string(TCHAR_TO_UTF8(*AttributionName));
     // lookup our stat mods attributed to this effect and reverse them
     auto ModVector = StatMods[AttributionString];
-    // todo: mixing std::string from the mods with FString in the map...
     for (auto Mod : ModVector)
     {
+        // the first pair element is an std::string and we want an FString, so convert
+        FString StatName(Mod.first.c_str());
         // scale the stat named by the first element of the pair by the inverse of the scaling factor given in the second element of the pair
-        StatsMap[Mod.first] *= 1.f/Mod.second;
+        StatsMap[StatName] *= 1.f/Mod.second;
     }
     // remove this attribution key from the statsmod map
     StatMods.erase(AttributionString);
