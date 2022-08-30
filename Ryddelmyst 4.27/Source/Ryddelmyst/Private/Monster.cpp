@@ -19,7 +19,7 @@ void AMonster::BeginPlay()
 	{
 		MonsterStats = NewObject<UBattleStats>(this, MonsterStatsType);
 		// init other vars based on stats
-		IBattleStatsBearer::Execute_UpdateSpeed(this);
+		IBattleStatsBearer::Execute_HandleStatModification(this, "Speed");
 		UE_LOG(LogTemp, Warning, TEXT("BeginPlay; monster stats set to %s, and maxwalkspeed shows %f"), *MonsterStats->ToString(), GetCharacterMovement()->MaxWalkSpeed);
 	}
 	else

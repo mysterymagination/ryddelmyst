@@ -30,7 +30,7 @@ public:
 	UBattleStats* GetStats();
 
 	/**
-	 * @brief performs implementation specific modification to the Actor's stat of the given name e.g. "Speed" modification on an ACharacter subclass would likely do something like CharacterMovementComponent->MaxWalkSpeed *= the updated speed value
+	 * @brief performs implementation specific handling for a modification to the Actor's stat of the given name, if any e.g. "Speed" modification on an ACharacter subclass would likely do something like CharacterMovementComponent->MaxWalkSpeed *= the updated speed value.  In that case, we needed to forward the value on to UCharacterMovementComponent, which doesn't know anything about our BattleStats system.  Not every stat needs this sort of indirection handling e.g. Attack is used directly by IAttacker impls, so it doesn't need any special handling.
 	 * 
 	 */
 	UFUNCTION(BlueprintCallable, BlueprintNativeEvent, Category = "RPG")
