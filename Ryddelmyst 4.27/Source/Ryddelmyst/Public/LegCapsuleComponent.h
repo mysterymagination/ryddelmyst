@@ -3,6 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "UObject/ObjectMacros.h"
 #include "Components/CapsuleComponent.h"
 #include "ExtremityUnit.h"
 #include "IAnatomy.h"
@@ -11,7 +12,7 @@
 /**
  * A CapsuleComponent representing a creature's leg and processing hits delivered and received via the leg
  */
-UCLASS(Blueprintable, BlueprintType)
+UCLASS(ClassGroup = "Collision", editinlinenew, Blueprintable, BlueprintType, meta = (DisplayName = "Leg Capsule Collision", BlueprintSpawnableComponent))
 class RYDDELMYST_API ULegCapsuleComponent : public UCapsuleComponent, public IAnatomy, public IAttacker, public IDefender 
 {
 	GENERATED_BODY()
