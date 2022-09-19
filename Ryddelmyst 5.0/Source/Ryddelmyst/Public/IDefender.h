@@ -2,9 +2,9 @@
 
 #pragma once
 
+#include "Containers/Map.h"
 #include "CoreMinimal.h"
 #include "UObject/Interface.h"
-
 #include "IDefender.generated.h"
 
 // This class does not need to be modified.
@@ -29,28 +29,16 @@ public:
 	 */
 	UFUNCTION(BlueprintCallable, BlueprintNativeEvent, Category = "Combat")
 	float CalculateDamageRx(float BaseDamage, const TArray<TSubclassOf<UDamageType>>& DamageTypes);
-	/**
-	 * @return an array of damage types that this defending object resists
-	 * 
-	 */
+    /**
+     * @return the defender's resistance scaling factor for the given damage type, which should reduce the damage if the defender has a resistance to the input damage type and otherwise should be 1 e.g. 0 <= factor <= 1
+     *
+     */
 	UFUNCTION(BlueprintCallable, BlueprintNativeEvent, Category = "Combat")
-	const TArray<TSubclassOf<UDamageType>> GetResistances();
-	/**
-	 * @return the scaling factor applied to resisted damage types, e.g. 0.5f reduces resisted damage by half
-	 * 
-	 */
+	float GetResistance(TSubclassOf<UDamageType> InputDamageType);
+    /**
+     * @return the defender's vulnerability scaling factor for the given damage type, which should increase the damage if the defender has a vulnerability to the input damage type and otherwise should be 1 e.g. factor >= 1
+     *
+     */
 	UFUNCTION(BlueprintCallable, BlueprintNativeEvent, Category = "Combat")
-	float GetResistanceFactor();
-	/**
-	 * @return an array of damage types to which this defending object is vulnerable
-	 * 
-	 */
-	UFUNCTION(BlueprintCallable, BlueprintNativeEvent, Category = "Combat")
-	const TArray<TSubclassOf<UDamageType>> GetVulnerabilities();
-	/**
-	 * @return the scaling factor applied to vulnerable damage types, e.g. 1.5f increases vulnerable damage to 150%
-	 * 
-	 */
-	UFUNCTION(BlueprintCallable, BlueprintNativeEvent, Category = "Combat")
-	float GetVulnerabilityFactor();
+	float GetVulnerability(TSubclassOf<UDamageType> InputDamageType);
 };
