@@ -105,9 +105,13 @@ Textures:
     11.5 Authors (chain): https://opengameart.org/users/blarumyrran
     11.6 License (chain): CC0
  12. Ryddelmyst/Content/Ryddelmyst_Assets/Textures/snow2ice_d.jpg
-    10.1 Source: https://opengameart.org/content/terrain-textures-pack-from-stunt-rally-23
-    10.2 Authors: https://opengameart.org/users/cryham
-    10.3 License: CC0
+    12.1 Source: https://opengameart.org/content/terrain-textures-pack-from-stunt-rally-23
+    12.2 Authors: https://opengameart.org/users/cryham
+    12.3 License: CC0
+ 13. Ryddelmyst/Content/Ryddelmyst_Assets/Textures/LeopardTex.png
+    13.1 Source: https://www.gimp.org/
+    13.2 Authors: https://www.gimp.org/
+    13.3 License: https://www.gnu.org/licenses/gpl-3.0.en.html
 
 Fonts:
   1. Ryddelmyst/Content/Ryddelmyst_Assets/Fonts/alagard_by_pix3m-d6awiwp.ttf
