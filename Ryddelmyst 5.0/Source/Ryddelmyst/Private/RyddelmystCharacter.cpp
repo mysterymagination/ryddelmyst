@@ -65,6 +65,11 @@ ARyddelmystCharacter::ARyddelmystCharacter()
 	{
 		Equipment.Add(key);
 	}
+    
+    static ConstructorHelpers::FObjectFinder<UAnimationAsset> CrouchAsset(TEXT("AnimationAsset'/Game/Ryddelmyst_Assets/Meshes/SK_Maya_Anim_Maya_Skeleton_Crouch.SK_Maya_Anim_Maya_Skeleton_Crouch'"));
+    CrouchAnim = CrouchAsset.Object;
+    static ConstructorHelpers::FObjectFinder<UAnimationAsset> UncrouchAsset(TEXT("AnimationAsset'/Game/Ryddelmyst_Assets/Meshes/SK_Maya_Anim_Maya_Skeleton_Uncrouch.SK_Maya_Anim_Maya_Skeleton_Uncrouch'"));
+    UncrouchAnim = UncrouchAsset.Object;
 }
 
 void ARyddelmystCharacter::BeginPlay()
@@ -420,11 +425,13 @@ void ARyddelmystCharacter::HandleCrouch()
 	{
 		UE_LOG(LogTemp, Warning, TEXT("HandleCrouch; uncrouching"));
 		Super::UnCrouch(false);
+        GetMesh()->PlayAnimation(UncrouchAnim, false);
 	}
 	else
 	{
 		UE_LOG(LogTemp, Warning, TEXT("HandleCrouch; crouching"));
 		Super::Crouch(false);
+        GetMesh()->PlayAnimation(CrouchAnim, false);
 	}
 }
 
