@@ -425,13 +425,19 @@ void ARyddelmystCharacter::HandleCrouch()
 	{
 		UE_LOG(LogTemp, Warning, TEXT("HandleCrouch; uncrouching"));
 		Super::UnCrouch(false);
+        /* this causes her to teleport back to Idle animation presumably because we resume the BP processing immediately after giving the 'play uncrouch' command; probably would need to listen for the end of the uncrouch animation and then return to the anim BP mode to do this properly.  Seems like we would need to get into Montage and hook into OnMontageEnded to do that.  Instead, I will hack it into the anim BP itself; it's a bit silly to have multiple anim systems operating on the same SK anyway.
         GetMesh()->PlayAnimation(UncrouchAnim, false);
+        GetMesh()->SetAnimationMode(EAnimationMode::Type::AnimationBlueprint);
+        */
 	}
 	else
 	{
 		UE_LOG(LogTemp, Warning, TEXT("HandleCrouch; crouching"));
 		Super::Crouch(false);
+        /*
+        GetMesh()->SetAnimationMode(EAnimationMode::Type::AnimationCustomMode);
         GetMesh()->PlayAnimation(CrouchAnim, false);
+        */
 	}
 }
 
