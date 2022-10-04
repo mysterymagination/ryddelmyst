@@ -21,6 +21,7 @@
 #include "BattleStatsBearer.h"
 #include "StatusEffected.h"
 #include "GameFramework/CharacterMovementComponent.h"
+#include "Animation/AnimationAsset.h"
 #include "RyddelmystCharacter.generated.h"
 
 class UInputComponent;
@@ -131,6 +132,10 @@ private:
 	TArray<const UStatusEffect*> StatusEffects;
 	UPROPERTY()
 	UBattleStats* CharacterStats;
+    UPROPERTY()
+    UAnimationAsset* CrouchAnim;
+    UPROPERTY()
+    UAnimationAsset* UncrouchAnim;
 
 public:
 	ARyddelmystCharacter();
