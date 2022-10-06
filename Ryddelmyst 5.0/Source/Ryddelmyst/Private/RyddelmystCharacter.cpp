@@ -343,7 +343,7 @@ FHitResult ARyddelmystCharacter::FireInteractRay()
 	const FVector InitLocation = FirstPersonCameraComponent->GetComponentLocation();
 	const FVector direction = FirstPersonCameraComponent->GetComponentRotation().Vector();
 	const FVector start_trace = InitLocation + direction * GetCapsuleComponent()->GetScaledCapsuleRadius();
-	UE_LOG(LogTemp, Warning, TEXT("Interact; FPP camera forward vec is %s and rotation.vector is %s"), *FirstPersonCameraComponent->GetForwardVector().ToString(), *direction.ToString());
+	UE_LOG(LogTemp, Warning, TEXT("Interact; FPP camera forward vec is %s and rotation.vector is %s and capsule radius is %f"), *FirstPersonCameraComponent->GetForwardVector().ToString(), *direction.ToString(), GetCapsuleComponent()->GetScaledCapsuleRadius());
 	const FVector end_trace = start_trace + (direction * MaxInteractDistance);
 	UE_LOG(LogTemp, Warning, TEXT("Interact; ray start says %s, direction says %s, and ray end says %s"), *start_trace.ToString(), *direction.ToString(), *end_trace.ToString());
 	DrawDebugLine(
