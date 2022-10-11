@@ -112,6 +112,10 @@ Textures:
     13.1 Source: https://www.gimp.org/
     13.2 Authors: https://www.gimp.org/
     13.3 License: https://www.gnu.org/licenses/gpl-3.0.en.html
+ 14. Ryddelmyst/Content/Ryddelmyst_Assets/Textures/maya_portraits.png 
+    14.1 Source: https://opengameart.org/content/tricolor-nes-rpg-character-portraits and https://opengameart.org/content/24x32-peppercarrot-characters
+    14.2 Authors: https://opengameart.org/users/ctske and https://opengameart.org/users/diamonddmgirl
+    14.3 Licenses: https://creativecommons.org/licenses/by/4.0/, http://opengameart.org/content/oga-by-30-faq, http://creativecommons.org/licenses/by/3.0/
 
 Fonts:
   1. Ryddelmyst/Content/Ryddelmyst_Assets/Fonts/alagard_by_pix3m-d6awiwp.ttf
