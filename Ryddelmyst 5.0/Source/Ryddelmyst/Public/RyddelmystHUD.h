@@ -54,19 +54,37 @@ public:
 	void ClearItemSelection();
 
 	/**
-	 * @brief Attempts to show a display dialogue, if one is not already showing
+	 * @brief Attempts to show the dialogue box, if one is not already showing
+	 * @param Portrait the character portrait to show beside the dialogue text
+	 * @param Text the dialogue text
 	 * @return true if a dialogue was shown, false otherwise 
 	 * 
 	 */
 	UFUNCTION(BlueprintCallable, Category = "Dialogue")
-	bool ShowDialogue(const FText& Text);
+	bool ShowDialogue(const UPaperSprite* Portrait, const FText& Text);
 
 	/**
-	 * @brief Attempts to hide a display dialogue, if one is showing
+	 * @brief Attempts to hide the dialogue box, if one is showing
 	 * @return true if a showing dialogue was hidden, false otherwise
 	 */
 	UFUNCTION(BlueprintCallable, Category = "Dialogue")
 	bool HideDialogue();
+
+	/**
+	 * @brief Attempts to show text in the mostly full screen text box, if one is not already showing
+	 * @param Text the text to show over most of the screen
+	 * @return true if text was shown, false otherwise 
+	 * 
+	 */
+	UFUNCTION(BlueprintCallable, Category = "Dialogue")
+	bool ShowText(const FText& Text);
+
+	/**
+	 * @brief Attempts to hide the mostly full screen text box, if one is showing
+	 * @return true if a showing text was hidden, false otherwise
+	 */
+	UFUNCTION(BlueprintCallable, Category = "Dialogue")
+	bool HideText();
 
 	/**
 	 * @brief hides all parts of the HUD
@@ -110,6 +128,9 @@ private:
 
 	UPROPERTY()
 	class UTextDisplayWidget* TextWidget;
+
+	UPROPERTY()
+	class UTextDisplayWidget* DialogueWidget;
 
 	/** Handle to the InventoryPanel UI widget in the HUD */
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Inventory", meta = (AllowPrivateAccess = "true"))

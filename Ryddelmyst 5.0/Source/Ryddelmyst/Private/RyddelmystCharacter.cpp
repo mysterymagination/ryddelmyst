@@ -301,10 +301,40 @@ void ARyddelmystCharacter::Interact()
 					{
 						if (Actor->GetClass()->ImplementsInterface(UDescribable::StaticClass()))
 						{
-							FString DescString = IDescribable::Execute_GenerateDescription(Actor);
-							// todo: the GenerateDescription API should probably return an already localized FText since UE4 doesn't seem to allow for localization of anything but an actual string literal 
-							HUD->ShowDialogue(FText::FromString(DescString));
-							UE_LOG(LogTemp, Warning, TEXT("Interact; description of %s is %s"), *Actor->GetName(), *DescString);
+							FDescriptor Desc = IDescribable::Execute_GenerateDescription(Actor);
+							UPaperSprite* ReactionPortrait = nullptr;
+							switch(Desc.Reaction)
+							{
+								// Maya defaults to a happy outlook!  That's the way to be.
+								case HAPPY:
+								case NEUTRAL:
+									ReactionPortrait = HappyPortrait;
+									break;
+								case SAD:
+									ReactionPortrait = SadPortrait;
+									break;
+								case FLIRTY:
+									ReactionPortrait = FlirtyPortrait;
+									break;
+								case CONFUSED:
+									ReactionPortrait = ConfusedPortrait;
+									break;
+								case ANGRY:
+									ReactionPortrait = AngryPortrait;
+									break;
+								case EMBARRASSED:
+									ReactionPortrait = EmbarrassedPortrait;
+									break;
+								case WEARY:
+									ReactionPortrait = WearyPortrait;
+									break;
+								case ELDRITCH:
+									ReactionPortrait = EldritchPortrait;
+									break;
+
+							}
+							HUD->ShowDialogue(ReactionPortrait, Desc.LocalizedDescription);
+							UE_LOG(LogTemp, Warning, TEXT("Interact; describing %s as %s"), *Actor->GetName(), *Desc.LocalizedDescription.ToString());
 						}
 					}
 					else if (cap == InteractCapability::POCKETABLE)

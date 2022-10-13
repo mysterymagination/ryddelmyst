@@ -29,6 +29,20 @@ enum class InteractCapability : uint8
 	OPENABLE UMETA(DisplayName = "OPENABLE")
 };
 
+UENUM(BlueprintType)
+enum class InteractReactions : uint8 
+{
+	HAPPY UMETA(DisplayName = "HAPPY"),
+	FLIRTY UMETA(DisplayName = "FLIRTY"),
+	NEUTRAL UMETA(DisplayName = "NEUTRAL"),
+	ANGRY UMETA(DisplayName = "ANGRY"),
+	EMBARRASSED UMETA(DisplayName = "EMBARRASSED"),
+	CONFUSED UMETA(DisplayName = "CONFUSED"),
+	SAD UMETA(DisplayName = "SAD"),
+	WEARY UMETA(DisplayName = "WEARY"),
+	ELDRITCH UMETA(DisplayName = "ELDRITCH")
+};
+
 /**
  * Interface for Actors that the player can interact with in special ways not covered by physics etc.
  */
