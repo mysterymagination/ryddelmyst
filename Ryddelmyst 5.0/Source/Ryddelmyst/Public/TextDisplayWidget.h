@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "Blueprint/UserWidget.h"
+#include "PaperSprite.h"
 #include "TextDisplayWidget.generated.h"
 
 /**
@@ -18,7 +19,7 @@ protected:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Dialogue")
 	FText DisplayText;
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Dialogue")
-	UTexture2D* Portrait;
+	UPaperSprite* Portrait;
 
 public:
 	UFUNCTION(BlueprintCallable, Category = "Dialogue")
@@ -28,8 +29,8 @@ public:
 	void SetText(const FText& Text) { DisplayText = Text; };
 
 	UFUNCTION(BlueprintCallable, Category = "Dialogue")
-	UTexture2D* GetPortrait() const { return Portrait; };
+	UPaperSprite* GetPortrait() const { return Portrait; };
 
 	UFUNCTION(BlueprintCallable, Category = "Dialogue")
-	void SetPortrait(UTexture2D* Image) { Portrait = Image; };
+	void SetPortrait(UPaperSprite* Image) { Portrait = Image; };
 };
