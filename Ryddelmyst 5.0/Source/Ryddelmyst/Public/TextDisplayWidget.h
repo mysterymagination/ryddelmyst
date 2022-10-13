@@ -17,6 +17,8 @@ class RYDDELMYST_API UTextDisplayWidget : public UUserWidget
 protected:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Dialogue")
 	FText DisplayText;
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Dialogue")
+	UTexture2D* Portrait;
 
 public:
 	UFUNCTION(BlueprintCallable, Category = "Dialogue")
@@ -24,4 +26,10 @@ public:
 
 	UFUNCTION(BlueprintCallable, Category = "Dialogue")
 	void SetText(const FText& Text) { DisplayText = Text; };
+
+	UFUNCTION(BlueprintCallable, Category = "Dialogue")
+	UTexture2D* GetPortrait() const { return Portrait; };
+
+	UFUNCTION(BlueprintCallable, Category = "Dialogue")
+	void SetPortrait(UTexture2D* Image) { Portrait = Image; };
 };
