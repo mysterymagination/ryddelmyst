@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "UObject/Interface.h"
+#include "Interact.h"
 #include "Describable.generated.h"
 
 // This class does not need to be modified.
@@ -12,6 +13,16 @@ class UDescribable : public UInterface
 {
 	GENERATED_BODY()
 };
+
+USTRUCT(BlueprintType)
+struct FDescriptor
+{
+	GENERATED_BODY()
+	UPROPERTY()
+	FText LocalizedDescription;
+	UPROPERTY()
+	InteractReaction Reaction;
+}
 
 /**
  * Interface for objects that have player-visible descriptions
@@ -23,8 +34,8 @@ class RYDDELMYST_API IDescribable
 	// Add interface functions to this class. This is the class that will be inherited to implement this interface.
 public:
 	/**
-	 * Generates and returns a string describing the object 
+	 * Generates and returns a descriptor containing a localized text string describing the object as well as a reaction enum indicating which character portrait should be used 
 	 */
 	UFUNCTION(BlueprintCallable, BlueprintNativeEvent, Category = "Interaction")
-	FString GenerateDescription();
+	FDescriptor GenerateDescription();
 };
