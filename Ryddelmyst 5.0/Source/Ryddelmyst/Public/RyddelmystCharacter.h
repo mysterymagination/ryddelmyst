@@ -22,6 +22,7 @@
 #include "StatusEffected.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "Animation/AnimationAsset.h"
+#include "PaperSprite.h"
 #include "RyddelmystCharacter.generated.h"
 
 class UInputComponent;
@@ -133,9 +134,7 @@ private:
 	UPROPERTY()
 	UBattleStats* CharacterStats;
     UPROPERTY()
-    UAnimationAsset* CrouchAnim;
-    UPROPERTY()
-    UAnimationAsset* UncrouchAnim;
+	TMap<FString, UPaperSprite*> PortraitMap;
 
 public:
 	ARyddelmystCharacter();

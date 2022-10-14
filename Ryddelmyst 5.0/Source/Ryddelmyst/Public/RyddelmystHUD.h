@@ -61,7 +61,7 @@ public:
 	 * 
 	 */
 	UFUNCTION(BlueprintCallable, Category = "Dialogue")
-	bool ShowDialogue(const UPaperSprite* Portrait, const FText& Text);
+	bool ShowDialogue(UPaperSprite* Portrait, const FText& Text);
 
 	/**
 	 * @brief Attempts to hide the dialogue box, if one is showing
@@ -128,6 +128,9 @@ private:
 
 	UPROPERTY()
 	class UTextDisplayWidget* TextWidget;
+
+	UPROPERTY(EditAnywhere, Category = "Dialogue")
+	TSubclassOf<class UUserWidget> DialogueWidgetClass;
 
 	UPROPERTY()
 	class UTextDisplayWidget* DialogueWidget;
