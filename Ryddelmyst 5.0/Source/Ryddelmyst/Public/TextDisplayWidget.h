@@ -23,13 +23,13 @@ protected:
 
 public:
 	UFUNCTION(BlueprintCallable, Category = "Dialogue")
-	FText GetText() const { return DisplayText;  };
+	const FText& GetText() const { return DisplayText;  };
 
 	UFUNCTION(BlueprintCallable, Category = "Dialogue")
 	void SetText(const FText& Text) { DisplayText = Text; };
 
 	UFUNCTION(BlueprintCallable, Category = "Dialogue")
-	UPaperSprite* GetPortrait() const { return Portrait; };
+	const UPaperSprite* GetPortrait() const { return Portrait; };
 
 	UFUNCTION(BlueprintCallable, Category = "Dialogue")
 	void SetPortrait(UPaperSprite* Image) { Portrait = Image; };

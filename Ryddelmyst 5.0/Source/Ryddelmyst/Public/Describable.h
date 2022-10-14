@@ -7,22 +7,22 @@
 #include "Interact.h"
 #include "Describable.generated.h"
 
+USTRUCT(BlueprintType)
+struct FDescriptor
+{
+	GENERATED_BODY()
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Interaction")
+	FText LocalizedDescription;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Interaction")
+	InteractReactions Reaction;
+};
+
 // This class does not need to be modified.
 UINTERFACE(MinimalAPI)
 class UDescribable : public UInterface
 {
 	GENERATED_BODY()
 };
-
-USTRUCT(BlueprintType)
-struct FDescriptor
-{
-	GENERATED_BODY()
-	UPROPERTY()
-	FText LocalizedDescription;
-	UPROPERTY()
-	InteractReaction Reaction;
-}
 
 /**
  * Interface for objects that have player-visible descriptions
