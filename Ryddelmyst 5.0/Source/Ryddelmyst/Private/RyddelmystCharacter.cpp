@@ -66,10 +66,25 @@ ARyddelmystCharacter::ARyddelmystCharacter()
 		Equipment.Add(key);
 	}
     
-    static ConstructorHelpers::FObjectFinder<UAnimationAsset> CrouchAsset(TEXT("AnimationAsset'/Game/Ryddelmyst_Assets/Meshes/SK_Maya_Anim_Maya_Skeleton_Crouch.SK_Maya_Anim_Maya_Skeleton_Crouch'"));
-    CrouchAnim = CrouchAsset.Object;
-    static ConstructorHelpers::FObjectFinder<UAnimationAsset> UncrouchAsset(TEXT("AnimationAsset'/Game/Ryddelmyst_Assets/Meshes/SK_Maya_Anim_Maya_Skeleton_Uncrouch.SK_Maya_Anim_Maya_Skeleton_Uncrouch'"));
-    UncrouchAnim = UncrouchAsset.Object;
+	PortraitMap = 
+	{
+		{"happy", ConstructorHelpers::FObjectFinder<UPaperSprite>
+ (TEXT("/Game/Ryddelmyst_Assets/Textures/maya_portraits_Sprite_Happy")).Object},
+		{"sad", ConstructorHelpers::FObjectFinder<UPaperSprite>
+ (TEXT("/Game/Ryddelmyst_Assets/Textures/maya_portraits_Sprite_Sad")).Object},
+		{"weary", ConstructorHelpers::FObjectFinder<UPaperSprite>
+ (TEXT("/Game/Ryddelmyst_Assets/Textures/maya_portraits_Sprite_Weary")).Object},
+		{"eldritch", ConstructorHelpers::FObjectFinder<UPaperSprite>
+ (TEXT("/Game/Ryddelmyst_Assets/Textures/maya_portraits_Sprite_Eldritch")).Object},
+		{"flirty", ConstructorHelpers::FObjectFinder<UPaperSprite>
+ (TEXT("/Game/Ryddelmyst_Assets/Textures/maya_portraits_Sprite_Flirty")).Object},
+		{"angry", ConstructorHelpers::FObjectFinder<UPaperSprite>
+ (TEXT("/Game/Ryddelmyst_Assets/Textures/maya_portraits_Sprite_Angry")).Object},
+		{"embarrassed", ConstructorHelpers::FObjectFinder<UPaperSprite>
+ (TEXT("/Game/Ryddelmyst_Assets/Textures/maya_portraits_Sprite_Embarrassed")).Object},
+		{"confused", ConstructorHelpers::FObjectFinder<UPaperSprite>
+ (TEXT("/Game/Ryddelmyst_Assets/Textures/maya_portraits_Sprite_Confused")).Object}
+	};
 }
 
 void ARyddelmystCharacter::BeginPlay()
@@ -306,35 +321,36 @@ void ARyddelmystCharacter::Interact()
 							switch(Desc.Reaction)
 							{
 								// Maya defaults to a happy outlook!  That's the way to be.
-								case HAPPY:
-								case NEUTRAL:
-									ReactionPortrait = HappyPortrait;
+								case InteractReactions::HAPPY:
+								case InteractReactions::NEUTRAL:
+									ReactionPortrait = PortraitMap["happy"];
 									break;
-								case SAD:
-									ReactionPortrait = SadPortrait;
+								case InteractReactions::SAD:
+									ReactionPortrait = PortraitMap["sad"];
 									break;
-								case FLIRTY:
-									ReactionPortrait = FlirtyPortrait;
+								case InteractReactions::FLIRTY:
+									ReactionPortrait = PortraitMap["flirty"];
 									break;
-								case CONFUSED:
-									ReactionPortrait = ConfusedPortrait;
+								case InteractReactions::CONFUSED:
+									ReactionPortrait = PortraitMap["confused"];
 									break;
-								case ANGRY:
-									ReactionPortrait = AngryPortrait;
+								case InteractReactions::ANGRY:
+									ReactionPortrait = PortraitMap["angry"];
 									break;
-								case EMBARRASSED:
-									ReactionPortrait = EmbarrassedPortrait;
+								case InteractReactions::EMBARRASSED:
+									ReactionPortrait = PortraitMap["embarrassed"];
 									break;
-								case WEARY:
-									ReactionPortrait = WearyPortrait;
+								case InteractReactions::WEARY:
+									ReactionPortrait = PortraitMap["weary"];
 									break;
-								case ELDRITCH:
-									ReactionPortrait = EldritchPortrait;
+								//case InteractReactions::ELDRITCH:
+								default:
+									ReactionPortrait = PortraitMap["eldritch"];
 									break;
 
 							}
 							HUD->ShowDialogue(ReactionPortrait, Desc.LocalizedDescription);
-							UE_LOG(LogTemp, Warning, TEXT("Interact; describing %s as %s"), *Actor->GetName(), *Desc.LocalizedDescription.ToString());
+							UE_LOG(LogTemp, Warning, TEXT("Interact; describing %s as %s and portrait map at eldritch says %p"), *Actor->GetName(), *Desc.LocalizedDescription.ToString(), PortraitMap["eldritch"]);
 						}
 					}
 					else if (cap == InteractCapability::POCKETABLE)
@@ -455,19 +471,11 @@ void ARyddelmystCharacter::HandleCrouch()
 	{
 		UE_LOG(LogTemp, Warning, TEXT("HandleCrouch; uncrouching"));
 		Super::UnCrouch(false);
-        /* this causes her to teleport back to Idle animation presumably because we resume the BP processing immediately after giving the 'play uncrouch' command; probably would need to listen for the end of the uncrouch animation and then return to the anim BP mode to do this properly.  Seems like we would need to get into Montage and hook into OnMontageEnded to do that.  Instead, I will hack it into the anim BP itself; it's a bit silly to have multiple anim systems operating on the same SK anyway.
-        GetMesh()->PlayAnimation(UncrouchAnim, false);
-        GetMesh()->SetAnimationMode(EAnimationMode::Type::AnimationBlueprint);
-        */
 	}
 	else
 	{
 		UE_LOG(LogTemp, Warning, TEXT("HandleCrouch; crouching"));
 		Super::Crouch(false);
-        /*
-        GetMesh()->SetAnimationMode(EAnimationMode::Type::AnimationCustomMode);
-        GetMesh()->PlayAnimation(CrouchAnim, false);
-        */
 	}
 }
 
@@ -887,7 +895,7 @@ bool ARyddelmystCharacter::AddInventoryItem(UObject* ItemObj)
 	}
 	else
 	{
-		HUD->ShowDialogue(NSLOCTEXT("NSFeedback", "KeyInvFull", "Your inventory is full!"));
+		HUD->ShowDialogue(PortraitMap["weary"], NSLOCTEXT("NSFeedback", "KeyInvFull", "My inventory is full!  Insert overflowing junk in my trunk joke here."));
 		UE_LOG(LogTemp, Warning, TEXT("AddInventoryItem; inventory is full"));
 		return false;
 	}
