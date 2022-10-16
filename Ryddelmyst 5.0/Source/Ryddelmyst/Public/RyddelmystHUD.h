@@ -129,12 +129,6 @@ private:
 	UPROPERTY()
 	class UTextDisplayWidget* TextWidget;
 
-	UPROPERTY(EditAnywhere, Category = "Dialogue")
-	TSubclassOf<class UUserWidget> DialogueWidgetClass;
-
-	UPROPERTY()
-	class UTextDisplayWidget* DialogueWidget;
-
 	/** Handle to the InventoryPanel UI widget in the HUD */
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Inventory", meta = (AllowPrivateAccess = "true"))
 	class UHorizontalBox* InventoryPanel;
