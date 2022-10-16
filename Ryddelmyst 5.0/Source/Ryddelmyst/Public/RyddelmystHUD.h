@@ -20,6 +20,24 @@ public:
 	class UUserWidget* GetStatusWidget();
 
 	/**
+	 * Called via input to Scroll Up event when dialogue scrolling is active
+	 */
+	UFUNCTION()
+	void ScrollDialogueUp();
+
+	/**
+	 * Called via input to Scroll Down event when dialogue scrolling is active
+	 */
+	UFUNCTION()
+	void ScrollDialogueDown();
+
+	/**
+	 * @return true if the dialogue box is displayed in the status widget, false otherwise
+	 */
+	UFUNCTION()
+	bool IsDialogueActive();
+
+	/**
 	 * Adds a UImage icon widget to the InventoryPanel, using the input texture for the image brush 
 	 * @param tex the texture representing the item
 	 */
@@ -114,11 +132,11 @@ private:
 	UPROPERTY()
 	class UTexture2D* CrosshairTex;
 
-	UPROPERTY(EditAnywhere, Category = "Health")
-	TSubclassOf<class UUserWidget> StatusWidgetClass;
+	UPROPERTY(EditAnywhere, Category = "RPG")
+	TSubclassOf<class UTextDisplayWidget> StatusWidgetClass;
 
 	UPROPERTY()
-	class UUserWidget* StatusWidget;
+	class UTextDisplayWidget* StatusWidget;
 
 	UPROPERTY(EditAnywhere, Category = "GameState")
 	TSubclassOf<class UUserWidget> PauseMenuWidgetClass;

@@ -320,14 +320,24 @@ protected:
 	void Run();
 
 	/**
-	 * Called via input to Cycle Weapon Up event
+	 * Called via input to Scroll Up event when weapon scrolling is active
 	 */
 	void CycleWeaponUp();
 
 	/**
-	 * Called via input to Cycle Weapon Down event
+	 * Called via input to Scroll Down event when weapon scrolling is active
 	 */
 	void CycleWeaponDown();
+
+	/**
+	 * Called via input to Scroll Up event
+	 */
+	void ScrollUp();
+
+	/**
+	 * Called via input to Scroll Down event
+	 */
+	void ScrollDown();
 
 	/**
 	 * Called via input to turn look up/down at a given rate.
