@@ -11,6 +11,7 @@ USTRUCT(BlueprintType)
 struct FDescriptor
 {
 	GENERATED_BODY()
+public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Interaction")
 	FText LocalizedDescription;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Interaction")

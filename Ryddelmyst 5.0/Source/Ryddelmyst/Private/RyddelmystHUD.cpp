@@ -26,9 +26,6 @@ ARyddelmystHUD::ARyddelmystHUD()
 	static ConstructorHelpers::FClassFinder<UUserWidget> PauseMenuWidgetObj(TEXT("/Game/Ryddelmyst_Assets/UI/BP_PauseMenu"));
 	PauseMenuWidgetClass = PauseMenuWidgetObj.Class;
 
-	static ConstructorHelpers::FClassFinder<UUserWidget> DialogueWidgetObj(TEXT("/Game/Ryddelmyst_Assets/UI/BP_Dialogue"));
-	DialogueWidgetClass = DialogueWidgetObj.Class;
-
 	static ConstructorHelpers::FObjectFinder<UTexture2D> SelectionTexObj(TEXT("/Game/Ryddelmyst_Assets/Textures/SelectionHighlight"));
 	InventorySelectionTexture = SelectionTexObj.Object;
 }
@@ -97,15 +94,6 @@ void ARyddelmystHUD::BeginPlay()
 			UE_LOG(LogTemp, Error, TEXT("BeginPlay; no text widget class set"));
 		}
 
-		if (DialogueWidgetClass)
-		{
-			DialogueWidget = CreateWidget<UTextDisplayWidget>(GetWorld(), DialogueWidgetClass);
-		}
-		else
-		{
-			UE_LOG(LogTemp, Error, TEXT("BeginPlay; no dialogue widget class set"));
-		}
-
 		if (PauseMenuWidgetClass)
 		{
 			PauseMenuWidget = CreateWidget<UUserWidget>(GetWorld(), PauseMenuWidgetClass);
@@ -166,9 +154,9 @@ void ARyddelmystHUD::ClearItemSelection()
 
 bool ARyddelmystHUD::ShowDialogue(UPaperSprite* Portrait, const FText& Text)
 {
-	if (DialogueWidget)
+	if (StatusWidget)
 	{
-		DialogueWidget->SetText(Text);
+		StatusWidget->Dialogue
 		if(Portrait)
 		{
 			DialogueWidget->SetPortrait(Portrait);
