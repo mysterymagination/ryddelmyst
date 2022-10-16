@@ -180,8 +180,8 @@ void ARyddelmystCharacter::SetupPlayerInputComponent(class UInputComponent* Play
 	PlayerInputComponent->BindAxis("TurnRate", this, &ARyddelmystCharacter::TurnAtRate);
 	PlayerInputComponent->BindAxis("LookUp", this, &ARyddelmystCharacter::LookUp);
 	PlayerInputComponent->BindAxis("LookUpRate", this, &ARyddelmystCharacter::LookUpAtRate);
-	PlayerInputComponent->BindAction("Cycle Weapon Up", IE_Released, this, &ARyddelmystCharacter::CycleWeaponUp);
-	PlayerInputComponent->BindAction("Cycle Weapon Down", IE_Released, this, &ARyddelmystCharacter::CycleWeaponDown);
+	PlayerInputComponent->BindAction("Scroll Up", IE_Released, this, &ARyddelmystCharacter::ScrollUp);
+	PlayerInputComponent->BindAction("Scroll Down", IE_Released, this, &ARyddelmystCharacter::ScrollDown);
 
 	PlayerInputComponent->BindAction("Fire", IE_Released, this, &ARyddelmystCharacter::Fire);
 	PlayerInputComponent->BindAction("Run", IE_Released, this, &ARyddelmystCharacter::Run);
@@ -532,6 +532,30 @@ void ARyddelmystCharacter::LookUpAtRate(float Rate)
 {
 	// calculate delta for this frame from the rate information
 	AddControllerPitchInput(Rate * BaseLookUpRate * GetWorld()->GetDeltaSeconds());
+}
+
+void ARyddelmystCharacter::ScrollUp()
+{
+	if (HUD->IsDialogueActive())
+	{
+		HUD->ScrollDialogueUp();
+	}
+	else
+	{
+		CycleWeaponUp();
+	}
+}
+
+void ARyddelmystCharacter::ScrollDown()
+{
+	if (HUD->IsDialogueActive())
+	{
+		HUD->ScrollDialogueDown();
+	}
+	else
+	{
+		CycleWeaponDown();
+	}
 }
 
 void ARyddelmystCharacter::CycleWeaponUp()

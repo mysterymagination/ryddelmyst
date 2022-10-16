@@ -16,10 +16,14 @@ class RYDDELMYST_API UTextDisplayWidget : public UUserWidget
 	GENERATED_BODY()
 	
 protected:
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Dialogue")
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Dialogue")
 	FText DisplayText;
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Dialogue")
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Dialogue")
 	UPaperSprite* Portrait;
+
+public:
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Dialogue")
+	bool IsDialogueDisplayed = false;
 
 public:
 	UFUNCTION(BlueprintCallable, Category = "Dialogue")

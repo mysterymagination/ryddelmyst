@@ -12,6 +12,7 @@
 #include "Components/GridPanel.h"
 #include "Components/GridSlot.h"
 #include "Components/Image.h"
+#include "Components/ScrollBox.h"
 #include "TextDisplayWidget.h"
 
 ARyddelmystHUD::ARyddelmystHUD()
@@ -59,7 +60,7 @@ void ARyddelmystHUD::BeginPlay()
 	{
 		if (StatusWidgetClass)
 		{
-			StatusWidget = CreateWidget<UUserWidget>(GetWorld(), StatusWidgetClass);
+			StatusWidget = CreateWidget<UTextDisplayWidget>(GetWorld(), StatusWidgetClass);
 			UE_LOG(LogTemp, Warning, TEXT("BeginPlay; status widget says %p"), StatusWidget)
 			if (StatusWidget)
 			{
@@ -152,41 +153,77 @@ void ARyddelmystHUD::ClearItemSelection()
 	InventorySelectionOverlay->ClearChildren();
 }
 
+void ARyddelmystHUD::ScrollDialogueUp()
+{
+	if (StatusWidget)
+	{
+		UScrollBox* DialogueScrollBox = StatusWidget->WidgetTree->FindWidget<UScrollBox>(FName("DialogueScrollBox"));
+		if (DialogueScrollBox->GetScrollOffset() > 0.f)
+		{
+			DialogueScrollBox->SetScrollOffset(DialogueScrollBox->GetScrollOffset() - 50.f);
+		}
+	}
+}
+
+void ARyddelmystHUD::ScrollDialogueDown()
+{
+	if (StatusWidget)
+	{
+		UScrollBox* DialogueScrollBox = StatusWidget->WidgetTree->FindWidget<UScrollBox>(FName("DialogueScrollBox"));
+		UE_LOG(LogTemp, Warning, TEXT("scrolling down; offsetofend says %f"), DialogueScrollBox->GetScrollOffsetOfEnd());
+		if (DialogueScrollBox->GetScrollOffset() < DialogueScrollBox->GetScrollOffsetOfEnd())
+		{
+			DialogueScrollBox->SetScrollOffset(DialogueScrollBox->GetScrollOffset() + 50.f);
+		}
+	}
+}
+
+bool ARyddelmystHUD::IsDialogueActive()
+{
+	if (StatusWidget)
+	{
+		return StatusWidget->IsDialogueDisplayed;
+	}
+	else
+	{
+		return false;
+	}
+}
+
 bool ARyddelmystHUD::ShowDialogue(UPaperSprite* Portrait, const FText& Text)
 {
 	if (StatusWidget)
 	{
-		StatusWidget->Dialogue
+		StatusWidget->SetText(Text);
 		if(Portrait)
 		{
-			DialogueWidget->SetPortrait(Portrait);
+			StatusWidget->SetPortrait(Portrait);
 		}
-		if (!DialogueWidget->IsInViewport())
-		{
-			DialogueWidget->AddToViewport();
-			return true;
-		}
+		StatusWidget->IsDialogueDisplayed = true;
+		UScrollBox* DialogueScrollBox = StatusWidget->WidgetTree->FindWidget<UScrollBox>(FName("DialogueScrollBox"));
+		DialogueScrollBox->ScrollToStart();
+		return true;
 	}
 	else
 	{
-		UE_LOG(LogTemp, Error, TEXT("ShowDialogue; Dialogue widget not created yet"));
+		UE_LOG(LogTemp, Error, TEXT("ShowDialogue; status widget not created yet"));
 	}
 	return false;
 }
 
 bool ARyddelmystHUD::HideDialogue()
 {
-	if (DialogueWidget)
+	if (StatusWidget)
 	{
-		if (DialogueWidget->IsInViewport())
+		if (StatusWidget->IsDialogueDisplayed)
 		{
-			DialogueWidget->RemoveFromViewport();
+			StatusWidget->IsDialogueDisplayed = false;
 			return true;
 		}
 	}
 	else
 	{
-		UE_LOG(LogTemp, Error, TEXT("HideDialogue; Dialogue widget not created yet"));
+		UE_LOG(LogTemp, Error, TEXT("HideDialogue; status widget not created yet"));
 	}
 	return false;
 }
