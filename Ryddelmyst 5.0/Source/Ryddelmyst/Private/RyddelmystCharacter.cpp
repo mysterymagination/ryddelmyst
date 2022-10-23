@@ -264,7 +264,7 @@ void ARyddelmystCharacter::Interact()
 		// we need to add back our crouched half height as the crouch op does not seem to affect the bounding box extents
 		if (GetCharacterMovement()->IsCrouching())
 		{
-			CharacterFeetZ += GetCharacterMovement()->CrouchedHalfHeight;
+			CharacterFeetZ += GetCharacterMovement()->GetCrouchedHalfHeight();
 		}
 		GrabbedActor->SetActorRelativeLocation(FVector(DroppedLocationOffset.X, DroppedLocationOffset.Y, DroppedLocationOffset.Z + CharacterFeetZ));
 

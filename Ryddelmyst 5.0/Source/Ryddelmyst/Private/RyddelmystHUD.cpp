@@ -76,7 +76,7 @@ void ARyddelmystHUD::BeginPlay()
 				if (InventorySelectionTexture)
 				{
 					InventorySelectionIcon = StatusWidget->WidgetTree->ConstructWidget<UImage>();
-					InventorySelectionIcon->SetBrushSize(FVector2D(FIntPoint(128, 128)));
+					InventorySelectionIcon->Brush.ImageSize = FVector2D(FIntPoint(128, 128));
 					InventorySelectionIcon->SetBrushFromTexture(InventorySelectionTexture, false);
 				}
 			}
@@ -114,16 +114,16 @@ UUserWidget* ARyddelmystHUD::GetStatusWidget()
 void ARyddelmystHUD::AddEquipIcon(class UTexture2D* tex)
 {
 	UImage* IconWidget = StatusWidget->WidgetTree->ConstructWidget<UImage>();
-	IconWidget->SetBrushSize(FVector2D(FIntPoint(96, 96)));
 	IconWidget->SetBrushFromTexture(tex, false);
+	IconWidget->Brush.ImageSize = FVector2D(FIntPoint(96, 96));
 	EquipmentPanel->AddChildToHorizontalBox(IconWidget);
 }
 
 void ARyddelmystHUD::AddItemIcon(class UTexture2D* tex)
 {
 	UImage* IconWidget = StatusWidget->WidgetTree->ConstructWidget<UImage>();
-	IconWidget->SetBrushSize(FVector2D(FIntPoint(128, 128)));
 	IconWidget->SetBrushFromTexture(tex, false);
+	IconWidget->Brush.ImageSize = FVector2D(FIntPoint(128, 128));
 	InventoryPanel->AddChildToHorizontalBox(IconWidget);
 }
 
