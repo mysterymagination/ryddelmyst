@@ -166,8 +166,8 @@ void ARyddelmystCharacter::SetupPlayerInputComponent(class UInputComponent* Play
 	// Bind camera toggle events
 	PlayerInputComponent->BindAction("CameraToggle", IE_Released, this, &ARyddelmystCharacter::CameraToggle);
 
-	// Bind LookitYou control mode
-	PlayerInputComponent->BindAction("Free Cam Mode", IE_Released, this, &ARyddelmystCharacter::SendControl);
+	// Bind LookitYou 3PP cam movement mode
+	PlayerInputComponent->BindAction("Free Cam Mode", IE_Released, this, &ARyddelmystCharacter::LookitYouToggle);
 
 	// Bind movement events
 	PlayerInputComponent->BindAxis("MoveForward", this, &ARyddelmystCharacter::MoveForward);
@@ -176,7 +176,7 @@ void ARyddelmystCharacter::SetupPlayerInputComponent(class UInputComponent* Play
 	// We have 2 versions of the rotation bindings to handle different kinds of devices differently
 	// "turn" handles devices that provide an absolute delta, such as a mouse.
 	// "turnrate" is for devices that we choose to treat as a rate of change, such as an analog joystick
-	PlayerInputComponent->BindAxis("Turn", this, &APawn::AddControllerYawInput);
+	PlayerInputComponent->BindAxis("Turn", this, &ARyddelmystCharacter::Turn);//&APawn::AddControllerYawInput);
 	PlayerInputComponent->BindAxis("TurnRate", this, &ARyddelmystCharacter::TurnAtRate);
 	PlayerInputComponent->BindAxis("LookUp", this, &ARyddelmystCharacter::LookUp);
 	PlayerInputComponent->BindAxis("LookUpRate", this, &ARyddelmystCharacter::LookUpAtRate);
@@ -436,9 +436,26 @@ void ARyddelmystCharacter::SendControl()
 	}
 }
 
+// todo: add option somewhere to reset cams to default pos/rot in case things go haywire
+void ARyddelmystCharacter::LookitYouToggle()
+{
+	// toggling this mode off should leave the player in 3PP with the 3PP camera at whatever pos and rot they last had it; this way they can choose custom 3PP camera perspectives and make them sticky
+	IsMouseControlling3PPCam = !IsMouseControlling3PPCam;
+	if (IsMouseControlling3PPCam)
+	{
+		// iff not already in 3PP, go to 3PP
+		if (FirstPersonCameraMode)
+		{
+			CameraToggle();
+		}
+		// todo: hijack mouse yaw and pitch to move the 3PP cam about the player character, effectively on rails at its fixed offset position somewhat like the 3PP cam in Morrowind.
+
+		// todo: allow variable offset position?  This can get tricky and could be exploitable. 
+	}
+}
+
 void ARyddelmystCharacter::CameraToggle()
 {
-	UE_LOG(LogTemp, Warning, TEXT("CameraToggle; 1PP cam rotation is %s"),  *FirstPersonCameraComponent->GetComponentRotation().ToString());
 	if (FirstPersonCameraMode)
 	{
 		FirstPersonCameraMode = false;
@@ -500,6 +517,22 @@ void ARyddelmystCharacter::MoveRight(float Value)
 	{
 		// add movement in that direction
 		AddMovementInput(GetActorRightVector(), Value * (IsRunning ? 30 : 1));
+	}
+}
+
+void ARyddelmystCharacter::Turn(float Rate)
+{
+	if (!IsMouseControlling3PPCam)
+	{
+		AddControllerYawInput(Rate);
+	}
+	else
+	{
+		if (ThirdPersonCameraComponent)
+		{
+			// todo: we want to orbit the cam around her, so we need a vector diff between 3PP cam and Maya, then we need to rotate that vector and set the result as the new 3PP cam location.  To make sure it stays looking at Maya, the best hting may be to also call the AddRelativeRotation API below.
+			ThirdPersonCameraComponent->AddRelativeRotation(FRotator(0.f, Rate, 0.f));
+		}
 	}
 }
 
