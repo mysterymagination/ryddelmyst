@@ -135,6 +135,9 @@ private:
 	UBattleStats* CharacterStats;
     UPROPERTY()
 	TMap<FString, UPaperSprite*> PortraitMap;
+	/** Controls whether the mouse input will be used for the player movement or to reposition the 3PP cam */
+	UPROPERTY()
+	bool IsMouseControlling3PPCam = false;
 
 public:
 	ARyddelmystCharacter();
@@ -296,8 +299,11 @@ protected:
 	TSubclassOf<UBattleStats> CharacterStatsType;
 
 protected:
-	/** Handles switching between our cam and the LookitYouPawn's "3rd person" cam */
+	/** Handles switching between 1PP and 3PP */
 	void CameraToggle();
+
+	/** Handles toggling 3PP camera movement on/off */
+	void LookitYouToggle();
 
 	/** Handles switching player input control over to LookitYouGo */
 	void SendControl();
@@ -313,6 +319,12 @@ protected:
 	 * @param Rate	This is a normalized rate, i.e. 1.0 means 100% of desired turn rate
 	 */
 	void TurnAtRate(float Rate);
+	
+	/**
+	 * Called via input to turn by an absolute delta e.g. from a mouse.
+	 * @param Rate this is the absolute delta we should turn
+	 */
+	void Turn(float Rate);
 
 	/**
 	 * Called via input to Run toggle event
