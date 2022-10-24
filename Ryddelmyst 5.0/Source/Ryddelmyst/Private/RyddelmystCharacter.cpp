@@ -563,7 +563,6 @@ void ARyddelmystCharacter::LookUp(float Value)
 		}
 		else
 		{
-			
 			if (ThirdPersonCameraComponent)
 			{
 				FRotator CamPitch(Value, 0.f, 0.f);
@@ -573,7 +572,6 @@ void ARyddelmystCharacter::LookUp(float Value)
 				UE_LOG(LogTemp, Warning, TEXT("LookUp; 3pp cam comp rotation after mod says %s"), *ThirdPersonCameraComponent->GetComponentRotation().ToString());
 				
 			}
-			
 		}
 	}
 }
