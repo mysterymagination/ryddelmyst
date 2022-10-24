@@ -520,18 +520,24 @@ void ARyddelmystCharacter::MoveRight(float Value)
 	}
 }
 
-void ARyddelmystCharacter::Turn(float Rate)
+void ARyddelmystCharacter::Turn(float Value)
 {
-	if (!IsMouseControlling3PPCam)
+	if(Value != 0.0f)
 	{
-		AddControllerYawInput(Rate);
-	}
-	else
-	{
-		if (ThirdPersonCameraComponent)
+		if (!IsMouseControlling3PPCam)
 		{
-			// todo: we want to orbit the cam around her, so we need a vector diff between 3PP cam and Maya, then we need to rotate that vector and set the result as the new 3PP cam location.  To make sure it stays looking at Maya, the best hting may be to also call the AddRelativeRotation API below.
-			ThirdPersonCameraComponent->AddRelativeRotation(FRotator(0.f, Rate, 0.f));
+			AddControllerYawInput(Value);
+		}
+		else
+		{
+			if (ThirdPersonCameraComponent)
+			{
+				// todo: we want to orbit the cam around her, so we need a vector diff between 3PP cam and Maya, then we need to rotate that vector and set the result as the new 3PP cam location.  To make sure it stays looking at Maya, the best hting may be to also call the AddRelativeRotation API below.
+				//FVector CamToMaya = ThirdPersonCameraComponent->GetComponentLocation() - GetActorLocation();
+				FRotator CamYaw(0.f, Value, 0.f);
+				ThirdPersonCameraComponent->SetRelativeLocation(CamYaw.RotateVector(ThirdPersonCameraComponent->GetRelativeLocation()));//CamToMaya));
+				ThirdPersonCameraComponent->AddRelativeRotation(CamYaw);
+			}
 		}
 	}
 }
@@ -544,19 +550,26 @@ void ARyddelmystCharacter::TurnAtRate(float Rate)
 
 void ARyddelmystCharacter::LookUp(float Value)
 {
-	if (Value != 0.0f)
+	if(Value != 0.0f)
 	{
-		// Only send controller pitch to CharacterMovementComponent if we're in 1PP.  In 3PP, manually pitch the 1PP cam based on controller input since 1PP cam controls spawn location of projectiles; it is essentially our 'muzzle'.  CharacterMovementComponent seems to only consider forwarding pitch to 1PP cam if it is active i.e. we are in 1PP mode, which is why we're manually applying pitch to 1PP cam while we're in 3PP.
-		if (FirstPersonCameraMode)
+		if (!IsMouseControlling3PPCam)
 		{
-			AddControllerPitchInput(Value);
+			// Only send controller pitch to CharacterMovementComponent if we're in 1PP; 3PP will only be able to Yaw around unless we're moving the 3PP cam itself
+			if (FirstPersonCameraMode)
+			{
+				AddControllerPitchInput(Value);
+			}
 		}
 		else
 		{
-			FRotator currentRotation = FirstPersonCameraComponent->GetComponentRotation();
-			// We don't want any Roll happening, and for some reason when I use AddWorldRotation I get Roll even if I specify 0.f for Yaw and Roll params.  I noticed that in FPP the Roll seems to stay almost 0 forever, so I guess a direct set to 0 here is fine enough.
-			// Current Pitch minus Value allows us to have mouse movement towards you => target pitch down and mouse movement away from you => pitch up like we have in FPP.
-			FirstPersonCameraComponent->SetWorldRotation(FRotator(currentRotation.Pitch-Value, currentRotation.Yaw, 0.f));
+			if (ThirdPersonCameraComponent)
+			{
+				// todo: we want to orbit the cam around her, so we need a vector diff between 3PP cam and Maya, then we need to rotate that vector and set the result as the new 3PP cam location.  To make sure it stays looking at Maya, the best hting may be to also call the AddRelativeRotation API below.
+				//FVector CamToMaya = ThirdPersonCameraComponent->GetComponentLocation() - GetActorLocation();
+				FRotator CamPitch(Value, 0.f, 0.f);
+				ThirdPersonCameraComponent->SetRelativeLocation(CamPitch.RotateVector(ThirdPersonCameraComponent->GetRelativeLocation()));//CamToMaya));
+				ThirdPersonCameraComponent->AddRelativeRotation(CamPitch);
+			}
 		}
 	}
 }
