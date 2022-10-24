@@ -464,6 +464,7 @@ void ARyddelmystCharacter::CameraToggle()
 	}
 	else
 	{
+		IsMouseControlling3PPCam = false;
 		ThirdPersonCameraComponent->SetActive(false);
 		FirstPersonCameraComponent->SetActive(true);
 		FirstPersonCameraMode = true;
@@ -532,11 +533,11 @@ void ARyddelmystCharacter::Turn(float Value)
 		{
 			if (ThirdPersonCameraComponent)
 			{
-				// todo: we want to orbit the cam around her, so we need a vector diff between 3PP cam and Maya, then we need to rotate that vector and set the result as the new 3PP cam location.  To make sure it stays looking at Maya, the best hting may be to also call the AddRelativeRotation API below.
-				//FVector CamToMaya = ThirdPersonCameraComponent->GetComponentLocation() - GetActorLocation();
 				FRotator CamYaw(0.f, Value, 0.f);
-				ThirdPersonCameraComponent->SetRelativeLocation(CamYaw.RotateVector(ThirdPersonCameraComponent->GetRelativeLocation()));//CamToMaya));
-				ThirdPersonCameraComponent->AddRelativeRotation(CamYaw);
+				ThirdPersonCameraComponent->SetRelativeLocation(CamYaw.RotateVector(ThirdPersonCameraComponent->GetRelativeLocation()));
+				UE_LOG(LogTemp, Warning, TEXT("Turn; 3pp cam comp rotation before mod says %s"), *ThirdPersonCameraComponent->GetComponentRotation().ToString());
+				ThirdPersonCameraComponent->AddWorldRotation(CamYaw);
+				UE_LOG(LogTemp, Warning, TEXT("Turn; 3pp cam comp rotation after mod says %s"), *ThirdPersonCameraComponent->GetComponentRotation().ToString());
 			}
 		}
 	}
@@ -562,14 +563,17 @@ void ARyddelmystCharacter::LookUp(float Value)
 		}
 		else
 		{
+			
 			if (ThirdPersonCameraComponent)
 			{
-				// todo: we want to orbit the cam around her, so we need a vector diff between 3PP cam and Maya, then we need to rotate that vector and set the result as the new 3PP cam location.  To make sure it stays looking at Maya, the best hting may be to also call the AddRelativeRotation API below.
-				//FVector CamToMaya = ThirdPersonCameraComponent->GetComponentLocation() - GetActorLocation();
 				FRotator CamPitch(Value, 0.f, 0.f);
-				ThirdPersonCameraComponent->SetRelativeLocation(CamPitch.RotateVector(ThirdPersonCameraComponent->GetRelativeLocation()));//CamToMaya));
-				ThirdPersonCameraComponent->AddRelativeRotation(CamPitch);
+				ThirdPersonCameraComponent->SetRelativeLocation(CamPitch.RotateVector(ThirdPersonCameraComponent->GetRelativeLocation()));
+				UE_LOG(LogTemp, Warning, TEXT("LookUp; 3pp cam comp rotation before mod says %s"), *ThirdPersonCameraComponent->GetComponentRotation().ToString());
+				ThirdPersonCameraComponent->AddWorldRotation(CamPitch);
+				UE_LOG(LogTemp, Warning, TEXT("LookUp; 3pp cam comp rotation after mod says %s"), *ThirdPersonCameraComponent->GetComponentRotation().ToString());
+				
 			}
+			
 		}
 	}
 }
