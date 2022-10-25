@@ -190,6 +190,14 @@ void ARyddelmystCharacter::SetupPlayerInputComponent(class UInputComponent* Play
 
 	PlayerInputComponent->BindAxis("Select Item", this, &ARyddelmystCharacter::CycleItem);
 	PlayerInputComponent->BindAction("Use Item", IE_Released, this, &ARyddelmystCharacter::UseItem);
+	// the idea is the player will have to hold down the adjust key while adjusting pitch, and then releasing it will deactivate the pitch rail
+	PlayerInputComponent->BindAction("Adjust 3PP Pitch", IE_Pressed, this, &ARyddelmystCharacter::ActivatePitchRail);
+	PlayerInputComponent->BindAction("Adjust 3PP Pitch", IE_Released, this, &ARyddelmystCharacter::ActivatePitchRail);
+}
+
+void ARyddelmystCharacter::ActivatePitchRail()
+{
+	IsPitchRailActive = !IsPitchRailActive;
 }
 
 void ARyddelmystCharacter::FixMe()
@@ -531,7 +539,8 @@ void ARyddelmystCharacter::Turn(float Value)
 		}
 		else
 		{
-			if (ThirdPersonCameraComponent)
+			
+			if (!IsPitchRailActive && ThirdPersonCameraComponent)
 			{
 				FRotator CamYaw(0.f, Value, 0.f);
 				ThirdPersonCameraComponent->SetRelativeLocation(CamYaw.RotateVector(ThirdPersonCameraComponent->GetRelativeLocation()));
@@ -539,6 +548,7 @@ void ARyddelmystCharacter::Turn(float Value)
 				ThirdPersonCameraComponent->AddWorldRotation(CamYaw);
 				UE_LOG(LogTemp, Warning, TEXT("Turn; 3pp cam comp rotation after mod says %s"), *ThirdPersonCameraComponent->GetComponentRotation().ToString());
 			}
+			
 		}
 	}
 }
@@ -563,14 +573,26 @@ void ARyddelmystCharacter::LookUp(float Value)
 		}
 		else
 		{
-			if (ThirdPersonCameraComponent)
+			if (IsPitchRailActive && ThirdPersonCameraComponent)
 			{
+
+				UE_LOG(LogTemp, Warning, TEXT("LookUp; 3pp cam comp rotation says %s, rel rotation says %s, and rel location says %s"), *ThirdPersonCameraComponent->GetComponentRotation().ToString(), *ThirdPersonCameraComponent->GetRelativeRotation().ToString(), *ThirdPersonCameraComponent->GetRelativeLocation().ToString());
+
+				// todo: I don't think raw pitch is what we want here since it should just be simple rotation over Y; as soon as we have any yaw at all the cam will no longer be in the same XZ plane as Maya because she's much taller than wide, and our rotation will seem to have nothing to do with her (and indeed it doesn't). The same code appears to work for yaw because regardless of pitch we're still usually on some shared XY plane with Maya.  If the offset was long enough to allow us to go way under her or over her in pitch, then the yaw would present a similar problem to the pitch vis a vis rotating around in a circle that doesn't seem to have anything to do with Maya.  The root of the problem is we don't really want pitch here per se, but rather a rotation around Maya vertically.
+				
 				FRotator CamPitch(Value, 0.f, 0.f);
 				ThirdPersonCameraComponent->SetRelativeLocation(CamPitch.RotateVector(ThirdPersonCameraComponent->GetRelativeLocation()));
 				UE_LOG(LogTemp, Warning, TEXT("LookUp; 3pp cam comp rotation before mod says %s"), *ThirdPersonCameraComponent->GetComponentRotation().ToString());
 				ThirdPersonCameraComponent->AddWorldRotation(CamPitch);
 				UE_LOG(LogTemp, Warning, TEXT("LookUp; 3pp cam comp rotation after mod says %s"), *ThirdPersonCameraComponent->GetComponentRotation().ToString());
 				
+				/* nope, crazy dups and stacking AND it looks like it isn't even going 'round her like I intended.
+				FRotator CamPitch = ThirdPersonCameraComponent->GetComponentRotation();
+				CamPitch.Pitch += Value;
+				ThirdPersonCameraComponent->SetRelativeLocation(CamPitch.RotateVector(ThirdPersonCameraComponent->GetRelativeLocation()));
+				*/
+				//ThirdPersonCameraComponent->SetRelativeLocation(ThirdPersonCameraComponent->GetComponentRotation().RotateVector(ThirdPersonCameraComponent->GetRelativeLocation())); // hmm, don't want that.  We wind up stacking rotations way too fast and probably duplicating 'em.
+				//ThirdPersonCameraComponent->SetRelativeLocation(ThirdPersonCameraComponent->GetRelativeRotation().RotateVector(ThirdPersonCameraComponent->GetRelativeLocation())); // was hoping if I used AddRelativeRotation above and then did this that only the rot relative to Maya would be used here and it would be better somehow?  It was not.  Interestingly, using AddRelativeRotation alone causes the cam's spinning to get stuck at the 90 degree borders and you have to reverse mouse direction to keep going.
 			}
 		}
 	}
