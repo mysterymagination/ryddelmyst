@@ -138,6 +138,9 @@ private:
 	/** Controls whether the mouse input will be used for the player movement or to reposition the 3PP cam */
 	UPROPERTY()
 	bool IsMouseControlling3PPCam = false;
+	/** Controls whether mouse input repositioning the 3PP cam will affect Pitch instead of Yaw*/
+	UPROPERTY()
+	bool IsPitchRailActive = false;
 
 public:
 	ARyddelmystCharacter();
@@ -386,6 +389,12 @@ protected:
 	 */
 	UFUNCTION()
 	void HandleCrouch();
+
+	/**
+	 * Activates the Pitch rail for 3PP cam adjustment
+	 */
+	UFUNCTION()
+	void ActivatePitchRail();
 
 	/**
 	 * Traces an interact ray from the first person camera and returns the hit result
