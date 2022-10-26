@@ -553,6 +553,18 @@ void ARyddelmystCharacter::Turn(float Value)
 	}
 }
 
+void ARyddelmystCharacter::Zoom3PPCam(float Factor)
+{
+	float Offset = ThirdPersonCameraComponent->GetRelativeLocation().Length();
+	UE_LOG(LogTemp, Warning, TEXT("Zoom3PPCam; offset from maya says %f and capsule radius is %f"), Offset, GetCapsuleComponent()->GetScaledCapsuleRadius());
+	if (Offset >= 150.f && Factor > 0.f ||
+		Offset <= 750.f && Factor < 0.f)
+	{
+		FVector Dir = ThirdPersonCameraComponent->GetRelativeRotation().Vector();
+		ThirdPersonCameraComponent->AddRelativeLocation(Dir*ZoomRate*Factor);
+	}
+}
+
 void ARyddelmystCharacter::TurnAtRate(float Rate)
 {
 	// calculate delta for this frame from the rate information
@@ -580,15 +592,22 @@ void ARyddelmystCharacter::LookUp(float Value)
 
 				// todo: I don't think raw pitch is what we want here since it should just be simple rotation over Y; as soon as we have any yaw at all the cam will no longer be in the same XZ plane as Maya because she's much taller than wide, and our rotation will seem to have nothing to do with her (and indeed it doesn't). The same code appears to work for yaw because regardless of pitch we're still usually on some shared XY plane with Maya.  If the offset was long enough to allow us to go way under her or over her in pitch, then the yaw would present a similar problem to the pitch vis a vis rotating around in a circle that doesn't seem to have anything to do with Maya.  The root of the problem is we don't really want pitch here per se, but rather a rotation around Maya vertically.
 				
+				
 				FRotator CamPitch(Value, 0.f, 0.f);
 				ThirdPersonCameraComponent->SetRelativeLocation(CamPitch.RotateVector(ThirdPersonCameraComponent->GetRelativeLocation()));
 				UE_LOG(LogTemp, Warning, TEXT("LookUp; 3pp cam comp rotation before mod says %s"), *ThirdPersonCameraComponent->GetComponentRotation().ToString());
 				ThirdPersonCameraComponent->AddWorldRotation(CamPitch);
 				UE_LOG(LogTemp, Warning, TEXT("LookUp; 3pp cam comp rotation after mod says %s"), *ThirdPersonCameraComponent->GetComponentRotation().ToString());
 				
+
 				/* nope, crazy dups and stacking AND it looks like it isn't even going 'round her like I intended.
 				FRotator CamPitch = ThirdPersonCameraComponent->GetComponentRotation();
 				CamPitch.Pitch += Value;
+				ThirdPersonCameraComponent->SetRelativeLocation(CamPitch.RotateVector(ThirdPersonCameraComponent->GetRelativeLocation()));
+				*/
+				/* nah, same double counting stuff for yaw and roll
+				FRotator CamPitch = ThirdPersonCameraComponent->GetComponentRotation();
+				CamPitch.Pitch = Value;
 				ThirdPersonCameraComponent->SetRelativeLocation(CamPitch.RotateVector(ThirdPersonCameraComponent->GetRelativeLocation()));
 				*/
 				//ThirdPersonCameraComponent->SetRelativeLocation(ThirdPersonCameraComponent->GetComponentRotation().RotateVector(ThirdPersonCameraComponent->GetRelativeLocation())); // hmm, don't want that.  We wind up stacking rotations way too fast and probably duplicating 'em.
@@ -610,7 +629,11 @@ void ARyddelmystCharacter::ScrollUp()
 	{
 		HUD->ScrollDialogueUp();
 	}
-	else
+	else if (IsMouseControlling3PPCam)
+	{
+		Zoom3PPCam(1.f);
+	}
+	else 
 	{
 		CycleWeaponUp();
 	}
@@ -621,6 +644,10 @@ void ARyddelmystCharacter::ScrollDown()
 	if (HUD->IsDialogueActive())
 	{
 		HUD->ScrollDialogueDown();
+	}
+	else if (IsMouseControlling3PPCam)
+	{
+		Zoom3PPCam(-1.f);
 	}
 	else
 	{
