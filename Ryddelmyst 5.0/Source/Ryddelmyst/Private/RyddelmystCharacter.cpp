@@ -456,9 +456,7 @@ void ARyddelmystCharacter::LookitYouToggle()
 		{
 			CameraToggle();
 		}
-		// todo: hijack mouse yaw and pitch to move the 3PP cam about the player character, effectively on rails at its fixed offset position somewhat like the 3PP cam in Morrowind.
-
-		// todo: allow variable offset position?  This can get tricky and could be exploitable. 
+		PitchRailVector = ThirdPersonCameraComponent->GetRightVector(); 
 	}
 }
 
@@ -591,14 +589,21 @@ void ARyddelmystCharacter::LookUp(float Value)
 				UE_LOG(LogTemp, Warning, TEXT("LookUp; 3pp cam comp rotation says %s, rel rotation says %s, and rel location says %s"), *ThirdPersonCameraComponent->GetComponentRotation().ToString(), *ThirdPersonCameraComponent->GetRelativeRotation().ToString(), *ThirdPersonCameraComponent->GetRelativeLocation().ToString());
 
 				// todo: I don't think raw pitch is what we want here since it should just be simple rotation over Y; as soon as we have any yaw at all the cam will no longer be in the same XZ plane as Maya because she's much taller than wide, and our rotation will seem to have nothing to do with her (and indeed it doesn't). The same code appears to work for yaw because regardless of pitch we're still usually on some shared XY plane with Maya.  If the offset was long enough to allow us to go way under her or over her in pitch, then the yaw would present a similar problem to the pitch vis a vis rotating around in a circle that doesn't seem to have anything to do with Maya.  The root of the problem is we don't really want pitch here per se, but rather a rotation around Maya vertically.
+
+				// rotate the offset vector over the cam's right vector; this should result in a rotation around Maya vertically as long as the cam faces her 
+				FRotator CamPitch(-Value, 0.f, 0.f);
+				FVector MayaPitchedVector = ThirdPersonCameraComponent->GetRelativeLocation().RotateAngleAxis(-CamPitch.Pitch, ThirdPersonCameraComponent->GetRightVector());
+				ThirdPersonCameraComponent->SetRelativeLocation(MayaPitchedVector);
+				// update cam facing; starts on Maya so should continue looking at her as long as the offset vector rotates along with the cam itself 
+				// todo: as written, this causes a crazy spiral effect presumably because we're continually updating the cam's right vector and we kinda don't want to until yaw changes again, I think.
+				ThirdPersonCameraComponent->AddLocalRotation(CamPitch);
 				
-				
-				FRotator CamPitch(Value, 0.f, 0.f);
+				/*
 				ThirdPersonCameraComponent->SetRelativeLocation(CamPitch.RotateVector(ThirdPersonCameraComponent->GetRelativeLocation()));
 				UE_LOG(LogTemp, Warning, TEXT("LookUp; 3pp cam comp rotation before mod says %s"), *ThirdPersonCameraComponent->GetComponentRotation().ToString());
 				ThirdPersonCameraComponent->AddWorldRotation(CamPitch);
 				UE_LOG(LogTemp, Warning, TEXT("LookUp; 3pp cam comp rotation after mod says %s"), *ThirdPersonCameraComponent->GetComponentRotation().ToString());
-				
+				*/
 
 				/* nope, crazy dups and stacking AND it looks like it isn't even going 'round her like I intended.
 				FRotator CamPitch = ThirdPersonCameraComponent->GetComponentRotation();
