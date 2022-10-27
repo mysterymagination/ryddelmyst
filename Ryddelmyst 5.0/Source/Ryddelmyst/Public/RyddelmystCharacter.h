@@ -144,6 +144,9 @@ private:
 	/** The number of map units we move the 3PP cam along its offset vector direction towards or away from the character */
 	UPROPERTY()
 	float ZoomRate = 50.f;
+	/** The vector orthogonal to the 3PP cam's facing at the point we start rotating vertically around the character; we cache it so we can update the facing to keep an eye on the character while maintaining the same vector to rotate the 3PP cam offset vector around. */
+	UPROPERTY()
+	FVector PitchRailVector;
 
 public:
 	ARyddelmystCharacter();
