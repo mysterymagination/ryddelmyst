@@ -55,7 +55,7 @@ ARyddelmystCharacter::ARyddelmystCharacter()
 	// Create a CameraComponent	for third person perspective
 	ThirdPersonCameraComponent = CreateDefaultSubobject<UCameraComponent>(TEXT("ThirdPersonCamera"));
 	ThirdPersonCameraComponent->SetupAttachment(GetCapsuleComponent());
-	ThirdPersonCameraComponent->SetRelativeLocation(FVector(-239.56f, 1.75f, 100.f + BaseEyeHeight)); // Position the camera slightly above eye level and at about the front of the mesh's face
+	ThirdPersonCameraComponent->SetRelativeLocation(FVector(-239.56f, 0.f, 100.f + BaseEyeHeight)); // Position the camera slightly above eye level and at about the front of the mesh's face
 	ThirdPersonCameraComponent->SetRelativeRotation(FRotator(-20.f, 0.f, 0.f));
 	ThirdPersonCameraComponent->bUsePawnControlRotation = false;
 	ThirdPersonCameraComponent->SetActive(false);
@@ -198,6 +198,7 @@ void ARyddelmystCharacter::SetupPlayerInputComponent(class UInputComponent* Play
 void ARyddelmystCharacter::ActivatePitchRail()
 {
 	IsPitchRailActive = !IsPitchRailActive;
+	PitchRailVector = ThirdPersonCameraComponent->GetRightVector(); 
 }
 
 void ARyddelmystCharacter::FixMe()
@@ -456,7 +457,6 @@ void ARyddelmystCharacter::LookitYouToggle()
 		{
 			CameraToggle();
 		}
-		PitchRailVector = ThirdPersonCameraComponent->GetRightVector(); 
 	}
 }
 
@@ -586,13 +586,14 @@ void ARyddelmystCharacter::LookUp(float Value)
 			if (IsPitchRailActive && ThirdPersonCameraComponent)
 			{
 
-				UE_LOG(LogTemp, Warning, TEXT("LookUp; 3pp cam comp rotation says %s, rel rotation says %s, and rel location says %s"), *ThirdPersonCameraComponent->GetComponentRotation().ToString(), *ThirdPersonCameraComponent->GetRelativeRotation().ToString(), *ThirdPersonCameraComponent->GetRelativeLocation().ToString());
+				UE_LOG(LogTemp, Warning, TEXT("LookUp; 3pp cam comp rotation says %s, rel rotation says %s, and rel location says %s, and pitch rail vec says %s"), *ThirdPersonCameraComponent->GetComponentRotation().ToString(), *ThirdPersonCameraComponent->GetRelativeRotation().ToString(), *ThirdPersonCameraComponent->GetRelativeLocation().ToString(),
+				*PitchRailVector.ToString());
 
 				// todo: I don't think raw pitch is what we want here since it should just be simple rotation over Y; as soon as we have any yaw at all the cam will no longer be in the same XZ plane as Maya because she's much taller than wide, and our rotation will seem to have nothing to do with her (and indeed it doesn't). The same code appears to work for yaw because regardless of pitch we're still usually on some shared XY plane with Maya.  If the offset was long enough to allow us to go way under her or over her in pitch, then the yaw would present a similar problem to the pitch vis a vis rotating around in a circle that doesn't seem to have anything to do with Maya.  The root of the problem is we don't really want pitch here per se, but rather a rotation around Maya vertically.
 
 				// rotate the offset vector over the cam's right vector; this should result in a rotation around Maya vertically as long as the cam faces her 
 				FRotator CamPitch(-Value, 0.f, 0.f);
-				FVector MayaPitchedVector = ThirdPersonCameraComponent->GetRelativeLocation().RotateAngleAxis(-CamPitch.Pitch, ThirdPersonCameraComponent->GetRightVector());
+				FVector MayaPitchedVector = ThirdPersonCameraComponent->GetRelativeLocation().RotateAngleAxis(-CamPitch.Pitch, PitchRailVector);
 				ThirdPersonCameraComponent->SetRelativeLocation(MayaPitchedVector);
 				// update cam facing; starts on Maya so should continue looking at her as long as the offset vector rotates along with the cam itself 
 				// todo: as written, this causes a crazy spiral effect presumably because we're continually updating the cam's right vector and we kinda don't want to until yaw changes again, I think.
