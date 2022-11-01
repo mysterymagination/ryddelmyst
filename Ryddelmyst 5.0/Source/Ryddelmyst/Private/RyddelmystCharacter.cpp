@@ -15,6 +15,7 @@
 #include "GameFramework/PlayerController.h"
 #include "ItemActor.h"
 #include "Blueprint/WidgetBlueprintLibrary.h"
+#include "GenericPlatform/GenericPlatformMath.h"
 #include "OpenClose.h"
 #include <stdexcept>
 
@@ -587,10 +588,12 @@ void ARyddelmystCharacter::LookUp(float Value)
 			{
 				FRotator CamYaw(0.f, ThirdPersonCameraComponent->GetRelativeRotation().Yaw, 0.f);
 				FVector SpinningMayaVector = CamYaw.RotateVector(FVector(0.f, 1.f, 0.f));//GetActorRightVector());
+				/*
 				UE_LOG(LogTemp, Warning, TEXT("LookUp; 3pp cam comp rotation says %s, rel rotation says %s, and rel location says %s, and pitch rail vec says %s, maya right vec says %s, and spinning maya vec says %s"), *ThirdPersonCameraComponent->GetComponentRotation().ToString(), *ThirdPersonCameraComponent->GetRelativeRotation().ToString(), *ThirdPersonCameraComponent->GetRelativeLocation().ToString(),
 				*PitchRailVector.ToString(),
 				*GetActorRightVector().ToString(),
 				*SpinningMayaVector.ToString());
+				*/
 
 				// todo: I don't think raw pitch is what we want here since it should just be simple rotation over Y; as soon as we have any yaw at all the cam will no longer be in the same XZ plane as Maya because she's much taller than wide, and our rotation will seem to have nothing to do with her (and indeed it doesn't). The same code appears to work for yaw because regardless of pitch we're still usually on some shared XY plane with Maya.  If the offset was long enough to allow us to go way under her or over her in pitch, then the yaw would present a similar problem to the pitch vis a vis rotating around in a circle that doesn't seem to have anything to do with Maya.  The root of the problem is we don't really want pitch here per se, but rather a rotation around Maya vertically.
 
@@ -598,9 +601,35 @@ void ARyddelmystCharacter::LookUp(float Value)
 				FRotator CamPitch(Value, 0.f, 0.f);
 				FVector MayaPitchedVector = ThirdPersonCameraComponent->GetRelativeLocation().RotateAngleAxis(-CamPitch.Pitch, SpinningMayaVector);
 				ThirdPersonCameraComponent->SetRelativeLocation(MayaPitchedVector);
+				
 				// update cam facing; starts on Maya so should continue looking at her as long as the offset vector rotates along with the cam itself 
+				FRotator FaceMaya = (GetActorLocation() - ThirdPersonCameraComponent->GetComponentLocation()).Rotation();
+				UE_LOG(LogTemp, Warning, TEXT("LookUp; prior to 3PP cam world rot to lookit Maya, its world rotation is %s.  The direction rotator says %s"), *ThirdPersonCameraComponent->GetComponentRotation().ToString(), *FaceMaya.ToString());
+				/*
+				float Pitch = FaceMaya.Pitch;
+				// something something gimbal lock?  idk, just goose it along EDIT: did not help, and I didn't see values of -100 or 100 in Pitch for some reason; stayed at the -80ish region.
+				if(FGenericPlatformMath::Abs(Pitch) > 80.f && FGenericPlatformMath::Abs(Pitch) < 100.f)
+				{
+					if(Pitch < 0)
+					{
+						FaceMaya.Pitch = -100.f;
+					}
+					else 
+					{
+						FaceMaya.Pitch = 100.f;
+					}
+				}
+				*/
+				ThirdPersonCameraComponent->SetWorldRotation(FaceMaya);
+				UE_LOG(LogTemp, Warning, TEXT("LookUp; after 3PP cam world rot to lookit Maya, its world rotation is %s"), *ThirdPersonCameraComponent->GetComponentRotation().ToString());
+
+				/* eh screw this
 				// todo: got some oddment happening with the camera doing flips at the 180 signage change or something?
+				UE_LOG(LogTemp, Warning, TEXT("LookUp; prior to 3PP cam local rot, its world rotation is %s"), *ThirdPersonCameraComponent->GetComponentRotation().ToString());
 				ThirdPersonCameraComponent->AddLocalRotation(CamPitch);
+				UE_LOG(LogTemp, Warning, TEXT("LookUp; after 3PP cam local rot, its world rotation is %s"), *ThirdPersonCameraComponent->GetComponentRotation().ToString());
+				*/
+				
 				
 				/*
 				ThirdPersonCameraComponent->SetRelativeLocation(CamPitch.RotateVector(ThirdPersonCameraComponent->GetRelativeLocation()));
