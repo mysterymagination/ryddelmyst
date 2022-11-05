@@ -623,15 +623,15 @@ void ARyddelmystCharacter::LookUp(float Value)
 					}
 				}
 				*/
-				ThirdPersonCameraComponent->SetWorldRotation(FaceMaya);
-				UE_LOG(LogTemp, Warning, TEXT("LookUp; after 3PP cam world rot to lookit Maya, its world rotation is %s"), *ThirdPersonCameraComponent->GetComponentRotation().ToString());
+				///ThirdPersonCameraComponent->SetWorldRotation(FaceMaya);
+				///UE_LOG(LogTemp, Warning, TEXT("LookUp; after 3PP cam world rot to lookit Maya, its world rotation is %s"), *ThirdPersonCameraComponent->GetComponentRotation().ToString());
 
-				/*// todo: causes weird issue at (at least) -90 pitch where we're above Maya looking down at her head -- at that point, for some reason, the pitch angle starts to reverse progress and start going up again to lower negative values.  Meanwhile, the offset vector starts reversing course on X and showing lower X values when they should be increasing (in the default orientation).  The end result is what seems to be at least two weird somersaults through the air with Maya out of sight and apparently with the cam in the wrong position that apparently 'correct themselves' over the full 360 degree pitch rail around her such that we end up back where we started.  I don't think we took the route we wanted though, and definitely weren't looking where we wanted. See issue #34 discussion about cam local rotation algorithm issues for more details. 
+				// todo: causes weird issue at (at least) -90 pitch where we're above Maya looking down at her head -- at that point, for some reason, the pitch angle starts to reverse progress and start going up again to lower negative values.  Meanwhile, the offset vector starts reversing course on X and showing lower X values when they should be increasing (in the default orientation).  The end result is what seems to be at least two weird somersaults through the air with Maya out of sight and apparently with the cam in the wrong position that apparently 'correct themselves' over the full 360 degree pitch rail around her such that we end up back where we started.  I don't think we took the route we wanted though, and definitely weren't looking where we wanted. See issue #34 discussion about cam local rotation algorithm issues for more details. 
 				UE_LOG(LogTemp, Warning, TEXT("LookUp; prior to 3PP cam local rot, its world rotation is %s and its location relative to Maya is %s"), *ThirdPersonCameraComponent->GetComponentRotation().ToString(), *ThirdPersonCameraComponent->GetRelativeLocation().ToString());
 				//ThirdPersonCameraComponent->AddWorldRotation(CamPitch); // results in same weird somersault at -90 pitch as the local approach below
 				ThirdPersonCameraComponent->AddLocalRotation(CamPitch);
 				UE_LOG(LogTemp, Warning, TEXT("LookUp; after 3PP cam local rot, its world rotation is %s and its location relative to Maya is %s"), *ThirdPersonCameraComponent->GetComponentRotation().ToString(), *ThirdPersonCameraComponent->GetRelativeLocation().ToString());
-				*/
+				
 				
 				
 				
