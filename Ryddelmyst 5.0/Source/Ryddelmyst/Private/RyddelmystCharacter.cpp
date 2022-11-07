@@ -470,6 +470,10 @@ void ARyddelmystCharacter::CameraToggle()
 {
 	if (FirstPersonCameraMode)
 	{
+		UE_LOG(LogTemp, Warning, TEXT("CameraToggle; 3PP cam is at %s, maya is at %s, and camera arm is at %s relative to maya"), 
+			*ThirdPersonCameraComponent->GetComponentLocation().ToString(),
+			*GetActorLocation().ToString(),
+			*ThirdPersonCameraArmComponent->GetRelativeLocation().ToString());
 		FirstPersonCameraMode = false;
 		FirstPersonCameraComponent->SetActive(false);
 		ThirdPersonCameraComponent->SetActive(true);
