@@ -580,7 +580,8 @@ void ARyddelmystCharacter::Zoom3PPCam(float Factor)
 	if (Length >= CamArmLengthMin && Factor < 0.f ||
 		Length <= CamArmLengthMax && Factor > 0.f)
 	{
-		ThirdPersonCameraArmComponent->TargetArmLength = ZoomRate*Factor;
+		ThirdPersonCameraArmComponent->TargetArmLength += ZoomRate*Factor;
+		UE_LOG(LogTemp, Warning, TEXT("Zoom3PPCam; new arm length is %f"), ThirdPersonCameraArmComponent->TargetArmLength);
 	}
 }
 
