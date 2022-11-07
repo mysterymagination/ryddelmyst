@@ -53,12 +53,17 @@ ARyddelmystCharacter::ARyddelmystCharacter()
 	FirstPersonCameraComponent->bUsePawnControlRotation = true;
 	FirstPersonCameraComponent->SetActive(true);
 
+	// Create the arm on which the 3PP camera will sit
+	ThirdPersonCameraArmComponent = CreateDefaultSubobject<USpringArmComponent>(TEXT("ThirdPersonCameraArm"));
+	ThirdPersonCameraArmComponent->SetupAttachment(GetCapsuleComponent());
+	ThirdPersonCameraArmComponent->SetRelativeLocation(FVector(0.f, 0.f, BaseEyeHeight));
+	ThirdPersonCameraArmComponent->SetRelativeRotation(FRotator(-20.f, 0.f, 0.f));
+	ThirdPersonCameraArmComponent->bUsePawnControlRotation = false;
+	ThirdPersonCameraArmComponent->TargetArmLength = CamArmLengthMax;
+
 	// Create a CameraComponent	for third person perspective
 	ThirdPersonCameraComponent = CreateDefaultSubobject<UCameraComponent>(TEXT("ThirdPersonCamera"));
-	ThirdPersonCameraComponent->SetupAttachment(GetCapsuleComponent());
-	ThirdPersonCameraComponent->SetRelativeLocation(FVector(-239.56f, 0.f, 100.f + BaseEyeHeight)); // Position the camera slightly above eye level and at about the front of the mesh's face
-	ThirdPersonCameraComponent->SetRelativeRotation(FRotator(-20.f, 0.f, 0.f));
-	ThirdPersonCameraComponent->bUsePawnControlRotation = false;
+	ThirdPersonCameraComponent->SetupAttachment(ThirdPersonCameraArmComponent);
 	ThirdPersonCameraComponent->SetActive(false);
 
 	// setup equipment mapping with our default static equip slots
@@ -539,13 +544,16 @@ void ARyddelmystCharacter::Turn(float Value)
 		else
 		{
 			
-			if (!IsPitchRailActive && ThirdPersonCameraComponent)
+			if (!IsPitchRailActive)
 			{
 				FRotator CamYaw(0.f, Value, 0.f);
+				/*
 				ThirdPersonCameraComponent->SetRelativeLocation(CamYaw.RotateVector(ThirdPersonCameraComponent->GetRelativeLocation()));
 				UE_LOG(LogTemp, Warning, TEXT("Turn; 3pp cam comp rotation before mod says %s"), *ThirdPersonCameraComponent->GetComponentRotation().ToString());
 				ThirdPersonCameraComponent->AddWorldRotation(CamYaw);
 				UE_LOG(LogTemp, Warning, TEXT("Turn; 3pp cam comp rotation after mod says %s"), *ThirdPersonCameraComponent->GetComponentRotation().ToString());
+				*/
+				ThirdPersonCameraArmComponent->AddWorldRotation(CamYaw);
 			}
 			
 		}
@@ -554,6 +562,7 @@ void ARyddelmystCharacter::Turn(float Value)
 
 void ARyddelmystCharacter::Zoom3PPCam(float Factor)
 {
+	/*
 	float Offset = ThirdPersonCameraComponent->GetRelativeLocation().Length();
 	UE_LOG(LogTemp, Warning, TEXT("Zoom3PPCam; offset from maya says %f and capsule radius is %f"), Offset, GetCapsuleComponent()->GetScaledCapsuleRadius());
 	if (Offset >= 150.f && Factor > 0.f ||
@@ -561,6 +570,13 @@ void ARyddelmystCharacter::Zoom3PPCam(float Factor)
 	{
 		FVector Dir = ThirdPersonCameraComponent->GetRelativeRotation().Vector();
 		ThirdPersonCameraComponent->AddRelativeLocation(Dir*ZoomRate*Factor);
+	}
+	*/
+	float Length = ThirdPersonCameraArmComponent->TargetArmLength;
+	if (Length >= CamArmLengthMin && Factor < 0.f ||
+		Length <= CamArmLengthMax && Factor > 0.f)
+	{
+		ThirdPersonCameraArmComponent->TargetArmLength = ZoomRate*Factor;
 	}
 }
 
@@ -584,76 +600,10 @@ void ARyddelmystCharacter::LookUp(float Value)
 		}
 		else
 		{
-			if (IsPitchRailActive && ThirdPersonCameraComponent)
+			if (IsPitchRailActive)
 			{
-				FRotator CamYaw(0.f, ThirdPersonCameraComponent->GetRelativeRotation().Yaw, 0.f);
-				FVector SpinningMayaVector = CamYaw.RotateVector(FVector(0.f, 1.f, 0.f));//GetActorRightVector());
-				/*
-				UE_LOG(LogTemp, Warning, TEXT("LookUp; 3pp cam comp rotation says %s, rel rotation says %s, and rel location says %s, and pitch rail vec says %s, maya right vec says %s, and spinning maya vec says %s"), *ThirdPersonCameraComponent->GetComponentRotation().ToString(), *ThirdPersonCameraComponent->GetRelativeRotation().ToString(), *ThirdPersonCameraComponent->GetRelativeLocation().ToString(),
-				*PitchRailVector.ToString(),
-				*GetActorRightVector().ToString(),
-				*SpinningMayaVector.ToString());
-				*/
-
-				// todo: I don't think raw pitch is what we want here since it should just be simple rotation over Y; as soon as we have any yaw at all the cam will no longer be in the same XZ plane as Maya because she's much taller than wide, and our rotation will seem to have nothing to do with her (and indeed it doesn't). The same code appears to work for yaw because regardless of pitch we're still usually on some shared XY plane with Maya.  If the offset was long enough to allow us to go way under her or over her in pitch, then the yaw would present a similar problem to the pitch vis a vis rotating around in a circle that doesn't seem to have anything to do with Maya.  The root of the problem is we don't really want pitch here per se, but rather a rotation around Maya vertically.
-
-				// rotate the offset vector over the cam's right vector; this should result in a rotation around Maya vertically as long as the cam faces her 
-				
 				FRotator CamPitch(Value, 0.f, 0.f);
-				UE_LOG(LogTemp, Warning, TEXT("LookUp; before rotation over spinningmayavector %s by %f degrees, our offset vector says %s"), *SpinningMayaVector.ToString(), -CamPitch.Pitch, *ThirdPersonCameraComponent->GetRelativeLocation().ToString());
-				FVector MayaPitchedVector = ThirdPersonCameraComponent->GetRelativeLocation().RotateAngleAxis(-CamPitch.Pitch, SpinningMayaVector);
-				ThirdPersonCameraComponent->SetRelativeLocation(MayaPitchedVector);
-				UE_LOG(LogTemp, Warning, TEXT("LookUp; after rotation over spinningmayavector %s by %f degrees, our offset vector says %s"), *SpinningMayaVector.ToString(), -CamPitch.Pitch, *MayaPitchedVector.ToString());
-
-				// update cam facing; starts on Maya so should continue looking at her as long as the offset vector rotates along with the cam itself 
-				FRotator FaceMaya = (GetActorLocation() - ThirdPersonCameraComponent->GetComponentLocation()).Rotation();
-				UE_LOG(LogTemp, Warning, TEXT("LookUp; prior to 3PP cam world rot to lookit Maya, its world rotation is %s.  The direction rotator says %s"), *ThirdPersonCameraComponent->GetComponentRotation().ToString(), *FaceMaya.ToString());
-				/*
-				float Pitch = FaceMaya.Pitch;
-				// something something gimbal lock?  idk, just goose it along EDIT: did not help, and I didn't see values of -100 or 100 in Pitch for some reason; stayed at the -80ish region.
-				if(FGenericPlatformMath::Abs(Pitch) > 80.f && FGenericPlatformMath::Abs(Pitch) < 100.f)
-				{
-					if(Pitch < 0)
-					{
-						FaceMaya.Pitch = -100.f;
-					}
-					else 
-					{
-						FaceMaya.Pitch = 100.f;
-					}
-				}
-				*/
-				///ThirdPersonCameraComponent->SetWorldRotation(FaceMaya);
-				///UE_LOG(LogTemp, Warning, TEXT("LookUp; after 3PP cam world rot to lookit Maya, its world rotation is %s"), *ThirdPersonCameraComponent->GetComponentRotation().ToString());
-
-				// todo: causes weird issue at (at least) -90 pitch where we're above Maya looking down at her head -- at that point, for some reason, the pitch angle starts to reverse progress and start going up again to lower negative values.  Meanwhile, the offset vector starts reversing course on X and showing lower X values when they should be increasing (in the default orientation).  The end result is what seems to be at least two weird somersaults through the air with Maya out of sight and apparently with the cam in the wrong position that apparently 'correct themselves' over the full 360 degree pitch rail around her such that we end up back where we started.  I don't think we took the route we wanted though, and definitely weren't looking where we wanted. See issue #34 discussion about cam local rotation algorithm issues for more details. 
-				UE_LOG(LogTemp, Warning, TEXT("LookUp; prior to 3PP cam local rot, its world rotation is %s and its location relative to Maya is %s"), *ThirdPersonCameraComponent->GetComponentRotation().ToString(), *ThirdPersonCameraComponent->GetRelativeLocation().ToString());
-				//ThirdPersonCameraComponent->AddWorldRotation(CamPitch); // results in same weird somersault at -90 pitch as the local approach below
-				ThirdPersonCameraComponent->AddLocalRotation(CamPitch);
-				UE_LOG(LogTemp, Warning, TEXT("LookUp; after 3PP cam local rot, its world rotation is %s and its location relative to Maya is %s"), *ThirdPersonCameraComponent->GetComponentRotation().ToString(), *ThirdPersonCameraComponent->GetRelativeLocation().ToString());
-				
-				
-				
-				
-				/*
-				ThirdPersonCameraComponent->SetRelativeLocation(CamPitch.RotateVector(ThirdPersonCameraComponent->GetRelativeLocation()));
-				UE_LOG(LogTemp, Warning, TEXT("LookUp; 3pp cam comp rotation before mod says %s"), *ThirdPersonCameraComponent->GetComponentRotation().ToString());
-				ThirdPersonCameraComponent->AddWorldRotation(CamPitch);
-				UE_LOG(LogTemp, Warning, TEXT("LookUp; 3pp cam comp rotation after mod says %s"), *ThirdPersonCameraComponent->GetComponentRotation().ToString());
-				*/
-
-				/* nope, crazy dups and stacking AND it looks like it isn't even going 'round her like I intended.
-				FRotator CamPitch = ThirdPersonCameraComponent->GetComponentRotation();
-				CamPitch.Pitch += Value;
-				ThirdPersonCameraComponent->SetRelativeLocation(CamPitch.RotateVector(ThirdPersonCameraComponent->GetRelativeLocation()));
-				*/
-				/* nah, same double counting stuff for yaw and roll
-				FRotator CamPitch = ThirdPersonCameraComponent->GetComponentRotation();
-				CamPitch.Pitch = Value;
-				ThirdPersonCameraComponent->SetRelativeLocation(CamPitch.RotateVector(ThirdPersonCameraComponent->GetRelativeLocation()));
-				*/
-				//ThirdPersonCameraComponent->SetRelativeLocation(ThirdPersonCameraComponent->GetComponentRotation().RotateVector(ThirdPersonCameraComponent->GetRelativeLocation())); // hmm, don't want that.  We wind up stacking rotations way too fast and probably duplicating 'em.
-				//ThirdPersonCameraComponent->SetRelativeLocation(ThirdPersonCameraComponent->GetRelativeRotation().RotateVector(ThirdPersonCameraComponent->GetRelativeLocation())); // was hoping if I used AddRelativeRotation above and then did this that only the rot relative to Maya would be used here and it would be better somehow?  It was not.  Interestingly, using AddRelativeRotation alone causes the cam's spinning to get stuck at the 90 degree borders and you have to reverse mouse direction to keep going.
+				ThirdPersonCameraArmComponent->AddWorldRotation(CamPitch);
 			}
 		}
 	}
@@ -673,7 +623,7 @@ void ARyddelmystCharacter::ScrollUp()
 	}
 	else if (IsMouseControlling3PPCam)
 	{
-		Zoom3PPCam(1.f);
+		Zoom3PPCam(-1.f);
 	}
 	else 
 	{
@@ -689,7 +639,7 @@ void ARyddelmystCharacter::ScrollDown()
 	}
 	else if (IsMouseControlling3PPCam)
 	{
-		Zoom3PPCam(-1.f);
+		Zoom3PPCam(1.f);
 	}
 	else
 	{

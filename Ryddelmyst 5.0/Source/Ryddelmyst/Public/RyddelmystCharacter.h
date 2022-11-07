@@ -21,6 +21,7 @@
 #include "BattleStatsBearer.h"
 #include "StatusEffected.h"
 #include "GameFramework/CharacterMovementComponent.h"
+#include "GameFramework/SpringArmComponent.h"
 #include "Animation/AnimationAsset.h"
 #include "PaperSprite.h"
 #include "RyddelmystCharacter.generated.h"
@@ -98,6 +99,10 @@ class ARyddelmystCharacter : public AFawnCharacter, public IBattleStatsBearer, p
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Camera, meta = (AllowPrivateAccess = "true"))
 	UCameraComponent* ThirdPersonCameraComponent;
 
+	/** Third person camera's arm, allowing it to move about the character */
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Camera, meta = (AllowPrivateAccess = "true"))
+	USpringArmComponent* ThirdPersonCameraArmComponent;
+
 	/** Handle to an Actor the Character grabbed during interaction event */
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Interaction", meta = (AllowPrivateAccess = "true"))
 	AActor* GrabbedActor;
@@ -147,6 +152,12 @@ private:
 	/** The vector orthogonal to the 3PP cam's facing at the point we start rotating vertically around the character; we cache it so we can update the facing to keep an eye on the character while maintaining the same vector to rotate the 3PP cam offset vector around. */
 	UPROPERTY()
 	FVector PitchRailVector;
+	/** The minimum length of the telescoping 3PP camera arm */
+	UPROPERTY()
+	float CamArmLengthMin = 150.f;
+	/** The maximum length of the telescoping 3PP camera arm */
+	UPROPERTY()
+	float CamArmLengthMax = 750.f;
 
 public:
 	ARyddelmystCharacter();
