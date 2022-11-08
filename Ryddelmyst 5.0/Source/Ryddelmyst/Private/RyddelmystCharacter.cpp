@@ -434,13 +434,19 @@ void ARyddelmystCharacter::CameraToggle()
 		FirstPersonCameraMode = false;
 		FirstPersonCameraComponent->SetActive(false);
 		ThirdPersonCameraComponent->SetActive(true);
+		// in 3PP we want the cam to be able to orbit the character, which means we don't want rotation communicated to the pawn;
+		// that's why we have special handling for moveforward/back/right/left that turns the character wherever the cam is pointing
+		// and effectively allows free looking at self when still and sync'd rotation when in motion. 
+		bUseControllerRotationYaw = false;
 	}
 	else
 	{
-		IsZooming3PPCam = false;
 		ThirdPersonCameraComponent->SetActive(false);
 		FirstPersonCameraComponent->SetActive(true);
 		FirstPersonCameraMode = true;
+		// in 1PP we want the rotation to flow to both pawn and cam together because we are seeing through the character's eyes.
+		// Otherwise, she can turn around and see out the back of her own head!
+		bUseControllerRotationYaw = true;
 	}
 }
 
@@ -523,7 +529,7 @@ void ARyddelmystCharacter::ScrollUp()
 	{
 		HUD->ScrollDialogueUp();
 	}
-	else if (IsZooming3PPCam)
+	else if (!FirstPersonCameraMode)
 	{
 		Zoom3PPCam(-1.f);
 	}
@@ -539,7 +545,7 @@ void ARyddelmystCharacter::ScrollDown()
 	{
 		HUD->ScrollDialogueDown();
 	}
-	else if (IsZooming3PPCam)
+	else if (!FirstPersonCameraMode)
 	{
 		Zoom3PPCam(1.f);
 	}
