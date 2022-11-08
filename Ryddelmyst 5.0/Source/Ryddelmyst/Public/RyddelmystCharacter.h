@@ -140,9 +140,6 @@ private:
 	UBattleStats* CharacterStats;
     UPROPERTY()
 	TMap<FString, UPaperSprite*> PortraitMap;
-	/** Controls whether the scroll wheel will influence the length of the 3PP cam arm, effectively zooming the 3PP view*/
-	UPROPERTY()
-	bool IsZooming3PPCam = false;
 	/** The number of map units we move the 3PP cam along its offset vector direction towards or away from the character */
 	UPROPERTY()
 	float ZoomRate = 50.f;
