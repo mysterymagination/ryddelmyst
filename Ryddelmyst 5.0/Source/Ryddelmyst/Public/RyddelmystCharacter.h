@@ -32,7 +32,7 @@ class USceneComponent;
 class UCameraComponent;
 
 UCLASS(config=Game)
-class ARyddelmystCharacter : public AFawnCharacter, public IBattleStatsBearer, public IStatusEffected
+class ARyddelmystCharacter : public ACharacter, public IBattleStatsBearer, public IStatusEffected
 {
 	GENERATED_BODY()
 
@@ -140,18 +140,12 @@ private:
 	UBattleStats* CharacterStats;
     UPROPERTY()
 	TMap<FString, UPaperSprite*> PortraitMap;
-	/** Controls whether the mouse input will be used for the player movement or to reposition the 3PP cam */
+	/** Controls whether the scroll wheel will influence the length of the 3PP cam arm, effectively zooming the 3PP view*/
 	UPROPERTY()
-	bool IsMouseControlling3PPCam = false;
-	/** Controls whether mouse input repositioning the 3PP cam will affect Pitch instead of Yaw */
-	UPROPERTY()
-	bool IsPitchRailActive = false;
+	bool IsZooming3PPCam = false;
 	/** The number of map units we move the 3PP cam along its offset vector direction towards or away from the character */
 	UPROPERTY()
 	float ZoomRate = 50.f;
-	/** The vector orthogonal to the 3PP cam's facing at the point we start rotating vertically around the character; we cache it so we can update the facing to keep an eye on the character while maintaining the same vector to rotate the 3PP cam offset vector around. */
-	UPROPERTY()
-	FVector PitchRailVector;
 	/** The minimum length of the telescoping 3PP camera arm */
 	UPROPERTY()
 	float CamArmLengthMin = 150.f;
@@ -161,7 +155,6 @@ private:
 
 public:
 	ARyddelmystCharacter();
-	virtual void OnLostFollower(ILookitYou* lookitYou) override;
 	UBattleStats* GetStats_Implementation() { return CharacterStats; }
 	void HandleStatModification_Implementation(const FString& StatName) 
 	{ 
@@ -273,10 +266,6 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category=Camera)
 	float BaseLookUpRate;
 
-	/** Handle to our LookitYou impl, which will be spawned when user inputs Free Cam Mode action.  */
-	UPROPERTY()
-	class ALookitYouPawn* LookitYouGo;
-
 	// Gun muzzle offset from the camera location.
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Gameplay)
 	FVector MuzzleOffset;
@@ -321,12 +310,6 @@ protected:
 protected:
 	/** Handles switching between 1PP and 3PP */
 	void CameraToggle();
-
-	/** Handles toggling 3PP camera movement on/off */
-	void LookitYouToggle();
-
-	/** Handles switching player input control over to LookitYouGo */
-	void SendControl();
 
 	/** Handles moving forward/backward */
 	void MoveForward(float Val);
@@ -412,12 +395,6 @@ protected:
 	 */
 	UFUNCTION()
 	void HandleCrouch();
-
-	/**
-	 * Activates the Pitch rail for 3PP cam adjustment
-	 */
-	UFUNCTION()
-	void ActivatePitchRail();
 
 	/**
 	 * Traces an interact ray from the first person camera and returns the hit result
