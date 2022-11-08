@@ -58,12 +58,12 @@ ARyddelmystCharacter::ARyddelmystCharacter()
 	ThirdPersonCameraArmComponent->SetupAttachment(GetCapsuleComponent());
 	ThirdPersonCameraArmComponent->SetRelativeLocation(FVector(0.f, 0.f, BaseEyeHeight));
 	ThirdPersonCameraArmComponent->SetRelativeRotation(FRotator(-20.f, 0.f, 0.f));
-	ThirdPersonCameraArmComponent->bUsePawnControlRotation = false;
+	ThirdPersonCameraArmComponent->bUsePawnControlRotation = true;
 	ThirdPersonCameraArmComponent->TargetArmLength = CamArmLengthMax;
 
 	// Create a CameraComponent	for third person perspective
 	ThirdPersonCameraComponent = CreateDefaultSubobject<UCameraComponent>(TEXT("ThirdPersonCamera"));
-	ThirdPersonCameraComponent->SetupAttachment(ThirdPersonCameraArmComponent);
+	ThirdPersonCameraComponent->SetupAttachment(ThirdPersonCameraArmComponent, USpringArmComponent::SocketName);
 	ThirdPersonCameraComponent->SetActive(false);
 
 	// setup equipment mapping with our default static equip slots
@@ -172,9 +172,6 @@ void ARyddelmystCharacter::SetupPlayerInputComponent(class UInputComponent* Play
 	// Bind camera toggle events
 	PlayerInputComponent->BindAction("CameraToggle", IE_Released, this, &ARyddelmystCharacter::CameraToggle);
 
-	// Bind LookitYou 3PP cam movement mode
-	PlayerInputComponent->BindAction("Free Cam Mode", IE_Released, this, &ARyddelmystCharacter::LookitYouToggle);
-
 	// Bind movement events
 	PlayerInputComponent->BindAxis("MoveForward", this, &ARyddelmystCharacter::MoveForward);
 	PlayerInputComponent->BindAxis("MoveRight", this, &ARyddelmystCharacter::MoveRight);
@@ -182,9 +179,9 @@ void ARyddelmystCharacter::SetupPlayerInputComponent(class UInputComponent* Play
 	// We have 2 versions of the rotation bindings to handle different kinds of devices differently
 	// "turn" handles devices that provide an absolute delta, such as a mouse.
 	// "turnrate" is for devices that we choose to treat as a rate of change, such as an analog joystick
-	PlayerInputComponent->BindAxis("Turn", this, &ARyddelmystCharacter::Turn);//&APawn::AddControllerYawInput);
+	PlayerInputComponent->BindAxis("Turn", this, &APawn::AddControllerYawInput);
 	PlayerInputComponent->BindAxis("TurnRate", this, &ARyddelmystCharacter::TurnAtRate);
-	PlayerInputComponent->BindAxis("LookUp", this, &ARyddelmystCharacter::LookUp);
+	PlayerInputComponent->BindAxis("LookUp", this, &APawn::AddControllerPitchInput);
 	PlayerInputComponent->BindAxis("LookUpRate", this, &ARyddelmystCharacter::LookUpAtRate);
 	PlayerInputComponent->BindAction("Scroll Up", IE_Released, this, &ARyddelmystCharacter::ScrollUp);
 	PlayerInputComponent->BindAction("Scroll Down", IE_Released, this, &ARyddelmystCharacter::ScrollDown);
@@ -196,15 +193,6 @@ void ARyddelmystCharacter::SetupPlayerInputComponent(class UInputComponent* Play
 
 	PlayerInputComponent->BindAxis("Select Item", this, &ARyddelmystCharacter::CycleItem);
 	PlayerInputComponent->BindAction("Use Item", IE_Released, this, &ARyddelmystCharacter::UseItem);
-	// the idea is the player will have to hold down the adjust key while adjusting pitch, and then releasing it will deactivate the pitch rail
-	PlayerInputComponent->BindAction("Adjust 3PP Pitch", IE_Pressed, this, &ARyddelmystCharacter::ActivatePitchRail);
-	PlayerInputComponent->BindAction("Adjust 3PP Pitch", IE_Released, this, &ARyddelmystCharacter::ActivatePitchRail);
-}
-
-void ARyddelmystCharacter::ActivatePitchRail()
-{
-	IsPitchRailActive = !IsPitchRailActive;
-	PitchRailVector = ThirdPersonCameraComponent->GetRightVector(); 
 }
 
 void ARyddelmystCharacter::FixMe()
@@ -435,37 +423,6 @@ FHitResult ARyddelmystCharacter::FireInteractRay()
 	return Hit;
 }
 
-void ARyddelmystCharacter::SendControl()
-{
-	if (!LookitYouGo)
-	{
-		FActorSpawnParameters SpawnParams;
-		SpawnParams.Owner = this;
-		SpawnParams.Instigator = GetInstigator();
-		LookitYouGo = GetWorld()->SpawnActor<ALookitYouPawn>(ThirdPersonCameraComponent->GetComponentLocation(), ThirdPersonCameraComponent->GetComponentRotation(), SpawnParams);
-	}
-	if (LookitYouGo)
-	{
-		LookitYouGo->SetFollowCharacter(this);
-		LookitYouGo->TakeControl();
-	}
-}
-
-// todo: add option somewhere to reset cams to default pos/rot in case things go haywire
-void ARyddelmystCharacter::LookitYouToggle()
-{
-	// toggling this mode off should leave the player in 3PP with the 3PP camera at whatever pos and rot they last had it; this way they can choose custom 3PP camera perspectives and make them sticky
-	IsMouseControlling3PPCam = !IsMouseControlling3PPCam;
-	if (IsMouseControlling3PPCam)
-	{
-		// iff not already in 3PP, go to 3PP
-		if (FirstPersonCameraMode)
-		{
-			CameraToggle();
-		}
-	}
-}
-
 void ARyddelmystCharacter::CameraToggle()
 {
 	if (FirstPersonCameraMode)
@@ -480,7 +437,7 @@ void ARyddelmystCharacter::CameraToggle()
 	}
 	else
 	{
-		IsMouseControlling3PPCam = false;
+		IsZooming3PPCam = false;
 		ThirdPersonCameraComponent->SetActive(false);
 		FirstPersonCameraComponent->SetActive(true);
 		FirstPersonCameraMode = true;
@@ -537,45 +494,8 @@ void ARyddelmystCharacter::MoveRight(float Value)
 	}
 }
 
-void ARyddelmystCharacter::Turn(float Value)
-{
-	if(Value != 0.0f)
-	{
-		if (!IsMouseControlling3PPCam)
-		{
-			AddControllerYawInput(Value);
-		}
-		else
-		{
-			
-			if (!IsPitchRailActive)
-			{
-				FRotator CamYaw(0.f, Value, 0.f);
-				/*
-				ThirdPersonCameraComponent->SetRelativeLocation(CamYaw.RotateVector(ThirdPersonCameraComponent->GetRelativeLocation()));
-				UE_LOG(LogTemp, Warning, TEXT("Turn; 3pp cam comp rotation before mod says %s"), *ThirdPersonCameraComponent->GetComponentRotation().ToString());
-				ThirdPersonCameraComponent->AddWorldRotation(CamYaw);
-				UE_LOG(LogTemp, Warning, TEXT("Turn; 3pp cam comp rotation after mod says %s"), *ThirdPersonCameraComponent->GetComponentRotation().ToString());
-				*/
-				ThirdPersonCameraArmComponent->AddWorldRotation(CamYaw);
-			}
-			
-		}
-	}
-}
-
 void ARyddelmystCharacter::Zoom3PPCam(float Factor)
 {
-	/*
-	float Offset = ThirdPersonCameraComponent->GetRelativeLocation().Length();
-	UE_LOG(LogTemp, Warning, TEXT("Zoom3PPCam; offset from maya says %f and capsule radius is %f"), Offset, GetCapsuleComponent()->GetScaledCapsuleRadius());
-	if (Offset >= 150.f && Factor > 0.f ||
-		Offset <= 750.f && Factor < 0.f)
-	{
-		FVector Dir = ThirdPersonCameraComponent->GetRelativeRotation().Vector();
-		ThirdPersonCameraComponent->AddRelativeLocation(Dir*ZoomRate*Factor);
-	}
-	*/
 	float Length = ThirdPersonCameraArmComponent->TargetArmLength;
 	if (Length >= CamArmLengthMin && Factor < 0.f ||
 		Length <= CamArmLengthMax && Factor > 0.f)
@@ -591,29 +511,6 @@ void ARyddelmystCharacter::TurnAtRate(float Rate)
 	AddControllerYawInput(Rate * BaseTurnRate * GetWorld()->GetDeltaSeconds());
 }
 
-void ARyddelmystCharacter::LookUp(float Value)
-{
-	if(Value != 0.0f)
-	{
-		if (!IsMouseControlling3PPCam)
-		{
-			// Only send controller pitch to CharacterMovementComponent if we're in 1PP; 3PP will only be able to Yaw around unless we're moving the 3PP cam itself
-			if (FirstPersonCameraMode)
-			{
-				AddControllerPitchInput(Value);
-			}
-		}
-		else
-		{
-			if (IsPitchRailActive)
-			{
-				FRotator CamPitch(Value, 0.f, 0.f);
-				ThirdPersonCameraArmComponent->AddWorldRotation(CamPitch);
-			}
-		}
-	}
-}
-
 void ARyddelmystCharacter::LookUpAtRate(float Rate)
 {
 	// calculate delta for this frame from the rate information
@@ -626,7 +523,7 @@ void ARyddelmystCharacter::ScrollUp()
 	{
 		HUD->ScrollDialogueUp();
 	}
-	else if (IsMouseControlling3PPCam)
+	else if (IsZooming3PPCam)
 	{
 		Zoom3PPCam(-1.f);
 	}
@@ -642,7 +539,7 @@ void ARyddelmystCharacter::ScrollDown()
 	{
 		HUD->ScrollDialogueDown();
 	}
-	else if (IsMouseControlling3PPCam)
+	else if (IsZooming3PPCam)
 	{
 		Zoom3PPCam(1.f);
 	}
@@ -876,14 +773,6 @@ void ARyddelmystCharacter::Fire()
 			}
 		}
 	}
-}
-
-void ARyddelmystCharacter::OnLostFollower(ILookitYou* lookitYou)
-{
-	// move the 3PP camera to the last location and rotation of the lookityou
-	ThirdPersonCameraComponent->SetWorldLocationAndRotation(lookitYou->GetLocation(), lookitYou->GetRotation());
-	// nullify the lookityou member
-	LookitYouGo = nullptr;
 }
 
 float ARyddelmystCharacter::GetHealth() 
