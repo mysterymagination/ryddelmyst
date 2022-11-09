@@ -435,7 +435,7 @@ void ARyddelmystCharacter::CameraToggle()
 		FirstPersonCameraComponent->SetActive(false);
 		ThirdPersonCameraComponent->SetActive(true);
 		// in 3PP we want the cam to be able to orbit the character, which means we don't want rotation communicated to the pawn;
-		// that's why we have special handling for moveforward/back/right/left that turns the character wherever the cam is pointing
+		// that's why we have special handling for moveforward/right that turns the character wherever the cam is pointing
 		// and effectively allows free looking at self when still and sync'd rotation when in motion. 
 		bUseControllerRotationYaw = false;
 	}
@@ -484,19 +484,35 @@ void ARyddelmystCharacter::HandleCrouch()
 
 void ARyddelmystCharacter::MoveForward(float Value)
 {
-	if (Value != 0.0f)
+	if (Controller != nullptr && Value != 0.0f)
 	{
-		// add movement in that direction
-		AddMovementInput(GetActorForwardVector(), Value * (IsRunning ? 30 : 1));
+		// find out current controller yaw
+		const FRotator Rotation = Controller->GetControlRotation();
+		const FRotator YawRotation(0, Rotation.Yaw, 0);
+
+		// get forward vector and apply controller's yaw, then move the character along the resultant direction vector
+		const FVector Direction = FRotationMatrix(YawRotation).GetUnitAxis(EAxis::X);
+		AddMovementInput(Direction, Value * GetCharacterMovement()->MaxWalkSpeed);
+
+		// turn the character in the direction they're now moving
+		SetActorRotation(YawRotation);
 	}
 }
 
 void ARyddelmystCharacter::MoveRight(float Value)
 {
-	if (Value != 0.0f)
+	if (Controller != nullptr && Value != 0.0f)
 	{
-		// add movement in that direction
-		AddMovementInput(GetActorRightVector(), Value * (IsRunning ? 30 : 1));
+		// find out current controller yaw
+		const FRotator Rotation = Controller->GetControlRotation();
+		const FRotator YawRotation(0, Rotation.Yaw, 0);
+
+		// get right vector and apply controller's yaw, then move the character along the resultant direction vector
+		const FVector Direction = FRotationMatrix(YawRotation).GetUnitAxis(EAxis::Y);
+		AddMovementInput(Direction, Value * GetCharacterMovement()->MaxWalkSpeed);
+
+		// turn the character in the direction they're now moving
+		SetActorRotation(YawRotation);
 	}
 }
 
