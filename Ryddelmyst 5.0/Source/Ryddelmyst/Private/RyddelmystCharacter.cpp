@@ -469,6 +469,7 @@ void ARyddelmystCharacter::Run()
 
 void ARyddelmystCharacter::HandleCrouch()
 {
+	UE_LOG(LogTemp, Warning, TEXT("HandleCrouch; iscrouched says %d"), bIsCrouched);
 	if (bIsCrouched)
 	{
 		UE_LOG(LogTemp, Warning, TEXT("HandleCrouch; uncrouching"));
