@@ -15,7 +15,7 @@
  * A CapsuleComponent representing a creature's extremity (e.g. arm or leg) and processing hits delivered and received via that extremity
  */
 UCLASS(ClassGroup = "Collision", editinlinenew, Blueprintable, BlueprintType, meta = (DisplayName = "Arm Capsule Collision", BlueprintSpawnableComponent))
-class RYDDELMYST_API UExtremityCapsuleComponent : public UCapsuleComponent, public IAnatomy, public IAttacker, public IDefender
+class RYDDELMYST_API UExtremityCapsuleComponent : public UCapsuleComponent, public IAnatomy, public IDefender
 {
     GENERATED_BODY()
     
@@ -30,9 +30,6 @@ protected:
 
 public:
     UAnatomyUnit* GetAnatomyUnit_Implementation() {return ExUnit;}
-    void OnHit_Implementation(UPrimitiveComponent* StrikingComp, AActor* StrickenActor, UPrimitiveComponent* StrickenComp, FVector NormalImpulse, const FHitResult& HitInfo);
-    TArray<TSubclassOf<UDamageType>> GetDamageTypes_Implementation(const FString& AttackName) { return ExUnit->GetDamageTypes(); }
-    float CalculateDamageTx_Implementation(const FString& AttackName, AActor* BattleStatsBearer) { return 0.f; }
     float CalculateDamageRx_Implementation(float BaseDamage, const TArray<TSubclassOf<UDamageType>>& IncomingDamageTypes) { return BaseDamage; }
     float GetResistance(TSubclassOf<UDamageType> InputDamageType)
     {
