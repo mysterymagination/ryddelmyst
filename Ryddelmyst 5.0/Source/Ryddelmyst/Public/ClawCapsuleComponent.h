@@ -3,14 +3,14 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "Weapon.h"
-#include "Claw.generated.h"
+#include "ExtremityCapsuleComponent.h"
+#include "ClawCapsuleComponent.generated.h"
 
 /**
  * 
  */
 UCLASS()
-class RYDDELMYST_API UClaw : public UWeapon
+class RYDDELMYST_API UClawCapsuleComponent : public UExtremityCapsuleComponent
 {
 	GENERATED_BODY()
 	
