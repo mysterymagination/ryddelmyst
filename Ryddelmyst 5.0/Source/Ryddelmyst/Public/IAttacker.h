@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "UObject/Interface.h"
+#include "Weapon.h"
 #include "IAttacker.generated.h"
 
 // This class does not need to be modified.
@@ -15,31 +16,22 @@ class UAttacker : public UInterface
 
 /**
  * Interface allowing objects to provide info about how much damage their attack deals and what type of damage it is, and what exactly should happen when the attack connects.
+ * UPrimitiveComponents that act as weapon forms implement IAttacker which allows us to lookup the Weapon and send in attack names; that way we can have reusable Weapon/Attack objects with common default behavior logic whose results are modified by parameterized instances, and those can be wired up to whatever UPrimitiveComponents we need. 
  */
 class RYDDELMYST_API IAttacker
 {
 	GENERATED_BODY()
 
 public:
-	/**
-	 * @brief Processes a hit by this attacker on the given defender
-	 * @param StrikingComp the component doing the hitting; this is the IAttacker impl
-	 * @param StrickenActor the AActor we hit
-	 * @param StrickenComp the UPrimitiveComponent we hit; this is the IDefender impl
-	 * @param NormalImpulse the impulse vector normal to our strike point
-	 * @param HitInfo collision data
-	 */
 	UFUNCTION(BlueprintCallable, BlueprintNativeEvent, Category = "Combat")
-	void OnHit(UPrimitiveComponent* StrikingComp, AActor* StrickenActor, UPrimitiveComponent* StrickenComp, FVector NormalImpulse, const FHitResult& HitInfo);
-	/**
-	 * @brief Calculates the base damage of our attack from the stats of the input IBattleStatsBearer implementor
-	 * @param BattleStatsBearer the instigator of the attack, whose stats determine its damage output
-	 */
+	UWeapon* GetWeapon();
 	UFUNCTION(BlueprintCallable, BlueprintNativeEvent, Category = "Combat")
-	float CalculateDamageTx(const FString& AttackName, AActor* BattleStatsBearer);
-	/**
-	 * @return the types of damage dealt by this attack
-	 */
-	UFUNCTION(BlueprintCallable, BlueprintNativeEvent, Category = "Combat")
-	TArray<TSubclassOf<UDamageType>> GetDamageTypes();
+	void ExecuteAttack(
+		UPrimitiveComponent* StrikingComp, 
+		AActor* StrickenActor, 
+		UPrimitiveComponent* StrickenComp, 
+		FVector NormalImpulse, 
+		const FHitResult& HitInfoconst, 
+		const FString& AttackName
+	);
 };
