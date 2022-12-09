@@ -4,26 +4,37 @@
 
 #include "CoreMinimal.h"
 #include "UObject/NoExportTypes.h"
-#include "IAttacker.h"
 #include "Attack.generated.h"
 
 /**
  * An Attack represents a particular attack that can be performed with a Weapon; it provides data and logic necessary to calculate damage and deliver additional effects to the stricken target.
- * Attacks implement IAttacker such that we can have reusable objects with common default behavior logic whose results are modified by parameterized instances. 
  */
 UCLASS()
-class RYDDELMYST_API UAttack : public UObject, IAttacker
+class RYDDELMYST_API UAttack : public UObject
 {
 	GENERATED_BODY()
 public:
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "RPG")
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Combat")
 	FString AttackName;
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "RPG")
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Combat")
 	TArray<TSubclassOf<UDamageType>> DamageTypes;
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "RPG")
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Combat")
 	float BasePower;
 public:
-	void OnHit_Implementation(UPrimitiveComponent* StrikingComp, AActor* StrickenActor, UPrimitiveComponent* StrickenComp, FVector NormalImpulse, const FHitResult& HitInfo);
-    TArray<TSubclassOf<UDamageType>> GetDamageTypes_Implementation() { return DamageTypes; }
-    float CalculateDamageTx_Implementation(const FString& AttackName, AActor* BattleStatsBearer) { return 0.f; }
+	/**
+	 * @brief Processes a hit by this attacker on the given defender
+	 * @param StrikingComp the component doing the hitting; this is the IAttacker impl
+	 * @param StrickenActor the AActor we hit
+	 * @param StrickenComp the UPrimitiveComponent we hit; this is the IDefender impl
+	 * @param NormalImpulse the impulse vector normal to our strike point
+	 * @param HitInfo collision data
+	 */
+	UFUNCTION(BlueprintCallable, BlueprintNativeEvent, Category = "Combat")
+	void OnHit(UPrimitiveComponent* StrikingComp, AActor* StrickenActor, UPrimitiveComponent* StrickenComp, FVector NormalImpulse, const FHitResult& HitInfo);
+	/**
+	 * @brief Calculates the base damage of our attack from the stats of the input IBattleStatsBearer implementor
+	 * @param BattleStatsBearer the instigator of the attack, whose stats determine its damage output
+	 */
+	UFUNCTION(BlueprintCallable, BlueprintNativeEvent, Category = "Combat")
+	float CalculateDamageTx(const FString& AttackName, AActor* BattleStatsBearer) { return 0.f; }
 };
