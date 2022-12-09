@@ -7,11 +7,13 @@
 #include "ClawWeapon.generated.h"
 
 /**
- * 
+ * A Weapon usually associated with the endpoint of a creature's extremity, providing 
+ * slashing attacks
  */
 UCLASS()
 class RYDDELMYST_API UClawWeapon : public UWeapon
 {
 	GENERATED_BODY()
-	
+public:
+	UClawWeapon();
 };
