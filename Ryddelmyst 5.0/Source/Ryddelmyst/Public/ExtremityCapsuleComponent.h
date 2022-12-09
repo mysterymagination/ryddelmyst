@@ -19,43 +19,10 @@ class RYDDELMYST_API UExtremityCapsuleComponent : public UCapsuleComponent, publ
 {
     GENERATED_BODY()
     
-    
 protected:
     UPROPERTY()
     UExtremityUnit* ExUnit;
-    UPROPERTY()
-    TMap<TSubclassOf<UDamageType>, float> ResistanceMap;
-    UPROPERTY()
-    TMap<TSubclassOf<UDamageType>, float> VulnerabilityMap;
 
 public:
     UAnatomyUnit* GetAnatomyUnit_Implementation() {return ExUnit;}
-    float CalculateDamageRx_Implementation(float BaseDamage, const TArray<TSubclassOf<UDamageType>>& IncomingDamageTypes) { return BaseDamage; }
-    float GetResistance(TSubclassOf<UDamageType> InputDamageType)
-    {
-        float* ResScalingFactor = ResistanceMap.Find(InputDamageType);
-        if(ResScalingFactor)
-        {
-            return *ResScalingFactor;
-            
-        }
-        else
-        {
-            return 1.f;
-        }
-        
-    }
-    float GetVulnerability(TSubclassOf<UDamageType> InputDamageType)
-    {
-        float* VulScalingFactor = VulnerabilityMap.Find(InputDamageType);
-        if(VulScalingFactor)
-        {
-            return *VulScalingFactor;
-            
-        }
-        else
-        {
-            return 1.f;
-        }
-    }
 };

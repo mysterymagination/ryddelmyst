@@ -5,6 +5,7 @@
 #include "Containers/Map.h"
 #include "CoreMinimal.h"
 #include "UObject/Interface.h"
+#include "AnatomyUnit.h"
 #include "IDefender.generated.h"
 
 // This class does not need to be modified.
