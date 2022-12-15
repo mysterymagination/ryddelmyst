@@ -21,14 +21,18 @@ public:
 	UFUNCTION(BlueprintCallable, BlueprintNativeEvent, Category = "Combat")
 	UWeapon* GetWeapon_Implementation() { return Claw; }
 	UFUNCTION(BlueprintCallable, BlueprintNativeEvent, Category = "Combat")
-	void ExecuteAttack_Implementation(
+	void ExecuteAttack_Implementation
+	(
 		UPrimitiveComponent* StrikingComp,
 		AActor* StrickenActor,
 		UPrimitiveComponent* StrickenComp,
 		FVector NormalImpulse,
 		const FHitResult& HitInfoconst,
 		const FString& AttackName
-	) { Weapon->AttackMap[AttackName]->OnHit(
+	) 
+	{ 
+		Weapon->AttackMap[AttackName]->OnHit
+		(
 			StrikingComp,
 			StrickenActor,
 			StrickenComp,
