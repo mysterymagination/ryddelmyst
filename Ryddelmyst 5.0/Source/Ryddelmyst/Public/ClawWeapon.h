@@ -10,7 +10,7 @@
  * A Weapon usually associated with the endpoint of a creature's extremity, providing 
  * slashing attacks
  */
-UCLASS()
+UCLASS(ClassGroup = "Combat", editinlinenew, Blueprintable, BlueprintType, meta = (DisplayName = "ClawWeapon", BlueprintSpawnableComponent))
 class RYDDELMYST_API UClawWeapon : public UWeapon
 {
 	GENERATED_BODY()
