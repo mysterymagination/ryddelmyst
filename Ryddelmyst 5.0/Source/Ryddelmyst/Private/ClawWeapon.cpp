@@ -10,5 +10,5 @@ UClawWeapon::UClawWeapon()
     AttackMap = 
     {
         //ATTACK_CLAW_BASIC : CreateDefaultSubObject<UClawAttack>()
-    }
+    };
 }
