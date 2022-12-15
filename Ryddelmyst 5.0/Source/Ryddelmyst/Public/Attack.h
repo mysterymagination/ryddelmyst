@@ -9,7 +9,7 @@
 /**
  * An Attack represents a particular attack that can be performed with a Weapon; it provides data and logic necessary to calculate damage and deliver additional effects to the stricken target.
  */
-UCLASS()
+UCLASS(ClassGroup = "Combat", editinlinenew, Blueprintable, BlueprintType, meta = (DisplayName = "Attack", BlueprintSpawnableComponent))
 class RYDDELMYST_API UAttack : public UObject
 {
 	GENERATED_BODY()
@@ -30,7 +30,7 @@ public:
 	 * @param HitInfo collision data
 	 */
 	UFUNCTION(BlueprintCallable, BlueprintNativeEvent, Category = "Combat")
-	void OnHit(UPrimitiveComponent* StrikingComp, AActor* StrickenActor, UPrimitiveComponent* StrickenComp, FVector NormalImpulse, const FHitResult& HitInfo);
+	void OnHit(UPrimitiveComponent* StrikingComp, AActor* StrickenActor, UPrimitiveComponent* StrickenComp, FVector NormalImpulse, const FHitResult& HitInfo) {}
 	/**
 	 * @brief Calculates the base damage of our attack from the stats of the input IBattleStatsBearer implementor
 	 * @param BattleStatsBearer the instigator of the attack, whose stats determine its damage output
