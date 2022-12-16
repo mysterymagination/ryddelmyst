@@ -7,7 +7,6 @@
 #include "Containers/Map.h"
 #include "ExtremityUnit.h"
 #include "IAnatomy.h"
-#include "IAttacker.h"
 #include "IDefender.h"
 #include "ExtremityCapsuleComponent.generated.h"
 
@@ -22,7 +21,10 @@ class RYDDELMYST_API UExtremityCapsuleComponent : public UCapsuleComponent, publ
 protected:
     UPROPERTY()
     UExtremityUnit* ExUnit;
+    UPROPERTY()
+    UArmor* Armor;
 
 public:
     UAnatomyUnit* GetAnatomyUnit_Implementation() {return ExUnit;}
+    UArmor* GetArmor_Implementation() {return Armor;}
 };

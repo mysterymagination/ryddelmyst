@@ -19,7 +19,7 @@ class RYDDELMYST_API UClawCapsuleComponent : public UExtremityCapsuleComponent, 
 	UClawWeapon* Claw;
 public:
 	UFUNCTION(BlueprintCallable, BlueprintNativeEvent, Category = "Combat")
-	UWeapon* GetWeapon_Implementation() { return Claw; }
+	UWeapon* GetWeapon_Implementation() override;
 	UFUNCTION(BlueprintCallable, BlueprintNativeEvent, Category = "Combat")
 	void ExecuteAttack_Implementation
 	(
@@ -29,15 +29,5 @@ public:
 		FVector NormalImpulse,
 		const FHitResult& HitInfoconst,
 		const FString& AttackName
-	) 
-	{ 
-		Weapon->AttackMap[AttackName]->OnHit
-		(
-			StrikingComp,
-			StrickenActor,
-			StrickenComp,
-			NormalImpulse,
-			HitInfoconst
-		); 
-	}
+	) override;
 };
