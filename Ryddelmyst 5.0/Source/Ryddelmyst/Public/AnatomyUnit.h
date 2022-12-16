@@ -4,8 +4,6 @@
 
 #include "CoreMinimal.h"
 #include "UObject/NoExportTypes.h"
-#include "IAttacker.h"
-#include "IDefender.h"
 #include "BattleStatsBearer.h"
 #include "AnatomyUnit.generated.h"
 
@@ -33,5 +31,6 @@ public:
 	 * @param BattleStatsBearer the AActor implementing IBattleStatsBearer on whom we wish to modify stats; presumably the AActor owner (though maybe indirectly via Components) of this AnatomyUnit
 	 */
 	UFUNCTION(BlueprintCallable, BlueprintNativeEvent, Category = RPG)
-	virtual void Debilitate(AActor* BattleStatsBearer){};
+	void Debilitate(AActor* BattleStatsBearer);
+	virtual void Debilitate_Implementation(AActor* BattleStatsBearer){};
 };
