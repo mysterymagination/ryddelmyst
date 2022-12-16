@@ -12,3 +12,4 @@ UClawWeapon::UClawWeapon()
         //ATTACK_CLAW_BASIC : CreateDefaultSubObject<UClawAttack>()
     };
 }
+
