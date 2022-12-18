@@ -123,7 +123,7 @@ void ASnowball::ProcessCost(ARyddelmystCharacter* CasterCharacter)
 //  and have that be our Snowball collision component instead of stock USphereComponent.  That way we could move closer to potentially having a common hit handler function that works through
 //  common interfaces.
 // todo (later): move the status effects application code to IAttacker and IDefender, with the latter processing immunities etc.
-void ASnowball::OnHit_Implementation(UPrimitiveComponent* HitComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit)
+void ASnowball::OnSnowballHit(UPrimitiveComponent* HitComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit)
 {
 	UE_LOG(LogTemp, Warning, TEXT("OnHit; HitComp says %s, OtherActor says %s, OtherComp says %s, normal impulse says %s, hitres says %s"), 
 		*HitComp->GetName(), *OtherActor->GetName(), *OtherComp->GetName(), *NormalImpulse.ToString(), *Hit.ToString());
@@ -142,8 +142,15 @@ void ASnowball::OnHit_Implementation(UPrimitiveComponent* HitComp, AActor* Other
 	{
 		// Damage setter is inside the IDefender target check so that we only bother calc/cache of damage if we can actually apply the damage
 		UE_LOG(LogTemp, Warning, TEXT("OnHit; using attack name %s"), *GetName());
-		Damage = IAttacker::Execute_CalculateDamageTx(this, GetName(), this);
-		IDefender::Execute_CalculateDamageRx(OtherComp, Damage, IAttacker::Execute_GetDamageTypes(this, GetName()));
+		Damage = CalculateSnowballDamageTx(this);
+		UArmor* Armor = IDefender::Execute_GetArmor(OtherComp);
+		TArray<TSubclassOf<UDamageType>> DamageTypes = {DamageType};
+		Armor->CalculateDamageRx(OtherActor, Damage, DamageTypes);
+		if(OtherComp->GetClass()->ImplementsInterface(UAnatomy::StaticClass()))
+		{
+			UAnatomyUnit* AnatomyUnit = IAnatomy::Execute_GetAnatomyUnit(OtherComp);
+			AnatomyUnit->Debilitate(this);
+		}
 	}
 	else 
 	{
@@ -154,7 +161,7 @@ void ASnowball::OnHit_Implementation(UPrimitiveComponent* HitComp, AActor* Other
 	// todo: leave behind flattened snowball messh?
 }
 
-float ASnowball::CalculateDamageTx_Implementation(const FString& AttackName, AActor* BattleStatsBearer)
+float ASnowball::CalculateSnowballDamageTx(AActor* BattleStatsBearer)
 {
 	float BaseDamage = Power * IBattleStatsBearer::Execute_GetStats(BattleStatsBearer)->StatsMap["Magic"];
 	UE_LOG(LogTemp, Warning, TEXT("CalculateDamage; Power (%f) * Magic (%f) = BaseDamage (%f)"), Power, IBattleStatsBearer::Execute_GetStats(BattleStatsBearer)->StatsMap["Magic"], BaseDamage);

@@ -41,8 +41,10 @@ public:
     {
         // Damage setter is inside the IDefender target check so that we only bother calc/cache of damage if we can actually apply the damage
         UE_LOG(LogTemp, Warning, TEXT("OnHit; using attack name %s"), *ExUnit->GetCurrentAttack());
-        float dmg = IAttacker::Execute_CalculateDamageTx(this, ExUnit->GetCurrentAttack(), StrikingComp->GetOwner());
-        IDefender::Execute_CalculateDamageRx(StrickenComp, dmg, IAttacker::Execute_GetDamageTypes(this, ExUnit->GetCurrentAttack()));
+        float dmg = CalculateDamageTx(StrikingComp->GetOwner());
+        Armor* StrickenArmor = IDefender::Execute_GetArmor();
+		StrickenArmor->CalculateDamageRx(StrickenComp, dmg, DamageTypes);
+		// todo: check for IAnatomy impl and run any debilitate stuff
     }
     else
     {

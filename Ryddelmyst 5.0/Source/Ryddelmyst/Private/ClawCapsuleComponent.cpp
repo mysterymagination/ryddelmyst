@@ -3,6 +3,16 @@
 
 #include "ClawCapsuleComponent.h"
 
+UClawCapsuleComponent::UClawCapsuleComponent()
+{
+    Claw = CreateDefaultSubobject<UClawWeapon>(TEXT("Claw Weapon"));
+}
+
+UWeapon* UClawCapsuleComponent::GetWeapon_Implementation() 
+{ 
+    return Claw; 
+}
+
 void UClawCapsuleComponent::ExecuteAttack_Implementation
 (
     UPrimitiveComponent* StrikingComp,
@@ -21,9 +31,4 @@ void UClawCapsuleComponent::ExecuteAttack_Implementation
         NormalImpulse,
         HitInfoconst
     ); 
-}
-
-UWeapon* UClawCapsuleComponent::GetWeapon_Implementation()  
-{ 
-    return Claw; 
 }

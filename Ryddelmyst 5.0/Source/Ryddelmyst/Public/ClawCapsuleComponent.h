@@ -15,9 +15,11 @@ UCLASS(ClassGroup = "Collision", editinlinenew, Blueprintable, BlueprintType, me
 class RYDDELMYST_API UClawCapsuleComponent : public UExtremityCapsuleComponent, public IAttacker
 {
 	GENERATED_BODY()
+
 	UPROPERTY()
 	UClawWeapon* Claw;
 public:
+	UClawCapsuleComponent();
 	UFUNCTION(BlueprintCallable, BlueprintNativeEvent, Category = "Combat")
 	UWeapon* GetWeapon_Implementation() override;
 	UFUNCTION(BlueprintCallable, BlueprintNativeEvent, Category = "Combat")

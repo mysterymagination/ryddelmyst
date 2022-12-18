@@ -24,6 +24,8 @@ protected:
 	float DebilitateScaleFactor = 0.5f;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = RPG)
 	float DebilitatePeriod = 5.0f;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = RPG)
+	FString Name;
 
 public:
 	/**

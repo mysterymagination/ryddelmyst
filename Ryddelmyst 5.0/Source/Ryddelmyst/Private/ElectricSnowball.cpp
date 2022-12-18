@@ -33,12 +33,12 @@ AElectricSnowball::AElectricSnowball()
 	DamageType = ULightningDamageType::StaticClass();
 }
 
-void AElectricSnowball::OnHit_Implementation(UPrimitiveComponent* HitComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit)
+void AElectricSnowball::OnSnowballHit(UPrimitiveComponent* HitComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit)
 {
 	// todo: for some reason hitting the cozy bunker or something thereabouts gives me a nullptr OtherActor?
     if(OtherActor)
     {
-		ASnowball::OnHit_Implementation(HitComp, OtherActor, OtherComp, NormalImpulse, Hit);
+		ASnowball::OnSnowballHit(HitComp, OtherActor, OtherComp, NormalImpulse, Hit);
 		// elemental StatusEffect
 		if(OtherActor->GetClass()->ImplementsInterface(UStatusEffected::StaticClass()))
 		{
