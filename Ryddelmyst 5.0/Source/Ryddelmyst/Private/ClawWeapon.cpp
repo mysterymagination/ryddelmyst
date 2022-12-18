@@ -7,9 +7,12 @@
 
 UClawWeapon::UClawWeapon()
 {
+    UE_LOG(LogTemp, Warning, TEXT("ctor clawweapon"));
+    /*
     AttackMap = 
     {
         //ATTACK_CLAW_BASIC : CreateDefaultSubObject<UClawAttack>()
     };
+    */
 }
 

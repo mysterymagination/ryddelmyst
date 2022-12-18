@@ -23,5 +23,5 @@ protected:
 	/**
 	 * Cuts the relevant stats in half corresponding to the IsUsedForLocomotion (Speed) and IsUsedForAttack (Attack) members 
 	 */
-	void Debilitate(AActor* BattleStatsBearer);
+	virtual void Debilitate_Implementation(AActor* BattleStatsBearer) override;
 };

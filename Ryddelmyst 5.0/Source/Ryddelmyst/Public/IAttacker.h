@@ -26,7 +26,8 @@ public:
 	UFUNCTION(BlueprintCallable, BlueprintNativeEvent, Category = "Combat")
 	UWeapon* GetWeapon();
 	UFUNCTION(BlueprintCallable, BlueprintNativeEvent, Category = "Combat")
-	void ExecuteAttack(
+	void ExecuteAttack
+	(
 		UPrimitiveComponent* StrikingComp, 
 		AActor* StrickenActor, 
 		UPrimitiveComponent* StrickenComp, 

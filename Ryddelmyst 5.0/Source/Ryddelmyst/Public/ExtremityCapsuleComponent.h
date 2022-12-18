@@ -25,6 +25,6 @@ protected:
     UArmor* Armor;
 
 public:
-    UAnatomyUnit* GetAnatomyUnit_Implementation() {return ExUnit;}
-    UArmor* GetArmor_Implementation() {return Armor;}
+    UAnatomyUnit* GetAnatomyUnit_Implementation() override;
+    UArmor* GetArmor_Implementation() override;
 };

@@ -21,7 +21,7 @@ protected:
 
 public:
 	AIceySnowball();
-	void OnHit_Implementation(UPrimitiveComponent* HitComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit) override;
+	void OnSnowballHit(UPrimitiveComponent* HitComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit) override;
 	UFUNCTION()
 	float GetFreezeDuration() { return FreezeDuration; };
 	UFUNCTION()
