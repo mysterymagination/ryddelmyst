@@ -14,7 +14,7 @@
 #include "Snowball.generated.h"
 
 UCLASS()
-class RYDDELMYST_API ASnowball : public AActor, public IAttacker
+class RYDDELMYST_API ASnowball : public AActor/* todo: have Snowball provide a SnowballWeapon with a SnowballAttack etc. to go through the same API as the monster claws..., public IAttacker*/
 {
 	GENERATED_BODY()
 
@@ -117,7 +117,7 @@ protected:
 	 * @param NormalImpulse impulse vector of HitComp relative to OtherComp
 	 * @param Hit FHitResult data about the collision
 	 */
-	virtual void OnHit_Implementation(UPrimitiveComponent* HitComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit);
-	float CalculateDamageTx_Implementation(const FString& AttackName, AActor* BattleStatsBearer);
-	TArray<TSubclassOf<UDamageType>> GetDamageTypes_Implementation(const FString& AttackName) {TArray<TSubclassOf<UDamageType>> DamageTypeArray = {DamageType}; return DamageTypeArray;}
+	virtual void OnSnowballHit(UPrimitiveComponent* HitComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit);
+	float CalculateSnowballDamageTx(AActor* BattleStatsBearer);
+	TSubclassOf<UDamageType> GetSnowballDamageTypes() {return DamageType;}
 };

@@ -3,3 +3,12 @@
 
 #include "ExtremityCapsuleComponent.h"
 
+UAnatomyUnit* UExtremityCapsuleComponent::GetAnatomyUnit_Implementation() 
+{
+    return ExUnit;
+}
+
+UArmor* UExtremityCapsuleComponent::GetArmor_Implementation()
+{
+    return Armor;
+}
