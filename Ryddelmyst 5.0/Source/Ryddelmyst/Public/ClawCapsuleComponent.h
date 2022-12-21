@@ -20,9 +20,7 @@ class RYDDELMYST_API UClawCapsuleComponent : public UExtremityCapsuleComponent, 
 	UClawWeapon* Claw;
 public:
 	UClawCapsuleComponent();
-	UFUNCTION(BlueprintCallable, BlueprintNativeEvent, Category = "Combat")
 	UWeapon* GetWeapon_Implementation() override;
-	UFUNCTION(BlueprintCallable, BlueprintNativeEvent, Category = "Combat")
 	void ExecuteAttack_Implementation
 	(
 		UPrimitiveComponent* StrikingComp,
