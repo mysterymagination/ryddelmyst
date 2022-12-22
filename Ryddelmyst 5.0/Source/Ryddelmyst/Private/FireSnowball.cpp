@@ -25,12 +25,12 @@ AFireSnowball::AFireSnowball()
 	DamageType = UFireDamageType::StaticClass();
 }
 
-void AFireSnowball::OnSnowballHit(UPrimitiveComponent* HitComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit)
+void AFireSnowball::OnHit(UPrimitiveComponent* HitComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit)
 {
 	// todo: for some reason hitting the cozy bunker or something thereabouts gives me a nullptr OtherActor?
     if(OtherActor)
     {
-		ASnowball::OnSnowballHit(HitComp, OtherActor, OtherComp, NormalImpulse, Hit);
+		ASnowball::OnHit(HitComp, OtherActor, OtherComp, NormalImpulse, Hit);
 		// elemental StatusEffect
 		if(OtherActor->GetClass()->ImplementsInterface(UStatusEffected::StaticClass()))
 		{

@@ -32,6 +32,7 @@ ASnowball::ASnowball()
 		CollisionComponent->SetNotifyRigidBodyCollision(true);
 		CollisionComponent->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
 		CollisionComponent->SetCollisionProfileName("BlockAllDynamic");
+		UE_LOG(LogTemp, Warning, TEXT("snowball ctor; adding OnComponentHit delegate pointing to OnHit"));
 		FScriptDelegate onHitDelegate;
 		onHitDelegate.BindUFunction(this, FName("OnHit"));
 		CollisionComponent->OnComponentHit.Add(onHitDelegate);
@@ -123,11 +124,11 @@ void ASnowball::ProcessCost(ARyddelmystCharacter* CasterCharacter)
 //  and have that be our Snowball collision component instead of stock USphereComponent.  That way we could move closer to potentially having a common hit handler function that works through
 //  common interfaces.
 // todo (later): move the status effects application code to IAttacker and IDefender, with the latter processing immunities etc.
-void ASnowball::OnSnowballHit(UPrimitiveComponent* HitComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit)
+void ASnowball::OnHit(UPrimitiveComponent* HitComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit)
 {
-	UE_LOG(LogTemp, Warning, TEXT("OnHit; HitComp says %s, OtherActor says %s, OtherComp says %s, normal impulse says %s, hitres says %s"), 
+	UE_LOG(LogTemp, Warning, TEXT("OnSnowballHit; HitComp says %s, OtherActor says %s, OtherComp says %s, normal impulse says %s, hitres says %s"), 
 		*HitComp->GetName(), *OtherActor->GetName(), *OtherComp->GetName(), *NormalImpulse.ToString(), *Hit.ToString());
-	UE_LOG(LogTemp, Warning, TEXT("OnHit; EffectsOnTarget has size %d"), EffectsOnTarget.size());
+	UE_LOG(LogTemp, Warning, TEXT("OnSnowballHit; EffectsOnTarget has size %d"), EffectsOnTarget.size());
 	// auxiliary effect lambdas
 	for (auto Effect : EffectsOnTarget)
 	{
@@ -141,7 +142,7 @@ void ASnowball::OnSnowballHit(UPrimitiveComponent* HitComp, AActor* OtherActor, 
 	if(OtherComp->GetClass()->ImplementsInterface(UDefender::StaticClass()))
 	{
 		// Damage setter is inside the IDefender target check so that we only bother calc/cache of damage if we can actually apply the damage
-		UE_LOG(LogTemp, Warning, TEXT("OnHit; using attack name %s"), *GetName());
+		UE_LOG(LogTemp, Warning, TEXT("OnSnowballHit; using attack name %s"), *GetName());
 		Damage = CalculateSnowballDamageTx(this);
 		UArmor* Armor = IDefender::Execute_GetArmor(OtherComp);
 		TArray<TSubclassOf<UDamageType>> DamageTypes = {DamageType};
@@ -154,7 +155,7 @@ void ASnowball::OnSnowballHit(UPrimitiveComponent* HitComp, AActor* OtherActor, 
 	}
 	else 
 	{
-		UE_LOG(LogTemp, Warning, TEXT("OnHit; the stricken component %s does not implement IDefender, so we can't move forward communicating damage"), *OtherComp->GetName()); 
+		UE_LOG(LogTemp, Warning, TEXT("OnSnowballHit; the stricken component %s does not implement IDefender, so we can't move forward communicating damage"), *OtherComp->GetName()); 
 	}
 
 	Destroy();

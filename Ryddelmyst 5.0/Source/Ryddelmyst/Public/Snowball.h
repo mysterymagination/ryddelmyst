@@ -117,7 +117,8 @@ protected:
 	 * @param NormalImpulse impulse vector of HitComp relative to OtherComp
 	 * @param Hit FHitResult data about the collision
 	 */
-	virtual void OnSnowballHit(UPrimitiveComponent* HitComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit);
+	UFUNCTION()
+	virtual void OnHit(UPrimitiveComponent* HitComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit);
 	float CalculateSnowballDamageTx(AActor* BattleStatsBearer);
 	TSubclassOf<UDamageType> GetSnowballDamageTypes() {return DamageType;}
 };
