@@ -23,12 +23,12 @@ AIceySnowball::AIceySnowball()
 	}
     DamageType = UIceDamageType::StaticClass();
 }
-void AIceySnowball::OnSnowballHit(UPrimitiveComponent* HitComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit)
+void AIceySnowball::OnHit(UPrimitiveComponent* HitComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit)
 {
     // todo: for some reason hitting the cozy bunker or something thereabouts gives me a nullptr OtherActor?
     if(OtherActor)
     {
-        Super::OnSnowballHit(HitComp, OtherActor, OtherComp, NormalImpulse, Hit);
+        Super::OnHit(HitComp, OtherActor, OtherComp, NormalImpulse, Hit);
         // elemental StatusEffect
         if(OtherActor->GetClass()->ImplementsInterface(UStatusEffected::StaticClass()))
         {

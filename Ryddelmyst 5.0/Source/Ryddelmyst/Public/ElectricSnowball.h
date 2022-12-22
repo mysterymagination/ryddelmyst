@@ -18,7 +18,7 @@ protected:
 public:
 	// Sets default values for this actor's properties
 	AElectricSnowball();
-	void OnSnowballHit(UPrimitiveComponent* HitComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit) override;
+	void OnHit(UPrimitiveComponent* HitComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit) override;
 	UFUNCTION()
 	float GetShockDuration() { return ShockDuration; };
 	UFUNCTION()
