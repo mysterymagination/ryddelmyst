@@ -19,7 +19,9 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Combat")
 	TArray<TSubclassOf<UDamageType>> DamageTypes;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Combat")
-	float BasePower;
+	float BasePower = 0.f;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Combat")
+	float DamageScaleFactor = 1.f;
 public:
 	/**
 	 * @brief Processes a hit by this attacker on the given defender
@@ -31,7 +33,7 @@ public:
 	 */
 	UFUNCTION(BlueprintCallable, BlueprintNativeEvent, Category = "Combat")
 	void OnHit(UPrimitiveComponent* StrikingComp, AActor* StrickenActor, UPrimitiveComponent* StrickenComp, FVector NormalImpulse, const FHitResult& HitInfo);
-	virtual void OnHit_Implementation(UPrimitiveComponent* StrikingComp, AActor* StrickenActor, UPrimitiveComponent* StrickenComp, FVector NormalImpulse, const FHitResult& HitInfo) {}
+	virtual void OnHit_Implementation(UPrimitiveComponent* StrikingComp, AActor* StrickenActor, UPrimitiveComponent* StrickenComp, FVector NormalImpulse, const FHitResult& HitInfo) {UE_LOG(LogTemp, Warning, TEXT("OnHit; attack is %s"), *AttackName);}
 	/*
 	todo: generate a ClawAttack class and give its OnHit_Implementation real behavior similar to:
 	void UExtremityCapsuleComponent::OnHit_Implementation(UPrimitiveComponent* StrikingComp, AActor* StrickenActor, UPrimitiveComponent* StrickenComp, FVector NormalImpulse, const FHitResult& HitInfo)
