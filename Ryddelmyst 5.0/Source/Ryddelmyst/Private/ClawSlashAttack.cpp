@@ -3,6 +3,7 @@
 
 #include "SlashingDamageType.h"
 #include "Armor.h"
+#include "MathUtils.h"
 #include "ClawSlashAttack.h"
 
 const FString UClawSlashAttack::ATTACK_NAME("Claw Slash Attack");
@@ -22,12 +23,12 @@ void UClawSlashAttack::OnHit_Implementation(UPrimitiveComponent* StrikingComp, A
         // Damage setter is inside the IDefender target check so that we only bother calc/cache of damage if we can actually apply the damage
         UE_LOG(LogTemp, Warning, TEXT("OnHit; attack is %s"), *AttackName);
         float dmg = CalculateDamageTx(StrikingComp->GetOwner());
-        UArmor* StrickenArmor = IDefender::Execute_GetArmor();
-		StrickenArmor->CalculateDamageRx(StrickenComp, dmg, DamageTypes);
-		if(OtherComp->GetClass()->ImplementsInterface(UAnatomy::StaticClass()))
+        UArmor* StrickenArmor = IDefender::Execute_GetArmor(StrickenComp);
+		StrickenArmor->CalculateDamageRx(StrickenActor, dmg, DamageTypes);
+		if(StrickenComp->GetClass()->ImplementsInterface(UAnatomy::StaticClass()))
 		{
-			UAnatomyUnit* AnatomyUnit = IAnatomy::Execute_GetAnatomyUnit(OtherComp);
-			AnatomyUnit->Debilitate(this);
+			UAnatomyUnit* AnatomyUnit = IAnatomy::Execute_GetAnatomyUnit(StrickenComp);
+			AnatomyUnit->Debilitate(StrickenActor);
 		}
     }
     else
