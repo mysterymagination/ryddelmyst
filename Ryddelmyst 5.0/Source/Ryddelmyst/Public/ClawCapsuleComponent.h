@@ -16,7 +16,7 @@ class RYDDELMYST_API UClawCapsuleComponent : public UExtremityCapsuleComponent, 
 {
 	GENERATED_BODY()
 
-	UPROPERTY()
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Combat")
 	UClawWeapon* Claw;
 public:
 	UClawCapsuleComponent();
