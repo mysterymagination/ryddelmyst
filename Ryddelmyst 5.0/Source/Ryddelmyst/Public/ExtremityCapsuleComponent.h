@@ -13,7 +13,7 @@
 /**
  * A CapsuleComponent representing a creature's extremity (e.g. arm or leg) and processing hits delivered and received via that extremity
  */
-UCLASS(ClassGroup = "Collision", editinlinenew, Blueprintable, BlueprintType, meta = (DisplayName = "Arm Capsule Collision", BlueprintSpawnableComponent))
+UCLASS(ClassGroup = "Collision", editinlinenew, Blueprintable, BlueprintType, meta = (DisplayName = "Extremity Capsule Collision", BlueprintSpawnableComponent))
 class RYDDELMYST_API UExtremityCapsuleComponent : public UCapsuleComponent, public IAnatomy, public IDefender
 {
     GENERATED_BODY()
