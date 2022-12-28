@@ -15,7 +15,7 @@ UCLASS(ClassGroup = "Collision", editinlinenew, Blueprintable, BlueprintType, me
 class RYDDELMYST_API UClawCapsuleComponent : public UExtremityCapsuleComponent, public IAttacker
 {
 	GENERATED_BODY()
-
+protected:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Combat")
 	UClawWeapon* Claw;
 public:

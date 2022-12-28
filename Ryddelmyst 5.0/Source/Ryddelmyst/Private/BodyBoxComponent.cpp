@@ -3,6 +3,14 @@
 
 #include "BodyBoxComponent.h"
 
+UAnatomyUnit* UBodyBoxComponent::GetAnatomyUnit_Implementation() 
+{
+    return CoreUnit;
+}
 
+UArmor* UBodyBoxComponent::GetArmor_Implementation()
+{
+    return Armor;
+}
 
 
