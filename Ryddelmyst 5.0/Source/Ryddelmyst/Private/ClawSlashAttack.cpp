@@ -1,10 +1,10 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
-
+#include "ClawSlashAttack.h"
 #include "SlashingDamageType.h"
 #include "Armor.h"
+#include "IDefender.h"
 #include "MathUtils.h"
-#include "ClawSlashAttack.h"
 
 const FString UClawSlashAttack::ATTACK_NAME("Claw Slash Attack");
 

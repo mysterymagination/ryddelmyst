@@ -64,6 +64,7 @@ void UBattleStats::ScaleStats(float ScaleFactor, AActor* BattleStatsBearer)
 
 void UBattleStats::ModifyStatByAttribution(const FString& AttributionName, const FString& StatName, float ScaleFactor, float Duration, AActor* BattleStatsBearer)
 {
+    UE_LOG(LogTemp, Warning, TEXT("ModifyStatByAttribution; stat %s is being scaled by %f, caused by effect %s"), *StatName, ScaleFactor, *AttributionName);
     StatsMap[StatName] *= ScaleFactor;
     StatMods[std::string(TCHAR_TO_UTF8(*AttributionName))].push_back({ TCHAR_TO_UTF8(*StatName), ScaleFactor});
     IBattleStatsBearer::Execute_HandleStatModification(BattleStatsBearer, StatName);
@@ -79,6 +80,7 @@ void UBattleStats::ModifyStatByAttribution(const FString& AttributionName, const
 
 void UBattleStats::UnmodifyStatsByAttribution(const FString& AttributionName, AActor* BattleStatsBearer)
 {
+    UE_LOG(LogTemp, Warning, TEXT("UnmodifyStatByAttribution; stat %s is being scaled by %f, to reverse the effect %s"), *StatName, 1.f/ScaleFactor, *AttributionName);
     auto AttributionString = std::string(TCHAR_TO_UTF8(*AttributionName));
     // lookup our stat mods attributed to this effect and reverse them
     auto ModVector = StatMods[AttributionString];

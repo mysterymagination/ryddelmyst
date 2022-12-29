@@ -9,7 +9,7 @@
 /**
  * Armor handles incoming hits, calculating the damage the armored creature receives and providing information about resistances and vulnerabilities.
  */
-UCLASS(ClassGroup = "Combat", editinlinenew, Blueprintable, BlueprintType, meta = (DisplayName = "Armor", BlueprintSpawnableComponent))
+UCLASS(ClassGroup = "Combat", EditInlineNew, Blueprintable, BlueprintType, meta = (DisplayName = "Armor"))
 class RYDDELMYST_API UArmor : public UObject
 {
 	GENERATED_BODY()
