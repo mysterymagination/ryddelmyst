@@ -1,8 +1,7 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
-
-#include "ClawSlashAttack.h"
 #include "ClawWeapon.h"
+#include "ClawSlashAttack.h"
 
 UClawWeapon::UClawWeapon()
 {
