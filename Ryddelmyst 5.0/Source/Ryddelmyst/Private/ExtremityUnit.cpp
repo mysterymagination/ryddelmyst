@@ -5,7 +5,6 @@
 
 void UExtremityUnit::Debilitate_Implementation(AActor* BattleStatsBearer)
 {
-	// todo: need to set a clock to restore it after debilitate period expires
 	if (!IsDebilitated)
 	{
 		if (BattleStatsBearer->GetClass()->ImplementsInterface(UBattleStatsBearer::StaticClass()))

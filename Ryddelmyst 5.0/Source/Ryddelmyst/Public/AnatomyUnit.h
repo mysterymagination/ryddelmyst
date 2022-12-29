@@ -11,7 +11,7 @@
  * Base class for a unit of an organism's anatomy, such as arms, legs, or head.  Processes incoming attacks based on the specific role of the body part
  * with customization options for different types of creatures.
  */
-UCLASS()
+UCLASS(EditInlineNew, Blueprintable, BlueprintType, meta = (DisplayName = "Anatomy"))
 class RYDDELMYST_API UAnatomyUnit : public UObject
 {
 	GENERATED_BODY()

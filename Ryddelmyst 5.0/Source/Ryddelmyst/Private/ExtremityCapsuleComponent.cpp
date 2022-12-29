@@ -5,10 +5,10 @@
 
 UAnatomyUnit* UExtremityCapsuleComponent::GetAnatomyUnit_Implementation() 
 {
-    return ExUnit;
+    return ExUnit.Get();
 }
 
 UArmor* UExtremityCapsuleComponent::GetArmor_Implementation()
 {
-    return Armor;
+    return Armor.Get();
 }
