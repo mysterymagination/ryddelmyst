@@ -80,7 +80,6 @@ void UBattleStats::ModifyStatByAttribution(const FString& AttributionName, const
 
 void UBattleStats::UnmodifyStatsByAttribution(const FString& AttributionName, AActor* BattleStatsBearer)
 {
-    UE_LOG(LogTemp, Warning, TEXT("UnmodifyStatByAttribution; stat %s is being scaled by %f, to reverse the effect %s"), *StatName, 1.f/ScaleFactor, *AttributionName);
     auto AttributionString = std::string(TCHAR_TO_UTF8(*AttributionName));
     // lookup our stat mods attributed to this effect and reverse them
     auto ModVector = StatMods[AttributionString];
@@ -88,6 +87,7 @@ void UBattleStats::UnmodifyStatsByAttribution(const FString& AttributionName, AA
     {
         // the first pair element is an std::string and we want an FString, so convert
         FString StatName(Mod.first.c_str());
+        UE_LOG(LogTemp, Warning, TEXT("UnmodifyStatByAttribution; stat %s is being scaled by %f, to reverse the effect %s"), *StatName, 1.f / Mod.second, *AttributionName);
         // scale the stat named by the first element of the pair by the inverse of the scaling factor given in the second element of the pair
         StatsMap[StatName] *= 1.f/Mod.second;
     }
