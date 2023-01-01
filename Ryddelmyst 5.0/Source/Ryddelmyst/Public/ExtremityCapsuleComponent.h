@@ -19,9 +19,9 @@ class RYDDELMYST_API UExtremityCapsuleComponent : public UCapsuleComponent, publ
     GENERATED_BODY()
     
 protected:
-    UPROPERTY(EditAnywhere, Instanced, BlueprintReadWrite, Category = "Combat")
+    UPROPERTY(EditAnywhere, Instanced, BlueprintReadWrite, Category = "Combat", meta = (AllowPrivateAccess = "true"))
     TObjectPtr<UExtremityUnit> ExUnit;
-    UPROPERTY(EditAnywhere, Instanced, BlueprintReadWrite, Category = "Combat")
+    UPROPERTY(EditAnywhere, Instanced, BlueprintReadWrite, Category = "Combat", meta = (AllowPrivateAccess = "true"))
     TObjectPtr<UArmor> Armor;
 
 public:
