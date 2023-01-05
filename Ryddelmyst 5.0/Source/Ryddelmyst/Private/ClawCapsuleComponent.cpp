@@ -13,23 +13,16 @@ UWeapon* UClawCapsuleComponent::GetWeapon_Implementation()
     return Claw; 
 }
 
+FString UClawCapsuleComponent::GetCurrentAttack_Implementation() 
+{ 
+    return Claw->CurrentAttackName; 
+}
+
 void UClawCapsuleComponent::ExecuteAttack_Implementation
 (
-    UPrimitiveComponent* StrikingComp,
-    AActor* StrickenActor,
-    UPrimitiveComponent* StrickenComp,
-    FVector NormalImpulse,
-    const FHitResult& HitInfoconst,
     const FString& AttackName
 )
 { 
-    // todo: this impl is probably wrong; what we should be doing here is kicking off the animation and then letting an actual collision lead to the attack OnHit call.  However, we'd need a way to propagate the AttackName through the async process of starting an attack anim (and any other pre-collision effects) and then later the actual OnHit.
-    Claw->AttackMap[AttackName]->OnHit
-    (
-        StrikingComp,
-        StrickenActor,
-        StrickenComp,
-        NormalImpulse,
-        HitInfoconst
-    ); 
+    // todo: kick off the attack's animation and any other immediate effects; an actual collision event later will lead to the attack's OnHit call. 
+    //Claw->AttackMap[AttackName]->...
 }
