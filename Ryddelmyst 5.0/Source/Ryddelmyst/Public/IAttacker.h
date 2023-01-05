@@ -26,13 +26,10 @@ public:
 	UFUNCTION(BlueprintCallable, BlueprintNativeEvent, Category = "Combat")
 	UWeapon* GetWeapon();
 	UFUNCTION(BlueprintCallable, BlueprintNativeEvent, Category = "Combat")
+	FString GetCurrentAttack();
+	UFUNCTION(BlueprintCallable, BlueprintNativeEvent, Category = "Combat")
 	void ExecuteAttack
 	(
-		UPrimitiveComponent* StrikingComp, 
-		AActor* StrickenActor, 
-		UPrimitiveComponent* StrickenComp, 
-		FVector NormalImpulse, 
-		const FHitResult& HitInfoconst, 
 		const FString& AttackName
 	);
 };

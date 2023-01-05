@@ -10,5 +10,9 @@ UClawWeapon::UClawWeapon()
     {
         {UClawSlashAttack::ATTACK_NAME, CreateDefaultSubobject<UClawSlashAttack>(FName(*UClawSlashAttack::ATTACK_NAME))}
     };
+
+
+    // todo: remove once we have AI behavior setting this value
+    CurrentAttackName = UClawSlashAttack::ATTACK_NAME;
 }
 
