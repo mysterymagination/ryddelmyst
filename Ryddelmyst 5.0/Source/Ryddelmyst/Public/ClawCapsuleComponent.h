@@ -21,13 +21,9 @@ protected:
 public:
 	UClawCapsuleComponent();
 	UWeapon* GetWeapon_Implementation() override;
+	FString GetCurrentAttack_Implementation() override;
 	void ExecuteAttack_Implementation
 	(
-		UPrimitiveComponent* StrikingComp,
-		AActor* StrickenActor,
-		UPrimitiveComponent* StrickenComp,
-		FVector NormalImpulse,
-		const FHitResult& HitInfoconst,
 		const FString& AttackName
 	) override;
 };

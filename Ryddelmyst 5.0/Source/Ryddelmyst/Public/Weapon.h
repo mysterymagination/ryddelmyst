@@ -18,4 +18,6 @@ class RYDDELMYST_API UWeapon : public UObject
 public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Combat")
     TMap<FString, UAttack*> AttackMap;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Combat")
+    FString CurrentAttackName;
 };
