@@ -2,3 +2,8 @@
 
 
 #include "WoodArmor.h"
+
+UWoodArmor::UWoodArmor()
+{
+    DamageReductionFactor = 0.75f;
+}
