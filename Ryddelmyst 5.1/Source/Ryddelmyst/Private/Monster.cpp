@@ -2,6 +2,9 @@
 
 
 #include "Monster.h"
+#include "IAttacker.h"
+#include "Weapon.h"
+#include "Attack.h"
 
 AMonster::AMonster()
 {
@@ -40,4 +43,17 @@ void AMonster::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 {
 	Super::SetupPlayerInputComponent(PlayerInputComponent);
 
+}
+
+void AMonster::OnHit_Implementation(UPrimitiveComponent* StrikingComp, AActor* StrickenActor, UPrimitiveComponent* StrickenComp, FVector NormalImpulse, const FHitResult& HitInfo)
+{
+	if (StrikingComp->GetClass()->ImplementsInterface(UAttacker::StaticClass()))
+	{
+		UWeapon* Weapon = IAttacker::Execute_GetWeapon(StrikingComp);
+		UAttack** Attack_Check = Weapon->AttackMap.Find(Weapon->CurrentAttackName);
+		if(Attack_Check)
+		{
+			(*Attack_Check)->OnHit_Implementation(StrikingComp, StrickenActor, StrickenComp, NormalImpulse, HitInfo);
+		}
+	}
 }

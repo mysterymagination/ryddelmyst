@@ -6,6 +6,7 @@
 #include "Kismet/GameplayStatics.h"
 #include "IceDamageType.h"
 #include "IDefender.h"
+#include "IAnatomy.h"
 #include "FrozenStatusEffect.h"
 
 // Sets default values
@@ -134,11 +135,10 @@ void ASnowball::OnHit(UPrimitiveComponent* HitComp, AActor* OtherActor, UPrimiti
 	{
 		Effect(OtherActor, Hit);
 	}
-	// todo: move the actual damage processing to the damaged actor/component rather than keeping it here; that way we can have different handling based on head shots, disabling leg shots etc. 
-	//UGameplayStatics::ApplyPointDamage(OtherActor, Damage, NormalImpulse, Hit, UGameplayStatics::GetPlayerController(GetWorld(), 0), this, DamageType);
 	
-	// todo: do the IAttacker x IDefender dance here?  Currently ASnowball IS the IAttacker so I guess just ignore the striker arg here.  That's fine since ASnowball has some other snowball 
-	//  specific things it needs to do, and this is its own specialized hit handler function.
+	// todo: do the IAttacker x IDefender dance here?  Currently ASnowball IS the IAttacker so I guess just ignore the striker arg here.  
+	//  That's fine since ASnowball has some other snowball specific things it needs to do, and this is its own specialized hit handler function;
+	//  this logic should however be bundled in an Attack that the actual snowball sphere UPrimitiveComponent subclass owns via IAttacker.
 	if(OtherComp->GetClass()->ImplementsInterface(UDefender::StaticClass()))
 	{
 		// Damage setter is inside the IDefender target check so that we only bother calc/cache of damage if we can actually apply the damage
@@ -146,12 +146,18 @@ void ASnowball::OnHit(UPrimitiveComponent* HitComp, AActor* OtherActor, UPrimiti
 		Damage = CalculateSnowballDamageTx(this);
 		UArmor* Armor = IDefender::Execute_GetArmor(OtherComp);
 		TArray<TSubclassOf<UDamageType>> DamageTypes = {DamageType};
-		Armor->CalculateDamageRx(OtherActor, Damage, DamageTypes);
+		float DamageRx = 0.f;
 		if(OtherComp->GetClass()->ImplementsInterface(UAnatomy::StaticClass()))
 		{
 			UAnatomyUnit* AnatomyUnit = IAnatomy::Execute_GetAnatomyUnit(OtherComp);
+			DamageRx = Armor->CalculateDamageRx(OtherActor, AnatomyUnit, Damage, DamageTypes);
 			AnatomyUnit->Debilitate(this);
 		}
+		else
+		{
+			DamageRx = Armor->CalculateDamageRx(OtherActor, nullptr, Damage, DamageTypes);
+		}
+		UGameplayStatics::ApplyPointDamage(OtherActor, DamageRx, NormalImpulse, Hit, UGameplayStatics::GetPlayerController(GetWorld(), 0), this, DamageType);
 	}
 	else 
 	{
