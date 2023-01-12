@@ -16,7 +16,7 @@ class RYDDELMYST_API UAnatomyUnit : public UObject
 {
 	GENERATED_BODY()
 	
-protected:
+public:
 	// todo: do we want to maybe parse the BattleStats StatMods map to see if there's an existing key for our debilitate modifier instead of tracking manually?
 	UPROPERTY()
 	bool IsDebilitated = false;
@@ -26,6 +26,8 @@ protected:
 	float DebilitatePeriod = 5.0f;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = RPG)
 	FString Name;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = RPG)
+	float DamageScaleFactor = 1.0f;
 
 public:
 	/**

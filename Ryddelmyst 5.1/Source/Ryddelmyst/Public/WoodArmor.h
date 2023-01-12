@@ -13,5 +13,6 @@ UCLASS()
 class RYDDELMYST_API UWoodArmor : public UArmor
 {
 	GENERATED_BODY()
-	
+public:
+	UWoodArmor();
 };

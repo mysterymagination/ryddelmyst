@@ -14,6 +14,9 @@ UCLASS(ClassGroup = "Combat", EditInlineNew, Blueprintable, BlueprintType, meta 
 class RYDDELMYST_API UArmor : public UObject
 {
 	GENERATED_BODY()
+protected:
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = RPG, meta = (AllowPrivateAccess = "true"))
+	float DamageReductionFactor = 1.f;
 public:
 	/**
 	 * @brief Calculates the final damage received from an incoming attack
@@ -26,7 +29,7 @@ public:
 	 */
 	UFUNCTION(BlueprintCallable, BlueprintNativeEvent, Category = "Combat")
 	float CalculateDamageRx(AActor* BattleStatsBearer, UAnatomyUnit* AnatomyCovered, float BaseDamage, const TArray<TSubclassOf<UDamageType>>& DamageTypes);
-	virtual float CalculateDamageRx_Implementation(AActor* BattleStatsBearer, UAnatomyUnit* AnatomyCovered, float BaseDamage, const TArray<TSubclassOf<UDamageType>>& DamageTypes) {return 0.f;}
+	virtual float CalculateDamageRx_Implementation(AActor* BattleStatsBearer, UAnatomyUnit* AnatomyCovered, float BaseDamage, const TArray<TSubclassOf<UDamageType>>& DamageTypes);
     /**
      * @return the defender's resistance scaling factor for the given damage type, which should reduce the damage if the defender has a resistance to the input damage type and otherwise should be 1 e.g. 0 <= factor <= 1
      *
