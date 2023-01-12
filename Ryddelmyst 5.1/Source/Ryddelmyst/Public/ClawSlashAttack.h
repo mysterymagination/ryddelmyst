@@ -17,6 +17,5 @@ public:
 	static const FString ATTACK_NAME;
 public:
 	UClawSlashAttack();
-	virtual void OnHit_Implementation(UPrimitiveComponent* StrikingComp, AActor* StrickenActor, UPrimitiveComponent* StrickenComp, FVector NormalImpulse, const FHitResult& HitInfo) override;
 	virtual float CalculateDamageTx_Implementation(AActor* BattleStatsBearer) override;
 };
