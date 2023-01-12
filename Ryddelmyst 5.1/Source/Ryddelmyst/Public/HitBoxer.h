@@ -30,5 +30,6 @@ public:
 	 * so implementors need not concern themselves with their own defender role -- the other Actor in the collision will fire off its
 	 * own OnComponentHitEvent with itself in the role of striker to address that matter via its own attack flow.
 	 */
+	UFUNCTION(BlueprintCallable, BlueprintNativeEvent, Category="Combat")
 	void OnHit(UPrimitiveComponent* StrikingComp, AActor* StrickenActor, UPrimitiveComponent* StrickenComp, FVector NormalImpulse, const FHitResult& HitInfo);
 };
