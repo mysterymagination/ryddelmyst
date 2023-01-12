@@ -18,10 +18,10 @@ class RYDDELMYST_API UBodyBoxComponent : public UBoxComponent, public IAnatomy, 
     GENERATED_BODY()
     
 protected:
-    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Combat")
-    UCoreUnit* CoreUnit;
-    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Combat")
-    UArmor* Armor;
+    UPROPERTY(EditAnywhere, Instanced, BlueprintReadWrite, Category = "Combat", meta = (AllowPrivateAccess = "true"))
+    TObjectPtr<UCoreUnit> CoreUnit;
+    UPROPERTY(EditAnywhere, Instanced, BlueprintReadWrite, Category = "Combat", meta = (AllowPrivateAccess = "true"))
+    TObjectPtr<UArmor> Armor;
 
 public:
     UAnatomyUnit* GetAnatomyUnit_Implementation() override;
