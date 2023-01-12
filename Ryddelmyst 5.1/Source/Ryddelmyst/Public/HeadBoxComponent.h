@@ -5,6 +5,8 @@
 #include "CoreMinimal.h"
 #include "Components/BoxComponent.h"
 #include "HeadUnit.h"
+#include "IAnatomy.h"
+#include "IDefender.h"
 #include "HeadBoxComponent.generated.h"
 
 /**
@@ -16,10 +18,10 @@ class RYDDELMYST_API UHeadBoxComponent : public UBoxComponent, public IAnatomy, 
     GENERATED_BODY()
     
 protected:
-    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Combat")
-    UHeadUnit* HeadUnit;
-    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Combat")
-    UArmor* Armor;
+    UPROPERTY(EditAnywhere, Instanced, BlueprintReadWrite, Category = "Combat", meta = (AllowPrivateAccess = "true"))
+    TObjectPtr<UHeadUnit> HeadUnit;
+    UPROPERTY(EditAnywhere, Instanced, BlueprintReadWrite, Category = "Combat", meta = (AllowPrivateAccess = "true"))
+    TObjectPtr<UArmor> Armor;
 
 public:
     UAnatomyUnit* GetAnatomyUnit_Implementation() override;

@@ -9,7 +9,7 @@
 /**
  * A unit of anatomy that typically takes normal damage and imposes no ability penalties
  */
-UCLASS()
+UCLASS(EditInlineNew, Blueprintable, BlueprintType, meta = (DisplayName = "Body Core"))
 class RYDDELMYST_API UCoreUnit : public UAnatomyUnit
 {
 	GENERATED_BODY()

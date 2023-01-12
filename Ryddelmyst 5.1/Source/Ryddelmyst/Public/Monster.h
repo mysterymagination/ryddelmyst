@@ -9,13 +9,14 @@
 #include "BattleStats.h"
 #include "BattleStatsBearer.h"
 #include "StatusEffected.h"
+#include "HitBoxer.h"
 #include "Monster.generated.h"
 
 /**
  * A Character controlled by MonsterAI
  */
 UCLASS(BlueprintType, Blueprintable)
-class RYDDELMYST_API AMonster : public ACharacter, public IBattleStatsBearer, public IStatusEffected
+class RYDDELMYST_API AMonster : public ACharacter, public IBattleStatsBearer, public IStatusEffected, public IHitBoxer
 {
 	GENERATED_BODY()
 	UPROPERTY()
@@ -78,6 +79,5 @@ public:
 		); 
 		StatusEffects.RemoveAt(StatusEffects.Find(StatusToRemove));
 	}	
-	
-	
+	void OnHit_Implementation(UPrimitiveComponent* StrikingComp, AActor* StrickenActor, UPrimitiveComponent* StrickenComp, FVector NormalImpulse, const FHitResult& HitInfo);
 };

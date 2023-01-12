@@ -33,7 +33,7 @@ public:
 	 */
 	UFUNCTION(BlueprintCallable, BlueprintNativeEvent, Category = "Combat")
 	void OnHit(UPrimitiveComponent* StrikingComp, AActor* StrickenActor, UPrimitiveComponent* StrickenComp, FVector NormalImpulse, const FHitResult& HitInfo);
-	virtual void OnHit_Implementation(UPrimitiveComponent* StrikingComp, AActor* StrickenActor, UPrimitiveComponent* StrickenComp, FVector NormalImpulse, const FHitResult& HitInfo) {UE_LOG(LogTemp, Warning, TEXT("OnHit; attack is %s"), *AttackName);}
+	virtual void OnHit_Implementation(UPrimitiveComponent* StrikingComp, AActor* StrickenActor, UPrimitiveComponent* StrickenComp, FVector NormalImpulse, const FHitResult& HitInfo);
 	/**
 	 * @brief Calculates the base damage of our attack from the stats of the input IBattleStatsBearer implementor
 	 * @param BattleStatsBearer the instigator of the attack, whose stats determine its damage output
