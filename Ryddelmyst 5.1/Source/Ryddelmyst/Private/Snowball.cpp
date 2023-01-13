@@ -113,6 +113,7 @@ void ASnowball::Cast(ARyddelmystCharacter* LaunchingCharacter, const FVector& La
 	}
 
 	ProcessCost(LaunchingCharacter);
+	Caster = LaunchingCharacter;
 }
 
 void ASnowball::ProcessCost(ARyddelmystCharacter* CasterCharacter)
@@ -143,7 +144,7 @@ void ASnowball::OnHit(UPrimitiveComponent* HitComp, AActor* OtherActor, UPrimiti
 	{
 		// Damage setter is inside the IDefender target check so that we only bother calc/cache of damage if we can actually apply the damage
 		UE_LOG(LogTemp, Warning, TEXT("OnSnowballHit; using attack name %s"), *GetName());
-		Damage = CalculateSnowballDamageTx(//this); // todo: the snowball is not a BattleStatsBearer; Maya, the launching character, is.  Need handle to her here.
+		Damage = CalculateSnowballDamageTx(Caster);
 		UArmor* Armor = IDefender::Execute_GetArmor(OtherComp);
 		TArray<TSubclassOf<UDamageType>> DamageTypes = {DamageType};
 		float DamageRx = 0.f;
@@ -151,7 +152,7 @@ void ASnowball::OnHit(UPrimitiveComponent* HitComp, AActor* OtherActor, UPrimiti
 		{
 			UAnatomyUnit* AnatomyUnit = IAnatomy::Execute_GetAnatomyUnit(OtherComp);
 			DamageRx = Armor->CalculateDamageRx(OtherActor, AnatomyUnit, Damage, DamageTypes);
-			AnatomyUnit->Debilitate(//this); // todo: the snowball is not a BattleStatsBearer; Maya, the launching character, is.  Need handle to her here.
+			AnatomyUnit->Debilitate(Caster);
 		}
 		else
 		{

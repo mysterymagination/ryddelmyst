@@ -24,6 +24,8 @@ class RYDDELMYST_API ASnowball : public AActor/* todo: have Snowball provide a S
 	std::function<void(AActor* LaunchingActor, const FVector& LaunchDirection)> LaunchFn;
 	UPROPERTY()
 	FTimerHandle BrokenPhysicsTimerHandle;
+	UPROPERTY()
+	AActor* Caster;
 
 public:
 	// Sets default values for this actor's properties
