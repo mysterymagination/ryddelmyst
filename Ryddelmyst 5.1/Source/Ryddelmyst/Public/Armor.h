@@ -16,7 +16,9 @@ class RYDDELMYST_API UArmor : public UObject
 	GENERATED_BODY()
 protected:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = RPG, meta = (AllowPrivateAccess = "true"))
-	float DamageReductionFactor = 1.f;
+	float PhysicalDamageReductionFactor = 1.f;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = RPG, meta = (AllowPrivateAccess = "true"))
+	float MagicDamageReductionFactor = 1.f;
 public:
 	/**
 	 * @brief Calculates the final damage received from an incoming attack
