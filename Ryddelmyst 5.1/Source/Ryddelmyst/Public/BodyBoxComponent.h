@@ -10,9 +10,9 @@
 #include "BodyBoxComponent.generated.h"
 
 /**
- * Form representing the physical core of a creature
+ * Form representing the physical core of a roughly boxy creature
  */
-UCLASS(ClassGroup = "Collision", editinlinenew, Blueprintable, BlueprintType, meta = (DisplayName = "Body Collision", BlueprintSpawnableComponent))
+UCLASS(ClassGroup = "Collision", editinlinenew, Blueprintable, BlueprintType, meta = (DisplayName = "Body Box Collision", BlueprintSpawnableComponent))
 class RYDDELMYST_API UBodyBoxComponent : public UBoxComponent, public IAnatomy, public IDefender
 {
     GENERATED_BODY()

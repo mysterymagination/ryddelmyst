@@ -5,5 +5,5 @@
 
 UWoodArmor::UWoodArmor()
 {
-    DamageReductionFactor = 0.75f;
+    PhysicalDamageReductionFactor = 0.75f;
 }
