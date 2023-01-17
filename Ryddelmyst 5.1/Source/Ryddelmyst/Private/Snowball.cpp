@@ -152,7 +152,7 @@ void ASnowball::OnHit(UPrimitiveComponent* HitComp, AActor* OtherActor, UPrimiti
 		{
 			UAnatomyUnit* AnatomyUnit = IAnatomy::Execute_GetAnatomyUnit(OtherComp);
 			DamageRx = Armor->CalculateDamageRx(OtherActor, AnatomyUnit, Damage, DamageTypes);
-			AnatomyUnit->Debilitate(Caster);
+			AnatomyUnit->Debilitate(OtherActor);
 		}
 		else
 		{

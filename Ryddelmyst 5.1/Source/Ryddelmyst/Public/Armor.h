@@ -7,6 +7,14 @@
 #include "AnatomyUnit.h"
 #include "Armor.generated.h"
 
+UENUM(ClassGroup = "Combat", EditInlineNew, Blueprintable, BlueprintType, meta = (DisplayName = "Damage Category"))
+enum EDamageCat
+{
+	Physical	UMETA(DisplayName = "Physical Damage"),
+	Magical		UMETA(DisplayName = "Energy Damage")
+};
+
+
 /**
  * Armor handles incoming hits, calculating the damage the armored creature receives and providing information about resistances and vulnerabilities.
  */
@@ -19,6 +27,8 @@ protected:
 	float PhysicalDamageReductionFactor = 1.f;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = RPG, meta = (AllowPrivateAccess = "true"))
 	float MagicDamageReductionFactor = 1.f;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = RPG, meta = (AllowPrivateAccess = "true"))
+	TMap<TSubclassOf<UDamageType>, EDamageCat> DamageCatMap;  
 public:
 	/**
 	 * @brief Calculates the final damage received from an incoming attack
@@ -46,4 +56,12 @@ public:
 	UFUNCTION(BlueprintCallable, BlueprintNativeEvent, Category = "Combat")
 	float GetVulnerability(TSubclassOf<UDamageType> InputDamageType);
 	virtual float GetVulnerability_Implementation(TSubclassOf<UDamageType> InputDamageType) {return 1.f;}
+	/**
+     * @return the defender's damage reduction scaling factor for the given damage type, which should increase the damage if the defender has a vulnerability to the input damage type and otherwise should be 1 e.g. factor >= 1
+     *
+     */
+	UFUNCTION(BlueprintCallable, BlueprintNativeEvent, Category = "Combat")
+	float GetDamageReductionFactorForDamageTypes(TArray<TSubclassOf<UDamageType>> InputDamageTypes);
+	virtual float GetDamageReductionFactorForDamageTypes_Implementation(TArray<TSubclassOf<UDamageType>> InputDamageTypes);
+	
 };
