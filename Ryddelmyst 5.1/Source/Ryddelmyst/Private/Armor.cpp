@@ -5,6 +5,9 @@
 #include "FireDamageType.h"
 #include "IceDamageType.h"
 #include "LightningDamageType.h"
+#include "BludgeoningDamageType.h"
+#include "SlashingDamageType.h"
+#include "PiercingDamageType.h"
 
 UArmor::UArmor()
 {
@@ -37,9 +40,10 @@ float UArmor::CalculateDamageRx_Implementation(AActor* BattleStatsBearer, UAnato
     return BaseDamage * (1.f - GetDamageReductionFactorForDamageTypes(DamageTypes)) * AnatomyCovered->DamageScaleFactor - Stats->StatsMap["Defense"];
 }
 
-float UArmor::GetDamageReductionFactorForDamageTypes_Implementation(TArray<TSubclassOf<UDamageType>> InputDamageTypes)
+float UArmor::GetDamageReductionFactorForDamageTypes_Implementation(const TArray<TSubclassOf<UDamageType>>& InputDamageTypes)
 {
     // todo: need a mapping of damage reduction factors to categorical damage types e.g. 
     //  fire and ice are magic and slashing is physical.  Also need to know what percentage of the damage is coming 
     //  from a given damage type, so we'll need a TMap of damage types to weight floats rather than just a TArray.  Have fun with that refactor XD
+    return 0.f;
 }

@@ -7,7 +7,7 @@
 #include "AnatomyUnit.h"
 #include "Armor.generated.h"
 
-UENUM(ClassGroup = "Combat", EditInlineNew, Blueprintable, BlueprintType, meta = (DisplayName = "Damage Category"))
+UENUM()
 enum EDamageCat
 {
 	Physical	UMETA(DisplayName = "Physical Damage"),
@@ -28,8 +28,9 @@ protected:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = RPG, meta = (AllowPrivateAccess = "true"))
 	float MagicDamageReductionFactor = 1.f;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = RPG, meta = (AllowPrivateAccess = "true"))
-	TMap<TSubclassOf<UDamageType>, EDamageCat> DamageCatMap;  
+	TMap<TSubclassOf<UDamageType>, TEnumAsByte<EDamageCat>> DamageCatMap;  
 public:
+	UArmor();
 	/**
 	 * @brief Calculates the final damage received from an incoming attack
 	 * @param BattleStatsBearer the battle stats of the creature wearing this armor
@@ -57,11 +58,28 @@ public:
 	float GetVulnerability(TSubclassOf<UDamageType> InputDamageType);
 	virtual float GetVulnerability_Implementation(TSubclassOf<UDamageType> InputDamageType) {return 1.f;}
 	/**
-     * @return the defender's damage reduction scaling factor for the given damage type, which should increase the damage if the defender has a vulnerability to the input damage type and otherwise should be 1 e.g. factor >= 1
+     * @return the defender's damage reduction scaling factor for the categorical damage EDamageCat (e.g. phys or mag) that these 
+	 * damage types map to.  If multiple EDamageCats are met within this set of damage types, then we look at the weights paired with
+	 * each damage type and apply them to the relevant EDamageCat damage reduction factor.  We then recombine these values into a scalar
+	 * by adding the weights multiplied by the EDamageCat DR to each other.
+	 * 
+	 * e.g.
+	 * Incoming Damage {
+	 * 	Fire: 0.5f,
+	 *  Bludgeoning: 0.5f
+	 * }
+	 * DR {
+	 * 	Phys: 1.f,
+	 * 	Mag: 0.5f
+	 * }
+	 * Fire * Mag = 0.25
+	 * Bludgeoning * Phys = 0.5
+	 * These values represent what percentage of each categorical damage component was negated by DR.
+	 * 0.25 + 0.5 = 0.75 meaning total DR is 75% and only 25% damage gets through.
      *
      */
 	UFUNCTION(BlueprintCallable, BlueprintNativeEvent, Category = "Combat")
-	float GetDamageReductionFactorForDamageTypes(TArray<TSubclassOf<UDamageType>> InputDamageTypes);
-	virtual float GetDamageReductionFactorForDamageTypes_Implementation(TArray<TSubclassOf<UDamageType>> InputDamageTypes);
+	float GetDamageReductionFactorForDamageTypes(const TArray<TSubclassOf<UDamageType>>& InputDamageTypes);
+	virtual float GetDamageReductionFactorForDamageTypes_Implementation(const TArray<TSubclassOf<UDamageType>>& InputDamageTypes);
 	
 };
