@@ -146,19 +146,20 @@ void ASnowball::OnHit(UPrimitiveComponent* HitComp, AActor* OtherActor, UPrimiti
 		UE_LOG(LogTemp, Warning, TEXT("OnSnowballHit; using attack name %s"), *GetName());
 		Damage = CalculateSnowballDamageTx(Caster);
 		UArmor* Armor = IDefender::Execute_GetArmor(OtherComp);
-		TArray<TSubclassOf<UDamageType>> DamageTypes = {DamageType};
 		float DamageRx = 0.f;
 		if(OtherComp->GetClass()->ImplementsInterface(UAnatomy::StaticClass()))
 		{
 			UAnatomyUnit* AnatomyUnit = IAnatomy::Execute_GetAnatomyUnit(OtherComp);
-			DamageRx = Armor->CalculateDamageRx(OtherActor, AnatomyUnit, Damage, DamageTypes);
+			DamageRx = Armor->CalculateDamageRx(OtherActor, AnatomyUnit, Damage, DamageTypesToWeightsMap);
 			AnatomyUnit->Debilitate(OtherActor);
 		}
 		else
 		{
-			DamageRx = Armor->CalculateDamageRx(OtherActor, nullptr, Damage, DamageTypes);
+			DamageRx = Armor->CalculateDamageRx(OtherActor, nullptr, Damage, DamageTypesToWeightsMap);
 		}
-		UGameplayStatics::ApplyPointDamage(OtherActor, DamageRx, NormalImpulse, Hit, UGameplayStatics::GetPlayerController(GetWorld(), 0), this, DamageType);
+		TArray<TSubclassOf<UDamageType>> Types;
+		DamageTypesToWeightsMap.GenerateKeyArray(Types);
+		UGameplayStatics::ApplyPointDamage(OtherActor, DamageRx, NormalImpulse, Hit, UGameplayStatics::GetPlayerController(GetWorld(), 0), this, Types[0]);
 	}
 	else 
 	{

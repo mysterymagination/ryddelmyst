@@ -21,7 +21,10 @@ AIceySnowball::AIceySnowball()
 	{
 		SnowballParticles->SetTemplate(ParticleAsset.Object);
 	}
-    DamageType = UIceDamageType::StaticClass();
+    DamageTypesToWeightsMap = 
+	{
+		{UIceDamageType::StaticClass(), 1.f}
+	};
 }
 void AIceySnowball::OnHit(UPrimitiveComponent* HitComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit)
 {

@@ -8,12 +8,13 @@
 #include "Armor.generated.h"
 
 UENUM()
-enum EDamageCat
+enum class EDamageCat : uint8
 {
 	Physical	UMETA(DisplayName = "Physical Damage"),
-	Magical		UMETA(DisplayName = "Energy Damage")
+	Magical		UMETA(DisplayName = "Energy Damage"),
+	Count		UMETA(Hidden)
 };
-
+ENUM_RANGE_BY_COUNT(EDamageCat, EDamageCat::Count);
 
 /**
  * Armor handles incoming hits, calculating the damage the armored creature receives and providing information about resistances and vulnerabilities.
@@ -24,11 +25,9 @@ class RYDDELMYST_API UArmor : public UObject
 	GENERATED_BODY()
 protected:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = RPG, meta = (AllowPrivateAccess = "true"))
-	float PhysicalDamageReductionFactor = 1.f;
+	TMap<EDamageCat, float> DamageReductionMap;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = RPG, meta = (AllowPrivateAccess = "true"))
-	float MagicDamageReductionFactor = 1.f;
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = RPG, meta = (AllowPrivateAccess = "true"))
-	TMap<TSubclassOf<UDamageType>, TEnumAsByte<EDamageCat>> DamageCatMap;  
+	TMap<TSubclassOf<UDamageType>, EDamageCat> DamageCatMap;  
 public:
 	UArmor();
 	/**
@@ -41,8 +40,8 @@ public:
 	 * @param DamageTypes the types of damage the incoming attack deals
 	 */
 	UFUNCTION(BlueprintCallable, BlueprintNativeEvent, Category = "Combat")
-	float CalculateDamageRx(AActor* BattleStatsBearer, UAnatomyUnit* AnatomyCovered, float BaseDamage, const TArray<TSubclassOf<UDamageType>>& DamageTypes);
-	virtual float CalculateDamageRx_Implementation(AActor* BattleStatsBearer, UAnatomyUnit* AnatomyCovered, float BaseDamage, const TArray<TSubclassOf<UDamageType>>& DamageTypes);
+	float CalculateDamageRx(AActor* BattleStatsBearer, UAnatomyUnit* AnatomyCovered, float BaseDamage, const TMap<TSubclassOf<UDamageType>, float>& DamageTypesToWeights);
+	virtual float CalculateDamageRx_Implementation(AActor* BattleStatsBearer, UAnatomyUnit* AnatomyCovered, float BaseDamage, const TMap<TSubclassOf<UDamageType>, float>& DamageTypesToWeights);
     /**
      * @return the defender's resistance scaling factor for the given damage type, which should reduce the damage if the defender has a resistance to the input damage type and otherwise should be 1 e.g. 0 <= factor <= 1
      *
@@ -79,7 +78,7 @@ public:
      *
      */
 	UFUNCTION(BlueprintCallable, BlueprintNativeEvent, Category = "Combat")
-	float GetDamageReductionFactorForDamageTypes(const TArray<TSubclassOf<UDamageType>>& InputDamageTypes);
-	virtual float GetDamageReductionFactorForDamageTypes_Implementation(const TArray<TSubclassOf<UDamageType>>& InputDamageTypes);
+	float GetDamageReductionFactorForDamageTypes(const TMap<TSubclassOf<UDamageType>, float>& InputDamageTypesMap);
+	virtual float GetDamageReductionFactorForDamageTypes_Implementation(const TMap<TSubclassOf<UDamageType>, float>& InputDamageTypesMap);
 	
 };

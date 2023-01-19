@@ -30,7 +30,10 @@ AElectricSnowball::AElectricSnowball()
 	// update magic cost for subclass
 	MagicCost = 20.f;
 
-	DamageType = ULightningDamageType::StaticClass();
+	DamageTypesToWeightsMap = 
+	{
+		{ULightningDamageType::StaticClass(), 1.f}
+	};
 }
 
 void AElectricSnowball::OnHit(UPrimitiveComponent* HitComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit)

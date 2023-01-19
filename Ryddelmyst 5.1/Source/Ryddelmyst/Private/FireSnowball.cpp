@@ -22,7 +22,10 @@ AFireSnowball::AFireSnowball()
 	{
 		SnowballParticles->SetTemplate(ParticleAsset.Object);
 	}
-	DamageType = UFireDamageType::StaticClass();
+	DamageTypesToWeightsMap = 
+	{
+		{UFireDamageType::StaticClass(), 1.f}
+	};
 }
 
 void AFireSnowball::OnHit(UPrimitiveComponent* HitComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit)

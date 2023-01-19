@@ -20,20 +20,25 @@ void UAttack::OnHit_Implementation(UPrimitiveComponent* StrikingComp, AActor* St
         if(StrickenComp->GetClass()->ImplementsInterface(UAnatomy::StaticClass()))
 		{
 			UAnatomyUnit* AnatomyUnit = IAnatomy::Execute_GetAnatomyUnit(StrickenComp);
-            DamageRx = StrickenArmor->CalculateDamageRx(StrickenActor, AnatomyUnit, dmg, DamageTypes);
+            DamageRx = StrickenArmor->CalculateDamageRx(StrickenActor, AnatomyUnit, dmg, DamageTypesToWeightsMap);
 			AnatomyUnit->Debilitate(StrickenActor);
 		}
         else 
         {
-            DamageRx = StrickenArmor->CalculateDamageRx(StrickenActor, nullptr, dmg, DamageTypes);
+            DamageRx = StrickenArmor->CalculateDamageRx(StrickenActor, nullptr, dmg, DamageTypesToWeightsMap);
         }
         // todo: this approach only works if we assume all attacks from components of an Actor who is also a Pawn, e.g. a Monster's claw or Maya's mighty
         //  jump kicks.  We may wish to eschew the UGameplayStatics::ApplyPointDamage() event so we can both have attacks that are not connected physically
         //  to a Pawn and also so that we can support multiple damage types.  C'mon Unreal APIs, one damage type?  Really?
+        // todo: it might be better to have the attack impl simply figure out how much the damagetx is and then call ApplyPointDamage or a similar event that the
+        //  relevant defender handles and then applies its Armor DR etc. on its end; that would separate the responsibilities of the code a little better and
+        //  make Attack and Armor less tightly coupled.
         APawn* InstigatorPawn = Cast<APawn>(StrikingComp->GetOwner());
         if(InstigatorPawn)
         {
-            UGameplayStatics::ApplyPointDamage(StrickenActor, DamageRx, NormalImpulse, HitInfo, InstigatorPawn->GetController(), StrikingComp->GetOwner(), DamageTypes[0]);
+            TArray<TSubclassOf<UDamageType>> Types;
+            DamageTypesToWeightsMap.GenerateKeyArray(Types);
+            UGameplayStatics::ApplyPointDamage(StrickenActor, DamageRx, NormalImpulse, HitInfo, InstigatorPawn->GetController(), StrikingComp->GetOwner(), Types[0]);
         }
         else 
         {
