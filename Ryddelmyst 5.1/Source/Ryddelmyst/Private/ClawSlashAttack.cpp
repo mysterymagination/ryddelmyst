@@ -10,7 +10,10 @@ UClawSlashAttack::UClawSlashAttack()
 {
     AttackName = ATTACK_NAME;
     BasePower = 10.f;
-    DamageTypes = {USlashingDamageType::StaticClass()};
+    DamageTypesToWeightsMap = 
+    {
+        {USlashingDamageType::StaticClass(), 1.f}
+    };
 }
 
 float UClawSlashAttack::CalculateDamageTx_Implementation(AActor* BattleStatsBearer)

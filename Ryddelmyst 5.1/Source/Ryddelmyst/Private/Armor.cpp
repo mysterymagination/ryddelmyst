@@ -34,16 +34,32 @@ UArmor::UArmor()
     };
 }
 
-float UArmor::CalculateDamageRx_Implementation(AActor* BattleStatsBearer, UAnatomyUnit* AnatomyCovered, float BaseDamage, const TArray<TSubclassOf<UDamageType>>& DamageTypes) 
+float UArmor::CalculateDamageRx_Implementation(AActor* BattleStatsBearer, UAnatomyUnit* AnatomyCovered, float BaseDamage, const TMap<TSubclassOf<UDamageType>, float>& DamageTypesToWeightsMap) 
 {
     UBattleStats* Stats = IBattleStatsBearer::Execute_GetStats(BattleStatsBearer);
-    return BaseDamage * (1.f - GetDamageReductionFactorForDamageTypes(DamageTypes)) * AnatomyCovered->DamageScaleFactor - Stats->StatsMap["Defense"];
+    return BaseDamage * (1.f - GetDamageReductionFactorForDamageTypes(DamageTypesToWeightsMap)) * AnatomyCovered->DamageScaleFactor - Stats->StatsMap["Defense"];
 }
 
-float UArmor::GetDamageReductionFactorForDamageTypes_Implementation(const TArray<TSubclassOf<UDamageType>>& InputDamageTypes)
+float UArmor::GetDamageReductionFactorForDamageTypes_Implementation(const TMap<TSubclassOf<UDamageType>, float>& InputDamageTypesMap)
 {
-    // todo: need a mapping of damage reduction factors to categorical damage types e.g. 
-    //  fire and ice are magic and slashing is physical.  Also need to know what percentage of the damage is coming 
-    //  from a given damage type, so we'll need a TMap of damage types to weight floats rather than just a TArray.  Have fun with that refactor XD
-    return 0.f;
+    float DRFactorSum = 0.f;
+    for(EDamageCat DamageCat : TEnumRange<EDamageCat>())
+    {
+        float CatSum = 0.f;
+        for(auto& DamageType : InputDamageTypesMap)
+        {
+            // for each damage type that matches the current DamageCat, tally the weights into a final sum percentage of damage for the current DamageCat (CatSum)
+            if(*DamageCatMap.Find(DamageType.Key) == DamageCat) 
+            {
+                CatSum += DamageType.Value;
+            }
+        }
+        // multiply CatSum by the relevant DR factor and add the result to DRFactorSum
+        float* DRptr = DamageReductionMap.Find(DamageCat);
+        if(DRptr)
+        {
+            DRFactorSum += CatSum * (*DRptr);
+        }
+    }
+    return DRFactorSum;
 }

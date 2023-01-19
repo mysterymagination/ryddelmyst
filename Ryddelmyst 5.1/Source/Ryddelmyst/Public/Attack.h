@@ -16,8 +16,11 @@ class RYDDELMYST_API UAttack : public UObject
 public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Combat")
 	FString AttackName;
+	/**
+	 * TMap of UDamageType subclass' UClass pointers to a percentage weight float; the weights from all damage types should add up to 1  
+	 */
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Combat")
-	TArray<TSubclassOf<UDamageType>> DamageTypes;
+	TMap<TSubclassOf<UDamageType>, float> DamageTypesToWeightsMap;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Combat")
 	float BasePower = 0.f;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Combat")
