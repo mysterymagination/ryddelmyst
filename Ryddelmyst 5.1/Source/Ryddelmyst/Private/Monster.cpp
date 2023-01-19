@@ -50,10 +50,17 @@ void AMonster::OnHit_Implementation(UPrimitiveComponent* StrikingComp, AActor* S
 	if (StrikingComp->GetClass()->ImplementsInterface(UAttacker::StaticClass()))
 	{
 		UWeapon* Weapon = IAttacker::Execute_GetWeapon(StrikingComp);
+		UE_LOG(LogTemp, Warning, TEXT("monster OnHit; Striking comp %s is wielding weapon %s"), *StrikingComp->GetName(), *Weapon->GetName());
 		UAttack** Attack_Check = Weapon->AttackMap.Find(Weapon->CurrentAttackName);
 		if(Attack_Check)
 		{
+			UE_LOG(LogTemp, Warning, TEXT("monster OnHit; Striking comp %s weapon %s is running attack %s on %s's shapely %s"), 
+				*StrikingComp->GetName(), *Weapon->GetName(), *(*Attack_Check)->GetName(), *StrickenActor->GetName(), *StrickenComp->GetName());
 			(*Attack_Check)->OnHit_Implementation(StrikingComp, StrickenActor, StrickenComp, NormalImpulse, HitInfo);
 		}
+	}
+	else
+	{
+		UE_LOG(LogTemp, Warning, TEXT("monster OnHit; Striking comp %s is not an IAttacker so can't proceed with attack processing"), *StrikingComp->GetName());
 	}
 }
