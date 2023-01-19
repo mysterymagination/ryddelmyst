@@ -76,7 +76,7 @@ protected:
 	UPROPERTY()
 	float Damage = 0.f;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Projectile)
-	TSubclassOf<UDamageType> DamageType;
+	TMap<TSubclassOf<UDamageType>, float> DamageTypesToWeightsMap;
 	// Projectile particle FX
 	UPROPERTY()
 	UParticleSystemComponent* SnowballParticles;
@@ -122,5 +122,5 @@ protected:
 	UFUNCTION()
 	virtual void OnHit(UPrimitiveComponent* HitComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit);
 	float CalculateSnowballDamageTx(AActor* BattleStatsBearer);
-	TSubclassOf<UDamageType> GetSnowballDamageTypes() {return DamageType;}
+	const TMap<TSubclassOf<UDamageType>, float>& GetSnowballDamageTypesMap() {return DamageTypesToWeightsMap;}
 };
