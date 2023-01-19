@@ -52,6 +52,11 @@ float UArmor::GetDamageReductionFactorForDamageTypes_Implementation(const TMap<T
             if(*DamageCatMap.Find(DamageType.Key) == DamageCat) 
             {
                 CatSum += DamageType.Value;
+                UE_LOG(LogTemp, Warning, TEXT("GetDamageReductionFactorForDamageTypes; DamageType %s of DamageCat %s adds itself to the catsum for a running total %f"), 
+                    *DamageType.Key->GetName(), 
+                    *UEnum::GetDisplayValueAsText(DamageCat).ToString(),
+                    CatSum
+                );
             }
         }
         // multiply CatSum by the relevant DR factor and add the result to DRFactorSum
@@ -59,7 +64,15 @@ float UArmor::GetDamageReductionFactorForDamageTypes_Implementation(const TMap<T
         if(DRptr)
         {
             DRFactorSum += CatSum * (*DRptr);
+            UE_LOG(LogTemp, Warning, TEXT("GetDamageReductionFactorForDamageTypes; DamageCat %s sum %f multiplied by relevant DR factor %f adds the product %f to DR factor sum for a running total %f"), 
+                    *UEnum::GetDisplayValueAsText(DamageCat).ToString(),
+                    CatSum,
+                    *DRptr,
+                    CatSum * (*DRptr),
+                    DRFactorSum
+                );
         }
     }
+    UE_LOG(LogTemp, Warning, TEXT("GetDamageReductionFactorForDamageTypes; returning final DR factor %f"), DRFactorSum);
     return DRFactorSum;
 }
