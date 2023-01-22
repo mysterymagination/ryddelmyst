@@ -61,6 +61,9 @@ void AMonster::OnHit_Implementation(UPrimitiveComponent* StrikingComp, AActor* S
 	}
 	else
 	{
-		UE_LOG(LogTemp, Warning, TEXT("monster OnHit; Striking comp %s is not an IAttacker so can't proceed with attack processing"), *StrikingComp->GetName());
+		UE_LOG(LogTemp, Warning, TEXT("monster OnHit; Striking comp %s is not an IAttacker so can't proceed with attack processing against %s's lovely %s"), 
+			*StrikingComp->GetName(),
+			*StrickenActor->GetName(),
+			*StrickenComp->GetName());
 	}
 }
