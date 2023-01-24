@@ -57,6 +57,7 @@ void AMonster::OnHit_Implementation(UPrimitiveComponent* StrikingComp, AActor* S
 			UE_LOG(LogTemp, Warning, TEXT("monster OnHit; Striking comp %s weapon %s is running attack %s on %s's shapely %s"), 
 				*StrikingComp->GetName(), *Weapon->GetName(), *(*Attack_Check)->GetName(), *StrickenActor->GetName(), *StrickenComp->GetName());
 			(*Attack_Check)->OnHit_Implementation(StrikingComp, StrickenActor, StrickenComp, NormalImpulse, HitInfo);
+
 		}
 	}
 	else
