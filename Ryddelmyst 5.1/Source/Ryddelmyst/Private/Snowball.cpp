@@ -98,7 +98,8 @@ void ASnowball::FixPhysics()
 // Function that initializes the projectile's velocity in the shoot direction.
 void ASnowball::Cast(ARyddelmystCharacter* LaunchingCharacter, const FVector& LaunchDirection)
 {
-	UE_LOG(LogTemp, Warning, TEXT("Cast; launchingchar is %s and launchdir is %s"), *LaunchingCharacter->GetName(), *LaunchDirection.ToString());
+	Caster = LaunchingCharacter;
+	UE_LOG(LogTemp, Warning, TEXT("Cast; launchingchar is %s and launchdir is %s"), *Caster->GetName(), *LaunchDirection.ToString());
 	try
 	{
 		LaunchFn(LaunchingCharacter, LaunchDirection);
@@ -112,11 +113,10 @@ void ASnowball::Cast(ARyddelmystCharacter* LaunchingCharacter, const FVector& La
 			*LaunchDirection.ToString(), ProjectileMovementComponent->InitialSpeed, *ProjectileMovementComponent->Velocity.ToString());
 	}
 
-	ProcessCost(LaunchingCharacter);
-	Caster = LaunchingCharacter;
+	ProcessCost(Caster);
 }
 
-void ASnowball::ProcessCost(ARyddelmystCharacter* CasterCharacter)
+void ASnowball::ProcessCost(AActor* BattleStatsBearer)
 {
 	// todo: add a Cost struct that's blueprintable with cost values corresponding to various character stats, normally MP but could be HP etc.  Ideally we'd have a mapping of some sort that would see e.g. that Snowball has an MP cost of 20 and therefore triggers an event OnMpCost(20) that RyddelmystCharacter handles by calling her UpdateMagic(-20).  That way we could have variable casting costs and abstract away the specific details of how interested parties handle the cost event. 
 	// todo: the above Cost could even include custom behavior e.g. the caster flies back N meters or their HP is halved for N seconds; that would have to work outside the blueprint ecosystem tho I think since blueprints don't really support lambda functions.

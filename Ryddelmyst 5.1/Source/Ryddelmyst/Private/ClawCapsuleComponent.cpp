@@ -5,6 +5,9 @@
 
 UClawCapsuleComponent::UClawCapsuleComponent()
 {
+    SetNotifyRigidBodyCollision(true);
+	SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
+	SetCollisionProfileName("BlockAllDynamic");
     Claw = CreateDefaultSubobject<UClawWeapon>(TEXT("Claw Weapon"));
 }
 

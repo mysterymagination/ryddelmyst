@@ -24,6 +24,7 @@ protected:
     TObjectPtr<UArmor> Armor;
 
 public:
+    UHeadBoxComponent();
     UAnatomyUnit* GetAnatomyUnit_Implementation() override;
     UArmor* GetArmor_Implementation() override;
 };
