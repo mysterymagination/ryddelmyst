@@ -3,6 +3,13 @@
 
 #include "HeadBoxComponent.h"
 
+UHeadBoxComponent::UHeadBoxComponent()
+{
+    SetNotifyRigidBodyCollision(true);
+	SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
+	SetCollisionProfileName("BlockAllDynamic");
+}
+
 UAnatomyUnit* UHeadBoxComponent::GetAnatomyUnit_Implementation() 
 {
     return HeadUnit;

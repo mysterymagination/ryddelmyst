@@ -52,7 +52,7 @@ public:
 	std::function<void(AActor* LaunchingActor, const FVector& LaunchDirection)> GetLaunchFunction() { return LaunchFn; };
 	void SetLaunchFunction(std::function<void(AActor* LaunchingActor, const FVector& LaunchDirection)> Function) { LaunchFn = Function; };
 	UFUNCTION()
-	void ProcessCost(class ARyddelmystCharacter* CasterCharacter);
+	void ProcessCost(AActor* BattleStatsBearer);
 	/**
 	 * @brief Temporarily disables physics for this Snowball instance, for a duration of BrokenPhysicsPeriod
 	 * 
