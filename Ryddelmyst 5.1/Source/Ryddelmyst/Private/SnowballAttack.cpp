@@ -3,3 +3,12 @@
 
 #include "SnowballAttack.h"
 
+USnowballAttack::USnowballAttack()
+{
+    Costs = 
+    {
+        {
+            "MP", 10.f
+        }
+    }
+}

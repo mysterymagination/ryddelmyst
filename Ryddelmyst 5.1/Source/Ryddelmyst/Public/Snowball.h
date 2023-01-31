@@ -4,17 +4,18 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
-#include "Components/SphereComponent.h"
 #include "Particles/ParticleSystemComponent.h"
 #include "GameFramework/ProjectileMovementComponent.h"
 #include <functional>
 #include <vector>
 #include "StatusEffect.h"
 #include "IAttacker.h"
+#include "HitBoxer.h"
+#include "SpellSphereComponent.h"
 #include "Snowball.generated.h"
 
 UCLASS()
-class RYDDELMYST_API ASnowball : public AActor/* todo: have Snowball provide a SnowballWeapon with a SnowballAttack etc. to go through the same API as the monster claws..., public IAttacker*/
+class RYDDELMYST_API ASnowball : public AActor, public IHitBoxer
 {
 	GENERATED_BODY()
 
@@ -88,7 +89,7 @@ protected:
 	UStaticMeshComponent* ProjectileMeshComponent;
 	// Sphere collision component.
 	UPROPERTY(VisibleDefaultsOnly, Category = Projectile)
-	USphereComponent* CollisionComponent;
+	USpellSphereComponent* SpellSphereComponent;
 	// mana cost of this spell
 	UPROPERTY(EditAnywhere, Category = Projectile)
 	float MagicCost = 10.f;
@@ -120,7 +121,7 @@ protected:
 	 * @param Hit FHitResult data about the collision
 	 */
 	UFUNCTION()
-	virtual void OnHit(UPrimitiveComponent* HitComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit);
+	void OnHit_Implementation(UPrimitiveComponent* HitComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit);
 	float CalculateSnowballDamageTx(AActor* BattleStatsBearer);
 	const TMap<TSubclassOf<UDamageType>, float>& GetSnowballDamageTypesMap() {return DamageTypesToWeightsMap;}
 };
