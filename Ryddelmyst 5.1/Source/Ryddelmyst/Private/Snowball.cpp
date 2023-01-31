@@ -18,34 +18,34 @@ ASnowball::ASnowball()
 	{
 		RootComponent = CreateDefaultSubobject<USceneComponent>(TEXT("ProjectileSceneComponent"));
 	}
-	if (!CollisionComponent)
+	if (!SpellSphereComponent)
 	{
 		// Use a sphere as a simple collision representation.
-		CollisionComponent = CreateDefaultSubobject<USphereComponent>(TEXT("SphereComponent"));
+		SpellSphereComponent = CreateDefaultSubobject<USpellSphereComponent>(TEXT("SphereComponent"));
 		// Set the sphere's collision radius.
 		
 		// todo: trying to lower the impact force of the snowball; maybe mass derives from the radius of the physics sphere?
-		CollisionComponent->InitSphereRadius(15.0f);
-		CollisionComponent->SetMassOverrideInKg(NAME_None, 0.5f, true);
+		SpellSphereComponent->InitSphereRadius(15.0f);
+		SpellSphereComponent->SetMassOverrideInKg(NAME_None, 0.5f, true);
 
 		// On hit event handling
-		CollisionComponent->SetSimulatePhysics(true);
-		CollisionComponent->SetNotifyRigidBodyCollision(true);
-		CollisionComponent->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
-		CollisionComponent->SetCollisionProfileName("BlockAllDynamic");
+		SpellSphereComponent->SetSimulatePhysics(true);
+		SpellSphereComponent->SetNotifyRigidBodyCollision(true);
+		SpellSphereComponent->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
+		SpellSphereComponent->SetCollisionProfileName("BlockAllDynamic");
 		UE_LOG(LogTemp, Warning, TEXT("snowball ctor; adding OnComponentHit delegate pointing to OnHit"));
 		FScriptDelegate onHitDelegate;
 		onHitDelegate.BindUFunction(this, FName("OnHit"));
-		CollisionComponent->OnComponentHit.Add(onHitDelegate);
+		SpellSphereComponent->OnComponentHit.Add(onHitDelegate);
 
 		// Set the root component to be the collision component.
-		RootComponent = CollisionComponent;
+		RootComponent = SpellSphereComponent;
 	}
 	if (!ProjectileMovementComponent)
 	{
 		// Use this component to drive this projectile's movement.
 		ProjectileMovementComponent = CreateDefaultSubobject<UProjectileMovementComponent>(TEXT("ProjectileMovementComponent"));
-		ProjectileMovementComponent->SetUpdatedComponent(CollisionComponent);
+		ProjectileMovementComponent->SetUpdatedComponent(SpellSphereComponent);
 		ProjectileMovementComponent->InitialSpeed = 3000.0f;
 		ProjectileMovementComponent->MaxSpeed = 3000.0f;
 		ProjectileMovementComponent->bRotationFollowsVelocity = true;
@@ -86,13 +86,13 @@ void ASnowball::Tick(float DeltaTime)
 
 void ASnowball::BreakPhysics()
 {
-	CollisionComponent->SetSimulatePhysics(false);
+	SpellSphereComponent->SetSimulatePhysics(false);
 	GetWorldTimerManager().SetTimer(BrokenPhysicsTimerHandle, this, &ASnowball::FixPhysics, BrokenPhysicsPeriod, false);
 }
 
 void ASnowball::FixPhysics()
 {
-	CollisionComponent->SetSimulatePhysics(true);
+	SpellSphereComponent->SetSimulatePhysics(true);
 }
 
 // Function that initializes the projectile's velocity in the shoot direction.
@@ -126,7 +126,7 @@ void ASnowball::ProcessCost(AActor* BattleStatsBearer)
 //  and have that be our Snowball collision component instead of stock USphereComponent.  That way we could move closer to potentially having a common hit handler function that works through
 //  common interfaces.
 // todo (later): move the status effects application code to IAttacker and IDefender, with the latter processing immunities etc.
-void ASnowball::OnHit(UPrimitiveComponent* HitComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit)
+void ASnowball::OnHit_Implementation(UPrimitiveComponent* HitComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit)
 {
 	UE_LOG(LogTemp, Warning, TEXT("OnSnowballHit; HitComp says %s, OtherActor says %s, OtherComp says %s, normal impulse says %s, hitres says %s"), 
 		*HitComp->GetName(), *OtherActor->GetName(), *OtherComp->GetName(), *NormalImpulse.ToString(), *Hit.ToString());
