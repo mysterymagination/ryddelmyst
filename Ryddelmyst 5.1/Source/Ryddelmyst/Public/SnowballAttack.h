@@ -13,6 +13,8 @@ UCLASS()
 class RYDDELMYST_API USnowballAttack : public UAttack
 {
 	GENERATED_BODY()
+public:
+	USnowballAttack();
 	// todo: need configurable damage types
 	// todo: need configurable effects
 };

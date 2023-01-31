@@ -25,6 +25,12 @@ public:
 	float BasePower = 0.f;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Combat")
 	float DamageScaleFactor = 1.f;
+	/**
+	 * An array of costs to the user of the attack, expressed as stat name paired with a float value e.g. "HP",15.f to say that an attack costs the 
+	 * attacker 15 HP to use. 
+	 */
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Combat")
+	TArray<TPair<FString, float>> Costs;
 public:
 	/**
 	 * @brief Processes a hit by this attacker on the given defender

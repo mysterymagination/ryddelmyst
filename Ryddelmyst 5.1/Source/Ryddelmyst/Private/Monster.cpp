@@ -45,6 +45,8 @@ void AMonster::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 
 }
 
+// todo: since this behavior is going to be pretty much common for our Clash API we should put it in a Component or just a PoD object instead of an interface impl or
+//  some weird common ancestor thing.  Composition over inheritance!
 void AMonster::OnHit_Implementation(UPrimitiveComponent* StrikingComp, AActor* StrickenActor, UPrimitiveComponent* StrickenComp, FVector NormalImpulse, const FHitResult& HitInfo)
 {
 	if (StrikingComp->GetClass()->ImplementsInterface(UAttacker::StaticClass()))
