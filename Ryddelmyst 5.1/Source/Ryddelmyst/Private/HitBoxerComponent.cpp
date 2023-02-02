@@ -2,33 +2,31 @@
 
 
 #include "HitBoxerComponent.h"
+#include "IAttacker.h"
+#include "Weapon.h"
+#include "Attack.h"
 
-// Sets default values for this component's properties
-UHitBoxerComponent::UHitBoxerComponent()
+UHitBoxerComponent::OnHit(UPrimitiveComponent* StrikingComp, AActor* StrickenActor, UPrimitiveComponent* StrickenComp, FVector NormalImpulse, const FHitResult& HitInfo)
 {
-	// Set this component to be initialized when the game starts, and to be ticked every frame.  You can turn these features
-	// off to improve performance if you don't need them.
-	PrimaryComponentTick.bCanEverTick = true;
+	if (StrikingComp->GetClass()->ImplementsInterface(UAttacker::StaticClass()))
+	{
+		UWeapon* Weapon = IAttacker::Execute_GetWeapon(StrikingComp);
+		UE_LOG(LogTemp, Warning, TEXT("monster OnHit; Striking comp %s is wielding weapon %s"), *StrikingComp->GetName(), *Weapon->GetName());
+		UAttack** Attack_Check = Weapon->AttackMap.Find(Weapon->CurrentAttackName);
+		if(Attack_Check)
+		{
+			UE_LOG(LogTemp, Warning, TEXT("monster OnHit; Striking comp %s weapon %s is running attack %s on %s's shapely %s"), 
+				*StrikingComp->GetName(), *Weapon->GetName(), *(*Attack_Check)->AttackName, *StrickenActor->GetName(), *StrickenComp->GetName());
+			(*Attack_Check)->OnHit_Implementation(StrikingComp, StrickenActor, StrickenComp, NormalImpulse, HitInfo);
 
-	// ...
-}
-
-
-// Called when the game starts
-void UHitBoxerComponent::BeginPlay()
-{
-	Super::BeginPlay();
-
-	// ...
-	
-}
-
-
-// Called every frame
-void UHitBoxerComponent::TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction)
-{
-	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
-
-	// ...
+		}
+	}
+	else
+	{
+		UE_LOG(LogTemp, Warning, TEXT("monster OnHit; Striking comp %s is not an IAttacker so can't proceed with attack processing against %s's lovely %s"), 
+			*StrikingComp->GetName(),
+			*StrickenActor->GetName(),
+			*StrickenComp->GetName());
+	}
 }
 
