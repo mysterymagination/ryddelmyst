@@ -14,6 +14,10 @@ ASnowball::ASnowball()
 {
 	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
+	if(!HitBoxer)
+	{
+		HitBoxer = CreateDefaultSubobject<UHitBoxer>(TEXT("Snowy HitBoxer"));
+	}
 	if (!RootComponent)
 	{
 		RootComponent = CreateDefaultSubobject<USceneComponent>(TEXT("ProjectileSceneComponent"));
@@ -33,9 +37,9 @@ ASnowball::ASnowball()
 		SpellSphereComponent->SetNotifyRigidBodyCollision(true);
 		SpellSphereComponent->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
 		SpellSphereComponent->SetCollisionProfileName("BlockAllDynamic");
-		UE_LOG(LogTemp, Warning, TEXT("snowball ctor; adding OnComponentHit delegate pointing to OnHit"));
+		UE_LOG(LogTemp, Warning, TEXT("snowball ctor; adding OnComponentHit delegate pointing to HitBoxer::OnHit"));
 		FScriptDelegate onHitDelegate;
-		onHitDelegate.BindUFunction(this, FName("OnHit"));
+		onHitDelegate.BindUFunction(HitBoxer, FName("OnHit"));
 		SpellSphereComponent->OnComponentHit.Add(onHitDelegate);
 
 		// Set the root component to be the collision component.
@@ -122,10 +126,8 @@ void ASnowball::ProcessCost(AActor* BattleStatsBearer)
 	// todo: the above Cost could even include custom behavior e.g. the caster flies back N meters or their HP is halved for N seconds; that would have to work outside the blueprint ecosystem tho I think since blueprints don't really support lambda functions.
 }
 
-// todo (later): make a UBulletSphereComponent class that subclasses USphereComponent and implements IAttacker (and maybe IDefender for cases of e.g. target is making a swipe attack to destroy a bullet which might otherwise linger?)
-//  and have that be our Snowball collision component instead of stock USphereComponent.  That way we could move closer to potentially having a common hit handler function that works through
-//  common interfaces.
-// todo (later): move the status effects application code to IAttacker and IDefender, with the latter processing immunities etc.
+// todo: move the status effects application code to SnowballAttack
+/*
 void ASnowball::OnHit_Implementation(UPrimitiveComponent* HitComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit)
 {
 	UE_LOG(LogTemp, Warning, TEXT("OnSnowballHit; HitComp says %s, OtherActor says %s, OtherComp says %s, normal impulse says %s, hitres says %s"), 
@@ -169,6 +171,7 @@ void ASnowball::OnHit_Implementation(UPrimitiveComponent* HitComp, AActor* Other
 	Destroy();
 	// todo: leave behind flattened snowball messh?
 }
+*/
 
 float ASnowball::CalculateSnowballDamageTx(AActor* BattleStatsBearer)
 {
