@@ -16,7 +16,7 @@
  * A Character controlled by MonsterAI
  */
 UCLASS(BlueprintType, Blueprintable)
-class RYDDELMYST_API AMonster : public ACharacter, public IBattleStatsBearer, public IStatusEffected, public IHitBoxer
+class RYDDELMYST_API AMonster : public ACharacter, public IBattleStatsBearer, public IStatusEffected
 {
 	GENERATED_BODY()
 	UPROPERTY()
@@ -29,6 +29,8 @@ class RYDDELMYST_API AMonster : public ACharacter, public IBattleStatsBearer, pu
 protected:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "RPG")
 	TSubclassOf<UBattleStats> MonsterStatsType;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Collision)
+	UHitBoxerComponent* HitBoxer;
 
 public:
 	/**
@@ -79,5 +81,4 @@ public:
 		); 
 		StatusEffects.RemoveAt(StatusEffects.Find(StatusToRemove));
 	}	
-	void OnHit_Implementation(UPrimitiveComponent* StrikingComp, AActor* StrickenActor, UPrimitiveComponent* StrickenComp, FVector NormalImpulse, const FHitResult& HitInfo);
 };

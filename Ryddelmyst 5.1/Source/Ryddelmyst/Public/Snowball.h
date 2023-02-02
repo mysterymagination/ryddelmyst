@@ -10,12 +10,12 @@
 #include <vector>
 #include "StatusEffect.h"
 #include "IAttacker.h"
-#include "HitBoxer.h"
+#include "HitBoxerComponent.h"
 #include "SpellSphereComponent.h"
 #include "Snowball.generated.h"
 
 UCLASS()
-class RYDDELMYST_API ASnowball : public AActor, public IHitBoxer
+class RYDDELMYST_API ASnowball : public AActor
 {
 	GENERATED_BODY()
 
@@ -76,6 +76,8 @@ protected:
 	 */
 	UPROPERTY()
 	float Damage = 0.f;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Collision)
+	UHitBoxerComponent* HitBoxer;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Projectile)
 	TMap<TSubclassOf<UDamageType>, float> DamageTypesToWeightsMap;
 	// Projectile particle FX
@@ -112,16 +114,6 @@ private:
 	UProjectileMovementComponent* ProjectileMovementComponent;
 
 protected:
-	/**
-	 * @brief Custom onhit event handling, applying any effects and damage, and then destroying the snowball 
-	 * @param HitComp this is the UPrimitiveComponent doing the hitting, e.g. the snowball
-	 * @param OtherActor this is the AActor instance we hit
-	 * @param OtherComp this is the specific UPrimitiveComponent of the OtherActor that we hit
-	 * @param NormalImpulse impulse vector of HitComp relative to OtherComp
-	 * @param Hit FHitResult data about the collision
-	 */
-	UFUNCTION()
-	void OnHit_Implementation(UPrimitiveComponent* HitComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit);
 	float CalculateSnowballDamageTx(AActor* BattleStatsBearer);
 	const TMap<TSubclassOf<UDamageType>, float>& GetSnowballDamageTypesMap() {return DamageTypesToWeightsMap;}
 };
