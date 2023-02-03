@@ -7,6 +7,8 @@
 #include "IDefender.h"
 #include "Kismet/GameplayStatics.h"
 
+const FString UAttack::KEY_COSTS_EFFECT("Effect");
+
 void UAttack::OnHit_Implementation(UPrimitiveComponent* StrikingComp, AActor* StrickenActor, UPrimitiveComponent* StrickenComp, FVector NormalImpulse, const FHitResult& HitInfo) 
 {
     UE_LOG(LogTemp, Warning, TEXT("OnHit; attack is %s by striking comp %s against stricken comp %s of stricken actor %s"), 

@@ -7,7 +7,7 @@
 #include "MagicWeapon.generated.h"
 
 /**
- * 
+ * A Weapon that delivers spell effects through its Attacks
  */
 UCLASS()
 class RYDDELMYST_API UMagicWeapon : public UWeapon
