@@ -19,10 +19,6 @@ class RYDDELMYST_API ASnowball : public AActor
 {
 	GENERATED_BODY()
 
-	// Vector of functions to be run on the target after the spell hits
-	std::vector<std::function<void(AActor* TargetActor, const FHitResult& HitResult)>> EffectsOnTarget;
-	// Function that provides custom launch behavior
-	std::function<void(AActor* LaunchingActor, const FVector& LaunchDirection)> LaunchFn;
 	UPROPERTY()
 	FTimerHandle BrokenPhysicsTimerHandle;
 	UPROPERTY()
@@ -41,19 +37,6 @@ public:
 	virtual void Tick(float DeltaTime) override;
 	// Initializes the projectile's velocity in the shoot direction.
 	void Cast(class ARyddelmystCharacter* CastingCharacter, const FVector& LaunchDirection);
-	float GetMagicCost()
-	{
-		return MagicCost;
-	};
-	UFUNCTION()
-	float GetDamageScaleFactor() { return DamageScaleFactor; };
-	UFUNCTION()
-	void SetDamageScaleFactor(float ScaleFactor) { DamageScaleFactor = ScaleFactor; };
-	std::vector<std::function<void(AActor*, const FHitResult&)>>& GetEffectsVector() { return EffectsOnTarget; };
-	std::function<void(AActor* LaunchingActor, const FVector& LaunchDirection)> GetLaunchFunction() { return LaunchFn; };
-	void SetLaunchFunction(std::function<void(AActor* LaunchingActor, const FVector& LaunchDirection)> Function) { LaunchFn = Function; };
-	UFUNCTION()
-	void ProcessCost(AActor* BattleStatsBearer);
 	/**
 	 * @brief Temporarily disables physics for this Snowball instance, for a duration of BrokenPhysicsPeriod
 	 * 
@@ -70,16 +53,8 @@ private:
 	void FixPhysics();
 
 protected:
-	/**
-	 * @brief Cache of most recently calculated damage
-	 * 
-	 */
-	UPROPERTY()
-	float Damage = 0.f;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Collision)
 	UHitBoxerComponent* HitBoxer;
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Projectile)
-	TMap<TSubclassOf<UDamageType>, float> DamageTypesToWeightsMap;
 	// Projectile particle FX
 	UPROPERTY()
 	UParticleSystemComponent* SnowballParticles;
@@ -92,15 +67,6 @@ protected:
 	// Sphere collision component.
 	UPROPERTY(VisibleDefaultsOnly, Category = Projectile)
 	USpellSphereComponent* SpellSphereComponent;
-	// mana cost of this spell
-	UPROPERTY(EditAnywhere, Category = Projectile)
-	float MagicCost = 10.f;
-	// base power used in CalculateDamageTx() to derive damage dealt by this spell
-	UPROPERTY(EditAnywhere, Category = Projectile)
-	float Power = 25.f;
-	// scale factor for the final calculated damage
-	UPROPERTY(EditAnywhere, Category = Projectile)
-	float DamageScaleFactor = 1.f;
 	/**
 	 * @brief Time in seconds for which the Snowball should fly without physics enabled before re-enabling it
 	 * 
@@ -112,8 +78,4 @@ private:
 	// Projectile movement component.
 	UPROPERTY(VisibleAnywhere, Category = Movement)
 	UProjectileMovementComponent* ProjectileMovementComponent;
-
-protected:
-	float CalculateSnowballDamageTx(AActor* BattleStatsBearer);
-	const TMap<TSubclassOf<UDamageType>, float>& GetSnowballDamageTypesMap() {return DamageTypesToWeightsMap;}
 };

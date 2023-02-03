@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "UObject/NoExportTypes.h"
+#include "BattleStatsBearer.h"
 #include "Attack.generated.h"
 
 /**
@@ -14,6 +15,7 @@ class RYDDELMYST_API UAttack : public UObject
 {
 	GENERATED_BODY()
 public:
+	static const FString KEY_COSTS_EFFECT;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Combat")
 	FString AttackName;
 	/**
@@ -50,4 +52,39 @@ public:
 	UFUNCTION(BlueprintCallable, BlueprintNativeEvent, Category = "Combat")
 	float CalculateDamageTx(AActor* BattleStatsBearer);
 	virtual float CalculateDamageTx_Implementation(AActor* BattleStatsBearer) { return 0.f; }
+	/**
+	 * @brief Calculates the base damage of our attack from the stats of the input IBattleStatsBearer implementor
+	 * @param BattleStatsBearer the instigator of the attack, whose stats determine its damage output
+	 */
+	UFUNCTION(BlueprintCallable, BlueprintNativeEvent, Category = "Combat")
+	void ProcessCosts(AActor* BattleStatsBearer);
+	virtual void ProcessCosts_Implementation(AActor* BattleStatsBearer) 
+	{  
+		for (auto& Cost : Costs)
+		{
+			/* todo: a mapping of costs that can be either simple scalar floats or a lambda effect to execute would be cool
+			    e.g. the caster flies back N meters or their HP is halved for N seconds; 
+				that would have to work outside the blueprint ecosystem tho I think since blueprints don't really support lambda functions.
+			if(Cost.Key == KEY_COSTS_EFFECT)
+			{
+				Cost.Value();
+			}
+			else
+			{
+				UBattleStats* BattleStats = IBattleStatsBearer::Execute_GetStats(BattleStatsBearer);
+				float* StatPtr = BattleStats->StatsMap.Find(Cost.Key);
+				if(StatPtr)
+				{
+					*StatPtr -= Cost.Value;
+				}
+			}
+			*/
+			UBattleStats* BattleStats = IBattleStatsBearer::Execute_GetStats(BattleStatsBearer);
+				float* StatPtr = BattleStats->StatsMap.Find(Cost.Key);
+				if(StatPtr)
+				{
+					*StatPtr -= Cost.Value;
+				}
+		}
+	}
 };
