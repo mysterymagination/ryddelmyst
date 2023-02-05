@@ -6,7 +6,7 @@
 #include "Weapon.h"
 #include "Attack.h"
 
-UHitBoxerComponent::OnHit(UPrimitiveComponent* StrikingComp, AActor* StrickenActor, UPrimitiveComponent* StrickenComp, FVector NormalImpulse, const FHitResult& HitInfo)
+void UHitBoxerComponent::OnHit(UPrimitiveComponent* StrikingComp, AActor* StrickenActor, UPrimitiveComponent* StrickenComp, FVector NormalImpulse, const FHitResult& HitInfo)
 {
 	if (StrikingComp->GetClass()->ImplementsInterface(UAttacker::StaticClass()))
 	{
