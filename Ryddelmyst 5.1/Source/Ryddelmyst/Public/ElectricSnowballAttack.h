@@ -4,7 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "SnowballAttack.h"
-#include "SnowballAttack.generated.h"
+#include "ElectricSnowballAttack.generated.h"
 
 /**
  * An Attack representing the damage formula and configurable effects/damage type of the ElectricSnowball(!) spell, dealing lightning damage and shocking the target
