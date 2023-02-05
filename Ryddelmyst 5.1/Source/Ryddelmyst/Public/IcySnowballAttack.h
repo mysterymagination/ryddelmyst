@@ -13,7 +13,15 @@ UCLASS()
 class RYDDELMYST_API UIcySnowballAttack : public USnowballAttack
 {
 	GENERATED_BODY()
+protected:
+	// Duration during which the effected Actor will be unable to move
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Projectile)
+	float FreezeDuration = 5.f;	
 public:
 	UIcySnowballAttack();
+	UFUNCTION()
+	float GetFreezeDuration() { return FreezeDuration; };
+	UFUNCTION()
+	void SetFreezeDuration(float Duration) { FreezeDuration = Duration; };	
 	virtual void OnHit_Implementation(UPrimitiveComponent* StrikingComp, AActor* StrickenActor, UPrimitiveComponent* StrickenComp, FVector NormalImpulse, const FHitResult& HitInfo) override;
 };
