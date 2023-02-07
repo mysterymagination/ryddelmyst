@@ -23,6 +23,8 @@ class RYDDELMYST_API ASnowball : public AActor
 	FTimerHandle BrokenPhysicsTimerHandle;
 	UPROPERTY()
 	AActor* Caster;
+	// Function that provides custom launch behavior
+	std::function<void(AActor* LaunchingActor, const FVector& LaunchDirection)> LaunchFn;
 
 public:
 	// Sets default values for this actor's properties
@@ -43,6 +45,8 @@ public:
 	 */
 	UFUNCTION()
 	void BreakPhysics();
+	std::function<void(AActor* LaunchingActor, const FVector& LaunchDirection)> GetLaunchFunction() { return LaunchFn; };
+	void SetLaunchFunction(std::function<void(AActor* LaunchingActor, const FVector& LaunchDirection)> Function) { LaunchFn = Function; };
 
 private:
 	/**

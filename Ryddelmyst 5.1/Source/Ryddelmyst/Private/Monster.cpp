@@ -12,7 +12,7 @@ AMonster::AMonster()
     AIControllerClass = AMonsterAI::StaticClass();
     */
    PrimaryActorTick.bCanEverTick = true;
-   HitBoxer = CreateDefaultSubobject<UHitBoxer>(TEXT("Monstrous HitBoxer"));
+   HitBoxer = CreateDefaultSubobject<UHitBoxerComponent>(TEXT("Monstrous HitBoxer"));
 }
 
 // Called when the game starts or when spawned

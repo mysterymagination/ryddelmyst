@@ -54,8 +54,10 @@ public:
 	float CalculateDamageTx(AActor* BattleStatsBearer);
 	virtual float CalculateDamageTx_Implementation(AActor* BattleStatsBearer) { return 0.f; }
 	/**
-	 * @brief Calculates the base damage of our attack from the stats of the input IBattleStatsBearer implementor
-	 * @param BattleStatsBearer the instigator of the attack, whose stats determine its damage output
+	 * @brief Subtracts the costs of the attack from the attacker's resources e.g. MP cost to cast a spell.  This function can't be called from a generic location
+	 * 	      within the Attack impl since different attacks will incur costs differently i.e. casting a spell that summons a bullet will incur costs when cast, not
+	 * 		  when/if the bullet hits whereas some others may not have any applicable hit chance.  
+	 * @param BattleStatsBearer the instigator of the attack, whose stats will incur the costs
 	 */
 	UFUNCTION(BlueprintCallable, BlueprintNativeEvent, Category = "Combat")
 	void ProcessCosts(AActor* BattleStatsBearer);

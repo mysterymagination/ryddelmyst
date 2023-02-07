@@ -5,6 +5,7 @@
 #include "CoreMinimal.h"
 #include "Components/SphereComponent.h"
 #include "IAttacker.h"
+#include "MagicWeapon.h"
 #include "SpellSphereComponent.generated.h"
 
 /**
