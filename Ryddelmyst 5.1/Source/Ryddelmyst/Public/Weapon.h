@@ -20,4 +20,14 @@ public:
     TMap<FString, UAttack*> AttackMap;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Combat")
     FString CurrentAttackName;
+public:
+	UFUNCTION() 
+	UAttack* GetCurrentAttack()
+	{
+		UAttack** Attack_ptr = AttackMap.Find(CurrentAttackName);
+		if(Attack_ptr)
+		{
+			return *Attack_ptr;
+		}
+	}
 };
