@@ -117,7 +117,9 @@ void ASnowball::Cast(ARyddelmystCharacter* LaunchingCharacter, const FVector& La
 			*LaunchDirection.ToString(), ProjectileMovementComponent->InitialSpeed, *ProjectileMovementComponent->Velocity.ToString());
 	}
 
-	ProcessCost(Caster);
+	// bit of an oddment here since we want the cost to be incurred regardless of whether or not the Attack actually goes off, since you can miss;
+	// basically we incur the cost to cast the spell and summon the snowball, and then the attack stuff happens iff it actually connects with a target 
+	SpellSphereComponent->GetWeapon()->GetCurrentAttack()->ProcessCosts(Caster);
 }
 
 

@@ -13,7 +13,15 @@ UCLASS()
 class RYDDELMYST_API UElectricSnowballAttack : public USnowballAttack
 {
 	GENERATED_BODY()
+protected:
+	// Duration during which the effected Actor will be shocked
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Magic)
+	float ShockDuration = 5.f;
 public:
 	UElectricSnowballAttack();
+	UFUNCTION()
+	float GetShockDuration() { return ShockDuration; };
+	UFUNCTION()
+	void SetShockDuration(float Duration) { ShockDuration = Duration; };
 	virtual void OnHit_Implementation(UPrimitiveComponent* StrikingComp, AActor* StrickenActor, UPrimitiveComponent* StrickenComp, FVector NormalImpulse, const FHitResult& HitInfo) override;
 };
