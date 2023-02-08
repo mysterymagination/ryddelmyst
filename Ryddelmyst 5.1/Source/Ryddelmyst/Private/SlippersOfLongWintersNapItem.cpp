@@ -3,6 +3,7 @@
 
 #include "SlippersOfLongWintersNapItem.h"
 #include "RyddelmystCharacter.h"
+#include "IcySnowballAttack.h"
 #include "IceySnowball.h"
 
 const std::string USlippersOfLongWintersNapItem::ID = "SlippersLongWinterNap";
@@ -16,7 +17,8 @@ void USlippersOfLongWintersNapItem::OnEquip_Implementation(AActor* EquippedActor
 		{
 			UE_LOG(LogTemp, Warning, TEXT("Metamagic Ice lambda; attr modifier effect"));
 			// todo: how come std::variant didn't seem to want me storing a lambda sig of both ASnowball and AIceySnowball (and nothing else, such that they're identical other than the input type)?  I guess it figured since AIceySnowball is also ASnowball that it would be ambiguous... but it isn't and that's stupid
-			Cast<AIceySnowball>(Snowball)->SetFreezeDuration(2.f);
+			UAttack* Attack = Cast<AIceySnowball>(Snowball)->GetSpellSphereComponent()->GetWeapon()->GetCurrentAttack();
+			Cast<UIcySnowballAttack>(Attack)->SetFreezeDuration(2.f);
 		};
 	}
 }
