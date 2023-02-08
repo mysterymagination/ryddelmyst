@@ -16,7 +16,7 @@ ASnowball::ASnowball()
 	PrimaryActorTick.bCanEverTick = true;
 	if(!HitBoxer)
 	{
-		HitBoxer = CreateDefaultSubobject<UHitBoxer>(TEXT("Snowy HitBoxer"));
+		HitBoxer = CreateDefaultSubobject<UHitBoxerComponent>(TEXT("Snowy HitBoxer"));
 	}
 	if (!RootComponent)
 	{
