@@ -47,6 +47,11 @@ public:
 	void BreakPhysics();
 	std::function<void(AActor* LaunchingActor, const FVector& LaunchDirection)> GetLaunchFunction() { return LaunchFn; };
 	void SetLaunchFunction(std::function<void(AActor* LaunchingActor, const FVector& LaunchDirection)> Function) { LaunchFn = Function; };
+	UFUNCTION()
+	USpellSphereComponent* GetSpellSphereComponent()
+	{
+		return SpellSphereComponent;
+	}
 
 private:
 	/**

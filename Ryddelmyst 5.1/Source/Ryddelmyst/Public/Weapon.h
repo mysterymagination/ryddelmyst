@@ -29,5 +29,9 @@ public:
 		{
 			return *Attack_ptr;
 		}
+		else
+		{
+			return nullptr;
+		}
 	}
 };
