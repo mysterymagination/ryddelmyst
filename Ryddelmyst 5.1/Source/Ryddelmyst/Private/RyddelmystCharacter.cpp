@@ -17,6 +17,7 @@
 #include "Blueprint/WidgetBlueprintLibrary.h"
 #include "GenericPlatform/GenericPlatformMath.h"
 #include "OpenClose.h"
+#include "SnowballAttack.h"
 #include <stdexcept>
 
 DEFINE_LOG_CATEGORY_STATIC(LogFPChar, Warning, All);
@@ -625,9 +626,11 @@ void ARyddelmystCharacter::Fire()
 		if (World)
 		{
 			TSubclassOf<ASnowball> SnowballType = Spells[SelectedWeaponIdx];
-			if (Magic >= SnowballType.GetDefaultObject()->GetMagicCost())
+			UAttack* CDOSnowballAttack = SnowballType.GetDefaultObject()->GetSpellSphereComponent()->GetWeapon()->GetCurrentAttack();
+			float MagicCost = CDOSnowballAttack->Costs["MP"];
+			if (Magic >= MagicCost)
 			{
-				UE_LOG(LogTemp, Warning, TEXT("Fire; magic is %f and cost is %f so firing"), Magic, SnowballType.GetDefaultObject()->GetMagicCost());
+				UE_LOG(LogTemp, Warning, TEXT("Fire; magic is %f and cost is %f so firing"), Magic, CDOSnowballAttack->Costs["MP"]);
 				
 				// todo: order of operations may be a problem with this metamagic model -- say I have a one evocation fx that multiplies damage by 2 and another that adds 2; you'll have different result values depending on which fx is applied first, since PEMDAS isn't factored into this model at all.  Commutativity isn't so much of an issue since that's re: operands rather than operations, and the operands are encapsulated within the function fx.  One possible fix would be to use an ordered map of some sort (or sort the pairs you would iterate over prior to iteration or something) based on a PEMDAS derived priority?  
 
@@ -708,7 +711,8 @@ void ARyddelmystCharacter::Fire()
 								for(auto Bullet : Bullets)
 								{
 									UE_LOG(LogTemp, Warning, TEXT("Fire; adding enchantment from %s"), *FString(Source.first.c_str()));
-									Bullet->GetEffectsVector().emplace_back(EnchantmentFn);
+									USnowballAttack* SnowballAttack = Cast<USnowballAttack>(Bullet->GetSpellSphereComponent()->GetWeapon()->GetCurrentAttack());
+									SnowballAttack->GetEffectsVector().emplace_back(EnchantmentFn);
 								}
 							}
 							catch (std::bad_variant_access const& ex)
@@ -764,6 +768,13 @@ void ARyddelmystCharacter::Fire()
 				 	}
 				}
 
+				// at this point the spell has been cast physically out into the world, which currently calls ProcessCosts, so update HUD
+				// todo: calling ProcessCosts() in Cast() isn't always right because Cast() is not cast like cast a spell it's cast like cast a stone out into the world 
+				//  a.k.a. throw.  Some metamagic modifies spells so that we cast more than one bullet AActor per spell instance, and we should only be incurring
+				//  the spell cost once, not per-bullet.
+				// todo: support metamagic fx modifying casting cost 
+				UpdateMagic(-MagicCost);
+
 				// apply any other post-spawn metamagic transforms
 				for(const auto& Source : SpellMap)
 				{
@@ -789,10 +800,6 @@ void ARyddelmystCharacter::Fire()
 						}
 					}
 				}
-				
-				// todo: use ASnowball::ProcessCost() instead, which will be called as part of ASnowball::Cast()
-				// todo: support metamagic fx modifying casting cost 
-				UpdateMagic(-Bullets[0]->GetMagicCost());
 			}
 		}
 	}
