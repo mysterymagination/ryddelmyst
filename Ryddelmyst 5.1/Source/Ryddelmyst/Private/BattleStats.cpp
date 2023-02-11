@@ -44,7 +44,17 @@ UBattleStats::UBattleStats()
          * @brief This is the character's mana points; a value gte a spell's cost is required to cast the spell.
          *
          */
-        {"MP", 100.f}
+        {"MP", 100.f},
+        /**
+         * @brief This is the character's max health points; can be used e.g. to compare against current health in key HP above to gauge health percentage.
+         *
+         */
+        {"MaxHP", 100.f},
+        /**
+         * @brief This is the character's max mana points; can be used e.g. to compare against current mana in key MP above to gauge mana percentage.
+         *
+         */
+        {"MaxMP", 100.f}
     };
 }
 

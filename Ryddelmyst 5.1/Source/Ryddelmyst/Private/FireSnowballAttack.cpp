@@ -1,6 +1,8 @@
 
 #include "FireSnowballAttack.h"
 
+const FString UFireSnowballAttack::ATTACK_NAME("FireSnowballAttack");
+
 UFireSnowballAttack::UFireSnowballAttack()
 {
     DamageTypesToWeightsMap = 

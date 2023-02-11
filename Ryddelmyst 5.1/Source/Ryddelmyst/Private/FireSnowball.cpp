@@ -4,6 +4,7 @@
 #include "FireSnowball.h"
 #include "FireDamageType.h"
 #include "StatusEffected.h"
+#include "FireSnowballAttack.h"
 #include "BurnedStatusEffect.h"
 
 AFireSnowball::AFireSnowball()
@@ -22,4 +23,11 @@ AFireSnowball::AFireSnowball()
 	{
 		SnowballParticles->SetTemplate(ParticleAsset.Object);
 	}
+
+	// install this spell's attack
+	IAttacker::Execute_GetWeapon(SpellSphereComponent)->AttackMap =
+	{
+		{UFireSnowballAttack::ATTACK_NAME, CreateDefaultSubobject<UFireSnowballAttack>(FName(*UFireSnowballAttack::ATTACK_NAME))}
+	};
+	IAttacker::Execute_GetWeapon(SpellSphereComponent)->CurrentAttackName = UFireSnowballAttack::ATTACK_NAME;
 }

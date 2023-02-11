@@ -1,6 +1,8 @@
 
 #include "ElectricSnowballAttack.h"
 
+const FString UElectricSnowballAttack::ATTACK_NAME("ElectricSnowballAttack");
+
 UElectricSnowballAttack::UElectricSnowballAttack()
 {
     // update magic cost for subclass
