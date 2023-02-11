@@ -4,6 +4,7 @@
 #include "IceySnowball.h"
 #include "StatusEffected.h"
 #include "IceDamageType.h"
+#include "IcySnowballAttack.h"
 #include "FrozenStatusEffect.h"
 
 AIceySnowball::AIceySnowball()
@@ -21,4 +22,10 @@ AIceySnowball::AIceySnowball()
 	{
 		SnowballParticles->SetTemplate(ParticleAsset.Object);
 	}
+	// install this spell's attack
+	IAttacker::Execute_GetWeapon(SpellSphereComponent)->AttackMap =
+	{
+		{UIcySnowballAttack::ATTACK_NAME, CreateDefaultSubobject<UIcySnowballAttack>(FName(*UIcySnowballAttack::ATTACK_NAME))}
+	};
+	IAttacker::Execute_GetWeapon(SpellSphereComponent)->CurrentAttackName = UIcySnowballAttack::ATTACK_NAME;
 }

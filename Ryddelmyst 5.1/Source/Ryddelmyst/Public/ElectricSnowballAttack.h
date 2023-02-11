@@ -18,6 +18,7 @@ protected:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Magic)
 	float ShockDuration = 5.f;
 public:
+	static const FString ATTACK_NAME;
 	UElectricSnowballAttack();
 	UFUNCTION()
 	float GetShockDuration() { return ShockDuration; };

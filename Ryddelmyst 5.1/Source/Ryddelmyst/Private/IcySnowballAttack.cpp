@@ -3,6 +3,8 @@
 #include "IceDamageType.h"
 #include "BludgeoningDamageType.h"
 
+const FString UIcySnowballAttack::ATTACK_NAME("IcySnowballAttack");
+
 UIcySnowballAttack::UIcySnowballAttack()
 {
     DamageTypesToWeightsMap = 

@@ -18,6 +18,7 @@ protected:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Projectile)
 	float FreezeDuration = 5.f;	
 public:
+	static const FString ATTACK_NAME;
 	UIcySnowballAttack();
 	UFUNCTION()
 	float GetFreezeDuration() { return FreezeDuration; };
