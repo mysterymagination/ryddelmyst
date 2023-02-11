@@ -60,6 +60,6 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "RPG")
 	FString ToString()
 	{
-		return FString::Printf(TEXT("{\nAttack: %f,\nDefense: %f,\nSpeed: %f,\nMagic: %f,\nSpirit: %f\n}"), StatsMap["Attack"], StatsMap["Defense"], StatsMap["Speed"], StatsMap["Magic"], StatsMap["Spirit"]);
+		return FString::Printf(TEXT("{\nAttack: %f,\nDefense: %f,\nSpeed: %f,\nMagic: %f,\nSpirit: %f,\nHP: %f,\nMP: %f\nMaxHP: %f,\nMaxMP: %f\n}"), StatsMap["Attack"], StatsMap["Defense"], StatsMap["Speed"], StatsMap["Magic"], StatsMap["Spirit"], StatsMap["HP"], StatsMap["MP"], StatsMap["MaxHP"], StatsMap["MaxMP"]);
 	}
 };

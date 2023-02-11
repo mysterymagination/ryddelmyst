@@ -626,11 +626,10 @@ void ARyddelmystCharacter::Fire()
 		if (World)
 		{
 			TSubclassOf<ASnowball> SnowballType = Spells[SelectedWeaponIdx];
-			UAttack* CDOSnowballAttack = SnowballType.GetDefaultObject()->GetSpellSphereComponent()->GetWeapon()->GetCurrentAttack();
-			float MagicCost = CDOSnowballAttack->Costs["MP"];
-			if (Magic >= MagicCost)
+			UAttack* CDOSnowballAttack = IAttacker::Execute_GetWeapon(SnowballType.GetDefaultObject()->GetSpellSphereComponent())->GetCurrentAttack();
+			if (CDOSnowballAttack->CheckCosts(this))
 			{
-				UE_LOG(LogTemp, Warning, TEXT("Fire; magic is %f and cost is %f so firing"), Magic, CDOSnowballAttack->Costs["MP"]);
+				UE_LOG(LogTemp, Warning, TEXT("Fire; magic is %f and cost is %f so firing"), CharacterStats->StatsMap["MP"], CDOSnowballAttack->Costs["MP"]);
 				
 				// todo: order of operations may be a problem with this metamagic model -- say I have a one evocation fx that multiplies damage by 2 and another that adds 2; you'll have different result values depending on which fx is applied first, since PEMDAS isn't factored into this model at all.  Commutativity isn't so much of an issue since that's re: operands rather than operations, and the operands are encapsulated within the function fx.  One possible fix would be to use an ordered map of some sort (or sort the pairs you would iterate over prior to iteration or something) based on a PEMDAS derived priority?  
 
@@ -711,7 +710,7 @@ void ARyddelmystCharacter::Fire()
 								for(auto Bullet : Bullets)
 								{
 									UE_LOG(LogTemp, Warning, TEXT("Fire; adding enchantment from %s"), *FString(Source.first.c_str()));
-									USnowballAttack* SnowballAttack = Cast<USnowballAttack>(Bullet->GetSpellSphereComponent()->GetWeapon()->GetCurrentAttack());
+									USnowballAttack* SnowballAttack = Cast<USnowballAttack>(IAttacker::Execute_GetWeapon(Bullet->GetSpellSphereComponent())->GetCurrentAttack());
 									SnowballAttack->GetEffectsVector().emplace_back(EnchantmentFn);
 								}
 							}
@@ -768,13 +767,6 @@ void ARyddelmystCharacter::Fire()
 				 	}
 				}
 
-				// at this point the spell has been cast physically out into the world, which currently calls ProcessCosts, so update HUD
-				// todo: calling ProcessCosts() in Cast() isn't always right because Cast() is not cast like cast a spell it's cast like cast a stone out into the world 
-				//  a.k.a. throw.  Some metamagic modifies spells so that we cast more than one bullet AActor per spell instance, and we should only be incurring
-				//  the spell cost once, not per-bullet.
-				// todo: support metamagic fx modifying casting cost 
-				UpdateMagic(-MagicCost);
-
 				// apply any other post-spawn metamagic transforms
 				for(const auto& Source : SpellMap)
 				{
@@ -800,6 +792,8 @@ void ARyddelmystCharacter::Fire()
 						}
 					}
 				}
+				// last, we incur the cost of casting the spell
+				CDOSnowballAttack->ProcessCosts(this);
 			}
 		}
 	}
@@ -807,28 +801,28 @@ void ARyddelmystCharacter::Fire()
 
 float ARyddelmystCharacter::GetHealth() 
 {
-	return Health;
+	return CharacterStats->StatsMap["HP"];
 }
 
 float ARyddelmystCharacter::GetMaxHealth()
 {
-	return FullHealth;
+	return CharacterStats->StatsMap["MaxHP"];
 }
 
 float ARyddelmystCharacter::GetMagic()
 {
-	return Magic;
+	return CharacterStats->StatsMap["MP"];
 }
 float ARyddelmystCharacter::GetMaxMagic()
 {
-	return FullMagic;
+	return CharacterStats->StatsMap["MaxMP"];
 }
 
 FText ARyddelmystCharacter::GetHealthText()
 {
-	int32 HP = FMath::RoundHalfFromZero(Health);
+	int32 HP = FMath::RoundHalfFromZero(CharacterStats->StatsMap["HP"]);
 	FString HPS = FString::FromInt(HP);
-	FString FullHPS = FString::FromInt(FullHealth);
+	FString FullHPS = FString::FromInt(CharacterStats->StatsMap["MaxHP"]);
 	FString HealthHUD = HPS + FString(TEXT("/")) + FullHPS;
 	FText HPText = FText::FromString(HealthHUD);
 	return HPText;
@@ -836,9 +830,9 @@ FText ARyddelmystCharacter::GetHealthText()
 
 FText ARyddelmystCharacter::GetMagicText()
 {
-	int32 MP = FMath::RoundHalfFromZero(Magic);
+	int32 MP = FMath::RoundHalfFromZero(CharacterStats->StatsMap["MP"]);
 	FString MPS = FString::FromInt(MP);
-	FString FullMPS = FString::FromInt(FullMagic);
+	FString FullMPS = FString::FromInt(CharacterStats->StatsMap["MaxMP"]);
 	FString MagicHUD = MPS + FString(TEXT("/")) + FullMPS;
 	FText MPText = FText::FromString(MagicHUD);
 	return MPText;
@@ -846,16 +840,14 @@ FText ARyddelmystCharacter::GetMagicText()
 
 void ARyddelmystCharacter::UpdateHealth(float HealthChange)
 {
-	Health += HealthChange;
-	Health = FMath::Clamp(Health, 0.0f, FullHealth);
+	CharacterStats->StatsMap["HP"] += HealthChange;
+	CharacterStats->StatsMap["HP"] = FMath::Clamp(CharacterStats->StatsMap["HP"], 0.0f, CharacterStats->StatsMap["MaxHP"]);
 }
 
 void ARyddelmystCharacter::UpdateMagic(float MagicChange)
 {
-	Magic += MagicChange;
-	UE_LOG(LogTemp, Warning, TEXT("UpdateMagic; magicchange is %f so magic is %f prior to clamp"), MagicChange, Magic);
-	Magic = FMath::Clamp(Magic, 0.0f, FullMagic);
-	UE_LOG(LogTemp, Warning, TEXT("UpdateMagic; magic is %f post clamp"), Magic);
+	CharacterStats->StatsMap["MP"] += MagicChange;
+	CharacterStats->StatsMap["MP"] = FMath::Clamp(CharacterStats->StatsMap["MP"], 0.0f, CharacterStats->StatsMap["MaxMP"]);
 }
 
 void ARyddelmystCharacter::HandleDamage(AActor* DamagedActor, float Damage, AController* InstigatedBy, FVector HitLocation, UPrimitiveComponent* FHitComponent, FName BoneName, FVector ShotFromDirection, class UDamageType* DamageType, AActor* DamageCauser)

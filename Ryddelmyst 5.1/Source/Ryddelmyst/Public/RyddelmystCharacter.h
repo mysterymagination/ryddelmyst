@@ -279,18 +279,6 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Interaction")
 	float CarryDistance = 200.f;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Health")
-	float FullHealth = 1000.f;
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Health")
-	float Health = FullHealth;
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Magic")
-	float FullMagic = 100.f;
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Magic")
-	float Magic = FullMagic;
-
 protected:
 	// List of weapons
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Gameplay)

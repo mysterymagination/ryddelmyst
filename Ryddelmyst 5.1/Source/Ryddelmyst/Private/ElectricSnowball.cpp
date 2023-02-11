@@ -5,6 +5,7 @@
 #include "LightningDamageType.h"
 #include "StatusEffected.h"
 #include "ShockedStatusEffect.h"
+#include "ElectricSnowballAttack.h"
 #include "BattleStatsBearer.h"
 
 // Sets default values
@@ -25,6 +26,12 @@ AElectricSnowball::AElectricSnowball()
 	{
 		SnowballParticles->SetTemplate(ParticleAsset.Object);
 	}
+	// install this spell's attack
+	IAttacker::Execute_GetWeapon(SpellSphereComponent)->AttackMap =
+	{
+		{UElectricSnowballAttack::ATTACK_NAME, CreateDefaultSubobject<UElectricSnowballAttack>(FName(*UElectricSnowballAttack::ATTACK_NAME))}
+	};
+	IAttacker::Execute_GetWeapon(SpellSphereComponent)->CurrentAttackName = UElectricSnowballAttack::ATTACK_NAME;
 }
 
 

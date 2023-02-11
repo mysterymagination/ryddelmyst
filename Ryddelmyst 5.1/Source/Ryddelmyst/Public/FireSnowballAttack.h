@@ -21,6 +21,7 @@ protected:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Magic)
 	float BurnPeriod = 0.5f;
 public:
+	static const FString ATTACK_NAME;
 	UFireSnowballAttack();
 	UFUNCTION()
 	float GetBurnDuration() { return BurnDuration; };

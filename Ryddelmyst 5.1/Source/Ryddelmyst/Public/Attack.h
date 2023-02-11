@@ -90,4 +90,22 @@ public:
 				}
 		}
 	}
+	/**
+	 * Checks that the given BattleStatsBearer can afford the costs of this Attack  
+	 */
+	UFUNCTION(BlueprintCallable, Category = "Combat")
+	bool CheckCosts(AActor* BattleStatsBearer)
+	{
+		bool Affordable = true;
+		for (auto& Cost : Costs)
+		{
+			UBattleStats* BattleStats = IBattleStatsBearer::Execute_GetStats(BattleStatsBearer);
+			float* StatPtr = BattleStats->StatsMap.Find(Cost.Key);
+			if (StatPtr)
+			{
+				Affordable &= *StatPtr >= Cost.Value;
+			}
+		}
+		return Affordable;
+	}
 };
