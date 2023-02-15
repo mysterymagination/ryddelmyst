@@ -12,6 +12,11 @@ USpellSphereComponent::USpellSphereComponent()
     Magic = CreateDefaultSubobject<UMagicWeapon>(TEXT("Magic Weapon"));
 }
 
+AActor* USpellSphereComponent::GetBattler_Implementation() 
+{ 
+    return Caster; 
+}
+
 UWeapon* USpellSphereComponent::GetWeapon_Implementation() 
 { 
     return Magic; 
@@ -28,5 +33,4 @@ void USpellSphereComponent::ExecuteAttack_Implementation
 )
 { 
     // todo: kick off the attack's animation and any other immediate effects; an actual collision event later will lead to the attack's OnHit call. 
-    //Claw->AttackMap[AttackName]->...
 }

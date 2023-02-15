@@ -16,7 +16,7 @@ UIcySnowballAttack::UIcySnowballAttack()
 
 void UIcySnowballAttack::OnHit_Implementation(UPrimitiveComponent* StrikingComp, AActor* StrickenActor, UPrimitiveComponent* StrickenComp, FVector NormalImpulse, const FHitResult& HitInfo)
 {
-    Super::OnHit(StrikingComp, StrickenActor, StrickenComp, NormalImpulse, HitInfo);
+    Super::OnHit_Implementation(StrikingComp, StrickenActor, StrickenComp, NormalImpulse, HitInfo);
     // todo: would be cleaner to install a functor with this elemental effect in the general SnowballAttack EffectsVector 
     // elemental StatusEffect
     if(StrickenActor->GetClass()->ImplementsInterface(UStatusEffected::StaticClass()))

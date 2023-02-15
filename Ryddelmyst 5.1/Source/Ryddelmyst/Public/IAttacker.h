@@ -23,6 +23,11 @@ class RYDDELMYST_API IAttacker
 	GENERATED_BODY()
 
 public:
+	/**
+	 * @return a pointer to the AActor implementing IBattleStatsBearer whose BattleStats should be used when processing outgoing damage 
+	 */
+	UFUNCTION(BlueprintCallable, BlueprintNativeEvent, Category = "Combat")
+	AActor* GetBattler();
 	UFUNCTION(BlueprintCallable, BlueprintNativeEvent, Category = "Combat")
 	UWeapon* GetWeapon();
 	UFUNCTION(BlueprintCallable, BlueprintNativeEvent, Category = "Combat")
