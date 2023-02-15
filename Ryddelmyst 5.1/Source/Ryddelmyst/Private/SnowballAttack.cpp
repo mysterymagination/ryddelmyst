@@ -16,9 +16,9 @@ USnowballAttack::USnowballAttack()
 
 void USnowballAttack::OnHit_Implementation(UPrimitiveComponent* StrikingComp, AActor* StrickenActor, UPrimitiveComponent* StrickenComp, FVector NormalImpulse, const FHitResult& HitInfo)
 {
-    UE_LOG(LogTemp, Warning, TEXT("OnSnowballHit; HitComp says %s, OtherActor says %s, OtherComp says %s, normal impulse says %s, hitres says %s"), 
+    UE_LOG(LogTemp, Warning, TEXT("SnowballAttack::OnHit; HitComp says %s, OtherActor says %s, OtherComp says %s, normal impulse says %s, hitres says %s"), 
 		*StrikingComp->GetName(), *StrickenActor->GetName(), *StrickenComp->GetName(), *NormalImpulse.ToString(), *HitInfo.ToString());
-	UE_LOG(LogTemp, Warning, TEXT("OnSnowballHit; EffectsOnTarget has size %d"), EffectsOnTarget.size());
+	UE_LOG(LogTemp, Warning, TEXT("SnowballAttack::OnHit; EffectsOnTarget has size %d"), EffectsOnTarget.size());
     Super::OnHit_Implementation(StrikingComp, StrickenActor, StrickenComp, NormalImpulse, HitInfo);
     // auxiliary effect lambdas that Snowball spell can apply
 	for (auto Effect : EffectsOnTarget)
@@ -33,8 +33,16 @@ void USnowballAttack::OnHit_Implementation(UPrimitiveComponent* StrikingComp, AA
 
 float USnowballAttack::CalculateDamageTx_Implementation(AActor* BattleStatsBearer)
 {
-    float BaseDamage = Power * IBattleStatsBearer::Execute_GetStats(BattleStatsBearer)->StatsMap["Magic"];
-	UE_LOG(LogTemp, Warning, TEXT("CalculateDamage; Power (%f) * Magic (%f) = BaseDamage (%f)"), Power, IBattleStatsBearer::Execute_GetStats(BattleStatsBearer)->StatsMap["Magic"], BaseDamage);
-	BaseDamage += MathUtils::RollNdM(IBattleStatsBearer::Execute_GetStats(BattleStatsBearer)->StatsMap["Level"], 6);
-	return DamageScaleFactor * BaseDamage;
+    if (BattleStatsBearer->GetClass()->ImplementsInterface(UBattleStatsBearer::StaticClass()))
+    {
+        float BaseDamage = Power * IBattleStatsBearer::Execute_GetStats(BattleStatsBearer)->StatsMap["Magic"];
+        UE_LOG(LogTemp, Warning, TEXT("CalculateDamageTx; Power (%f) * Magic (%f) = BaseDamage (%f)"), Power, IBattleStatsBearer::Execute_GetStats(BattleStatsBearer)->StatsMap["Magic"], BaseDamage);
+        BaseDamage += MathUtils::RollNdM(IBattleStatsBearer::Execute_GetStats(BattleStatsBearer)->StatsMap["Level"], 6);
+        return DamageScaleFactor * BaseDamage;
+    }
+    else 
+    {
+        UE_LOG(LogTemp, Error, TEXT("CalculateDamageTx; attacking AActor %s is not a BattleStatsBearer, so we cannot calc damage"), *BattleStatsBearer->GetName());
+        return 0.f
+    }
 }

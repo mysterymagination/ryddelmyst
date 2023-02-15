@@ -19,6 +19,9 @@ protected:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Combat")
 	UMagicWeapon* Magic;
 public:
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Combat")
+	AActor* Caster;
+public:
 	USpellSphereComponent();
 	UWeapon* GetWeapon_Implementation() override;
 	FString GetCurrentAttack_Implementation() override;

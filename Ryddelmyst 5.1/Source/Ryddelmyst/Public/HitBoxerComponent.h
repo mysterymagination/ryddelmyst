@@ -13,5 +13,6 @@ class RYDDELMYST_API UHitBoxerComponent : public UActorComponent
 	GENERATED_BODY()
 
 public:
+	UFUNCTION()
 	void OnHit(UPrimitiveComponent* StrikingComp, AActor* StrickenActor, UPrimitiveComponent* StrickenComp, FVector NormalImpulse, const FHitResult& HitInfo);
 };
