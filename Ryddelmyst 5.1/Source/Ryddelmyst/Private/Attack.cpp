@@ -9,20 +9,20 @@
 
 const FString UAttack::KEY_COSTS_EFFECT("Effect");
 
-void UAttack::OnHit_Implementation(UPrimitiveComponent* StrikingComp, AActor* StrickenActor, UPrimitiveComponent* StrickenComp, FVector NormalImpulse, const FHitResult& HitInfo) 
+void UAttack::OnHit_Implementation(AActor* StrikingBattler, UPrimitiveComponent* StrikingComp, AActor* StrickenActor, UPrimitiveComponent* StrickenComp, FVector NormalImpulse, const FHitResult& HitInfo) 
 {
     UE_LOG(LogTemp, Warning, TEXT("OnHit; attack is %s by striking comp %s against stricken comp %s of stricken actor %s"), 
         *AttackName, *StrikingComp->GetName(), *StrickenComp->GetName(), *StrickenActor->GetName());
-    if (StrickenComp->GetClass()->ImplementsInterface(UDefender::StaticClass()))
+    if (StrikingBattler && StrickenComp->GetClass()->ImplementsInterface(UDefender::StaticClass()))
     {
         // Damage setter is inside the IDefender target check so that we only bother calc/cache of damage if we can actually apply the damage
-        float dmg = CalculateDamageTx(StrikingComp->GetOwner());
+        float dmg = CalculateDamageTx(StrikingBattler);
         UArmor* StrickenArmor = IDefender::Execute_GetArmor(StrickenComp);
 		float DamageRx = 0.f;
         if(StrickenComp->GetClass()->ImplementsInterface(UAnatomy::StaticClass()))
 		{
 			UAnatomyUnit* AnatomyUnit = IAnatomy::Execute_GetAnatomyUnit(StrickenComp);
-            DamageRx = StrickenArmor->CalculateDamageRx(StrickenActor, AnatomyUnit, dmg, DamageTypesToWeightsMap);
+            DamageRx = StrickenArmor->CalculateDamageRx(IDefender::Execute_GetBattler(StrickenComp), AnatomyUnit, dmg, DamageTypesToWeightsMap);
 			AnatomyUnit->Debilitate(StrickenActor);
 		}
         else 
@@ -49,6 +49,6 @@ void UAttack::OnHit_Implementation(UPrimitiveComponent* StrikingComp, AActor* St
     }
     else
     {
-        UE_LOG(LogTemp, Warning, TEXT("OnHit; the stricken component %s does not implement IDefender, so we can't move forward communicating damage"), *StrickenComp->GetName());
+        UE_LOG(LogTemp, Warning, TEXT("OnHit; either the strikingbattler pointer %p is nullptr or the stricken component %s does not implement IDefender, so we can't move forward communicating damage"), StrikingBattler, *StrickenComp->GetName());
     }
 }

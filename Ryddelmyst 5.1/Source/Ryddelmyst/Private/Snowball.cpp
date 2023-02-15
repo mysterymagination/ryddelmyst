@@ -25,7 +25,7 @@ ASnowball::ASnowball()
 	if (!SpellSphereComponent)
 	{
 		// Use a sphere as a simple collision representation.
-		SpellSphereComponent = CreateDefaultSubobject<USpellSphereComponent>(TEXT("SphereComponent"));
+		SpellSphereComponent = CreateDefaultSubobject<USpellSphereComponent>(TEXT("SpellSphereComponent"));
 		// Set the sphere's collision radius.
 		
 		// todo: trying to lower the impact force of the snowball; maybe mass derives from the radius of the physics sphere?
@@ -102,8 +102,8 @@ void ASnowball::FixPhysics()
 // Function that initializes the projectile's velocity in the shoot direction.
 void ASnowball::Cast(ARyddelmystCharacter* LaunchingCharacter, const FVector& LaunchDirection)
 {
-	Caster = LaunchingCharacter;
-	UE_LOG(LogTemp, Warning, TEXT("Cast; launchingchar is %s and launchdir is %s"), *Caster->GetName(), *LaunchDirection.ToString());
+	SpellSphereComponent->Caster = LaunchingCharacter;
+	UE_LOG(LogTemp, Warning, TEXT("Cast; launchingchar is %s and launchdir is %s"), *LaunchingCharacter->GetName(), *LaunchDirection.ToString());
 	try
 	{
 		LaunchFn(LaunchingCharacter, LaunchDirection);

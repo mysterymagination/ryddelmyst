@@ -24,6 +24,11 @@ class RYDDELMYST_API IDefender
 
 public:
 	/**
+	 * @return a pointer to the AActor implementing IBattleStatsBearer whose BattleStats should be used when processing incoming damage 
+	 */
+	UFUNCTION(BlueprintCallable, BlueprintNativeEvent, Category = "Combat")
+	AActor* GetBattler();
+	/**
      * @return the defender's armor data
      *
      */
