@@ -27,7 +27,7 @@ void UAttack::OnHit_Implementation(AActor* StrikingBattler, UPrimitiveComponent*
 		}
         else 
         {
-            DamageRx = StrickenArmor->CalculateDamageRx(StrickenActor, nullptr, dmg, DamageTypesToWeightsMap);
+            DamageRx = StrickenArmor->CalculateDamageRx(IDefender::Execute_GetBattler(StrickenComp), nullptr, dmg, DamageTypesToWeightsMap);
         }
         // todo: this approach only works if we assume all attacks from components of an Actor who is also a Pawn, e.g. a Monster's claw or Maya's mighty
         //  jump kicks.  We may wish to eschew the UGameplayStatics::ApplyPointDamage() event so we can both have attacks that are not connected physically
@@ -35,16 +35,16 @@ void UAttack::OnHit_Implementation(AActor* StrikingBattler, UPrimitiveComponent*
         // todo: it might be better to have the attack impl simply figure out how much the damagetx is and then call ApplyPointDamage or a similar event that the
         //  relevant defender handles and then applies its Armor DR etc. on its end; that would separate the responsibilities of the code a little better and
         //  make Attack and Armor less tightly coupled.
-        APawn* InstigatorPawn = Cast<APawn>(StrikingComp->GetOwner());
+        APawn* InstigatorPawn = Cast<APawn>(StrikingBattler);
         if(InstigatorPawn)
         {
             TArray<TSubclassOf<UDamageType>> Types;
             DamageTypesToWeightsMap.GenerateKeyArray(Types);
-            UGameplayStatics::ApplyPointDamage(StrickenActor, DamageRx, NormalImpulse, HitInfo, InstigatorPawn->GetController(), StrikingComp->GetOwner(), Types[0]);
+            UGameplayStatics::ApplyPointDamage(IDefender::Execute_GetBattler(StrickenComp), DamageRx, NormalImpulse, HitInfo, InstigatorPawn->GetController(), StrikingBattler, Types[0]);
         }
         else 
         {
-            UE_LOG(LogTemp, Error, TEXT("OnHit; failed to apply point damage because the striking component's owner %s is not a APawn"), *StrikingComp->GetOwner()->GetName());
+            UE_LOG(LogTemp, Error, TEXT("OnHit; failed to apply point damage because the striking component's owner %s is not a APawn"), *StrikingBattler->GetName());
         }
     }
     else
