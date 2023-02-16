@@ -12,3 +12,8 @@ UArmor* UBodyCapsuleComponent::GetArmor_Implementation()
 {
     return Armor;
 }
+
+AActor* UBodyCapsuleComponent::GetBattler_Implementation()
+{
+    return GetOwner();
+}

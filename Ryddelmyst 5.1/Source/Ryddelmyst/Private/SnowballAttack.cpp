@@ -14,12 +14,12 @@ USnowballAttack::USnowballAttack()
     };
 }
 
-void USnowballAttack::OnHit_Implementation(UPrimitiveComponent* StrikingComp, AActor* StrickenActor, UPrimitiveComponent* StrickenComp, FVector NormalImpulse, const FHitResult& HitInfo)
+void USnowballAttack::OnHit_Implementation(AActor* StrikingBattler, UPrimitiveComponent* StrikingComp, AActor* StrickenActor, UPrimitiveComponent* StrickenComp, FVector NormalImpulse, const FHitResult& HitInfo)
 {
     UE_LOG(LogTemp, Warning, TEXT("SnowballAttack::OnHit; HitComp says %s, OtherActor says %s, OtherComp says %s, normal impulse says %s, hitres says %s"), 
 		*StrikingComp->GetName(), *StrickenActor->GetName(), *StrickenComp->GetName(), *NormalImpulse.ToString(), *HitInfo.ToString());
 	UE_LOG(LogTemp, Warning, TEXT("SnowballAttack::OnHit; EffectsOnTarget has size %d"), EffectsOnTarget.size());
-    Super::OnHit_Implementation(StrikingComp, StrickenActor, StrickenComp, NormalImpulse, HitInfo);
+    Super::OnHit_Implementation(StrikingBattler, StrikingComp, StrickenActor, StrickenComp, NormalImpulse, HitInfo);
     // auxiliary effect lambdas that Snowball spell can apply
 	for (auto Effect : EffectsOnTarget)
 	{
@@ -43,6 +43,6 @@ float USnowballAttack::CalculateDamageTx_Implementation(AActor* BattleStatsBeare
     else 
     {
         UE_LOG(LogTemp, Error, TEXT("CalculateDamageTx; attacking AActor %s is not a BattleStatsBearer, so we cannot calc damage"), *BattleStatsBearer->GetName());
-        return 0.f
+        return 0.f;
     }
 }
