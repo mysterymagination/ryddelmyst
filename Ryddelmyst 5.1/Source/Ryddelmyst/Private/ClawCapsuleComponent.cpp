@@ -11,6 +11,11 @@ UClawCapsuleComponent::UClawCapsuleComponent()
     Claw = CreateDefaultSubobject<UClawWeapon>(TEXT("Claw Weapon"));
 }
 
+AActor* UClawCapsuleComponent::GetBattler_Implementation() 
+{ 
+    return GetOwner(); 
+}
+
 UWeapon* UClawCapsuleComponent::GetWeapon_Implementation() 
 { 
     return Claw; 

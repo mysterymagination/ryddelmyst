@@ -12,3 +12,8 @@ UArmor* UExtremityCapsuleComponent::GetArmor_Implementation()
 {
     return Armor.Get();
 }
+
+AActor* UExtremityCapsuleComponent::GetBattler_Implementation()
+{
+    return GetOwner();
+}

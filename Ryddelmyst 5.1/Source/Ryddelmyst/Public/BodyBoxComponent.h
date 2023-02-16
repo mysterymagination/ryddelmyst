@@ -26,4 +26,5 @@ protected:
 public:
     UAnatomyUnit* GetAnatomyUnit_Implementation() override;
     UArmor* GetArmor_Implementation() override;
+    AActor* GetBattler_Implementation() override;
 };

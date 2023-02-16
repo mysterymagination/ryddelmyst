@@ -14,13 +14,13 @@ UElectricSnowballAttack::UElectricSnowballAttack()
 	};
 }
 
-void UElectricSnowballAttack::OnHit_Implementation(UPrimitiveComponent* StrikingComp, AActor* StrickenActor, UPrimitiveComponent* StrickenComp, FVector NormalImpulse, const FHitResult& HitInfo)
+void UElectricSnowballAttack::OnHit_Implementation(AActor* StrikingBattler, UPrimitiveComponent* StrikingComp, AActor* StrickenActor, UPrimitiveComponent* StrickenComp, FVector NormalImpulse, const FHitResult& HitInfo)
 {
-    Super::OnHit_Implementation(StrikingComp, StrickenActor, StrickenComp, NormalImpulse, HitInfo);
+    Super::OnHit_Implementation(StrikingBattler, StrikingComp, StrickenActor, StrickenComp, NormalImpulse, HitInfo);
     // elemental StatusEffect
     if(StrickenActor->GetClass()->ImplementsInterface(UStatusEffected::StaticClass()))
     {
-        // todo: check that OtherActor implements the IBattleStatsBearer interface and iff he does then pull down the stats for modification by ShockedStatusEffect (modifications which will be removed when the shocked effect ends)
+        // todo: we shouldn't assume the stricken AActor is our BattleStatsBearer or our StatusEffected guy; instead we should be pulling from StrickenComp by calling IDefender::Execute_GetBattler() on it
         if(StrickenActor->GetClass()->ImplementsInterface(UBattleStatsBearer::StaticClass()))
         {
             // todo: does making OtherActor the outer/owner and then also adding the status effect to a uprop'd tarray inside OtherActor cause the StatusEffect to be doubly referenced by OtherActor?  I want the StatusEffect to be owned by the target TArray, which itself is owned by OtherActor; StatusEffects removed from that array should be garbage collected.
