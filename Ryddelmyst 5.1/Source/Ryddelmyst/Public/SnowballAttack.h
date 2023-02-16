@@ -30,7 +30,7 @@ protected:
 	float Power = 0.f;
 public:
 	USnowballAttack();
-	virtual void OnHit_Implementation(UPrimitiveComponent* StrikingComp, AActor* StrickenActor, UPrimitiveComponent* StrickenComp, FVector NormalImpulse, const FHitResult& HitInfo) override;
+	virtual void OnHit_Implementation(AActor* StrikingBattler, UPrimitiveComponent* StrikingComp, AActor* StrickenActor, UPrimitiveComponent* StrickenComp, FVector NormalImpulse, const FHitResult& HitInfo) override;
 	UFUNCTION()
 	float GetDamageScaleFactor() { return DamageScaleFactor; };
 	UFUNCTION()

@@ -24,5 +24,5 @@ public:
 	float GetFreezeDuration() { return FreezeDuration; };
 	UFUNCTION()
 	void SetFreezeDuration(float Duration) { FreezeDuration = Duration; };	
-	virtual void OnHit_Implementation(UPrimitiveComponent* StrikingComp, AActor* StrickenActor, UPrimitiveComponent* StrickenComp, FVector NormalImpulse, const FHitResult& HitInfo) override;
+	virtual void OnHit_Implementation(AActor* StrikingBattler, UPrimitiveComponent* StrikingComp, AActor* StrickenActor, UPrimitiveComponent* StrickenComp, FVector NormalImpulse, const FHitResult& HitInfo) override;
 };

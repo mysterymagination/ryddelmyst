@@ -24,5 +24,5 @@ public:
 	float GetShockDuration() { return ShockDuration; };
 	UFUNCTION()
 	void SetShockDuration(float Duration) { ShockDuration = Duration; };
-	virtual void OnHit_Implementation(UPrimitiveComponent* StrikingComp, AActor* StrickenActor, UPrimitiveComponent* StrickenComp, FVector NormalImpulse, const FHitResult& HitInfo) override;
+	virtual void OnHit_Implementation(AActor* StrikingBattler, UPrimitiveComponent* StrikingComp, AActor* StrickenActor, UPrimitiveComponent* StrickenComp, FVector NormalImpulse, const FHitResult& HitInfo) override;
 };

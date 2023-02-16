@@ -20,6 +20,7 @@ protected:
 	UClawWeapon* Claw;
 public:
 	UClawCapsuleComponent();
+	AActor* GetBattler_Implementation() override;
 	UWeapon* GetWeapon_Implementation() override;
 	FString GetCurrentAttack_Implementation() override;
 	void ExecuteAttack_Implementation

@@ -25,6 +25,7 @@ public:
 	USpellSphereComponent();
 	UWeapon* GetWeapon_Implementation() override;
 	FString GetCurrentAttack_Implementation() override;
+	AActor* GetBattler_Implementation() override;
 	void ExecuteAttack_Implementation
 	(
 		const FString& AttackName
