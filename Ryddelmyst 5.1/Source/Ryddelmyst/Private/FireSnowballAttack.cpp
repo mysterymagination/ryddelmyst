@@ -9,6 +9,7 @@ UFireSnowballAttack::UFireSnowballAttack()
 	{
 		{UFireDamageType::StaticClass(), 1.f}
 	};
+    AttackName = UFireSnowballAttack::ATTACK_NAME;
 }
 
 void UFireSnowballAttack::OnHit_Implementation(AActor* StrikingBattler, UPrimitiveComponent* StrikingComp, AActor* StrickenActor, UPrimitiveComponent* StrickenComp, FVector NormalImpulse, const FHitResult& HitInfo)
