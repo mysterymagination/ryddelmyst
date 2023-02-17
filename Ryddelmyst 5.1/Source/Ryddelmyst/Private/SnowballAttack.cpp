@@ -35,8 +35,8 @@ float USnowballAttack::CalculateDamageTx_Implementation(AActor* BattleStatsBeare
 {
     if (BattleStatsBearer->GetClass()->ImplementsInterface(UBattleStatsBearer::StaticClass()))
     {
-        float BaseDamage = Power * IBattleStatsBearer::Execute_GetStats(BattleStatsBearer)->StatsMap["Magic"];
-        UE_LOG(LogTemp, Warning, TEXT("CalculateDamageTx; Power (%f) * Magic (%f) = BaseDamage (%f)"), Power, IBattleStatsBearer::Execute_GetStats(BattleStatsBearer)->StatsMap["Magic"], BaseDamage);
+        float BaseDamage = BasePower * IBattleStatsBearer::Execute_GetStats(BattleStatsBearer)->StatsMap["Magic"];
+        UE_LOG(LogTemp, Warning, TEXT("CalculateDamageTx; Power (%f) * Magic (%f) = BaseDamage (%f)"), BasePower, IBattleStatsBearer::Execute_GetStats(BattleStatsBearer)->StatsMap["Magic"], BaseDamage);
         BaseDamage += MathUtils::RollNdM(IBattleStatsBearer::Execute_GetStats(BattleStatsBearer)->StatsMap["Level"], 6);
         return DamageScaleFactor * BaseDamage;
     }

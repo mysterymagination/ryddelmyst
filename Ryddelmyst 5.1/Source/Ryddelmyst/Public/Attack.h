@@ -24,6 +24,10 @@ public:
 	 */
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Combat")
 	TMap<TSubclassOf<UDamageType>, float> DamageTypesToWeightsMap;
+	/**
+	 * @brief base power of the attack, used to derive the final damage to be transmitted
+	 * 
+	 */
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Combat")
 	float BasePower = 0.f;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Combat")

@@ -13,6 +13,7 @@ UIcySnowballAttack::UIcySnowballAttack()
         {UBludgeoningDamageType::StaticClass(), 0.25f}
 	};
     AttackName = UIcySnowballAttack::ATTACK_NAME;
+    BasePower = 10.f;
 }
 
 void UIcySnowballAttack::OnHit_Implementation(AActor* StrikingBattler, UPrimitiveComponent* StrikingComp, AActor* StrickenActor, UPrimitiveComponent* StrickenComp, FVector NormalImpulse, const FHitResult& HitInfo)
