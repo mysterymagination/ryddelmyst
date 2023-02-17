@@ -14,10 +14,11 @@ void UHitBoxerComponent::OnHit(UPrimitiveComponent* StrikingComp, AActor* Strick
 		UWeapon* Weapon = IAttacker::Execute_GetWeapon(StrikingComp);
 		UE_LOG(LogTemp, Warning, TEXT("HitBoxer::OnHit; Striking comp %s is wielding weapon %s"), *StrikingComp->GetName(), *Weapon->GetName());
 		UAttack** Attack_Check = Weapon->AttackMap.Find(Weapon->CurrentAttackName);
-		if(Attack_Check)
+		// sometimes StrickenActor is nullptr apparently?  At least while having giant debug custom uprims with hitboxers
+		if(Attack_Check && StrickenActor)
 		{
 			UE_LOG(LogTemp, Warning, TEXT("HitBoxer::OnHit; Striking comp %s weapon %s is running attack %s on %s's shapely %s"), 
-				*StrikingComp->GetName(), *Weapon->GetName(), *(*Attack_Check)->AttackName, *StrickenActor->GetName(), *StrickenComp->GetName());
+				*StrikingComp->GetName(), (Weapon ? *Weapon->GetName() : TEXT("null weapon")), *(*Attack_Check)->AttackName, *StrickenActor->GetName(), *StrickenComp->GetName());
 			(*Attack_Check)->OnHit_Implementation(IAttacker::Execute_GetBattler(StrikingComp), StrikingComp, StrickenActor, StrickenComp, NormalImpulse, HitInfo);
 
 		}
