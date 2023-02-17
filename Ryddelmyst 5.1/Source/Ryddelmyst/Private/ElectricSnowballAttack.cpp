@@ -13,6 +13,7 @@ UElectricSnowballAttack::UElectricSnowballAttack()
 		{ULightningDamageType::StaticClass(), 1.f}
 	};
     AttackName = UElectricSnowballAttack::ATTACK_NAME;
+    BasePower = 15.f;
 }
 
 void UElectricSnowballAttack::OnHit_Implementation(AActor* StrikingBattler, UPrimitiveComponent* StrikingComp, AActor* StrickenActor, UPrimitiveComponent* StrickenComp, FVector NormalImpulse, const FHitResult& HitInfo)

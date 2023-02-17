@@ -24,6 +24,7 @@
 #include "GameFramework/SpringArmComponent.h"
 #include "Animation/AnimationAsset.h"
 #include "PaperSprite.h"
+#include "HitBoxerComponent.h"
 #include "RyddelmystCharacter.generated.h"
 
 class UInputComponent;
@@ -291,6 +292,8 @@ protected:
 	TMap<FString, UObject*> Equipment;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "RPG")
 	TSubclassOf<UBattleStats> CharacterStatsType;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Collision)
+	UHitBoxerComponent* HitBoxer;
 
 protected:
 	/** Handles switching between 1PP and 3PP */
