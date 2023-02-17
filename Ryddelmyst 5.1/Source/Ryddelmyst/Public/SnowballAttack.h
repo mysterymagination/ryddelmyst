@@ -22,12 +22,6 @@ protected:
 	 */
 	UPROPERTY()
 	float Damage = 0.f;
-	/**
-	 * @brief base power of the attack, used to derive the final damage to be transmitted
-	 * 
-	 */
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Magic)
-	float Power = 0.f;
 public:
 	USnowballAttack();
 	virtual void OnHit_Implementation(AActor* StrikingBattler, UPrimitiveComponent* StrikingComp, AActor* StrickenActor, UPrimitiveComponent* StrickenComp, FVector NormalImpulse, const FHitResult& HitInfo) override;

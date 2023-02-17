@@ -67,6 +67,8 @@ ARyddelmystCharacter::ARyddelmystCharacter()
 	ThirdPersonCameraComponent->SetupAttachment(ThirdPersonCameraArmComponent, USpringArmComponent::SocketName);
 	ThirdPersonCameraComponent->SetActive(false);
 
+	HitBoxer = CreateDefaultSubobject<UHitBoxerComponent>(TEXT("Ryddelmysty HitBoxer"));
+
 	// setup equipment mapping with our default static equip slots
 	for (FString key : EquipSlotsData)
 	{
@@ -626,6 +628,7 @@ void ARyddelmystCharacter::Fire()
 		if (World)
 		{
 			TSubclassOf<ASnowball> SnowballType = Spells[SelectedWeaponIdx];
+			// todo: support having metamagic change costs; the electricsnowball shouldn't cost more than the others until it has its awesome metamagic spreadshot installed
 			UAttack* CDOSnowballAttack = IAttacker::Execute_GetWeapon(SnowballType.GetDefaultObject()->GetSpellSphereComponent())->GetCurrentAttack();
 			if (CDOSnowballAttack->CheckCosts(this))
 			{

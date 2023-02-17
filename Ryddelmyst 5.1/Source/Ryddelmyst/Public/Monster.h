@@ -9,7 +9,7 @@
 #include "BattleStats.h"
 #include "BattleStatsBearer.h"
 #include "StatusEffected.h"
-#include "HitBoxer.h"
+#include "HitBoxerComponent.h"
 #include "Monster.generated.h"
 
 /**
