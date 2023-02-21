@@ -25,6 +25,7 @@
 #include "Animation/AnimationAsset.h"
 #include "PaperSprite.h"
 #include "HitBoxerComponent.h"
+#include "BodyCapsuleComponent.h"
 #include "RyddelmystCharacter.generated.h"
 
 class UInputComponent;
@@ -458,6 +459,11 @@ protected:
 public:
 	/** Returns FirstPersonCameraComponent subobject **/
 	UCameraComponent* GetFirstPersonCameraComponent() const { return FirstPersonCameraComponent; }
+
+	/** Get Health */
+	UFUNCTION(BlueprintCallable, BlueprintNativeEvent, Category = "Collision")
+	UBodyCapsuleComponent* GetBody();
+	virtual UBodyCapsuleComponent* GetBody_Implementation();
 
 	/** Get Health */
 	UFUNCTION(BlueprintPure, Category = "Health")
