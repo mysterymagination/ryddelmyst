@@ -208,6 +208,12 @@ void ARyddelmystCharacter::FixMe()
 	UE_LOG(LogTemp, Warning, TEXT("FixMe; player pos after is %s"), *GetActorLocation().ToString());
 }
 
+UBodyCapsuleComponent* ARyddelmystCharacter::GetBody_Implementation()
+{
+	UE_LOG(LogTemp, Error, TEXT("GetBody; body source not overriden in BP as expected!"));
+	return nullptr;
+}
+
 void ARyddelmystCharacter::PauseGame()
 {
 	UE_LOG(LogTemp, Warning, TEXT("PauseGame"));
