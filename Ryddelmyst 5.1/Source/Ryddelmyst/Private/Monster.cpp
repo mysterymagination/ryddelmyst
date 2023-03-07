@@ -45,3 +45,20 @@ void AMonster::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 	Super::SetupPlayerInputComponent(PlayerInputComponent);
 
 }
+
+void AMonster::Run()
+{
+	if (IsRunning)
+	{
+		// toggle to walk speed
+		GetCharacterMovement()->MaxWalkSpeed = MonsterStats->StatsMap["Speed"] * BaseWalkSpeed;
+		UE_LOG(LogTemp, Warning, TEXT("Run; after switching to walk mode, MaxWalkSpeed of %s is %f from speed stat %f times BaseWalkSpeed %f"), *GetName(), GetCharacterMovement()->MaxWalkSpeed, MonsterStats->StatsMap["Speed"], BaseWalkSpeed);
+	}
+	else
+	{
+		// toggle to run speed
+		GetCharacterMovement()->MaxWalkSpeed = MonsterStats->StatsMap["Speed"] * BaseWalkSpeed * RunSpeedFactor;
+		UE_LOG(LogTemp, Warning, TEXT("Run; after switching to run mode, MaxWalkSpeed of %s is %f from speed stat %f times BaseWalkSpeed %f times run speed factor %f"), *GetName(), GetCharacterMovement()->MaxWalkSpeed, MonsterStats->StatsMap["Speed"], BaseWalkSpeed, RunSpeedFactor);
+	}
+	IsRunning = !IsRunning;
+}
