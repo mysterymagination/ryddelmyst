@@ -58,8 +58,14 @@ public:
 	// Called to bind functionality to input
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 	UBattleStats* GetStats_Implementation() { return MonsterStats; }
-	UFUNCTION(BlueprintCallable, Category = Movement) 
+	UFUNCTION(BlueprintCallable, Category = Movement)
+	bool GetRunningStatus();
+	UFUNCTION(BlueprintCallable, Category = Movement)
+	void Walk();
+	UFUNCTION(BlueprintCallable, Category = Movement)
 	void Run();
+	UFUNCTION(BlueprintCallable, Category = Movement) 
+	void ToggleRun();
 	// todo: refactor and create a common Character subclass for both Maya and monsters, with the common functionality like this so we can avoid copy/paste.  TBD what reparenting like that will do to my poor idiot blueprints, but it will be painful.
 	void HandleStatModification_Implementation(const FString& StatName) 
 	{ 
