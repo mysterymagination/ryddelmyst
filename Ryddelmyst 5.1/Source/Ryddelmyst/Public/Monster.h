@@ -45,7 +45,7 @@ public:
 	 * 
 	 */
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Movement)
-	float RunSpeedFactor = 10.f;
+	float RunSpeedFactor = 3.f;
 
 protected:
 	// Called when the game starts or when spawned
