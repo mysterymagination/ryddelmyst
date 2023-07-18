@@ -70,7 +70,7 @@ class ARyddelmystCharacter : public ACharacter, public IBattleStatsBearer, publi
 		>
 	> MetamagicMap;
 	
-	// todo: multidimensional mapping of spell names to metamagic source id to spell aspect (borrowed fun names from the Pathfinder schools o' magic; they just serve to inform the timing and manner of lambda calling/application) to categorical metamagic fx to the actual function to run e.g.
+	// multidimensional mapping of spell names to metamagic source id to spell aspect (borrowed fun names from the Pathfinder schools o' magic; they just serve to inform the timing and manner of lambda calling/application) to categorical metamagic fx to the actual function to run e.g.
 	// {
 	//   "snowball" : {
 	//     "ID_CracklingVioletVial" : {
