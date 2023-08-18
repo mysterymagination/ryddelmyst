@@ -19,6 +19,9 @@ void UAttack::OnHit_Implementation(AActor* StrikingBattler, UPrimitiveComponent*
         UArmor* StrickenArmor = nullptr;
         UAnatomyUnit* AnatomyUnit = nullptr;
         AActor* StrickenBattler = nullptr;
+        // todo: it might be better to have the attack impl simply figure out how much the damagetx is and then call ApplyPointDamage or a similar event that the
+        //  relevant defender handles and then applies its Armor DR etc. on its end; that would separate the responsibilities of the code a little better and
+        //  make Attack and Armor less tightly coupled.
         if (StrickenComp->GetClass()->ImplementsInterface(UDefender::StaticClass()))
         {
             StrickenArmor = IDefender::Execute_GetArmor(StrickenComp);
@@ -62,30 +65,38 @@ void UAttack::OnHit_Implementation(AActor* StrikingBattler, UPrimitiveComponent*
             {
                 DamageRx = StrickenArmor->CalculateDamageRx(StrickenBattler, nullptr, dmg, DamageTypesToWeightsMap);
             }
-            // todo: this approach only works if we assume all attacks from components of an Actor who is also a Pawn, e.g. a Monster's claw or Maya's mighty
+            // todo: this approach only works if we assume all attacks come from components of an Actor who is also a Pawn, e.g. a Monster's claw or Maya's mighty
             //  jump kicks.  We may wish to eschew the UGameplayStatics::ApplyPointDamage() event so we can both have attacks that are not connected physically
             //  to a Pawn and also so that we can support multiple damage types.  C'mon Unreal APIs, one damage type?  Really?
-            // todo: it might be better to have the attack impl simply figure out how much the damagetx is and then call ApplyPointDamage or a similar event that the
-            //  relevant defender handles and then applies its Armor DR etc. on its end; that would separate the responsibilities of the code a little better and
-            //  make Attack and Armor less tightly coupled.
-            /*
+            
             APawn* InstigatorPawn = Cast<APawn>(StrikingBattler);
             if(InstigatorPawn)
             {
                 TArray<TSubclassOf<UDamageType>> Types;
                 DamageTypesToWeightsMap.GenerateKeyArray(Types);
-                UGameplayStatics::ApplyPointDamage(StrickenBattler, DamageRx, NormalImpulse, HitInfo, InstigatorPawn->GetController(), StrikingBattler, Types[0]);
+                //UGameplayStatics::ApplyPointDamage(StrickenBattler, DamageRx, NormalImpulse, HitInfo, InstigatorPawn->GetController(), StrikingBattler, Types[0]);
+                UGameplayStatics::ApplyDamage(StrickenBattler, DamageRx, InstigatorPawn->GetController(), StrikingBattler, Types[0]);
                 UE_LOG(LogTemp, Warning, TEXT("OnHit; applied point damage of %f to %s"), DamageRx, *StrickenBattler->GetName());
             }
             else 
             {
                 UE_LOG(LogTemp, Error, TEXT("OnHit; failed to apply point damage of %f because the striking component's owner %s is not a APawn"), DamageRx, *StrikingBattler->GetName());
             }
-            */
+            
+            /*
             TArray<TSubclassOf<UDamageType>> Types;
             DamageTypesToWeightsMap.GenerateKeyArray(Types);
-            UGameplayStatics::ApplyPointDamage(StrickenBattler, DamageRx, NormalImpulse, HitInfo, nullptr, StrikingBattler, Types[0]);
-            UE_LOG(LogTemp, Warning, TEXT("OnHit; applied point damage of %f to %s"), DamageRx, *StrickenBattler->GetName());
+            AController* MonsterInstigator = Cast<ACharacter>(StrikingBattler)->GetController();
+            if (MonsterInstigator) 
+            {
+                UGameplayStatics::ApplyPointDamage(StrickenBattler, DamageRx, NormalImpulse, HitInfo, MonsterInstigator, StrikingBattler, Types[0]);
+                UE_LOG(LogTemp, Warning, TEXT("OnHit; applied point damage of %f to %s"), DamageRx, *StrickenBattler->GetName());
+            }
+            else
+            {
+                UE_LOG(LogTemp, Error, TEXT("OnHit; failed to apply point damage of %f to %s because we failed to look up the instigator controller of %s"), DamageRx, *StrickenBattler->GetName(), *StrikingBattler->GetName());
+            }
+            */
         }
         else
         {
