@@ -45,6 +45,10 @@ void UAttack::OnHit_Implementation(AActor* StrikingBattler, UPrimitiveComponent*
                     StrickenBattler = IDefender::Execute_GetBattler(Body);
                     AnatomyUnit = IAnatomy::Execute_GetAnatomyUnit(Body);
                 }
+                else
+                {
+                    UE_LOG(LogTemp, Error, TEXT("OnHit; failed to find Maya's body in the ryddelmystress hack branch to work around the stupid custom uprim collision issue"));
+                }
             }
             else
             {
