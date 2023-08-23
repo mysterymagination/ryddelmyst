@@ -44,6 +44,8 @@ void UAttack::OnHit_Implementation(AActor* StrikingBattler, UPrimitiveComponent*
                     StrickenArmor = IDefender::Execute_GetArmor(Body);
                     StrickenBattler = IDefender::Execute_GetBattler(Body);
                     AnatomyUnit = IAnatomy::Execute_GetAnatomyUnit(Body);
+                    UE_LOG(LogTemp, Log, TEXT("OnHit; looked up the stricken stuff using hardcoded RMystCharacter cast hack. Armor says: %s, StrickenBattler says: %s, and Anatomy says: %s"),
+                        *StrickenArmor->GetName(), *StrickenBattler->GetName(), *AnatomyUnit->GetName());
                 }
                 else
                 {
@@ -78,8 +80,16 @@ void UAttack::OnHit_Implementation(AActor* StrikingBattler, UPrimitiveComponent*
             {
                 TArray<TSubclassOf<UDamageType>> Types;
                 DamageTypesToWeightsMap.GenerateKeyArray(Types);
+
+                UE_LOG(LogTemp, Log, TEXT("OnHit; FHitResult says: %s"), *HitInfo.ToString()); 
+                UE_LOG(LogTemp, Log, TEXT("OnHit; striking component says: %s"), *StrikingComp->GetName());
+                UE_LOG(LogTemp, Log, TEXT("OnHit; stricken component says: %s"), *StrickenComp->GetName()); 
+                ARyddelmystCharacter* Ryddelmystress = Cast<ARyddelmystCharacter>(StrickenActor);
+                Ryddelmystress->HandleDamage(Ryddelmystress, DamageRx, InstigatorPawn->GetController(), 
+                    HitInfo.Location, StrickenComp, HitInfo.BoneName, HitInfo.TraceStart, Cast<UDamageType>(Types[0]->GetDefaultObject()), StrikingBattler);
+
                 //UGameplayStatics::ApplyPointDamage(StrickenBattler, DamageRx, NormalImpulse, HitInfo, InstigatorPawn->GetController(), StrikingBattler, Types[0]);
-                UGameplayStatics::ApplyDamage(StrickenBattler, DamageRx, InstigatorPawn->GetController(), StrikingBattler, Types[0]);
+                //UGameplayStatics::ApplyDamage(StrickenBattler, DamageRx, InstigatorPawn->GetController(), StrikingBattler, Types[0]);
                 UE_LOG(LogTemp, Warning, TEXT("OnHit; applied point damage of %f to %s"), DamageRx, *StrickenBattler->GetName());
             }
             else 
