@@ -861,7 +861,7 @@ void ARyddelmystCharacter::UpdateMagic(float MagicChange)
 
 void ARyddelmystCharacter::HandleDamage(AActor* DamagedActor, float Damage, AController* InstigatedBy, FVector HitLocation, UPrimitiveComponent* FHitComponent, FName BoneName, FVector ShotFromDirection, class UDamageType* DamageType, AActor* DamageCauser)
 {
-	UE_LOG(LogTemp, Warning, TEXT("HandleDamage; ouch for %f"), Damage);
+	UE_LOG(LogTemp, Warning, TEXT("HandleDamage; ouch for %f in the %s with bone name %s"), Damage, *FHitComponent->GetName(), *BoneName.ToString());
 	UpdateHealth(-Damage);
 	SetCanBeDamaged(false);
 	DamageInvincibilityTimer();
