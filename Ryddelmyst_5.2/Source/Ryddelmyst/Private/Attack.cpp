@@ -81,7 +81,7 @@ void UAttack::OnHit_Implementation(AActor* StrikingBattler, UPrimitiveComponent*
                 TArray<TSubclassOf<UDamageType>> Types;
                 DamageTypesToWeightsMap.GenerateKeyArray(Types);
 
-                UE_LOG(LogTemp, Log, TEXT("OnHit; FHitResult says: %s"), *HitInfo.ToString()); 
+                UE_LOG(LogTemp, Log, TEXT("OnHit; FHitResult says: %s, specifically BoneName is %s and MyBoneName is %s"), *HitInfo.ToString(), *HitInfo.BoneName.ToString(), *HitInfo.MyBoneName.ToString()); 
                 UE_LOG(LogTemp, Log, TEXT("OnHit; striking component says: %s"), *StrikingComp->GetName());
                 UE_LOG(LogTemp, Log, TEXT("OnHit; stricken component says: %s"), *StrickenComp->GetName()); 
                 ARyddelmystCharacter* Ryddelmystress = Cast<ARyddelmystCharacter>(StrickenActor);
