@@ -71,6 +71,7 @@ void UAttack::OnHit_Implementation(AActor* StrikingBattler, UPrimitiveComponent*
             {
                 DamageRx = StrickenArmor->CalculateDamageRx(StrickenBattler, nullptr, dmg, DamageTypesToWeightsMap);
             }
+            LatestDamageDealt = DamageRx;
             // todo: this approach only works if we assume all attacks come from components of an Actor who is also a Pawn, e.g. a Monster's claw or Maya's mighty
             //  jump kicks.  We may wish to eschew the UGameplayStatics::ApplyPointDamage() event so we can both have attacks that are not connected physically
             //  to a Pawn and also so that we can support multiple damage types.  C'mon Unreal APIs, one damage type?  Really?
@@ -84,11 +85,19 @@ void UAttack::OnHit_Implementation(AActor* StrikingBattler, UPrimitiveComponent*
                 UE_LOG(LogTemp, Log, TEXT("OnHit; FHitResult says: %s, specifically BoneName is %s and MyBoneName is %s"), *HitInfo.ToString(), *HitInfo.BoneName.ToString(), *HitInfo.MyBoneName.ToString()); 
                 UE_LOG(LogTemp, Log, TEXT("OnHit; striking component says: %s"), *StrikingComp->GetName());
                 UE_LOG(LogTemp, Log, TEXT("OnHit; stricken component says: %s"), *StrickenComp->GetName()); 
+                /*
                 ARyddelmystCharacter* Ryddelmystress = Cast<ARyddelmystCharacter>(StrickenActor);
-                Ryddelmystress->HandleDamage(Ryddelmystress, DamageRx, InstigatorPawn->GetController(), 
-                    HitInfo.Location, StrickenComp, HitInfo.BoneName, HitInfo.TraceStart, Cast<UDamageType>(Types[0]->GetDefaultObject()), StrikingBattler);
-
-                //UGameplayStatics::ApplyPointDamage(StrickenBattler, DamageRx, NormalImpulse, HitInfo, InstigatorPawn->GetController(), StrikingBattler, Types[0]);
+                if (Ryddelmystress)
+                {
+                    Ryddelmystress->HandleDamage(Ryddelmystress, DamageRx, InstigatorPawn->GetController(), 
+                        HitInfo.Location, StrickenComp, HitInfo.BoneName, HitInfo.TraceStart, Cast<UDamageType>(Types[0]->GetDefaultObject()), StrikingBattler);
+                }
+                else
+                {
+                    UE_LOG(LogTemp, Error, TEXT("OnHit; failed to HandleDamage() since the stricken actor %s is not a ryddelmystcharacter.... probably should fix that hack"), *StrickenActor->GetName());
+                }
+                */
+                UGameplayStatics::ApplyPointDamage(StrickenBattler, DamageRx, NormalImpulse, HitInfo, InstigatorPawn->GetController(), StrikingBattler, Types[0]);
                 //UGameplayStatics::ApplyDamage(StrickenBattler, DamageRx, InstigatorPawn->GetController(), StrikingBattler, Types[0]);
                 UE_LOG(LogTemp, Warning, TEXT("OnHit; applied point damage of %f to %s"), DamageRx, *StrickenBattler->GetName());
             }
