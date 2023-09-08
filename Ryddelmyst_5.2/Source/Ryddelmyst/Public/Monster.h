@@ -66,6 +66,8 @@ public:
 	void Run();
 	UFUNCTION(BlueprintCallable, Category = Movement) 
 	void ToggleRun();
+	UFUNCTION()
+	void HandleDamage(AActor* DamagedActor, float Damage, AController* InstigatedBy, FVector HitLocation, UPrimitiveComponent* FHitComponent, FName BoneName, FVector ShotFromDirection, class UDamageType* DamageType, AActor* DamageCauser);
 	// todo: refactor and create a common Character subclass for both Maya and monsters, with the common functionality like this so we can avoid copy/paste.  TBD what reparenting like that will do to my poor idiot blueprints, but it will be painful.
 	void HandleStatModification_Implementation(const FString& StatName) 
 	{ 

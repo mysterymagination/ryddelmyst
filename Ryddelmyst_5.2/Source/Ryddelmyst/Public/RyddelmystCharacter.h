@@ -180,7 +180,7 @@ public:
 	}
 	auto& GetMetamagicMap() { return MetamagicMap; };
 
-	// todo: remove when segfault of issue #47 is sorted
+	// todo: remove this public version of HandleDamage when segfault of issue #47 is sorted
 	UFUNCTION()
 	void HandleDamage(AActor* DamagedActor, float Damage, AController* InstigatedBy, FVector HitLocation, UPrimitiveComponent* FHitComponent, FName BoneName, FVector ShotFromDirection, class UDamageType* DamageType, AActor* DamageCauser);
 
