@@ -30,6 +30,10 @@ void AMonster::BeginPlay()
 	{
 		UE_LOG(LogTemp, Warning, TEXT("BeginPlay; Monster stats undefined"));
 	}
+
+	FScriptDelegate DamageDelegate;
+	DamageDelegate.BindUFunction(this, FName("HandleDamage"));
+	OnTakeAnyDamage.Add(DamageDelegate);
 }
 
 // Called every frame
@@ -80,4 +84,9 @@ void AMonster::Walk()
 bool AMonster::GetRunningStatus()
 {
 	return IsRunning;
+}
+
+void AMonster::HandleDamage(AActor* DamagedActor, float Damage, AController* InstigatedBy, FVector HitLocation, UPrimitiveComponent* FHitComponent, FName BoneName, FVector ShotFromDirection, class UDamageType* DamageType, AActor* DamageCauser)
+{
+	UE_LOG(LogTemp, Warning, TEXT("HandleDamage; %s says ouch for %f in the %s with bone name %s"), *DamagedActor->GetName(), Damage, *FHitComponent->GetName(), *BoneName.ToString());
 }
