@@ -86,7 +86,7 @@ bool AMonster::GetRunningStatus()
 	return IsRunning;
 }
 
-void AMonster::HandleDamage(AActor* DamagedActor, float Damage, AController* InstigatedBy, FVector HitLocation, UPrimitiveComponent* FHitComponent, FName BoneName, FVector ShotFromDirection, class UDamageType* DamageType, AActor* DamageCauser)
+void AMonster::HandleDamage(AActor* DamagedActor, float Damage, const class UDamageType* DamageType, class AController* InstigatedBy, AActor* DamageCauser)
 {
-	UE_LOG(LogTemp, Warning, TEXT("HandleDamage; %s says ouch for %f in the %s with bone name %s"), *DamagedActor->GetName(), Damage, *FHitComponent->GetName(), *BoneName.ToString());
+	UE_LOG(LogTemp, Warning, TEXT("HandleDamage; %s says ouch for %f"), *DamagedActor->GetName(), Damage);
 }
