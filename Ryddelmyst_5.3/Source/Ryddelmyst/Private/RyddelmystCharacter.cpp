@@ -859,9 +859,9 @@ void ARyddelmystCharacter::UpdateMagic(float MagicChange)
 	CharacterStats->StatsMap["MP"] = FMath::Clamp(CharacterStats->StatsMap["MP"], 0.0f, CharacterStats->StatsMap["MaxMP"]);
 }
 
-void ARyddelmystCharacter::HandleDamage(AActor* DamagedActor, float Damage, AController* InstigatedBy, FVector HitLocation, UPrimitiveComponent* FHitComponent, FName BoneName, FVector ShotFromDirection, class UDamageType* DamageType, AActor* DamageCauser)
+void ARyddelmystCharacter::HandleDamage(AActor* DamagedActor, float Damage, const class UDamageType* DamageType, class AController* InstigatedBy, AActor* DamageCauser)
 {
-	UE_LOG(LogTemp, Warning, TEXT("HandleDamage; ouch for %f in the %s with bone name %s"), Damage, *FHitComponent->GetName(), *BoneName.ToString());
+	UE_LOG(LogTemp, Warning, TEXT("HandleDamage; ouch for %f to %s"), Damage, *DamagedActor->GetName());
 	UpdateHealth(-Damage);
 	SetCanBeDamaged(false);
 	DamageInvincibilityTimer();

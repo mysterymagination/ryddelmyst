@@ -180,11 +180,6 @@ public:
 	}
 	auto& GetMetamagicMap() { return MetamagicMap; };
 
-	// todo: remove this public version of HandleDamage when segfault of issue #47 is sorted
-	UFUNCTION()
-	void HandleDamage(AActor* DamagedActor, float Damage, AController* InstigatedBy, FVector HitLocation, UPrimitiveComponent* FHitComponent, FName BoneName, FVector ShotFromDirection, class UDamageType* DamageType, AActor* DamageCauser);
-
-
 protected:
 	virtual void BeginPlay() override;
 	virtual void Tick(float DeltaTime) override;
@@ -428,10 +423,8 @@ protected:
 	UFUNCTION(BlueprintCallable, Category = "Magic")
 	void UpdateMagic(float MagicChange);
 
-	/* todo: restore priv vis when issue #47 segfault is sorted
 	UFUNCTION()
-	void HandleDamage(AActor* DamagedActor, float Damage, AController* InstigatedBy, FVector HitLocation, UPrimitiveComponent* FHitComponent, FName BoneName, FVector ShotFromDirection, class UDamageType* DamageType, AActor* DamageCauser);
-	*/
+	void HandleDamage(AActor* DamagedActor, float Damage, const class UDamageType* DamageType, class AController* InstigatedBy, AActor* DamageCauser);
 
 	/** Damage Timer starts the invincibility clock after taking damage */
 	UFUNCTION()
