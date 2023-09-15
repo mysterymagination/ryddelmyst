@@ -3,6 +3,7 @@
 #include "CoreMinimal.h"
 #include <utility>
 #include <unordered_map>
+#include <string>
 #include <vector>
 #include "BattleStats.generated.h"
 

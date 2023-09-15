@@ -20,4 +20,12 @@ public:
 		std::uniform_int_distribution<unsigned int> distribution(NumberOfDice, NumberOfDice * NumberOfSides);
 		return static_cast<uint8>(distribution(generator));
 	};
+	/**
+	 * Calculates the average value of the components of a 3D vector such as you might receive from GetActorScale(), in which case you get back a scaler scalar ;) 
+	 */
+	static float MeanVector3D(const FVector& InVector)
+	{
+		uint sum = InVector.X + InVector.Y + InVector.Z;
+		return sum/3.f;
+	}
 };

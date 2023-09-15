@@ -7,7 +7,7 @@
 #include "BurnedStatusEffect.generated.h"
 
 /**
- * 
+ * Status effect that applies periodic fire damage to the effected Actor
  */
 UCLASS()
 class RYDDELMYST_API UBurnedStatusEffect : public UStatusEffect

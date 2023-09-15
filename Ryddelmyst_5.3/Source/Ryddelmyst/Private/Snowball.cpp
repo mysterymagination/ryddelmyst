@@ -36,7 +36,7 @@ ASnowball::ASnowball()
 		SpellSphereComponent->SetSimulatePhysics(true);
 		SpellSphereComponent->SetNotifyRigidBodyCollision(true);
 		SpellSphereComponent->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
-		SpellSphereComponent->SetCollisionProfileName("BlockAllDynamic");
+		SpellSphereComponent->SetCollisionProfileName("Projectile");
 		UE_LOG(LogTemp, Warning, TEXT("snowball ctor; adding OnComponentHit delegate pointing to HitBoxer::OnHit"));
 		FScriptDelegate onHitDelegate;
 		onHitDelegate.BindUFunction(HitBoxer, FName("OnHit"));
@@ -72,6 +72,12 @@ ASnowball::ASnowball()
 	SnowballParticles = CreateDefaultSubobject<UParticleSystemComponent>(TEXT("SnowballParticles"));
 	SnowballParticles->SetupAttachment(RootComponent);
 	SnowballParticles->bAutoActivate = true;
+
+	// default launch behavior
+	LaunchFn = [&](AActor* LaunchingActor, const FVector& LaunchDirection)
+	{
+		ProjectileMovementComponent->Velocity = LaunchDirection * ProjectileMovementComponent->InitialSpeed;
+	};
 }
 
 // Called when the game starts or when spawned
@@ -104,18 +110,7 @@ void ASnowball::Cast(ARyddelmystCharacter* LaunchingCharacter, const FVector& La
 {
 	SpellSphereComponent->Caster = LaunchingCharacter;
 	UE_LOG(LogTemp, Warning, TEXT("Cast; launchingchar is %s and launchdir is %s"), *LaunchingCharacter->GetName(), *LaunchDirection.ToString());
-	try
-	{
-		LaunchFn(LaunchingCharacter, LaunchDirection);
-	}
-	catch(const std::bad_function_call& e)
-	{
-		UE_LOG(LogTemp, Warning, TEXT("Cast; customized launch fn is not set, so using default launch.  Details: %s"), *FString(e.what()));
-		// default launch behavior
-		ProjectileMovementComponent->Velocity = LaunchDirection * ProjectileMovementComponent->InitialSpeed;
-		UE_LOG(LogTemp, Warning, TEXT("Cast; launching in direction vector %s scaled by speed %f for resultant velocity %s"), 
-			*LaunchDirection.ToString(), ProjectileMovementComponent->InitialSpeed, *ProjectileMovementComponent->Velocity.ToString());
-	}
+	LaunchFn(LaunchingCharacter, LaunchDirection);
 }
 
 
