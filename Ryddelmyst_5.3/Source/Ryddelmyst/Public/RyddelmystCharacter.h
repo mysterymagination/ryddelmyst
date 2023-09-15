@@ -70,7 +70,7 @@ class ARyddelmystCharacter : public ACharacter, public IBattleStatsBearer, publi
 		>
 	> MetamagicMap;
 	
-	// todo: multidimensional mapping of spell names to metamagic source id to spell aspect (borrowed fun names from the Pathfinder schools o' magic; they just serve to inform the timing and manner of lambda calling/application) to categorical metamagic fx to the actual function to run e.g.
+	// multidimensional mapping of spell names to metamagic source id to spell aspect (borrowed fun names from the Pathfinder schools o' magic; they just serve to inform the timing and manner of lambda calling/application) to categorical metamagic fx to the actual function to run e.g.
 	// {
 	//   "snowball" : {
 	//     "ID_CracklingVioletVial" : {
@@ -424,7 +424,7 @@ protected:
 	void UpdateMagic(float MagicChange);
 
 	UFUNCTION()
-	void HandleDamage(AActor* DamagedActor, float Damage, AController* InstigatedBy, FVector HitLocation, UPrimitiveComponent* FHitComponent, FName BoneName, FVector ShotFromDirection, class UDamageType* DamageType, AActor* DamageCauser);
+	void HandleDamage(AActor* DamagedActor, float Damage, const class UDamageType* DamageType, class AController* InstigatedBy, AActor* DamageCauser);
 
 	/** Damage Timer starts the invincibility clock after taking damage */
 	UFUNCTION()

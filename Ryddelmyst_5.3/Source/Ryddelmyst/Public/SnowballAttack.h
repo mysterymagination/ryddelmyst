@@ -15,13 +15,7 @@ class RYDDELMYST_API USnowballAttack : public UAttack
 	GENERATED_BODY()
 	// Vector of functions to be run on the target after the spell hits
 	std::vector<std::function<void(AActor* TargetActor, const FHitResult& HitResult)>> EffectsOnTarget;
-protected:
-	/**
-	 * @brief Cache of most recently calculated damage
-	 * 
-	 */
-	UPROPERTY()
-	float Damage = 0.f;
+
 public:
 	USnowballAttack();
 	virtual void OnHit_Implementation(AActor* StrikingBattler, UPrimitiveComponent* StrikingComp, AActor* StrickenActor, UPrimitiveComponent* StrickenComp, FVector NormalImpulse, const FHitResult& HitInfo) override;

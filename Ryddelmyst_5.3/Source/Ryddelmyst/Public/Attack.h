@@ -38,6 +38,15 @@ public:
 	 */
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Combat")
 	TMap<FString, float> Costs;
+	
+protected:
+	/**
+	 * @brief cache of the most recent damage this attack dealt
+	 * 
+	 */
+	UPROPERTY()
+	float LatestDamageDealt = 0.f;
+
 public:
 	/**
 	 * @brief Processes a hit by this attacker on the given defender
