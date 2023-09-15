@@ -1,0 +1,94 @@
+// Fill out your copyright notice in the Description page of Project Settings.
+
+#pragma once
+
+#include "CoreMinimal.h"
+#include "GameFramework/Character.h"
+#include "GameFramework/CharacterMovementComponent.h"
+#include "MonsterAI.h"
+#include "BattleStats.h"
+#include "BattleStatsBearer.h"
+#include "StatusEffected.h"
+#include "HitBoxerComponent.h"
+#include "Monster.generated.h"
+
+/**
+ * A Character controlled by MonsterAI
+ */
+UCLASS(BlueprintType, Blueprintable)
+class RYDDELMYST_API AMonster : public ACharacter, public IBattleStatsBearer, public IStatusEffected
+{
+	GENERATED_BODY()
+	UPROPERTY()
+	UBattleStats* MonsterStats;
+	UPROPERTY()
+	TArray<const UStatusEffect*> StatusEffects;
+	UPROPERTY()
+	bool IsRunning = false;
+
+protected:
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "RPG")
+	TSubclassOf<UBattleStats> MonsterStatsType;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Collision)
+	UHitBoxerComponent* HitBoxer;
+
+public:
+	/**
+	 * @brief The cm/s walking speed we use for character base speed
+	 * 
+	 */
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Movement)
+	float BaseWalkSpeed = 300.f;
+
+	/**
+	 * @brief The scaling factor by which running increases base speed
+	 * 
+	 */
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Movement)
+	float RunSpeedFactor = 3.f;
+
+protected:
+	// Called when the game starts or when spawned
+	virtual void BeginPlay() override;
+
+public:
+	AMonster();
+	// Called every frame
+	virtual void Tick(float DeltaTime) override;
+	// Called to bind functionality to input
+	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
+	UBattleStats* GetStats_Implementation() { return MonsterStats; }
+	UFUNCTION(BlueprintCallable, Category = Movement)
+	bool GetRunningStatus();
+	UFUNCTION(BlueprintCallable, Category = Movement)
+	void Walk();
+	UFUNCTION(BlueprintCallable, Category = Movement)
+	void Run();
+	UFUNCTION(BlueprintCallable, Category = Movement) 
+	void ToggleRun();
+	UFUNCTION()
+	void HandleDamage(AActor* DamagedActor, float Damage, const class UDamageType* DamageType, class AController* InstigatedBy, AActor* DamageCauser);
+	// todo: refactor and create a common Character subclass for both Maya and monsters, with the common functionality like this so we can avoid copy/paste.  TBD what reparenting like that will do to my poor idiot blueprints, but it will be painful.
+	void HandleStatModification_Implementation(const FString& StatName) 
+	{ 
+		if (StatName.Equals("Speed"))
+		{
+			GetCharacterMovement()->MaxWalkSpeed = IsRunning ? MonsterStats->StatsMap["Speed"] * BaseWalkSpeed * RunSpeedFactor : MonsterStats->StatsMap["Speed"] * BaseWalkSpeed;
+			UE_LOG(LogTemp, Warning, TEXT("UpdateSpeed; monster max walk speed became %f from speed factor %f times BaseWalkSpeed %f %s"),
+				GetCharacterMovement()->MaxWalkSpeed, MonsterStats->StatsMap["Speed"], BaseWalkSpeed, (IsRunning ? *FString::Printf(TEXT("and running factor of %f"), RunSpeedFactor) : *FString(TEXT(""))));
+		}
+	}
+	void AddStatusEffect_Implementation(UStatusEffect* Effect) 
+	{ 
+		StatusEffects.Add(Effect); 
+	}
+	void RemoveStatusEffect_Implmenetation(const FString& EffectId) 
+	{ 
+		const UStatusEffect* StatusToRemove = *StatusEffects.FindByPredicate([&](const UStatusEffect* Effect)
+			{
+				return Effect->GetName().Equals(EffectId);
+			}
+		); 
+		StatusEffects.RemoveAt(StatusEffects.Find(StatusToRemove));
+	}	
+};
