@@ -13,12 +13,12 @@ UCLASS()
 class RYDDELMYST_API AMonsterAI : public AAIController
 {
 	GENERATED_BODY()
-	UPROPERTY()
-	FTimerHandle TrackingTimerHandle;
-	UPROPERTY()
-	FTimerHandle TeleportTimerHandle;
 
 protected:
+	UPROPERTY(BlueprintReadOnly, Category = AI)
+	FTimerHandle TrackingTimerHandle;
+	UPROPERTY(BlueprintReadOnly, Category = AI)
+	FTimerHandle TeleportTimerHandle;
 	/**
 	 * @brief The period at which we refresh our tracking behavior, in seconds.  If the AI finds the player and stops tracking, it will need to wait until this period is up to resume the chase.
 	 * 

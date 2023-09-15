@@ -106,7 +106,7 @@ void ARyddelmystCharacter::BeginPlay()
 	check(GEngine != nullptr);
 
 	// Display a debug message for five seconds. 
-// The -1 "Key" value argument prevents the message from being updated or refreshed.
+	// The -1 "Key" value argument prevents the message from being updated or refreshed.
 	GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Red, TEXT("We are riddled with RyddelmystCharacter!"));
 
 	// linear magic recharge; recharges in 20 point blocks every 5 seconds
@@ -859,9 +859,9 @@ void ARyddelmystCharacter::UpdateMagic(float MagicChange)
 	CharacterStats->StatsMap["MP"] = FMath::Clamp(CharacterStats->StatsMap["MP"], 0.0f, CharacterStats->StatsMap["MaxMP"]);
 }
 
-void ARyddelmystCharacter::HandleDamage(AActor* DamagedActor, float Damage, AController* InstigatedBy, FVector HitLocation, UPrimitiveComponent* FHitComponent, FName BoneName, FVector ShotFromDirection, class UDamageType* DamageType, AActor* DamageCauser)
+void ARyddelmystCharacter::HandleDamage(AActor* DamagedActor, float Damage, const class UDamageType* DamageType, class AController* InstigatedBy, AActor* DamageCauser)
 {
-	UE_LOG(LogTemp, Warning, TEXT("HandleDamage; ouch for %f"), Damage);
+	UE_LOG(LogTemp, Warning, TEXT("HandleDamage; ouch for %f to %s"), Damage, *DamagedActor->GetName());
 	UpdateHealth(-Damage);
 	SetCanBeDamaged(false);
 	DamageInvincibilityTimer();
