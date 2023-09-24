@@ -17,7 +17,7 @@ void UDiademHellfireMightItem::OnEquip_Implementation(AActor* EquippedActor)
 		Character->GetMetamagicMap()[std::string(TCHAR_TO_UTF8(*AFireSnowball::StaticClass()->GetName()))][std::string(TCHAR_TO_UTF8(*UDiademHellfireMightItem::StaticClass()->GetName()))][ARyddelmystCharacter::ID_SPELL_PHASE_EVOCATION][ARyddelmystCharacter::ID_METAMAGIC_CATEGORY_ATTR] = [](ASnowball* Snowball)
 		{
 			UE_LOG(LogTemp, Warning, TEXT("Metamagic Fire lambda; attr modifier effect"));
-			UAttack* Attack = Snowball->GetSpellSphereComponent()->GetWeapon()->GetCurrentAttack();
+			UAttack* Attack = IAttacker::Execute_GetWeapon(Snowball->GetSpellSphereComponent())->GetCurrentAttack();
 			Cast<USnowballAttack>(Attack)->SetDamageScaleFactor(2.f);
 		};
 				
