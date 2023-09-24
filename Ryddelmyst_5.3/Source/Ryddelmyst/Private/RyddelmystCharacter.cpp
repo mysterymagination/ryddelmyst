@@ -478,8 +478,8 @@ void ARyddelmystCharacter::Run()
 
 void ARyddelmystCharacter::HandleCrouch()
 {
-	UE_LOG(LogTemp, Warning, TEXT("HandleCrouch; iscrouched says %d"), bIsCrouched);
-	if (bIsCrouched)
+	UE_LOG(LogTemp, Warning, TEXT("HandleCrouch; iscrouched says %d"), Super::bIsCrouched);
+	if (Super::bIsCrouched)
 	{
 		UE_LOG(LogTemp, Warning, TEXT("HandleCrouch; uncrouching"));
 		Super::UnCrouch(false);
@@ -892,23 +892,31 @@ void ARyddelmystCharacter::OnOverlapBegin(class UPrimitiveComponent* OverlappedC
 bool ARyddelmystCharacter::AddInventoryItemFromActor(AItemActor* ItemActor)
 {
 	TSubclassOf<UObject> ItemClass = ItemActor->GetItemType();
-	if (ItemClass->ImplementsInterface(UItem::StaticClass()))
+	if (ItemClass)
 	{
-		UObject* ItemObj = NewObject<UObject>(this, ItemClass);
-		if (AddInventoryItem(ItemObj))
+		if (ItemClass->ImplementsInterface(UItem::StaticClass()))
 		{
-			ItemActor->Destroy();
-			return true;
+			UObject* ItemObj = NewObject<UObject>(this, ItemClass);
+			if (AddInventoryItem(ItemObj))
+			{
+				ItemActor->Destroy();
+				return true;
+			}
+			else
+			{
+				UE_LOG(LogTemp, Warning, TEXT("AddInventoryItemFromActor; failed to add item %s"), *ItemObj->GetName());
+				return false;
+			}
 		}
 		else
 		{
-			UE_LOG(LogTemp, Warning, TEXT("AddInventoryItemFromActor; failed to add item %s"), *ItemObj->GetName());
+			UE_LOG(LogTemp, Error, TEXT("AddInventoryItemFromActor; itemactor's item class %s does not implement the item interface"), *ItemClass->GetName());
 			return false;
 		}
 	}
-	else
+	else 
 	{
-		UE_LOG(LogTemp, Warning, TEXT("AddInventoryItemFromActor; itemactor's item class %s does not implement the item interface"), *ItemClass->GetName());
+		UE_LOG(LogTemp, Error, TEXT("AddInventoryItemFromActor; itemactor's item class came up null; please install an item object to the actor"));
 		return false;
 	}
 }
