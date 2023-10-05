@@ -3,7 +3,7 @@
 
 #include "DataConversionUtils.h"
 
-static void DataConversionUtils::FX_NumberParticles(const& FVector Location, float Value)
+void DataConversionUtils::FX_NumberParticles(const FVector& Location, float Value)
 {
     // todo: round the input Value to nearest int
     // todo: convert integer value to string
