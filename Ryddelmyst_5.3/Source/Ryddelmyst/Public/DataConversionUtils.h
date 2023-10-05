@@ -15,5 +15,5 @@ public:
 	 * @param Location a 3D vector showing where the particle FX should appear in 3D space
 	 * @param Value a float that will be rounded to the nearest integer and displayed as a particle FX
 	 */
-	static void FX_NumberParticles(const& FVector Location, float Value);
+	static void FX_NumberParticles(const FVector& Location, float Value);
 };
