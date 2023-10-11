@@ -25,7 +25,7 @@ public:
 	 */
 	static float MeanVector3D(const FVector& InVector)
 	{
-		uint sum = InVector.X + InVector.Y + InVector.Z;
+		uint32 sum = InVector.X + InVector.Y + InVector.Z;
 		return sum/3.f;
 	}
 };
