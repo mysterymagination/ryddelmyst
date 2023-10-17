@@ -5,6 +5,7 @@
 #include "NiagaraCommon.h"
 #include "NiagaraComponent.h"
 #include "NiagaraFunctionLibrary.h"
+#include "NiagaraComponent.h"
 
 void DataViz::FX_NumberParticles(UObject* World, const FVector& Location, const FRotator& Rotation, const FVector& Scale, float Value)
 {
@@ -22,7 +23,7 @@ void DataViz::FX_NumberParticles(UObject* World, const FVector& Location, const 
         nullptr
     );
     // todo: how do we provide inputs to the niagara system?
-    SpawnSystemAtLocation
+    UNiagaraComponent* FloatingNumbersFX_Component = SpawnSystemAtLocation
     (
         World,
         FloatingNumbersFX_System,
