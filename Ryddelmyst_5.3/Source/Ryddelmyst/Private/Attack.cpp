@@ -7,6 +7,7 @@
 #include "IDefender.h"
 #include "RyddelmystCharacter.h"
 #include "Kismet/GameplayStatics.h"
+#include "DataViz.h"
 
 const FString UAttack::KEY_COSTS_EFFECT("Effect");
 
@@ -60,16 +61,16 @@ void UAttack::OnHit_Implementation(AActor* StrikingBattler, UPrimitiveComponent*
         if(StrickenArmor)
         {
             // Damage setter is inside the IDefender target check so that we only bother calc/cache of damage if we can actually apply the damage
-            float dmg = CalculateDamageTx(StrikingBattler);
+            FAttackTxInfo DamageTxInfo = CalculateDamageTx(StrikingBattler);
             float DamageRx = 0.f;
             if(AnatomyUnit)
             {
-                DamageRx = StrickenArmor->CalculateDamageRx(StrickenBattler, AnatomyUnit, dmg, DamageTypesToWeightsMap);
+                DamageRx = StrickenArmor->CalculateDamageRx(StrickenBattler, AnatomyUnit, DamageTxInfo.DamageTx, DamageTypesToWeightsMap);
                 AnatomyUnit->Debilitate(StrickenActor);
             }
             else 
             {
-                DamageRx = StrickenArmor->CalculateDamageRx(StrickenBattler, nullptr, dmg, DamageTypesToWeightsMap);
+                DamageRx = StrickenArmor->CalculateDamageRx(StrickenBattler, nullptr, DamageTxInfo.DamageTx, DamageTypesToWeightsMap);
             }
             LatestDamageDealt = DamageRx;
             // todo: this approach only works if we assume all attacks come from components of an Actor who is also a Pawn, e.g. a Monster's claw or Maya's mighty
@@ -98,6 +99,16 @@ void UAttack::OnHit_Implementation(AActor* StrikingBattler, UPrimitiveComponent*
                 }
                 */
                 UGameplayStatics::ApplyPointDamage(StrickenBattler, DamageRx, NormalImpulse, HitInfo, InstigatorPawn->GetController(), StrikingBattler, Types[0]);
+                DataViz::FX_NumberParticles
+                (
+                    GetWorld(),
+                    HitInfo.Location,
+                    FRotator(0.f),
+                    FVector(1.f),
+                    DamageRx,
+                    DamageRx/DamageTxInfo.DamageTx,
+                    DamageTxInfo.IsCrit
+                );
                 //UGameplayStatics::ApplyDamage(StrickenBattler, DamageRx, InstigatorPawn->GetController(), StrikingBattler, Types[0]);
                 UE_LOG(LogTemp, Warning, TEXT("OnHit; applied point damage of %f to %s"), DamageRx, *StrickenBattler->GetName());
             }
