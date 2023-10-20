@@ -111,6 +111,6 @@ void DataViz::FX_NumberParticles(UObject* World, const FVector& Location, const 
             UE_LOG(LogTemp, Error, TEXT("FX_NumberParticles; failed to get Niagara data interface"));
         }
         //FloatingNumbersFX_Component->SetNiagaraVariableObject(TEXT("DigitTexture"), DigitTexture);
-        OffsetAccumulator += 20.f;
+        OffsetAccumulator += 50.f * DamageAmp;
     }
 }
