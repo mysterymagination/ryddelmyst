@@ -16,7 +16,8 @@ public:
 	static uint8 RollNdM(uint8 NumberOfDice, uint8 NumberOfSides)
 	{
 		// random number generation in range of N to NM
-		std::default_random_engine generator;
+		std::random_device random_device;
+		std::default_random_engine generator(random_device());
 		std::uniform_int_distribution<unsigned int> distribution(NumberOfDice, NumberOfDice * NumberOfSides);
 		return static_cast<uint8>(distribution(generator));
 	};
