@@ -8,6 +8,10 @@
 #include "NiagaraComponent.h"
 #include "Kismet/GameplayStatics.h"
 #include "NiagaraDataInterfaceTexture.h"
+#include "NiagaraDataInterfaceColorCurve.h"
+#include "Curves/CurveLinearColor.h"
+#include "Curves/RichCurve.h"
+#include "MathUtils.h"
 
 void DataViz::FX_NumberParticles(UObject* World, const FVector& Location, const FRotator& Rotation, const FVector& Scale, float Value, float DamageAmp, bool IsCrit)
 {
@@ -17,6 +21,13 @@ void DataViz::FX_NumberParticles(UObject* World, const FVector& Location, const 
     FString DamageString = FString::FromInt(DamageValue);
     // loop through the string characters 
     float OffsetAccumulator = 0.f;
+    // define the random velocity for the entire set of floating number FX systems that are rendering the whole number
+    FVector RandomVelocity
+    (
+        MathUtils::RandomInRange(-350,350),
+        MathUtils::RandomInRange(-350,350),
+        MathUtils::RandomInRange(-350,350)
+    );
     for (auto DamageCharacter : DamageString)
     {
         // spawn particle system at the given location plus some offset for each
@@ -77,6 +88,23 @@ void DataViz::FX_NumberParticles(UObject* World, const FVector& Location, const 
             LOAD_None,
             nullptr
         );
+        FString ColorCurvePath = TEXT("/Game/Ryddelmyst_Assets/Textures/");
+        if (IsCrit)
+        {
+            ColorCurvePath += TEXT("RainbowRoadCurve");
+        }
+        else
+        {
+            ColorCurvePath += TEXT("FlatCurve");
+        }
+        UCurveLinearColor* ColorCurveAsset = LoadObject<UCurveLinearColor>
+        (
+            nullptr,
+            *ColorCurvePath,
+            nullptr,
+            LOAD_None,
+            nullptr
+        );
         UE_LOG(LogTemp, Warning, TEXT("FX_NumberParticles; DigitTexturePath is %s and texture object says %p"), *DigitTexturePath, DigitTexture);
         UNiagaraComponent* FloatingNumbersFX_Component = UNiagaraFunctionLibrary::SpawnSystemAtLocation
         (
@@ -90,16 +118,29 @@ void DataViz::FX_NumberParticles(UObject* World, const FVector& Location, const 
             ENCPoolMethod::None,
             true
         );
+        // todo: we need to branch and choose a color curve based on IsCrit here so that the particle logic only has to modify the values given rather than branching logic (which it can't really do).
         FloatingNumbersFX_Component->AddLocalRotation(Rotation);
         FloatingNumbersFX_Component->AddLocalOffset(FVector(0.f, OffsetAccumulator, 0.f), false, nullptr, ETeleportType::None);
         FloatingNumbersFX_Component->SetNiagaraVariableFloat(TEXT("DamageAmp"), DamageAmp);
         FloatingNumbersFX_Component->SetNiagaraVariableBool(TEXT("IsCrit"), IsCrit);
+        FloatingNumbersFX_Component->SetNiagaraVariableVec3(TEXT("RandomVelocity"), RandomVelocity);
         UNiagaraDataInterface* DataInterface = UNiagaraFunctionLibrary::GetDataInterface(UNiagaraDataInterface::StaticClass(), FloatingNumbersFX_Component, TEXT("DigitTexture"));
         if (DataInterface)
         {
-            if (const auto CurrentTextureSample = Cast<UNiagaraDataInterfaceTexture>(DataInterface))
+            if (const auto DataInterfaceTextureSample = Cast<UNiagaraDataInterfaceTexture>(DataInterface))
             {
-                CurrentTextureSample->SetTexture(DigitTexture);
+                DataInterfaceTextureSample->SetTexture(DigitTexture);
+            }
+            else
+            {
+                UE_LOG(LogTemp, Error, TEXT("FX_NumberParticles; failed to cast to DataInterfaceTexture"))
+            }
+            if (const auto DataInterfaceColorCurve = Cast<UNiagaraDataInterfaceColorCurve>(DataInterface))
+            {
+                DataInterfaceColorCurve->RedCurve = ColorCurveAsset->FloatCurves[0];
+                DataInterfaceColorCurve->GreenCurve = ColorCurveAsset->FloatCurves[1];
+                DataInterfaceColorCurve->BlueCurve = ColorCurveAsset->FloatCurves[2];
+                DataInterfaceColorCurve->AlphaCurve = ColorCurveAsset->FloatCurves[3];
             }
             else
             {
@@ -110,7 +151,6 @@ void DataViz::FX_NumberParticles(UObject* World, const FVector& Location, const 
         {
             UE_LOG(LogTemp, Error, TEXT("FX_NumberParticles; failed to get Niagara data interface"));
         }
-        //FloatingNumbersFX_Component->SetNiagaraVariableObject(TEXT("DigitTexture"), DigitTexture);
         OffsetAccumulator += 50.f * DamageAmp;
     }
 }
