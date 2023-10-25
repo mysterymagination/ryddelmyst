@@ -45,7 +45,7 @@ FAttackTxInfo USnowballAttack::CalculateDamageTx_Implementation(AActor* BattleSt
         FAttackTxInfo AttackTx;
         AttackTx.DamageTx = DamageScaleFactor * BaseDamage;
         AttackTx.IsCrit = Rando / static_cast<float>((DieCount * DieSides)) >= 0.9f;
-        UE_LOG(LogTemp, Warning, TEXT("CalculateDamageTx; IsCrit is %d based on rando %f div max rando %f which is %f"), AttackTx.IsCrit, Rando, static_cast<float>(DieCount * DieSides), BaseDamage / static_cast<float>((DieCount * DieSides)));
+        UE_LOG(LogTemp, Warning, TEXT("CalculateDamageTx; IsCrit is %d based on rando %f div max rando %f which is %f"), AttackTx.IsCrit, Rando, static_cast<float>(DieCount * DieSides), Rando / static_cast<float>((DieCount * DieSides)));
         return AttackTx;
     }
     else 

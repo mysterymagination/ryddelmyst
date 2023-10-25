@@ -88,6 +88,7 @@ void DataViz::FX_NumberParticles(UObject* World, const FVector& Location, const 
             LOAD_None,
             nullptr
         );
+        // todo: pretty sure we're not loading this correctly and are just using the default curve we set in the particle system
         FString ColorCurvePath = TEXT("/Game/Ryddelmyst_Assets/Textures/");
         if (IsCrit)
         {
@@ -123,7 +124,7 @@ void DataViz::FX_NumberParticles(UObject* World, const FVector& Location, const 
         FloatingNumbersFX_Component->SetNiagaraVariableFloat(TEXT("DamageAmp"), DamageAmp);
         FloatingNumbersFX_Component->SetNiagaraVariableBool(TEXT("IsCrit"), IsCrit);
         FloatingNumbersFX_Component->SetNiagaraVariableVec3(TEXT("RandomVelocity"), RandomVelocity);
-        UNiagaraDataInterface* DataInterfaceForDigitTexture = UNiagaraFunctionLibrary::GetDataInterface(UNiagaraDataInterface::StaticClass(), FloatingNumbersFX_Component, TEXT("DigitTexture"));
+        UNiagaraDataInterface* DataInterfaceForDigitTexture = UNiagaraFunctionLibrary::GetDataInterface(UNiagaraDataInterface::StaticClass(), FloatingNumbersFX_Component, FName{ TEXT("DigitTexture") });
         if (DataInterfaceForDigitTexture)
         {
             if (const auto DataInterfaceTextureSample = Cast<UNiagaraDataInterfaceTexture>(DataInterfaceForDigitTexture))
@@ -139,11 +140,18 @@ void DataViz::FX_NumberParticles(UObject* World, const FVector& Location, const 
         {
             UE_LOG(LogTemp, Error, TEXT("FX_NumberParticles; failed to get Niagara data interface to DigitTexture"));
         }
-        UNiagaraDataInterface* DataInterfaceForDamageColorCurve = UNiagaraFunctionLibrary::GetDataInterface(UNiagaraDataInterface::StaticClass(), FloatingNumbersFX_Component, TEXT("DamageColorCurve"));
+        UNiagaraDataInterface* DataInterfaceForDamageColorCurve = UNiagaraFunctionLibrary::GetDataInterface(UNiagaraDataInterface::StaticClass(), FloatingNumbersFX_Component, FName{ TEXT("DamageColorCurve") });
         if (DataInterfaceForDamageColorCurve)
         {
             if (const auto DataInterfaceColorCurve = Cast<UNiagaraDataInterfaceColorCurve>(DataInterfaceForDamageColorCurve))
             {
+                UE_LOG(LogTemp, Warning, TEXT("FX_NumberParticles; setting RGBA curves on the data interface from the loaded asset... red curve first key value is %f at time %f, green curve first key value is %f at time %f, and blue curve first key value is %f at time %f."), 
+                    ColorCurveAsset->FloatCurves[0].Keys[0].Value, 
+                    ColorCurveAsset->FloatCurves[0].Keys[0].Time,
+                    ColorCurveAsset->FloatCurves[1].Keys[0].Value,
+                    ColorCurveAsset->FloatCurves[1].Keys[0].Time,
+                    ColorCurveAsset->FloatCurves[2].Keys[0].Value,
+                    ColorCurveAsset->FloatCurves[2].Keys[0].Time);
                 DataInterfaceColorCurve->RedCurve = ColorCurveAsset->FloatCurves[0];
                 DataInterfaceColorCurve->GreenCurve = ColorCurveAsset->FloatCurves[1];
                 DataInterfaceColorCurve->BlueCurve = ColorCurveAsset->FloatCurves[2];
