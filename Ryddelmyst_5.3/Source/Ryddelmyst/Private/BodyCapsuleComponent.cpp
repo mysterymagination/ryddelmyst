@@ -3,6 +3,13 @@
 
 #include "BodyCapsuleComponent.h"
 
+UBodyCapsuleComponent::UBodyCapsuleComponent()
+{
+    SetNotifyRigidBodyCollision(true);
+    SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
+    SetCollisionProfileName("BlockAllDynamic");
+}
+
 UAnatomyUnit* UBodyCapsuleComponent::GetAnatomyUnit_Implementation()
 {
     return CoreUnit;
