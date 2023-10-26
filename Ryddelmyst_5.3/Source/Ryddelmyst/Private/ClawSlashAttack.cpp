@@ -16,11 +16,16 @@ UClawSlashAttack::UClawSlashAttack()
     };
 }
 
-float UClawSlashAttack::CalculateDamageTx_Implementation(AActor* BattleStatsBearer)
+FAttackTxInfo UClawSlashAttack::CalculateDamageTx_Implementation(AActor* BattleStatsBearer)
 {
     float BaseDamage = BasePower * IBattleStatsBearer::Execute_GetStats(BattleStatsBearer)->StatsMap["Attack"] * MathUtils::MeanVector3D(BattleStatsBearer->GetActorScale());
 	UE_LOG(LogTemp, Warning, TEXT("CalculateDamage; BasePower (%f) * Attack (%f) = BaseDamage (%f)"), BasePower, IBattleStatsBearer::Execute_GetStats(BattleStatsBearer)->StatsMap["Attack"], BaseDamage);
-	BaseDamage += MathUtils::RollNdM(IBattleStatsBearer::Execute_GetStats(BattleStatsBearer)->StatsMap["Level"], 8);
-	return DamageScaleFactor * BaseDamage;
+    uint8 DieCount = IBattleStatsBearer::Execute_GetStats(BattleStatsBearer)->StatsMap["Level"];
+    uint8 DieSides = 8;
+    BaseDamage += MathUtils::RollNdM(DieCount, DieSides);
+    FAttackTxInfo AttackTx;
+    AttackTx.DamageTx = DamageScaleFactor * BaseDamage;
+    AttackTx.IsCrit = BaseDamage / (DieCount * DieSides) >= 0.9f;
+    return AttackTx;
 }
 	
