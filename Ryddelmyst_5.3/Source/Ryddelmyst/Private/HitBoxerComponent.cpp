@@ -27,7 +27,7 @@ void UHitBoxerComponent::OnHit(UPrimitiveComponent* StrikingComp, AActor* Strick
 	{
 		if (StrikingComp)
 		{
-			UE_LOG(LogTemp, Warning, TEXT("HitBoxer::OnHit; Striking comp %s is not an IAttacker so can't proceed with attack")); 
+			UE_LOG(LogTemp, Warning, TEXT("HitBoxer::OnHit; Striking comp %s is not an IAttacker so can't proceed with attack"), *StrikingComp->GetName());
 			if (StrickenActor && StrickenComp)
 			{
 				UE_LOG(LogTemp, Warning, TEXT("HitBoxer::OnHit; Striking comp %s is not an IAttacker so can't proceed with attackprocessing against %s's lovely %s"), 

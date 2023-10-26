@@ -16,16 +16,31 @@ public:
 	static uint8 RollNdM(uint8 NumberOfDice, uint8 NumberOfSides)
 	{
 		// random number generation in range of N to NM
-		std::default_random_engine generator;
+		std::random_device random_device;
+		std::default_random_engine generator(random_device());
 		std::uniform_int_distribution<unsigned int> distribution(NumberOfDice, NumberOfDice * NumberOfSides);
 		return static_cast<uint8>(distribution(generator));
+	};
+	/**
+	 * Get a random integer in the given range 
+	 * @param min inclusive range minimum
+	 * @param max inclusive range maximum
+	 * @return a random integer in the given range
+	 */
+	static int64 RandomInRange(int64 min, int64 max)
+	{
+		// random number generation in range of min to max
+		std::random_device random_device;
+		std::default_random_engine generator(random_device());
+		std::uniform_int_distribution<int64> distribution(min, max);
+		return distribution(generator);
 	};
 	/**
 	 * Calculates the average value of the components of a 3D vector such as you might receive from GetActorScale(), in which case you get back a scaler scalar ;) 
 	 */
 	static float MeanVector3D(const FVector& InVector)
 	{
-		uint sum = InVector.X + InVector.Y + InVector.Z;
+		uint32 sum = InVector.X + InVector.Y + InVector.Z;
 		return sum/3.f;
 	}
 };

@@ -24,5 +24,5 @@ public:
 	UFUNCTION()
 	void SetDamageScaleFactor(float ScaleFactor) { DamageScaleFactor = ScaleFactor; };
 	std::vector<std::function<void(AActor*, const FHitResult&)>>& GetEffectsVector() { return EffectsOnTarget; };
-	virtual float CalculateDamageTx_Implementation(AActor* BattleStatsBearer) override;
+	virtual FAttackTxInfo CalculateDamageTx_Implementation(AActor* BattleStatsBearer) override;
 };

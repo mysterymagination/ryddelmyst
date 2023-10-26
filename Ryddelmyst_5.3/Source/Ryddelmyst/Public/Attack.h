@@ -8,6 +8,17 @@
 #include "BattleStatsBearer.h"
 #include "Attack.generated.h"
 
+USTRUCT(BlueprintType)
+struct FAttackTxInfo
+{
+	GENERATED_BODY()
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Combat")
+	float DamageTx = 0.f;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Combat")
+	bool IsCrit = false;
+};
+
 /**
  * An Attack represents a particular attack that can be performed with a Weapon; it provides data and logic necessary to calculate damage and deliver additional effects to the stricken target.
  */
@@ -64,8 +75,8 @@ public:
 	 * @param BattleStatsBearer the instigator of the attack, whose stats determine its damage output
 	 */
 	UFUNCTION(BlueprintCallable, BlueprintNativeEvent, Category = "Combat")
-	float CalculateDamageTx(AActor* BattleStatsBearer);
-	virtual float CalculateDamageTx_Implementation(AActor* BattleStatsBearer) { return 0.f; }
+	FAttackTxInfo CalculateDamageTx(AActor* BattleStatsBearer);
+	virtual FAttackTxInfo CalculateDamageTx_Implementation(AActor* BattleStatsBearer) { return FAttackTxInfo(); }
 	/**
 	 * @brief Subtracts the costs of the attack from the attacker's resources e.g. MP cost to cast a spell.  This function can't be called from a generic location
 	 * 	      within the Attack impl since different attacks will incur costs differently i.e. casting a spell that summons a bullet will incur costs when cast, not

@@ -3,6 +3,13 @@
 
 #include "ExtremityCapsuleComponent.h"
 
+UExtremityCapsuleComponent::UExtremityCapsuleComponent()
+{
+    SetNotifyRigidBodyCollision(true);
+    SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
+    SetCollisionProfileName("BlockAllDynamic");
+}
+
 UAnatomyUnit* UExtremityCapsuleComponent::GetAnatomyUnit_Implementation() 
 {
     return ExUnit.Get();
