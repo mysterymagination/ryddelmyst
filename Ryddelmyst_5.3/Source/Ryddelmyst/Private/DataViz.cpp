@@ -145,6 +145,7 @@ void DataViz::FX_NumberParticles(UObject* World, const FVector& Location, const 
         {
             if (const auto DataInterfaceColorCurve = Cast<UNiagaraDataInterfaceColorCurve>(DataInterfaceForDamageColorCurve))
             {
+                // todo: assuming we are loading the color curve asset correctly, then this is presumably not the correct way to set the system's param from it since we see the default curve value being used at runtime. See https://forums.unrealengine.com/t/how-can-i-set-a-uniagaradatainterfacecolorcurve-from-a-color-curve-asset/1343769 for more.
                 UE_LOG(LogTemp, Warning, TEXT("FX_NumberParticles; setting RGBA curves on the data interface from the loaded asset... red curve first key value is %f at time %f, green curve first key value is %f at time %f, and blue curve first key value is %f at time %f."), 
                     ColorCurveAsset->FloatCurves[0].Keys[0].Value, 
                     ColorCurveAsset->FloatCurves[0].Keys[0].Time,
