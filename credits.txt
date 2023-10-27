@@ -140,3 +140,11 @@ Audio:
    3.1 Source: https://opengameart.org/content/teleport-spell
    3.2 Author: https://opengameart.org/users/ogrebane
    3.3 License: CC0
+  4. Ryddelmyst/Content/Ryddelmyst_Assets/Audio/SFX/Monsters/clockworkbeauty/*
+   4.1 Source: https://opengameart.org/content/scifi-rts-status-vocals
+   4.2 Authors: https://opengameart.org/users/beast
+   4.3 License: http://creativecommons.org/licenses/by/3.0/
+  5. Ryddelmyst/Content/Ryddelmyst_Assets/Audio/SFX/Monsters/stone_door.ogg
+   5.1 Source: https://opengameart.org/content/stone-door
+   5.2 Authors: https://opengameart.org/users/bonebrah
+   5.3 License: CC0
