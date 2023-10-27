@@ -74,6 +74,8 @@ void ARyddelmystGameMode::HandleNewState(EGamePlayState NewState)
 		case EGamePlayState::EGameOver:
 		{
 			UE_LOG(LogTemp, Warning, TEXT("Game Over!"));
+			// todo: add game over UI screen, maybe a nice 'you died' kinetic text animation
+			// todo: take controls away from player, similar to how hitting the kill plane does
 		}
 		break;
 		default:
