@@ -26,6 +26,7 @@
 #include "PaperSprite.h"
 #include "HitBoxerComponent.h"
 #include "BodyCapsuleComponent.h"
+#include "RyddelmystGameMode.h"
 #include "RyddelmystCharacter.generated.h"
 
 class UInputComponent;
@@ -283,7 +284,7 @@ public:
 
 protected:
 	// List of weapons
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Gameplay)
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Gameplay")
 	TArray<TSubclassOf<ASnowball>> Spells;
 	// Array of inventory items
 	UPROPERTY(EditAnywhere, Category = "Inventory")
@@ -293,7 +294,7 @@ protected:
 	TMap<FString, UObject*> Equipment;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "RPG")
 	TSubclassOf<UBattleStats> CharacterStatsType;
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Collision)
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Collision")
 	UHitBoxerComponent* HitBoxer;
 
 protected:

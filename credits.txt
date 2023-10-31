@@ -148,3 +148,19 @@ Audio:
    5.1 Source: https://opengameart.org/content/stone-door
    5.2 Authors: https://opengameart.org/users/bonebrah
    5.3 License: CC0
+  6. Ryddelmyst/Content/Ryddelmyst_Assets/Audio/SFX/Monsters/scream_horror.mp3
+   6.1 Source: https://opengameart.org/content/horror-scream1
+   6.2 Authors: https://opengameart.org/users/vinrax
+   6.3 License: CC0
+  7. Ryddelmyst/Content/Ryddelmyst_Assets/Audio/SFX/Monsters/monster_roar.wav
+   7.1 Source: https://opengameart.org/content/cc0-deep-monster-roar
+   7.2 Authors: https://opengameart.org/users/trazzz123
+   7.3 License: CC0
+  8. Ryddelmyst/Content/Ryddelmyst_Assets/Audio/SFX/echo-whoosh 0.5.wav
+   8.1 Source: https://opengameart.org/content/windy-sound-1
+   8.2 Authors: https://opengameart.org/users/arthur
+   8.3 License: http://www.gnu.org/licenses/old-licenses/gpl-2.0.html, http://www.gnu.org/licenses/gpl-3.0.html, http://creativecommons.org/licenses/by-sa/3.0/
+  9. Ryddelmyst/Content/Ryddelmyst_Assets/Audio/SFX/Monsters/tree_creak.ogg
+   9.1 Source: https://opengameart.org/content/tree-creaking
+   9.2 Authors: https://opengameart.org/users/antumdeluge
+   9.3 License: CC0
