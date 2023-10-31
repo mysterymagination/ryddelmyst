@@ -258,6 +258,20 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Movement)
 	float RunSpeedFactor = 3.f;
 
+	/**
+	 * @brief The offset from first person camera at which player's projectiles will spawn.
+	 *
+	 */
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Combat")
+	FVector MuzzleOffset = FVector(250.f,0.f,0.f);
+
+	/**
+	 * @brief The rotation relative to the first person camera at which player's projectiles will spawn.
+	 *
+	 */
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Combat")
+	FRotator MuzzleRotation = FRotator(10.f,0.f,0.f);
+
 	/** Base turn rate, in deg/sec. Other scaling may affect final turn rate. */
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category=Camera)
 	float BaseTurnRate;
@@ -265,10 +279,6 @@ public:
 	/** Base look up/down rate, in deg/sec. Other scaling may affect final rate. */
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category=Camera)
 	float BaseLookUpRate;
-
-	// Gun muzzle offset from the camera location.
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Gameplay)
-	FVector MuzzleOffset;
 
 	// Distance at which the player can interact with objects.
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Interaction")
