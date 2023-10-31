@@ -35,7 +35,7 @@ void ARyddelmystGameMode::BeginPlay()
 	Super::BeginPlay();
 	SetCurrentState(EGamePlayState::EPlaying);
 	// register for player death event 
-	Cast<URyddelmystGameInstance>(GetWorld()->GetGameInstance())->GetEventManager()->OnPlayerDeath().AddUObject(this, &ARyddelmystGameMode::HandlePlayerDeath);
+	Cast<URyddelmystGameInstance>(GetWorld()->GetGameInstance())->GetEventManager()->PlayerDeathEvent.AddUniqueDynamic(this, &ARyddelmystGameMode::HandlePlayerDeath);
 }
 
 void ARyddelmystGameMode::Tick(float DeltaTime)

@@ -6,6 +6,9 @@
 #include "UObject/NoExportTypes.h"
 #include "RyddelmystEventManager.generated.h"
 
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FWoodEggDangerEvent, bool, InDanger);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE(FPlayerDeathEvent);
+
 /**
  * Home to Ryddelmyst game events that any Actor can register for and indirectly signal.
  */
@@ -15,16 +18,14 @@ class RYDDELMYST_API URyddelmystEventManager : public UObject
 	GENERATED_BODY()
 public:
 	/**
-	 * Broadcasts whenever the Wood Egg is put in danger. 
+	 * Broadcasts whenever the Wood Egg danger state changes; 
+	 danger will be true if currently in danger (e.g. player picked it up) and false otherwise (e.g. player put it down).
 	 */
-	DECLARE_EVENT(URyddelmystEventManager, FWoodEggDangerEvent)
-	FWoodEggDangerEvent& OnWoodEggEndangered() { return WoodEggDangerEvent; }
+	UPROPERTY(BlueprintAssignable)
+	FWoodEggDangerEvent WoodEggDangerEvent;
 	/**
 	 * Broadcasts whenever a player dies.
 	 */
-	DECLARE_EVENT(URyddelmystEventManager, FPlayerDeathEvent)
-	FPlayerDeathEvent& OnPlayerDeath() { return PlayerDeathEvent; }
-private:
-	FWoodEggDangerEvent WoodEggDangerEvent;
+	UPROPERTY(BlueprintAssignable)
 	FPlayerDeathEvent PlayerDeathEvent;
 };
