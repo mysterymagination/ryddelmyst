@@ -630,12 +630,12 @@ void ARyddelmystCharacter::Fire()
 	// Attempt to fire a projectile.
 	if (SelectedWeaponIdx < Spells.Num())
 	{
-		
-		// Set MuzzleOffset to spawn projectiles slightly in front of the camera.
-		MuzzleOffset.Set(50.0f, 0.0f, 0.0f);
 
 		// Transform MuzzleOffset from camera space to world space.
 		FVector MuzzleLocation = FirstPersonCameraComponent->GetComponentLocation() + FTransform(FirstPersonCameraComponent->GetComponentRotation()).TransformVector(MuzzleOffset);
+		FRotator AdjustedMuzzleRotation = MuzzleRotation + FirstPersonCameraComponent->GetComponentRotation();
+		UE_LOG(LogTemp, Warning, TEXT("Fire; adjusted MuzzleRotation becomes %s from original muzzle rotation %s plus first person cam rotation of %s"),
+			*AdjustedMuzzleRotation.ToString(), *MuzzleRotation.ToString(), *FirstPersonCameraComponent->GetComponentRotation().ToString());
 		/*
 		// Skew the aim to be slightly upwards.
 		FRotator MuzzleRotation = FirstPersonCameraComponent->GetComponentRotation();
@@ -747,9 +747,9 @@ void ARyddelmystCharacter::Fire()
 				// Transmutation[Spawn] phase: lookup spawn effects for the current spell and run them on each bullet instance in the bullet array created above.
 				FTransform SpawnTransform;
 				SpawnTransform.SetLocation(MuzzleLocation);
-				SpawnTransform.SetRotation(FQuat(FirstPersonCameraComponent->GetComponentRotation()));
+				SpawnTransform.SetRotation(FQuat(AdjustedMuzzleRotation));
 				SpawnTransform.SetScale3D(FVector(1.f));
-				FVector LaunchDirection = FirstPersonCameraComponent->GetComponentRotation().Vector();
+				FVector LaunchDirection = AdjustedMuzzleRotation.Vector();
 				bool Spawned = false;
 				for(const auto& Source : SpellMap)
 				{
