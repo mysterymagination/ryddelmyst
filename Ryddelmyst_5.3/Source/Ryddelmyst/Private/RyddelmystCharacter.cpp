@@ -864,8 +864,10 @@ void ARyddelmystCharacter::UpdateHealth(float HealthChange)
 {
 	CharacterStats->StatsMap["HP"] += HealthChange;
 	CharacterStats->StatsMap["HP"] = FMath::Clamp(CharacterStats->StatsMap["HP"], 0.0f, CharacterStats->StatsMap["MaxHP"]);
-	if (FMath::IsNearlyZero(CharacterStats->StatsMap["HP"]))
+	UE_LOG(LogTemp, Warning, TEXT("UpdateHealth; maya HP is %f"), CharacterStats->StatsMap["HP"]);
+	if (CharacterStats->StatsMap["HP"] == 0.0f)
 	{
+		UE_LOG(LogTemp, Warning, TEXT("UpdateHealth; maya HP is now %f, so broadcasting player death event"), CharacterStats->StatsMap["HP"]);
 		Cast<URyddelmystGameInstance>(GetWorld()->GetGameInstance())->GetEventManager()->PlayerDeathEvent.Broadcast();
 	}
 }
