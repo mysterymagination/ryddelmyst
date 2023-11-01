@@ -27,18 +27,19 @@ public:
 	virtual void BeginPlay() override;
 	virtual void Tick(float DeltaTime) override;
 	/** Returns the current playing state */
-	UFUNCTION(BlueprintPure, Category = "Health")
+	UFUNCTION(BlueprintPure, Category = "GameState")
 	EGamePlayState GetCurrentState() const;
 	/** Sets a new playing state */
-	UFUNCTION(BlueprintCallable, Category = "Health")
+	UFUNCTION(BlueprintCallable, Category = "GameState")
 	void SetCurrentState(EGamePlayState NewState);
+	UFUNCTION(BlueprintCallable, Category = "GameState")
+	void HandlePlayerDeath();
 private:
 	/**Keeps track of the current playing state */
 	EGamePlayState CurrentState;
 private:
 	/**Handle any function calls that rely upon changing our gameplay state */
 	void HandleNewState(EGamePlayState NewState);
-	void HandlePlayerDeath();
 };
 
 

@@ -35,6 +35,7 @@ void ARyddelmystGameMode::BeginPlay()
 	Super::BeginPlay();
 	SetCurrentState(EGamePlayState::EPlaying);
 	// register for player death event 
+	UE_LOG(LogTemp, Warning, TEXT("BeginPlay; registering for PlayerDeathEvent to call HandlePlayerDeath"));
 	Cast<URyddelmystGameInstance>(GetWorld()->GetGameInstance())->GetEventManager()->PlayerDeathEvent.AddUniqueDynamic(this, &ARyddelmystGameMode::HandlePlayerDeath);
 }
 
@@ -55,6 +56,7 @@ void ARyddelmystGameMode::SetCurrentState(EGamePlayState NewState)
 
 void ARyddelmystGameMode::HandlePlayerDeath()
 {
+	UE_LOG(LogTemp, Warning, TEXT("HandlePlayerDeath"));
 	HandleNewState(EGamePlayState::EGameOver);
 }
 
@@ -71,8 +73,8 @@ void ARyddelmystGameMode::HandleNewState(EGamePlayState NewState)
 		case EGamePlayState::EGameOver:
 		{
 			UE_LOG(LogTemp, Warning, TEXT("Game Over!"));
-			// todo: add game over UI screen, maybe a nice 'you died' kinetic text animation
-			// todo: take controls away from player, similar to how hitting the kill plane does
+			ARyddelmystHUD* HUD = UGameplayStatics::GetPlayerController(GetWorld(), 0)->GetHUD<ARyddelmystHUD>();
+			HUD->ShowGameOverMenu();
 		}
 		break;
 		default:
