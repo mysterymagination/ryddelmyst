@@ -120,6 +120,10 @@ Textures:
     15.1 Source: https://opengameart.org/content/space-backgrounds-6
     15.2 Authors: https://opengameart.org/users/rawdanitsu
     15.3 License: CC0
+ 16. Ryddelmyst/Content/Ryddelmyst_Assets/Textures/blizzardskull.png
+    16.1 Source: https://opengameart.org/content/death-in-the-snow
+    16.2 Authors: https://opengameart.org/users/justin-nichol
+    16.3 License: http://creativecommons.org/licenses/by-sa/3.0/, http://www.gnu.org/licenses/gpl-3.0.html, http://www.gnu.org/licenses/old-licenses/gpl-2.0.html
 
 Fonts:
   1. Ryddelmyst/Content/Ryddelmyst_Assets/Fonts/alagard_by_pix3m-d6awiwp.ttf

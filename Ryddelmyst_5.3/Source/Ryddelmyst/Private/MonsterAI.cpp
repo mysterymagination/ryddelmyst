@@ -2,6 +2,7 @@
 
 #include "MonsterAI.h"
 #include "Kismet/GameplayStatics.h"
+#include "GameFramework/Character.h"
 #include "Math/UnrealMathUtility.h"
 
 AMonsterAI::AMonsterAI() 

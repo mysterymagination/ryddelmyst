@@ -127,6 +127,9 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "GameState")
 	void ShowPauseMenu();
 
+	UFUNCTION(BlueprintCallable, Category = "GameState")
+	void ShowGameOverMenu();
+
 private:
 	/** Crosshair asset pointer */
 	UPROPERTY()
@@ -141,8 +144,14 @@ private:
 	UPROPERTY(EditAnywhere, Category = "GameState")
 	TSubclassOf<class UUserWidget> PauseMenuWidgetClass;
 
+	UPROPERTY(EditAnywhere, Category = "GameState")
+	TSubclassOf<class UUserWidget> GameOverMenuWidgetClass;
+
 	UPROPERTY()
 	class UUserWidget* PauseMenuWidget;
+
+	UPROPERTY()
+	class UUserWidget* GameOverMenuWidget;
 
 	UPROPERTY()
 	class UTextDisplayWidget* TextWidget;
