@@ -10,6 +10,8 @@
 #include "BattleStatsBearer.h"
 #include "StatusEffected.h"
 #include "HitBoxerComponent.h"
+#include "NiagaraComponent.h"
+#include "NiagaraFunctionLibrary.h"
 #include "Monster.generated.h"
 
 /**
@@ -47,6 +49,9 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Movement)
 	float RunSpeedFactor = 3.f;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Combat")
+	UNiagaraSystem* DeathParticleSystem;
+
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
@@ -66,8 +71,13 @@ public:
 	void Run();
 	UFUNCTION(BlueprintCallable, Category = Movement) 
 	void ToggleRun();
-	UFUNCTION()
+	UFUNCTION(BlueprintCallable, Category = "Combat")
 	void HandleDamage(AActor* DamagedActor, float Damage, const class UDamageType* DamageType, class AController* InstigatedBy, AActor* DamageCauser);
+	/**
+	 * Defines behavior upon HP reaching 0; default is for the Actor to simply Destroy() itself, but Blueprints can customize. 
+	 */
+	UFUNCTION(BlueprintCallable, Category = "Combat")
+	void HandleDeath();
 	// todo: refactor and create a common Character subclass for both Maya and monsters, with the common functionality like this so we can avoid copy/paste.  TBD what reparenting like that will do to my poor idiot blueprints, but it will be painful.
 	void HandleStatModification_Implementation(const FString& StatName) 
 	{ 
