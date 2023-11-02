@@ -13,8 +13,8 @@ AMonster::AMonster()
     AIControllerClass = AMonsterAI::StaticClass();
     */
    PrimaryActorTick.bCanEverTick = true;
-   HitBoxer = CreateDefaultSubobject<UHitBoxerComponent>(TEXT("Monstrous HitBoxer"));
-   static ConstructorHelpers::FObjectFinder<UNiagaraSystem> ParticleAsset(TEXT("/Game/StarterContent/Particles/P_Explosion.P_Explosion"));
+   HitBoxer = CreateDefaultSubobject<UHitBoxerComponent>(TEXT("Monstrous HitBoxer")); 
+   static ConstructorHelpers::FObjectFinder<UNiagaraSystem> ParticleAsset(TEXT("/Niagara/DefaultAssets/Templates/Systems/SimpleExplosion.SimpleExplosion"));
    if (ParticleAsset.Succeeded())
    {
 	   DeathParticleSystem = ParticleAsset.Object;
