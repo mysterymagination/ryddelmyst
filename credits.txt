@@ -168,3 +168,7 @@ Audio:
    9.1 Source: https://opengameart.org/content/tree-creaking
    9.2 Authors: https://opengameart.org/users/antumdeluge
    9.3 License: CC0
+  10. Ryddelmyst/Content/Ryddelmyst_Assets/Audio/SFX/grassymagic.wav
+   10.1 Source: https://opengameart.org/content/grassy-world-overture-8bitorchestral
+   10.2 Authors: https://opengameart.org/users/matthew-pablo
+   10.3 License: http://creativecommons.org/licenses/by/3.0/
