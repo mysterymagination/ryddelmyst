@@ -103,7 +103,7 @@ void AMonster::HandleDamage(AActor* DamagedActor, float Damage, const class UDam
 	}
 }
 
-void AMonster::HandleDeath()
+void AMonster::HandleDeath_Implementation()
 {
 	UE_LOG(LogTemp, Warning, TEXT("HandleDamage; %s is destroyed!"), *GetName());
 	ParticleUtils::SpawnParticlesAtLocation(GetWorld(), GetActorLocation(), DeathParticleSystem);

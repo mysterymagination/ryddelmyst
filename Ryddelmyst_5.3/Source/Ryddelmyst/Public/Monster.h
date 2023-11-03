@@ -76,8 +76,9 @@ public:
 	/**
 	 * Defines behavior upon HP reaching 0; default is for the Actor to simply Destroy() itself, but Blueprints can customize. 
 	 */
-	UFUNCTION(BlueprintCallable, Category = "Combat")
+	UFUNCTION(BlueprintCallable, BlueprintNativeEvent, Category = "Combat")
 	void HandleDeath();
+	virtual void HandleDeath_Implementation();
 	// todo: refactor and create a common Character subclass for both Maya and monsters, with the common functionality like this so we can avoid copy/paste.  TBD what reparenting like that will do to my poor idiot blueprints, but it will be painful.
 	void HandleStatModification_Implementation(const FString& StatName) 
 	{ 
