@@ -2,7 +2,6 @@
 
 #include "RyddelmystGameMode.h"
 #include "RyddelmystHUD.h"
-#include "RyddelmystCharacter.h"
 #include "Kismet/GameplayStatics.h"
 #include "Engine/World.h"
 #include "UObject/ConstructorHelpers.h"
@@ -35,21 +34,14 @@ void ARyddelmystGameMode::BeginPlay()
 {
 	Super::BeginPlay();
 	SetCurrentState(EGamePlayState::EPlaying);
-	PlayerCharacter = Cast<ARyddelmystCharacter>(UGameplayStatics::GetPlayerPawn(this, 0));
-	UE_LOG(LogTemp, Warning, TEXT("BeginPlay; player character set to %s"), PlayerCharacter ? *PlayerCharacter->GetName() : TEXT("null"));
+	// register for player death event 
+	UE_LOG(LogTemp, Warning, TEXT("BeginPlay; registering for PlayerDeathEvent to call HandlePlayerDeath"));
+	Cast<URyddelmystGameInstance>(GetWorld()->GetGameInstance())->GetEventManager()->PlayerDeathEvent.AddUniqueDynamic(this, &ARyddelmystGameMode::HandlePlayerDeath);
 }
 
 void ARyddelmystGameMode::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
-	if (PlayerCharacter)
-	{
-		if (FMath::IsNearlyZero(PlayerCharacter->GetHealth(), 0.001f))
-		{
-			SetCurrentState(EGamePlayState::EGameOver);
-			HandleNewState(EGamePlayState::EGameOver);
-		}
-	}
 }
 
 EGamePlayState ARyddelmystGameMode::GetCurrentState() const
@@ -62,8 +54,15 @@ void ARyddelmystGameMode::SetCurrentState(EGamePlayState NewState)
 	CurrentState = NewState;
 }
 
+void ARyddelmystGameMode::HandlePlayerDeath()
+{
+	UE_LOG(LogTemp, Warning, TEXT("HandlePlayerDeath"));
+	HandleNewState(EGamePlayState::EGameOver);
+}
+
 void ARyddelmystGameMode::HandleNewState(EGamePlayState NewState)
 {
+	CurrentState = NewState;
 	switch (NewState)
 	{
 		case EGamePlayState::EPlaying:
@@ -74,6 +73,8 @@ void ARyddelmystGameMode::HandleNewState(EGamePlayState NewState)
 		case EGamePlayState::EGameOver:
 		{
 			UE_LOG(LogTemp, Warning, TEXT("Game Over!"));
+			ARyddelmystHUD* HUD = UGameplayStatics::GetPlayerController(GetWorld(), 0)->GetHUD<ARyddelmystHUD>();
+			HUD->ShowGameOverMenu();
 		}
 		break;
 		default:

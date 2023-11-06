@@ -18,6 +18,7 @@
 #include "GenericPlatform/GenericPlatformMath.h"
 #include "OpenClose.h"
 #include "SnowballAttack.h"
+#include "RyddelmystGameInstance.h"
 #include <stdexcept>
 
 DEFINE_LOG_CATEGORY_STATIC(LogFPChar, Warning, All);
@@ -282,6 +283,11 @@ void ARyddelmystCharacter::Interact()
 
 		GrabbedActor->SetActorEnableCollision(true);
 		GrabbedActor->DetachFromActor(FDetachmentTransformRules::KeepWorldTransform);
+		// alert the treant that his offspring is now safe again
+		if (GrabbedActor->ActorHasTag(FName(TEXT("WoodEgg"))))
+		{
+			Cast<URyddelmystGameInstance>(GetWorld()->GetGameInstance())->GetEventManager()->WoodEggDangerEvent.Broadcast(false);
+		}
 		GrabbedActor = nullptr;
 	}
 	else
@@ -314,6 +320,11 @@ void ARyddelmystCharacter::Interact()
 					if (cap == InteractCapability::GRABBABLE)
 					{
 						GrabbedActor = Actor;
+						// alert the treant that his offspring is being disturbed!
+						if (GrabbedActor->ActorHasTag(FName(TEXT("WoodEgg"))))
+						{
+							Cast<URyddelmystGameInstance>(GetWorld()->GetGameInstance())->GetEventManager()->WoodEggDangerEvent.Broadcast(true);
+						}
 						// todo: physics on during grab causes the object to not follow us for some reason despite attachment, even with gravity off
 						// todo: check if physics is enabled and iff so, disable.  Also make a note somewhere that we need to renable physics for this grabbed actor at whatever components we find it enabled.
 						GrabbedActor->DisableComponentsSimulatePhysics();
@@ -619,16 +630,18 @@ void ARyddelmystCharacter::Fire()
 	// Attempt to fire a projectile.
 	if (SelectedWeaponIdx < Spells.Num())
 	{
-		// Set MuzzleOffset to spawn projectiles slightly in front of the camera.
-		MuzzleOffset.Set(250.0f, 0.0f, 0.0f);
 
 		// Transform MuzzleOffset from camera space to world space.
 		FVector MuzzleLocation = FirstPersonCameraComponent->GetComponentLocation() + FTransform(FirstPersonCameraComponent->GetComponentRotation()).TransformVector(MuzzleOffset);
-
+		FRotator AdjustedMuzzleRotation = MuzzleRotation + FirstPersonCameraComponent->GetComponentRotation();
+		UE_LOG(LogTemp, Warning, TEXT("Fire; adjusted MuzzleRotation becomes %s from original muzzle rotation %s plus first person cam rotation of %s"),
+			*AdjustedMuzzleRotation.ToString(), *MuzzleRotation.ToString(), *FirstPersonCameraComponent->GetComponentRotation().ToString());
+		/*
 		// Skew the aim to be slightly upwards.
 		FRotator MuzzleRotation = FirstPersonCameraComponent->GetComponentRotation();
-		// todo: so what are we doing here exactly?  We've got the world space rotation of the firstpersoncameracomponent and then we're goosing its pitch, but what are we rotating 10 degrees around?  The Y axis, sure, but is that axis considered to run through world origin (implying we take our offset from origin into account somewhere) or does it run through the MuzzleLocation point?  Since the definition of a point in world space is (I think) a vector from origin to an endpoint, maybe there's no distinction?  But what about the arc length -- doesn't vector magnitude i.e. how far the point is away from world origin modify the length of the arc curve that an N degree rotation causes?  EDIT: yeah it does; arc length is radius*theta where theta is the rotation angle in radians and the radius here is our vector magnitude. I guess the point of interest is how we use this MuzzleRotation, and the answer to that is wrapped up in World->SpawnActor() below...
+		// todo: so what are we doing here exactly?  We've got the world space rotation of the firstpersoncameracomponent and then we're goosing its pitch, but what are we rotating 10 degrees around?  The Y axis, sure, but is that axis considered to run through world origin (implying we take our offset from origin into account somewhere) or does it run through the MuzzleLocation point?  Since the definition of a point in world space is (I think) a vector from origin to an endpoint, maybe there's no distinction?  But what about the arc length -- doesn't vector magnitude i.e. how far the point is away from world origin modify the length of the arc curve that an N degree rotation causes?  EDIT: yeah it does; arc length is radius*theta where theta is the rotation angle in radians and the radius here is our vector magnitude. I guess the point of interest is how we use this MuzzleRotation, and the answer to that is wrapped up in World->SpawnActor() below... EDIT2: I think this is why we usually do rotation ops first in transform matrix math; you rotate with just the points making up the mesh effectively at origin and then translate them to whatever world offset location they should live at.
 		MuzzleRotation.Pitch += 10.0f;
+		*/
 
 		UWorld* World = GetWorld();
 		if (World)
@@ -734,9 +747,9 @@ void ARyddelmystCharacter::Fire()
 				// Transmutation[Spawn] phase: lookup spawn effects for the current spell and run them on each bullet instance in the bullet array created above.
 				FTransform SpawnTransform;
 				SpawnTransform.SetLocation(MuzzleLocation);
-				SpawnTransform.SetRotation(FQuat(MuzzleRotation));
+				SpawnTransform.SetRotation(FQuat(AdjustedMuzzleRotation));
 				SpawnTransform.SetScale3D(FVector(1.f));
-				FVector LaunchDirection = MuzzleRotation.Vector();
+				FVector LaunchDirection = AdjustedMuzzleRotation.Vector();
 				bool Spawned = false;
 				for(const auto& Source : SpellMap)
 				{
@@ -851,6 +864,12 @@ void ARyddelmystCharacter::UpdateHealth(float HealthChange)
 {
 	CharacterStats->StatsMap["HP"] += HealthChange;
 	CharacterStats->StatsMap["HP"] = FMath::Clamp(CharacterStats->StatsMap["HP"], 0.0f, CharacterStats->StatsMap["MaxHP"]);
+	UE_LOG(LogTemp, Warning, TEXT("UpdateHealth; maya HP is %f"), CharacterStats->StatsMap["HP"]);
+	if (CharacterStats->StatsMap["HP"] == 0.0f)
+	{
+		UE_LOG(LogTemp, Warning, TEXT("UpdateHealth; maya HP is now %f, so broadcasting player death event"), CharacterStats->StatsMap["HP"]);
+		Cast<URyddelmystGameInstance>(GetWorld()->GetGameInstance())->GetEventManager()->PlayerDeathEvent.Broadcast();
+	}
 }
 
 void ARyddelmystCharacter::UpdateMagic(float MagicChange)

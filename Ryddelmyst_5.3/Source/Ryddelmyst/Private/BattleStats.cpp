@@ -58,6 +58,12 @@ UBattleStats::UBattleStats()
     };
 }
 
+void UBattleStats::ResetStats()
+{
+    StatsMap["HP"] = StatsMap["MaxHP"];
+    StatsMap["MP"] = StatsMap["MaxMP"];
+}
+
 void UBattleStats::ScaleStats(float ScaleFactor, AActor* BattleStatsBearer)
 {
     StatsMap["Attack"] *= ScaleFactor;

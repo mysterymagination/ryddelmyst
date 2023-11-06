@@ -57,6 +57,12 @@ public:
 	 */
 	UFUNCTION(BlueprintCallable, Category = "RPG")
 	void UnmodifyStatsByAttribution(const FString& AttributionName, AActor* BattleStatsBearer);
+
+	/**
+	 * Resets permanently modifiable stats to max values 
+	 */
+	UFUNCTION(BlueprintCallable, Category = "RPG")
+	void ResetStats();
 	
 	UFUNCTION(BlueprintCallable, Category = "RPG")
 	FString ToString()
