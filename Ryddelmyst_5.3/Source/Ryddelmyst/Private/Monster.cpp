@@ -5,6 +5,7 @@
 #include "IAttacker.h"
 #include "Weapon.h"
 #include "Attack.h"
+#include "ParticleUtils.h"
 
 AMonster::AMonster()
 {
@@ -12,7 +13,12 @@ AMonster::AMonster()
     AIControllerClass = AMonsterAI::StaticClass();
     */
    PrimaryActorTick.bCanEverTick = true;
-   HitBoxer = CreateDefaultSubobject<UHitBoxerComponent>(TEXT("Monstrous HitBoxer"));
+   HitBoxer = CreateDefaultSubobject<UHitBoxerComponent>(TEXT("Monstrous HitBoxer")); 
+   static ConstructorHelpers::FObjectFinder<UNiagaraSystem> ParticleAsset(TEXT("/Niagara/DefaultAssets/Templates/Systems/SimpleExplosion.SimpleExplosion"));
+   if (ParticleAsset.Succeeded())
+   {
+	   DeathParticleSystem = ParticleAsset.Object;
+   }
 }
 
 // Called when the game starts or when spawned
@@ -89,4 +95,17 @@ bool AMonster::GetRunningStatus()
 void AMonster::HandleDamage(AActor* DamagedActor, float Damage, const class UDamageType* DamageType, class AController* InstigatedBy, AActor* DamageCauser)
 {
 	UE_LOG(LogTemp, Warning, TEXT("HandleDamage; %s says ouch for %f"), *DamagedActor->GetName(), Damage);
+	MonsterStats->StatsMap["HP"] -= Damage;
+	MonsterStats->StatsMap["HP"] = FMath::Clamp(MonsterStats->StatsMap["HP"], 0.0f, MonsterStats->StatsMap["MaxHP"]);
+	if (MonsterStats->StatsMap["HP"] == 0.f)
+	{
+		HandleDeath();
+	}
+}
+
+void AMonster::HandleDeath_Implementation()
+{
+	UE_LOG(LogTemp, Warning, TEXT("HandleDamage; %s is destroyed!"), *GetName());
+	ParticleUtils::SpawnParticlesAtLocation(GetWorld(), GetActorLocation(), DeathParticleSystem);
+	Destroy();
 }
