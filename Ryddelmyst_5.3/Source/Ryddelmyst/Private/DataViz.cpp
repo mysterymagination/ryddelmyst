@@ -5,7 +5,6 @@
 #include "NiagaraCommon.h"
 #include "NiagaraComponent.h"
 #include "NiagaraFunctionLibrary.h"
-#include "NiagaraComponent.h"
 #include "Kismet/GameplayStatics.h"
 #include "NiagaraDataInterfaceTexture.h"
 #include "NiagaraDataInterfaceColorCurve.h"

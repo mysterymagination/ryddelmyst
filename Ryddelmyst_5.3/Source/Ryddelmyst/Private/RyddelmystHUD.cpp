@@ -27,6 +27,9 @@ ARyddelmystHUD::ARyddelmystHUD()
 	static ConstructorHelpers::FClassFinder<UUserWidget> PauseMenuWidgetObj(TEXT("/Game/Ryddelmyst_Assets/UI/BP_PauseMenu"));
 	PauseMenuWidgetClass = PauseMenuWidgetObj.Class;
 
+	static ConstructorHelpers::FClassFinder<UUserWidget> GameOverMenuWidgetObj(TEXT("/Game/Ryddelmyst_Assets/UI/BP_GameOverMenu"));
+	GameOverMenuWidgetClass = GameOverMenuWidgetObj.Class;
+
 	static ConstructorHelpers::FObjectFinder<UTexture2D> SelectionTexObj(TEXT("/Game/Ryddelmyst_Assets/Textures/SelectionHighlight"));
 	InventorySelectionTexture = SelectionTexObj.Object;
 }
@@ -102,6 +105,15 @@ void ARyddelmystHUD::BeginPlay()
 		else
 		{
 			UE_LOG(LogTemp, Error, TEXT("BeginPlay; no pause menu widget class set"));
+		}
+
+		if (GameOverMenuWidgetClass)
+		{
+			GameOverMenuWidget = CreateWidget<UUserWidget>(GetWorld(), GameOverMenuWidgetClass);
+		}
+		else
+		{
+			UE_LOG(LogTemp, Error, TEXT("BeginPlay; no game over menu widget class set"));
 		}
 	}
 }
@@ -320,5 +332,20 @@ void ARyddelmystHUD::ShowPauseMenu()
 	else
 	{
 		UE_LOG(LogTemp, Error, TEXT("ShowPauseMenu; pause menu widget not created"));
+	}
+}
+
+void ARyddelmystHUD::ShowGameOverMenu()
+{
+	if (GameOverMenuWidget)
+	{
+		if (!GameOverMenuWidget->IsInViewport())
+		{
+			GameOverMenuWidget->AddToViewport();
+		}
+	}
+	else
+	{
+		UE_LOG(LogTemp, Error, TEXT("ShowGameOverMenu; game over menu widget not created"));
 	}
 }
