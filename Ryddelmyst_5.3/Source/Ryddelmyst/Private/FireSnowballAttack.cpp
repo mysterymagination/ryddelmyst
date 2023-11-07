@@ -27,8 +27,8 @@ void UFireSnowballAttack::OnHit_Implementation(AActor* StrikingBattler, UPrimiti
         StatusEffect->SetId("BurnedStatusEffect");
         StatusEffect->SetBurnDuration(BurnDuration);
         StatusEffect->SetBurnPeriod(BurnPeriod);
-        // ongoing damage will be init calculated damage over 2
-        StatusEffect->SetBurnDamage(LatestDamageDealt/2.f);
+        // ongoing damage will be init calculated damage over 4
+        StatusEffect->SetBurnDamage(LatestDamageDealt/4.f);
         UE_LOG(LogTemp, Warning, TEXT("OnHit; applying primary StatusEffect with id %s"), *StatusEffect->GetId());
         IStatusEffected::Execute_AddStatusEffect(StrickenActor, StatusEffect);
         // todo: should we apply effect directly here or lean on IStatusEffected::ProcessStatusEffects()?  It may need to depend on whether we're in real time or turn based mode at the moment, or maybe we should always run the apply code and the real time/turn based game mode switch will have to hook into StatusEffect objects somehow to turn off timers and replace with turn counts and convert any elapsed time to elapsed turns.
