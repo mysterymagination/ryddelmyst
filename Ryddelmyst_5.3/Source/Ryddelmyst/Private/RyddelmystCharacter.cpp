@@ -197,6 +197,7 @@ void ARyddelmystCharacter::SetupPlayerInputComponent(class UInputComponent* Play
 
 	PlayerInputComponent->BindAxis("Select Item", this, &ARyddelmystCharacter::CycleItem);
 	PlayerInputComponent->BindAction("Use Item", IE_Released, this, &ARyddelmystCharacter::UseItem);
+	PlayerInputComponent->BindAction("ToggleTorch", IE_Released, this, &ARyddelmystCharacter::ToggleTorch);
 }
 
 void ARyddelmystCharacter::FixMe()
@@ -207,6 +208,11 @@ void ARyddelmystCharacter::FixMe()
 	//SetActorLocation(FVector(100.f, 100.f, 100.f));
 	SetActorLocation(GetActorLocation() + GetActorForwardVector() * 100.f);
 	UE_LOG(LogTemp, Warning, TEXT("FixMe; player pos after is %s"), *GetActorLocation().ToString());
+}
+
+void ARyddelmystCharacter::ToggleTorch()
+{
+	
 }
 
 UBodyCapsuleComponent* ARyddelmystCharacter::GetBody_Implementation()
