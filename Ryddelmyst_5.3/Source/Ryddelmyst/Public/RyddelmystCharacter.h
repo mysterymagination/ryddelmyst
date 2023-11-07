@@ -345,6 +345,11 @@ protected:
 	void CycleWeaponDown();
 
 	/**
+	 * Called via input to ToggleTorch event, turning the BrassLantern light source on/off.
+	 */
+	void ToggleTorch();
+
+	/**
 	 * Called via input to Scroll Up event
 	 */
 	void ScrollUp();
