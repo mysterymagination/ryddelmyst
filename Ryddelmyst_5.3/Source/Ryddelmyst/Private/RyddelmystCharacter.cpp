@@ -19,6 +19,7 @@
 #include "OpenClose.h"
 #include "SnowballAttack.h"
 #include "RyddelmystGameInstance.h"
+#include "Components/LightComponent.h"
 #include <stdexcept>
 
 DEFINE_LOG_CATEGORY_STATIC(LogFPChar, Warning, All);
@@ -212,7 +213,11 @@ void ARyddelmystCharacter::FixMe()
 
 void ARyddelmystCharacter::ToggleTorch()
 {
-	
+	auto LightComponent = FindComponentByTag<ULightComponent>(FName(TEXT("Player Light Source")));
+	if (LightComponent)
+	{
+		LightComponent->ToggleVisibility();
+	}
 }
 
 UBodyCapsuleComponent* ARyddelmystCharacter::GetBody_Implementation()
