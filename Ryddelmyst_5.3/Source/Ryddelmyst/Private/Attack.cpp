@@ -98,19 +98,25 @@ void UAttack::OnHit_Implementation(AActor* StrikingBattler, UPrimitiveComponent*
                     UE_LOG(LogTemp, Error, TEXT("OnHit; failed to HandleDamage() since the stricken actor %s is not a ryddelmystcharacter.... probably should fix that hack"), *StrickenActor->GetName());
                 }
                 */
-                UGameplayStatics::ApplyPointDamage(StrickenBattler, DamageRx, NormalImpulse, HitInfo, InstigatorPawn->GetController(), StrikingBattler, Types[0]);
-                DataViz::FX_NumberParticles
-                (
-                    GetWorld(),
-                    HitInfo.Location,
-                    FRotator(0.f),
-                    FVector(1.f),
-                    DamageRx,
-                    DamageRx/DamageTxInfo.DamageTx,
-                    DamageTxInfo.IsCrit
-                );
-                //UGameplayStatics::ApplyDamage(StrickenBattler, DamageRx, InstigatorPawn->GetController(), StrikingBattler, Types[0]);
-                UE_LOG(LogTemp, Warning, TEXT("OnHit; applied point damage of %f to %s"), DamageRx, *StrickenBattler->GetName());
+                if (StrickenActor->CanBeDamaged())
+                {
+                    UGameplayStatics::ApplyPointDamage(StrickenBattler, DamageRx, NormalImpulse, HitInfo, InstigatorPawn->GetController(), StrikingBattler, Types[0]);
+                    DataViz::FX_NumberParticles
+                    (
+                        GetWorld(),
+                        HitInfo.Location,
+                        FRotator(0.f),
+                        FVector(1.f),
+                        DamageRx,
+                        DamageRx / DamageTxInfo.DamageTx,
+                        DamageTxInfo.IsCrit
+                    );
+                    UE_LOG(LogTemp, Warning, TEXT("OnHit; applied point damage of %f to %s"), DamageRx, *StrickenBattler->GetName());
+                }
+                else
+                {
+                    UE_LOG(LogTemp, Warning, TEXT("OnHit; skipped applying point damage of %f to %s because of iframes"), DamageRx, *StrickenBattler->GetName());
+                }
             }
             else 
             {
