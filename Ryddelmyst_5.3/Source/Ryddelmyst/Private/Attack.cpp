@@ -32,6 +32,7 @@ void UAttack::OnHit_Implementation(AActor* StrikingBattler, UPrimitiveComponent*
                 AnatomyUnit = IAnatomy::Execute_GetAnatomyUnit(StrickenComp);
             }
         }
+        /*
         else 
         {
             // todo: remove this branch hack if the query collision events on custom uprim IDefenders and IAttackers ever works properly
@@ -58,6 +59,7 @@ void UAttack::OnHit_Implementation(AActor* StrikingBattler, UPrimitiveComponent*
                 UE_LOG(LogTemp, Warning, TEXT("OnHit; the stricken component %s does not implement IDefender, so we can't move forward communicating damage"), *StrickenComp->GetName());
             }
         }
+        */
         if(StrickenArmor)
         {
             // Damage setter is inside the IDefender target check so that we only bother calc/cache of damage if we can actually apply the damage
@@ -86,18 +88,6 @@ void UAttack::OnHit_Implementation(AActor* StrikingBattler, UPrimitiveComponent*
                 UE_LOG(LogTemp, Log, TEXT("OnHit; FHitResult says: %s, specifically BoneName is %s and MyBoneName is %s"), *HitInfo.ToString(), *HitInfo.BoneName.ToString(), *HitInfo.MyBoneName.ToString()); 
                 UE_LOG(LogTemp, Log, TEXT("OnHit; striking component says: %s"), *StrikingComp->GetName());
                 UE_LOG(LogTemp, Log, TEXT("OnHit; stricken component says: %s"), *StrickenComp->GetName()); 
-                /*
-                ARyddelmystCharacter* Ryddelmystress = Cast<ARyddelmystCharacter>(StrickenActor);
-                if (Ryddelmystress)
-                {
-                    Ryddelmystress->HandleDamage(Ryddelmystress, DamageRx, InstigatorPawn->GetController(), 
-                        HitInfo.Location, StrickenComp, HitInfo.BoneName, HitInfo.TraceStart, Cast<UDamageType>(Types[0]->GetDefaultObject()), StrikingBattler);
-                }
-                else
-                {
-                    UE_LOG(LogTemp, Error, TEXT("OnHit; failed to HandleDamage() since the stricken actor %s is not a ryddelmystcharacter.... probably should fix that hack"), *StrickenActor->GetName());
-                }
-                */
                 if (StrickenActor->CanBeDamaged())
                 {
                     UGameplayStatics::ApplyPointDamage(StrickenBattler, DamageRx, NormalImpulse, HitInfo, InstigatorPawn->GetController(), StrikingBattler, Types[0]);
