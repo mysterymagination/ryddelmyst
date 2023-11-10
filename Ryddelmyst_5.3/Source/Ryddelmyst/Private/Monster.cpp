@@ -99,6 +99,7 @@ void AMonster::HandleDamage(AActor* DamagedActor, float Damage, const class UDam
 	MonsterStats->StatsMap["HP"] = FMath::Clamp(MonsterStats->StatsMap["HP"], 0.0f, MonsterStats->StatsMap["MaxHP"]);
 	if (MonsterStats->StatsMap["HP"] == 0.f)
 	{
+		UE_LOG(LogTemp, Warning, TEXT("HandleDamage; %s HP with max %f has been depleted, so it will HandleDeath()"), *DamagedActor->GetName(), MonsterStats->StatsMap["MaxHP"]);
 		HandleDeath();
 	}
 }
