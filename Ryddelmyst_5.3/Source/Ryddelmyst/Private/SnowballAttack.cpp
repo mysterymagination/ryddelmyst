@@ -27,6 +27,7 @@ void USnowballAttack::OnHit_Implementation(AActor* StrikingBattler, UPrimitiveCo
 	}
     // todo: would be cleaner to have this logic in the Snowball Actor itself; maybe by registering a separate OnHit or similar function delegate with the 
     //  same OnComponentHit event that got us here?  Is there any guarantee of the order in which delegate functions are called by a triggering event, I wonder?
+     
     // after expending its Attack, the Snowball Actor hierarchy is destroyed
     StrikingComp->GetOwner()->Destroy();
 }

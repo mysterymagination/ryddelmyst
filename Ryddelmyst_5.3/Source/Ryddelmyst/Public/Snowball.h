@@ -43,6 +43,11 @@ public:
 	 */
 	UFUNCTION()
 	void BreakPhysics();
+	/**
+	 * Handler function registered with the OnComponentHit event attached to the projectile mesh. 
+	 */
+	UFUNCTION()
+	void HandleMeshCollision(UPrimitiveComponent* StrikingComp, AActor* StrickenActor, UPrimitiveComponent* StrickenComp, FVector NormalImpulse, const FHitResult& HitInfo);
 	std::function<void(AActor* LaunchingActor, const FVector& LaunchDirection)> GetLaunchFunction() { return LaunchFn; };
 	void SetLaunchFunction(std::function<void(AActor* LaunchingActor, const FVector& LaunchDirection)> Function) { LaunchFn = Function; };
 	UFUNCTION()

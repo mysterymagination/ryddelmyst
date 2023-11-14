@@ -64,6 +64,10 @@ ASnowball::ASnowball()
 		{
 			ProjectileMeshComponent->SetStaticMesh(Mesh.Object);
 		}
+		ProjectileMeshComponent->SetNotifyRigidBodyCollision(true);
+		ProjectileMeshComponent->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
+		ProjectileMeshComponent->SetCollisionProfileName("Projectile");
+		ProjectileMeshComponent->OnComponentHit.AddDynamic(this, &ASnowball::HandleMeshCollision);
 	}
 	
 	ProjectileMeshComponent->SetRelativeScale3D(FVector(0.09f, 0.09f, 0.09f));
@@ -111,6 +115,11 @@ void ASnowball::Cast(ARyddelmystCharacter* LaunchingCharacter, const FVector& La
 	SpellSphereComponent->Caster = LaunchingCharacter;
 	UE_LOG(LogTemp, Warning, TEXT("Cast; launchingchar is %s and launchdir is %s"), *LaunchingCharacter->GetName(), *LaunchDirection.ToString());
 	LaunchFn(LaunchingCharacter, LaunchDirection);
+}
+
+void ASnowball::HandleMeshCollision(UPrimitiveComponent* StrikingComp, AActor* StrickenActor, UPrimitiveComponent* StrickenComp, FVector NormalImpulse, const FHitResult& HitInfo)
+{
+	Destroy();
 }
 
 
