@@ -36,7 +36,7 @@ ASnowball::ASnowball()
 		SpellSphereComponent->SetSimulatePhysics(true);
 		SpellSphereComponent->SetNotifyRigidBodyCollision(true);
 		SpellSphereComponent->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
-		SpellSphereComponent->SetCollisionProfileName("Projectile");
+		SpellSphereComponent->SetCollisionProfileName("HitBox");
 		UE_LOG(LogTemp, Warning, TEXT("snowball ctor; adding OnComponentHit delegate pointing to HitBoxer::OnHit"));
 		FScriptDelegate onHitDelegate;
 		onHitDelegate.BindUFunction(HitBoxer, FName("OnHit"));

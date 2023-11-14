@@ -32,7 +32,6 @@ void UAttack::OnHit_Implementation(AActor* StrikingBattler, UPrimitiveComponent*
                 AnatomyUnit = IAnatomy::Execute_GetAnatomyUnit(StrickenComp);
             }
         }
-        /*
         else 
         {
             // todo: remove this branch hack if the query collision events on custom uprim IDefenders and IAttackers ever works properly
@@ -59,7 +58,6 @@ void UAttack::OnHit_Implementation(AActor* StrikingBattler, UPrimitiveComponent*
                 UE_LOG(LogTemp, Warning, TEXT("OnHit; the stricken component %s does not implement IDefender, so we can't move forward communicating damage"), *StrickenComp->GetName());
             }
         }
-        */
         if(StrickenArmor)
         {
             // Damage setter is inside the IDefender target check so that we only bother calc/cache of damage if we can actually apply the damage
