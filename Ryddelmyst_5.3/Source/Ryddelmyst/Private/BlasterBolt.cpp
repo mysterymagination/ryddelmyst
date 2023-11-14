@@ -8,7 +8,17 @@ ABlasterBolt::ABlasterBolt()
 {
  	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
-	if (!BulletShape)
+	UObject* Attacker = nullptr;
+	if (!BulletMesh)
+	{
+		BulletMesh = CreateDefaultSubobject<USpellStaticMeshComponent>(TEXT("BlasterBoltMeshComponent"));
+		static ConstructorHelpers::FObjectFinder<UStaticMesh>Mesh(TEXT("/Game/Ryddelmyst_Assets/Meshes/shapes/capsule.capsule"));
+		if (Mesh.Succeeded())
+		{
+			BulletMesh->SetStaticMesh(Mesh.Object);
+		}
+	}
+	if (!UseMeshForCollision && !BulletShape)
 	{
 		// Use a capsule as a simple collision representation.
 		SpellCapsuleComponent = CreateDefaultSubobject<USpellCapsuleComponent>(TEXT("SpellCapsuleComponent"));
@@ -27,19 +37,32 @@ ABlasterBolt::ABlasterBolt()
 		BulletShape->OnComponentHit.Add(onHitDelegate);
 		// set the root component to be the collision component.
 		RootComponent = BulletShape;
+		BulletMesh->SetupAttachment(RootComponent);
+		Attacker = BulletShape;
 	}
-	if (!BulletMesh)
+	else if (UseMeshForCollision)
 	{
-		BulletMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("BlasterBoltMeshComponent"));
-		// todo: need a capsule shaped mesh
-		static ConstructorHelpers::FObjectFinder<UStaticMesh>Mesh(TEXT("'/Game/FirstPerson/Meshes/FirstPersonProjectileMesh.FirstPersonProjectileMesh'"));
-		if (Mesh.Succeeded())
-		{
-			BulletMesh->SetStaticMesh(Mesh.Object);
-		}
+		BulletMesh->SetMassOverrideInKg(NAME_None, Mass, true);
+		BulletMesh->SetSimulatePhysics(true);
+		// collision config
+		BulletMesh->SetNotifyRigidBodyCollision(true);
+		BulletMesh->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
+		BulletMesh->SetCollisionProfileName("Projectile");
+		FScriptDelegate onHitDelegate;
+		onHitDelegate.BindUFunction(HitBoxer, FName("OnHit"));
+		BulletMesh->OnComponentHit.Add(onHitDelegate);
+		RootComponent = BulletMesh;
+		Attacker = BulletMesh;
 	}
-	BulletMesh->SetRelativeScale3D(FVector(0.09f, 0.09f, 0.09f));
-	BulletMesh->SetupAttachment(RootComponent);
+
+	// todo: material setup
+
+	// todo: magic weapon setup
+	IAttacker::Execute_GetWeapon(Attacker)->AttackMap =
+	{
+		//{UFireSnowballAttack::ATTACK_NAME, CreateDefaultSubobject<UFireSnowballAttack>(FName(*UFireSnowballAttack::ATTACK_NAME))}
+	};
+	IAttacker::Execute_GetWeapon(Attacker)->CurrentAttackName = TEXT("");//UFireSnowballAttack::ATTACK_NAME;
 }
 
 // Called when the game starts or when spawned

@@ -7,8 +7,9 @@
 #include "NiagaraSystem.h"
 #include "HitBoxerComponent.h"
 #include "Components/ShapeComponent.h"
+#include "SpellStaticMeshComponent.h"
 #include "GameFramework/ProjectileMovementComponent.h"
-#include "SpellProjectile.generated.h"
+#include "SpellBullet.generated.h"
 
 UCLASS()
 class RYDDELMYST_API ASpellBullet : public AActor
@@ -38,12 +39,14 @@ public:
 	UMaterialInstanceDynamic* BulletMaterial;
 	// Projectile mesh
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Projectile)
-	UStaticMeshComponent* BulletMesh;
+	USpellStaticMeshComponent* BulletMesh;
 	// Collision shape component.
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Projectile)
 	UShapeComponent* BulletShape;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Projectile)
 	float Mass = 0.5f;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Projectile)
+	bool UseMeshForCollision = false;
 private:
 	// Projectile movement component.
 	UPROPERTY(VisibleAnywhere, Category = Movement)

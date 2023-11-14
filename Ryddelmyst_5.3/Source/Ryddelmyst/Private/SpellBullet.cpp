@@ -12,28 +12,6 @@ ASpellBullet::ASpellBullet()
 	{
 		HitBoxer = CreateDefaultSubobject<UHitBoxerComponent>(TEXT("SpellBulletHitBoxer"));
 	}
-	// todo: does it make sense to force a separate shape from the static mesh? Couldn't we set RootComponent to the static mesh if the static mesh asset is set, and then do the same physics and collision config for the static mesh?
-	if (!BulletShape)
-	{
-		UE_LOG(LogTemp, Error, TEXT("SpellBullet is missing a defined spell shape; default unrendered USceneComponent will be used for transform root."));
-		// Set the default root scene component.
-		RootComponent = CreateDefaultSubobject<USceneComponent>(TEXT("SpellBulletSceneRoot"));
-	}
-	else
-	{
-		// physics config
-		BulletShape->SetMassOverrideInKg(NAME_None, Mass, true);
-		BulletShape->SetSimulatePhysics(true);
-		// collision config
-		BulletShape->SetNotifyRigidBodyCollision(true);
-		BulletShape->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
-		BulletShape->SetCollisionProfileName("Projectile");
-		FScriptDelegate onHitDelegate;
-		onHitDelegate.BindUFunction(HitBoxer, FName("OnHit"));
-		BulletShape->OnComponentHit.Add(onHitDelegate);
-		// set the root component to be the collision component.
-		RootComponent = BulletShape;
-	}
 	if (!BulletMovement)
 	{
 		// Use this component to drive this projectile's movement.
@@ -49,7 +27,6 @@ ASpellBullet::ASpellBullet()
 	{
 		// todo: create niagara component from system and attach to scene root 
 	}
-	
 }
 
 // Called when the game starts or when spawned
