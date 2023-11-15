@@ -55,7 +55,19 @@ ABlasterBolt::ABlasterBolt()
 		Attacker = BulletMesh;
 	}
 
-	// todo: material setup
+	// material setup
+	if (!BulletMaterial)
+	{
+		static ConstructorHelpers::FObjectFinder<UMaterial> Material(TEXT("/Game/Ryddelmyst_Assets/Materials/M_GlowyPurpleLava.M_GlowyPurpleLava"));
+		if (Material.Succeeded())
+		{
+			BulletMaterial = UMaterialInstanceDynamic::Create(Material.Object, BulletMesh);
+		}
+		else
+		{
+			UE_LOG(LogTemp, Error, TEXT("BlasterBolt ctor; failed to load default glowy purple lava material asset"));
+		}
+	}
 
 	// todo: magic weapon setup
 	IAttacker::Execute_GetWeapon(Attacker)->AttackMap =

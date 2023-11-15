@@ -36,7 +36,7 @@ ASnowball::ASnowball()
 		SpellSphereComponent->SetSimulatePhysics(true);
 		SpellSphereComponent->SetNotifyRigidBodyCollision(true);
 		SpellSphereComponent->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
-		SpellSphereComponent->SetCollisionProfileName("HitBox");
+		SpellSphereComponent->SetCollisionProfileName("Projectile");
 		UE_LOG(LogTemp, Warning, TEXT("snowball ctor; adding OnComponentHit delegate pointing to HitBoxer::OnHit"));
 		FScriptDelegate onHitDelegate;
 		onHitDelegate.BindUFunction(HitBoxer, FName("OnHit"));
@@ -64,10 +64,12 @@ ASnowball::ASnowball()
 		{
 			ProjectileMeshComponent->SetStaticMesh(Mesh.Object);
 		}
+		/* todo: with HitBox collision profile blocking other hitboxes we wind up either bouncing off and doing damage or disappearing and not doing damage, depending on whether the HitBox uprim or the static mesh has a greater radius. If we did ovverlap for HitBox <-> HitBox collision events then maybe we could have the HitBox overlap first and then the mesh hit?
 		ProjectileMeshComponent->SetNotifyRigidBodyCollision(true);
 		ProjectileMeshComponent->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
 		ProjectileMeshComponent->SetCollisionProfileName("Projectile");
 		ProjectileMeshComponent->OnComponentHit.AddDynamic(this, &ASnowball::HandleMeshCollision);
+		*/
 	}
 	
 	ProjectileMeshComponent->SetRelativeScale3D(FVector(0.09f, 0.09f, 0.09f));
@@ -119,6 +121,7 @@ void ASnowball::Cast(ARyddelmystCharacter* LaunchingCharacter, const FVector& La
 
 void ASnowball::HandleMeshCollision(UPrimitiveComponent* StrikingComp, AActor* StrickenActor, UPrimitiveComponent* StrickenComp, FVector NormalImpulse, const FHitResult& HitInfo)
 {
+	UE_LOG(LogTemp, Warning, TEXT("HandleMeshCollision; destroying snowball"));
 	Destroy();
 }
 
