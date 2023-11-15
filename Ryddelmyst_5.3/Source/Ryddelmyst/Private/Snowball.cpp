@@ -30,7 +30,6 @@ ASnowball::ASnowball()
 		
 		// todo: trying to lower the impact force of the snowball; maybe mass derives from the radius of the physics sphere?
 		SpellSphereComponent->InitSphereRadius(15.0f);
-		SpellSphereComponent->SetMassOverrideInKg(NAME_None, 0.5f, true);
 
 		// On hit event handling
 		SpellSphereComponent->SetSimulatePhysics(true);
@@ -90,7 +89,7 @@ ASnowball::ASnowball()
 void ASnowball::BeginPlay()
 {
 	Super::BeginPlay();
-
+	SpellSphereComponent->SetMassOverrideInKg(NAME_None, 0.5f, true);
 }
 
 // Called every frame

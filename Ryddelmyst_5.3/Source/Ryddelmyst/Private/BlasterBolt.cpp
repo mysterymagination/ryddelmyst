@@ -26,7 +26,6 @@ ABlasterBolt::ABlasterBolt()
 		// Set the capsule's collision radius.
 		SpellCapsuleComponent->InitCapsuleSize(5.f, 25.f);
 		// physics config
-		BulletShape->SetMassOverrideInKg(NAME_None, Mass, true);
 		BulletShape->SetSimulatePhysics(true);
 		// collision config
 		BulletShape->SetNotifyRigidBodyCollision(true);
@@ -42,7 +41,6 @@ ABlasterBolt::ABlasterBolt()
 	}
 	else if (UseMeshForCollision)
 	{
-		BulletMesh->SetMassOverrideInKg(NAME_None, Mass, true);
 		BulletMesh->SetSimulatePhysics(true);
 		// collision config
 		BulletMesh->SetNotifyRigidBodyCollision(true);
@@ -81,7 +79,11 @@ ABlasterBolt::ABlasterBolt()
 void ABlasterBolt::BeginPlay()
 {
 	Super::BeginPlay();
-	
+	if (BulletShape)
+	{
+		BulletShape->SetMassOverrideInKg(NAME_None, Mass, true);
+	}
+	BulletMesh->SetMassOverrideInKg(NAME_None, Mass, true);
 }
 
 // Called every frame
