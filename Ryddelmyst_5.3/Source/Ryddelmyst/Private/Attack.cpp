@@ -10,6 +10,7 @@
 #include "DataViz.h"
 
 const FString UAttack::KEY_COSTS_EFFECT("Effect");
+const FString UAttack::TAG_FLAG_IGNORE_IFRAMES("IgnoreIframes");
 
 void UAttack::OnHit_Implementation(AActor* StrikingBattler, UPrimitiveComponent* StrikingComp, AActor* StrickenActor, UPrimitiveComponent* StrickenComp, FVector NormalImpulse, const FHitResult& HitInfo) 
 {

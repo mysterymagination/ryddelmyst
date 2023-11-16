@@ -1,5 +1,9 @@
 
 #include "ElectricSnowballAttack.h"
+#include "LightningDamageType.h"
+#include "StatusEffected.h"
+#include "StatusEffect.h"
+#include "ShockedStatusEffect.h"
 
 const FString UElectricSnowballAttack::ATTACK_NAME("ElectricSnowballAttack");
 

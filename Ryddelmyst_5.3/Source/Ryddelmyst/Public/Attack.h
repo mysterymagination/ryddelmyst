@@ -28,6 +28,10 @@ class RYDDELMYST_API UAttack : public UObject
 	GENERATED_BODY()
 public:
 	static const FString KEY_COSTS_EFFECT;
+	/**
+	 * Tag string to be applied to this Attack's host Actor indicating that stricken Actors' iframes (if any) should be ignored.
+	 */
+	static const FString TAG_FLAG_IGNORE_IFRAMES;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Combat")
 	FString AttackName;
 	/**

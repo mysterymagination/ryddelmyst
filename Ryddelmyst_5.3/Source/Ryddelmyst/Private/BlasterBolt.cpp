@@ -2,6 +2,7 @@
 
 
 #include "BlasterBolt.h"
+#include "BlasterBoltAttack.h"
 
 // Sets default values
 ABlasterBolt::ABlasterBolt()
@@ -67,12 +68,13 @@ ABlasterBolt::ABlasterBolt()
 		}
 	}
 
-	// todo: magic weapon setup
+	// magic weapon setup
+	Tags.Add(FName(UAttack::TAG_FLAG_IGNORE_IFRAMES));
 	IAttacker::Execute_GetWeapon(Attacker)->AttackMap =
 	{
-		//{UFireSnowballAttack::ATTACK_NAME, CreateDefaultSubobject<UFireSnowballAttack>(FName(*UFireSnowballAttack::ATTACK_NAME))}
+		{UBlasterBoltAttack::ATTACK_NAME, CreateDefaultSubobject<UBlasterBoltAttack>(FName(UBlasterBoltAttack::ATTACK_NAME))}
 	};
-	IAttacker::Execute_GetWeapon(Attacker)->CurrentAttackName = TEXT("");//UFireSnowballAttack::ATTACK_NAME;
+	IAttacker::Execute_GetWeapon(Attacker)->CurrentAttackName = UBlasterBoltAttack::ATTACK_NAME;
 }
 
 // Called when the game starts or when spawned
