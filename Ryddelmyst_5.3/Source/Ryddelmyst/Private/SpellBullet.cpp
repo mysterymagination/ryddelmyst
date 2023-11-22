@@ -23,6 +23,12 @@ ASpellBullet::ASpellBullet()
 		BulletMovement->bShouldBounce = false;
 		BulletMovement->ProjectileGravityScale = 0.0f;
 	}
+	// material setup
+	if (BulletMaterial)
+	{
+		BulletMesh->SetMaterial(0, BulletMaterial);
+	}
+	// particle FX setup
 	if (BulletParticles)
 	{
 		// todo: create niagara component from system and attach to scene root 

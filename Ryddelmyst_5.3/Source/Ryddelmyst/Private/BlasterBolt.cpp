@@ -13,7 +13,7 @@ ABlasterBolt::ABlasterBolt()
 	if (!BulletMesh)
 	{
 		BulletMesh = CreateDefaultSubobject<USpellStaticMeshComponent>(TEXT("BlasterBoltMeshComponent"));
-		static ConstructorHelpers::FObjectFinder<UStaticMesh>Mesh(TEXT("/Game/Ryddelmyst_Assets/Meshes/shapes/capsule.capsule"));
+		static ConstructorHelpers::FObjectFinder<UStaticMesh>Mesh(TEXT("'/Game/Ryddelmyst_Assets/Meshes/shapes/capsule.capsule'"));
 		if (Mesh.Succeeded())
 		{
 			BulletMesh->SetStaticMesh(Mesh.Object);
@@ -57,10 +57,11 @@ ABlasterBolt::ABlasterBolt()
 	// material setup
 	if (!BulletMaterial)
 	{
-		static ConstructorHelpers::FObjectFinder<UMaterial> Material(TEXT("/Game/Ryddelmyst_Assets/Materials/M_GlowyPurpleLava.M_GlowyPurpleLava"));
+		static ConstructorHelpers::FObjectFinder<UMaterial> Material(TEXT("'/Game/Ryddelmyst_Assets/Materials/M_GlowyPurpleLava.M_GlowyPurpleLava'"));
 		if (Material.Succeeded())
 		{
 			BulletMaterial = UMaterialInstanceDynamic::Create(Material.Object, BulletMesh);
+			BulletMesh->SetMaterial(0, BulletMaterial);
 		}
 		else
 		{

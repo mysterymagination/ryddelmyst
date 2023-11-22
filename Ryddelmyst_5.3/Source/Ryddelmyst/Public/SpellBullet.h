@@ -36,7 +36,7 @@ public:
 	UNiagaraSystem* BulletParticles;
 	// Projectile material
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Projectile)
-	UMaterialInstanceDynamic* BulletMaterial;
+	UMaterialInterface* BulletMaterial;
 	// Projectile mesh
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Projectile)
 	USpellStaticMeshComponent* BulletMesh;
