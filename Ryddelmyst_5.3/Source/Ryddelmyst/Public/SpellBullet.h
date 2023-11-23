@@ -11,7 +11,7 @@
 #include "GameFramework/ProjectileMovementComponent.h"
 #include "SpellBullet.generated.h"
 
-UCLASS()
+UCLASS(ClassGroup = "Combat", Blueprintable, BlueprintType, meta = (DisplayName = "SpellBullet", BlueprintSpawnableComponent))
 class RYDDELMYST_API ASpellBullet : public AActor
 {
 	GENERATED_BODY()

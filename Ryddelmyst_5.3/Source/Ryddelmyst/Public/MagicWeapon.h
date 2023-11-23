@@ -9,7 +9,7 @@
 /**
  * A Weapon that delivers spell effects through its Attacks
  */
-UCLASS()
+UCLASS(ClassGroup = "Combat", editinlinenew, Blueprintable, BlueprintType, meta = (DisplayName = "MagicWeapon", BlueprintSpawnableComponent))
 class RYDDELMYST_API UMagicWeapon : public UWeapon
 {
 	GENERATED_BODY()

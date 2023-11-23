@@ -60,7 +60,7 @@ ABlasterBolt::ABlasterBolt()
 		static ConstructorHelpers::FObjectFinder<UMaterial> Material(TEXT("'/Game/Ryddelmyst_Assets/Materials/M_GlowyPurpleLava.M_GlowyPurpleLava'"));
 		if (Material.Succeeded())
 		{
-			BulletMaterial = UMaterialInstanceDynamic::Create(Material.Object, BulletMesh);
+			BulletMaterial = Material.Object;//UMaterialInstanceDynamic::Create(Material.Object, BulletMesh);
 			BulletMesh->SetMaterial(0, BulletMaterial);
 		}
 		else
@@ -87,6 +87,24 @@ void ABlasterBolt::BeginPlay()
 		BulletShape->SetMassOverrideInKg(NAME_None, Mass, true);
 	}
 	BulletMesh->SetMassOverrideInKg(NAME_None, Mass, true);
+
+	/*
+	// material setup
+	if (!BulletMaterial)
+	{
+		UMaterial* Material = LoadObject<UMaterial>
+			(
+				nullptr,
+				TEXT("'/Game/Ryddelmyst_Assets/Materials/M_GlowyPurpleLava.M_GlowyPurpleLava'"),
+				nullptr,
+				LOAD_None,
+				nullptr
+			);
+		BulletMaterial = UMaterialInstanceDynamic::Create(Material, BulletMesh);
+		BulletMesh->SetMaterial(0, BulletMaterial);
+		
+	}
+	*/
 }
 
 // Called every frame

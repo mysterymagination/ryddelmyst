@@ -15,12 +15,12 @@ UCLASS()
 class RYDDELMYST_API USpellCapsuleComponent : public UCapsuleComponent, public IAttacker
 {
 	GENERATED_BODY()
-protected:
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Combat")
-		UMagicWeapon* Magic;
+
 public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Combat")
-		AActor* Caster;
+	AActor* Caster;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Combat")
+	UMagicWeapon* Magic;
 public:
 	USpellCapsuleComponent();
 	UWeapon* GetWeapon_Implementation() override;
