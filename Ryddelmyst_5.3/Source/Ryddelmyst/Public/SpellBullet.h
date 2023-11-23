@@ -9,6 +9,7 @@
 #include "Components/ShapeComponent.h"
 #include "SpellStaticMeshComponent.h"
 #include "GameFramework/ProjectileMovementComponent.h"
+#include "Materials/MaterialInstanceConstant.h"
 #include "SpellBullet.generated.h"
 
 UCLASS(ClassGroup = "Combat", Blueprintable, BlueprintType, meta = (DisplayName = "SpellBullet", BlueprintSpawnableComponent))
@@ -36,7 +37,7 @@ public:
 	UNiagaraSystem* BulletParticles;
 	// Projectile material
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Projectile)
-	UMaterialInterface* BulletMaterial;
+	UMaterialInstanceConstant* BulletMaterial;
 	// Projectile mesh
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Projectile)
 	USpellStaticMeshComponent* BulletMesh;

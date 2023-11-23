@@ -57,10 +57,10 @@ ABlasterBolt::ABlasterBolt()
 	// material setup
 	if (!BulletMaterial)
 	{
-		static ConstructorHelpers::FObjectFinder<UMaterial> Material(TEXT("'/Game/Ryddelmyst_Assets/Materials/M_GlowyPurpleLava.M_GlowyPurpleLava'"));
-		if (Material.Succeeded())
+		static ConstructorHelpers::FObjectFinder<UMaterialInstanceConstant> MaterialInstance(TEXT("'/Game/Ryddelmyst_Assets/Materials/MI_GlowyPurpleLava.MI_GlowyPurpleLava'"));
+		if (MaterialInstance.Succeeded())
 		{
-			BulletMaterial = Material.Object;//UMaterialInstanceDynamic::Create(Material.Object, BulletMesh);
+			BulletMaterial = MaterialInstance.Object;//UMaterialInstanceDynamic::Create(Material.Object, BulletMesh);
 			BulletMesh->SetMaterial(0, BulletMaterial);
 		}
 		else
