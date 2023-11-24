@@ -41,13 +41,8 @@ public:
 	// Projectile mesh
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Projectile)
 	USpellStaticMeshComponent* BulletMesh;
-	// Collision shape component.
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Projectile)
-	UShapeComponent* BulletShape;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Projectile)
 	float Mass = 0.5f;
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Projectile)
-	bool UseMeshForCollision = false;
 private:
 	// Projectile movement component.
 	UPROPERTY(VisibleAnywhere, Category = Movement)

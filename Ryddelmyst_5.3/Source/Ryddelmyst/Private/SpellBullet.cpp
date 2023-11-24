@@ -16,7 +16,7 @@ ASpellBullet::ASpellBullet()
 	{
 		// Use this component to drive this projectile's movement.
 		BulletMovement = CreateDefaultSubobject<UProjectileMovementComponent>(TEXT("BulletMovement"));
-		BulletMovement->SetUpdatedComponent(BulletShape);
+		BulletMovement->SetUpdatedComponent(BulletMesh);
 		BulletMovement->InitialSpeed = 3000.0f;
 		BulletMovement->MaxSpeed = 3000.0f;
 		BulletMovement->bRotationFollowsVelocity = true;
