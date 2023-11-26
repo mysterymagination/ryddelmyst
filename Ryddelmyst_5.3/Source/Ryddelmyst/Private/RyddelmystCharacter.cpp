@@ -894,7 +894,15 @@ void ARyddelmystCharacter::HandleDamage(AActor* DamagedActor, float Damage, cons
 	UE_LOG(LogTemp, Warning, TEXT("HandleDamage; ouch for %f to %s"), Damage, *DamagedActor->GetName());
 	UpdateHealth(-Damage);
 	// todo: would be cleaner to move iframe processing to UHitBoxerComponent or UAttack
-	if (DamageCauser->Tags.Find(FName(UAttack::TAG_FLAG_IGNORE_IFRAMES)) == INDEX_NONE)
+	if (DamageCauser)
+	{
+		if (DamageCauser->Tags.Find(FName(UAttack::TAG_FLAG_IGNORE_IFRAMES)) == INDEX_NONE)
+		{
+			SetCanBeDamaged(false);
+			DamageInvincibilityTimer();
+		}
+	}
+	else
 	{
 		SetCanBeDamaged(false);
 		DamageInvincibilityTimer();
