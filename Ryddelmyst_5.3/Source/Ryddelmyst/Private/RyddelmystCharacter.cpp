@@ -893,8 +893,12 @@ void ARyddelmystCharacter::HandleDamage(AActor* DamagedActor, float Damage, cons
 {
 	UE_LOG(LogTemp, Warning, TEXT("HandleDamage; ouch for %f to %s"), Damage, *DamagedActor->GetName());
 	UpdateHealth(-Damage);
-	SetCanBeDamaged(false);
-	DamageInvincibilityTimer();
+	// todo: would be cleaner to move iframe processing to UHitBoxerComponent or UAttack
+	if (DamageCauser->Tags.Find(FName(UAttack::TAG_FLAG_IGNORE_IFRAMES)) == INDEX_NONE)
+	{
+		SetCanBeDamaged(false);
+		DamageInvincibilityTimer();
+	}
 	// todo: send the character flying in some direction derived from HitInfo?
 }
 

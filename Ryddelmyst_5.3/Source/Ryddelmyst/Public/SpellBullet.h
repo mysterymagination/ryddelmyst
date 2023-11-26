@@ -43,8 +43,7 @@ public:
 	USpellStaticMeshComponent* BulletMesh;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Projectile)
 	float Mass = 0.5f;
-private:
 	// Projectile movement component.
-	UPROPERTY(VisibleAnywhere, Category = Movement)
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Projectile)
 	UProjectileMovementComponent* BulletMovement;
 };
