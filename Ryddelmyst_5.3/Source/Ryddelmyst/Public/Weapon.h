@@ -20,6 +20,8 @@ public:
     TMap<FString, UAttack*> AttackMap;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Combat")
     FString CurrentAttackName;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Combat")
+	AActor* Wielder;
 public:
 	UFUNCTION() 
 	UAttack* GetCurrentAttack()

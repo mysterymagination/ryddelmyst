@@ -3,6 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "UObject/ObjectPtr.h"
 #include "GameFramework/Actor.h"
 #include "NiagaraSystem.h"
 #include "HitBoxerComponent.h"
@@ -28,22 +29,29 @@ protected:
 public:	
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
+	/**
+	 * @return The IAttacker implementer for this bullet
+	 * 
+	 */
+	UFUNCTION(BlueprintCallable, BlueprintNativeEvent, Category = "Combat")
+	UObject* GetAttacker();
+	virtual UObject* GetAttacker_Implementation();
 
 public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Collision)
-	UHitBoxerComponent* HitBoxer;
+	TObjectPtr<UHitBoxerComponent> HitBoxer;
 	// Projectile particle FX
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Projectile)
-	UNiagaraSystem* BulletParticles;
+	TObjectPtr<UNiagaraSystem> BulletParticles;
 	// Projectile material
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Projectile)
-	UMaterialInstanceConstant* BulletMaterial;
+	TObjectPtr<UMaterialInstanceConstant> BulletMaterial;
 	// Projectile mesh
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Projectile)
-	USpellStaticMeshComponent* BulletMesh;
+	TObjectPtr<USpellStaticMeshComponent> BulletMesh;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Projectile)
 	float Mass = 0.5f;
 	// Projectile movement component.
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Projectile)
-	UProjectileMovementComponent* BulletMovement;
+	TObjectPtr<UProjectileMovementComponent> BulletMovement;
 };

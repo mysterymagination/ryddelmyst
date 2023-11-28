@@ -13,7 +13,7 @@ USpellStaticMeshComponent::USpellStaticMeshComponent()
 
 AActor* USpellStaticMeshComponent::GetBattler_Implementation()
 {
-    return Caster;
+    return Magic->Wielder;
 }
 
 UWeapon* USpellStaticMeshComponent::GetWeapon_Implementation()

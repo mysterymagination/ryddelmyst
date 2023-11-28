@@ -18,8 +18,6 @@ class RYDDELMYST_API USpellCapsuleComponent : public UCapsuleComponent, public I
 
 public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Combat")
-	AActor* Caster;
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Combat")
 	UMagicWeapon* Magic;
 public:
 	USpellCapsuleComponent();

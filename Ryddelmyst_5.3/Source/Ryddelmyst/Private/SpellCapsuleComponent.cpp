@@ -13,7 +13,7 @@ USpellCapsuleComponent::USpellCapsuleComponent()
 
 AActor* USpellCapsuleComponent::GetBattler_Implementation()
 {
-    return Caster;
+    return Magic->Wielder;
 }
 
 UWeapon* USpellCapsuleComponent::GetWeapon_Implementation()

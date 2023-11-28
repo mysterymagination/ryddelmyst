@@ -16,7 +16,9 @@ void UAttack::OnHit_Implementation(AActor* StrikingBattler, UPrimitiveComponent*
 {
     UE_LOG(LogTemp, Warning, TEXT("OnHit; attack is %s by striking comp %s against stricken comp %s of stricken actor %s"), 
         *AttackName, *StrikingComp->GetName(), *StrickenComp->GetName(), *StrickenActor->GetName());
-    if(StrikingBattler)
+    // need to check nullptr and valid ptr since some attacks are delivered remotely e.g. a projectile and the striking BattleStatsBearer may no longer exist
+    // when the attack is being delivered.
+    if(StrikingBattler && IsValid(StrikingBattler))
     {
         UArmor* StrickenArmor = nullptr;
         UAnatomyUnit* AnatomyUnit = nullptr;

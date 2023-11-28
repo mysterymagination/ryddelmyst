@@ -13,6 +13,7 @@ UClawCapsuleComponent::UClawCapsuleComponent()
 
 AActor* UClawCapsuleComponent::GetBattler_Implementation() 
 { 
+    // simple case since we can assume the owning Actor would also be the Weapon's wielder
     return GetOwner(); 
 }
 

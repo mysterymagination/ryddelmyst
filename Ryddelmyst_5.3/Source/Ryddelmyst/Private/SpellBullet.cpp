@@ -46,6 +46,9 @@ void ASpellBullet::BeginPlay()
 void ASpellBullet::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
-
 }
 
+UObject* ASpellBullet::GetAttacker_Implementation()
+{
+	return BulletMesh;
+}

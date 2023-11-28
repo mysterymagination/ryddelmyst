@@ -34,6 +34,8 @@ void USnowballAttack::OnHit_Implementation(AActor* StrikingBattler, UPrimitiveCo
 
 FAttackTxInfo USnowballAttack::CalculateDamageTx_Implementation(AActor* BattleStatsBearer)
 {
+    // todo: roll this into UAttack.cpp boilerplate and add UPROPERTYs for the params e.g. diesides and crit range
+    // todo: crits should be based on small vital hitboxes on targets that if hit always result in a crit, and crit behavior should be defined in a BlueNativeEvent function per UAttack.
     if (BattleStatsBearer->GetClass()->ImplementsInterface(UBattleStatsBearer::StaticClass()))
     {
         float BaseDamage = BasePower * IBattleStatsBearer::Execute_GetStats(BattleStatsBearer)->StatsMap["Magic"];
@@ -46,6 +48,11 @@ FAttackTxInfo USnowballAttack::CalculateDamageTx_Implementation(AActor* BattleSt
         FAttackTxInfo AttackTx;
         AttackTx.DamageTx = DamageScaleFactor * BaseDamage;
         AttackTx.IsCrit = Rando / static_cast<float>((DieCount * DieSides)) >= 0.9f;
+        // add on a full diceroll of damage for crit
+        if (AttackTx.IsCrit)
+        {
+            AttackTx.DamageTx += DieCount * DieSides;
+        }
         UE_LOG(LogTemp, Warning, TEXT("CalculateDamageTx; IsCrit is %d based on rando %f div max rando %f which is %f"), AttackTx.IsCrit, Rando, static_cast<float>(DieCount * DieSides), Rando / static_cast<float>((DieCount * DieSides)));
         return AttackTx;
     }

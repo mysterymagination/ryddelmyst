@@ -14,7 +14,7 @@ USpellSphereComponent::USpellSphereComponent()
 
 AActor* USpellSphereComponent::GetBattler_Implementation() 
 { 
-    return Caster; 
+    return Magic->Wielder; 
 }
 
 UWeapon* USpellSphereComponent::GetWeapon_Implementation() 
