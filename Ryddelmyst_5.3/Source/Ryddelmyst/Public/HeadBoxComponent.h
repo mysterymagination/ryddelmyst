@@ -27,5 +27,5 @@ public:
     UHeadBoxComponent();
     UAnatomyUnit* GetAnatomyUnit_Implementation() override;
     UArmor* GetArmor_Implementation() override;
-    AActor* GetBattler_Implementation() override;
+    AActor* GetBattleStats_Implementation() override;
 };

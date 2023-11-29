@@ -20,7 +20,7 @@ UArmor* UBodyCapsuleComponent::GetArmor_Implementation()
     return Armor;
 }
 
-AActor* UBodyCapsuleComponent::GetBattler_Implementation()
+AActor* UBodyCapsuleComponent::GetBattleStats_Implementation()
 {
     return GetOwner();
 }

@@ -11,7 +11,7 @@ USpellCapsuleComponent::USpellCapsuleComponent()
     Magic = CreateDefaultSubobject<UMagicWeapon>(TEXT("Magic Weapon"));
 }
 
-AActor* USpellCapsuleComponent::GetBattler_Implementation()
+AActor* USpellCapsuleComponent::GetBattleStats_Implementation()
 {
     return Magic->Wielder;
 }

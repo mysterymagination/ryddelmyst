@@ -11,7 +11,7 @@ USpellStaticMeshComponent::USpellStaticMeshComponent()
 	Magic = CreateDefaultSubobject<UMagicWeapon>(TEXT("Magic Weapon"));
 }
 
-AActor* USpellStaticMeshComponent::GetBattler_Implementation()
+AActor* USpellStaticMeshComponent::GetBattleStats_Implementation()
 {
     return Magic->Wielder;
 }

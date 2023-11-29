@@ -29,7 +29,7 @@ void UAttack::OnHit_Implementation(AActor* StrikingBattler, UPrimitiveComponent*
         if (StrickenComp->GetClass()->ImplementsInterface(UDefender::StaticClass()))
         {
             StrickenArmor = IDefender::Execute_GetArmor(StrickenComp);
-            StrickenBattler = IDefender::Execute_GetBattler(StrickenComp);
+            StrickenBattler = IDefender::Execute_GetBattleStats(StrickenComp);
             if(StrickenComp->GetClass()->ImplementsInterface(UAnatomy::StaticClass()))
             {
                 AnatomyUnit = IAnatomy::Execute_GetAnatomyUnit(StrickenComp);
@@ -46,7 +46,7 @@ void UAttack::OnHit_Implementation(AActor* StrikingBattler, UPrimitiveComponent*
                 if(Body)
                 {
                     StrickenArmor = IDefender::Execute_GetArmor(Body);
-                    StrickenBattler = IDefender::Execute_GetBattler(Body);
+                    StrickenBattler = IDefender::Execute_GetBattleStats(Body);
                     AnatomyUnit = IAnatomy::Execute_GetAnatomyUnit(Body);
                     UE_LOG(LogTemp, Log, TEXT("OnHit; looked up the stricken stuff using hardcoded RMystCharacter cast hack. Armor says: %s, StrickenBattler says: %s, and Anatomy says: %s"),
                         *StrickenArmor->GetName(), *StrickenBattler->GetName(), *AnatomyUnit->GetName());

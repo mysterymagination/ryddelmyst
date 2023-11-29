@@ -22,7 +22,7 @@ public:
 	USpellStaticMeshComponent();
 	UWeapon* GetWeapon_Implementation() override;
 	FString GetCurrentAttack_Implementation() override;
-	AActor* GetBattler_Implementation() override;
+	AActor* GetBattleStats_Implementation() override;
 	void ExecuteAttack_Implementation
 	(
 		const FString& AttackName

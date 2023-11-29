@@ -6,6 +6,7 @@
 #include "CoreMinimal.h"
 #include "Armor.h"
 #include "UObject/Interface.h"
+#include "Utils.h"
 #include "IDefender.generated.h"
 
 // This class does not need to be modified.
@@ -24,10 +25,10 @@ class RYDDELMYST_API IDefender
 
 public:
 	/**
-	 * @return a pointer to the AActor implementing IBattleStatsBearer whose BattleStats should be used when processing incoming damage 
+	 * @return a map of battle stats drawn from the BattleStats of the stricken IBattleStatsBearer that should be used when processing incoming damage. 
 	 */
 	UFUNCTION(BlueprintCallable, BlueprintNativeEvent, Category = "Combat")
-	AActor* GetBattler();
+	FBattleStatsData GetBattleStats();
 	/**
      * @return the defender's armor data
      *
