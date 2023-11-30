@@ -12,9 +12,9 @@ USpellSphereComponent::USpellSphereComponent()
     Magic = CreateDefaultSubobject<UMagicWeapon>(TEXT("Magic Weapon"));
 }
 
-AActor* USpellSphereComponent::GetBattleStats_Implementation() 
+FBattleStatsData USpellSphereComponent::GetBattleStats_Implementation()
 { 
-    return Magic->Wielder; 
+    return Magic->WielderData; 
 }
 
 UWeapon* USpellSphereComponent::GetWeapon_Implementation() 

@@ -28,7 +28,7 @@ public:
 	 * @return the stats map from the BattleStats of whoever instigated this attack; should be used when processing outgoing damage 
 	 * todo: the GetBattleStats() function should be returning battlestats data rather than an Actor who implements IBattleStatsBearer; that way we
 	 * wouldn't need to worry about a potential disconnect between the lifetime of the IAttacker and the Actor who is its relevant IBattleStatsBearer. 
-	 * In the case of projectiles or other remote attack delivery mechanisms, the IAttacker has no hold on the lifetime of the Actor IBattleStatsBearer, nor should it, so in that case we now rely on IsValid(StrikingBattlerActor) causing the Attack::OnHit() to skip its actions. For now it should be sufficient to pass in the BattleState::StatsMap Map object by value and just work with that. If we ever need any of the stat mod timers etc. that UBattleStats provides we could always write a deep clone function for it.
+	 * In the case of projectiles or other remote attack delivery mechanisms, the IAttacker has no hold on the lifetime of the Actor IBattleStatsBearer, nor should it, so in that case we now rely on IsValid(StrikingBattlerActor) causing the Attack::OnHit() to skip its actions. For now it should be sufficient to pass in the BattleStats::StatsMap Map object by value and just work with that. If we ever need any of the stat mod timers etc. that UBattleStats provides we could always write a deep clone function for it.
 	 */
 	UFUNCTION(BlueprintCallable, BlueprintNativeEvent, Category = "Combat")
 	FBattleStatsData GetBattleStats();

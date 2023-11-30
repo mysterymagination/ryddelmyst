@@ -20,7 +20,7 @@ UArmor* UExtremityCapsuleComponent::GetArmor_Implementation()
     return Armor.Get();
 }
 
-AActor* UExtremityCapsuleComponent::GetBattleStats_Implementation()
+FBattleStatsData UExtremityCapsuleComponent::GetBattleStats_Implementation()
 {
-    return GetOwner();
+    return IBattleStatsBearer::Execute_GetStats(GetOwner())->StatsData;
 }

@@ -5,6 +5,7 @@
 #include <unordered_map>
 #include <string>
 #include <vector>
+#include "Utils.h"
 #include "BattleStats.generated.h"
 
 UCLASS(BlueprintType, Blueprintable)
@@ -31,7 +32,7 @@ public:
 	 * Mapping of string statistic names e.g. "Attack" to corresponding float values that will be used in various gameplay mechanics formulas, such as calculating damage by scaling a base damage value by a given stat value. 
 	 */
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "RPG")
-	TMap<FString, float> StatsMap;
+	FBattleStatsData StatsData;
 
 public:
 	UBattleStats();

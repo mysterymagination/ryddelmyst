@@ -1,7 +1,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "Util.generated.h"
+#include "Utils.generated.h"
 
 USTRUCT(BlueprintType)
 struct FBattleStatsData

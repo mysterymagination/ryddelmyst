@@ -6,6 +6,7 @@
 #include "UObject/NoExportTypes.h"
 #include "Containers/Map.h"
 #include "BattleStatsBearer.h"
+#include "Utils.h"
 #include "Attack.generated.h"
 
 USTRUCT(BlueprintType)
@@ -72,8 +73,8 @@ public:
 	 * @param HitInfo collision data
 	 */
 	UFUNCTION(BlueprintCallable, BlueprintNativeEvent, Category = "Combat")
-	void OnHit(AActor* StrikingBattler, UPrimitiveComponent* StrikingComp, AActor* StrickenActor, UPrimitiveComponent* StrickenComp, FVector NormalImpulse, const FHitResult& HitInfo);
-	virtual void OnHit_Implementation(AActor* StrikingBattler, UPrimitiveComponent* StrikingComp, AActor* StrickenActor, UPrimitiveComponent* StrickenComp, FVector NormalImpulse, const FHitResult& HitInfo);
+	void OnHit(FBattleStatsData StrikingBattlerData, UPrimitiveComponent* StrikingComp, AActor* StrickenActor, UPrimitiveComponent* StrickenComp, FVector NormalImpulse, const FHitResult& HitInfo);
+	virtual void OnHit_Implementation(FBattleStatsData StrikingBattlerData, UPrimitiveComponent* StrikingComp, AActor* StrickenActor, UPrimitiveComponent* StrickenComp, FVector NormalImpulse, const FHitResult& HitInfo);
 	/**
 	 * @brief Calculates the base damage of our attack from the stats of the input IBattleStatsBearer implementor
 	 * @param BattleStatsBearer the instigator of the attack, whose stats determine its damage output

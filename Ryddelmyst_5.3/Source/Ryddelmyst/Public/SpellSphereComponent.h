@@ -22,7 +22,7 @@ public:
 	USpellSphereComponent();
 	UWeapon* GetWeapon_Implementation() override;
 	FString GetCurrentAttack_Implementation() override;
-	AActor* GetBattleStats_Implementation() override;
+	FBattleStatsData GetBattleStats_Implementation() override;
 	void ExecuteAttack_Implementation
 	(
 		const FString& AttackName

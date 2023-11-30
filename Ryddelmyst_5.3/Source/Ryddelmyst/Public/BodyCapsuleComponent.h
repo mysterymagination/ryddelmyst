@@ -26,5 +26,5 @@ public:
     UBodyCapsuleComponent();
     UAnatomyUnit* GetAnatomyUnit_Implementation() override;
     UArmor* GetArmor_Implementation() override;
-    AActor* GetBattleStats_Implementation() override;
+    FBattleStatsData GetBattleStats_Implementation() override;
 };

@@ -5,6 +5,7 @@
 #include "CoreMinimal.h"
 #include "UObject/NoExportTypes.h"
 #include "Attack.h"
+#include "Utils.h"
 #include "Weapon.generated.h"
 
 /**
@@ -21,7 +22,7 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Combat")
     FString CurrentAttackName;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Combat")
-	AActor* Wielder;
+	FBattleStatsData WielderData;
 public:
 	UFUNCTION() 
 	UAttack* GetCurrentAttack()
