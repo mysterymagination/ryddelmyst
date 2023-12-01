@@ -60,7 +60,7 @@ void UAttack::OnHit_Implementation(FBattleStatsData StrikingBattlerData, UPrimit
     if(StrickenArmor)
     {
         // Damage setter is inside the IDefender target check so that we only bother calc/cache of damage if we can actually apply the damage
-        FAttackTxInfo DamageTxInfo = CalculateDamageTx(StrikingBattler);
+        FAttackTxInfo DamageTxInfo = CalculateDamageTx(StrikingBattlerData);
         float DamageRx = 0.f;
         if(AnatomyUnit)
         {
@@ -72,58 +72,32 @@ void UAttack::OnHit_Implementation(FBattleStatsData StrikingBattlerData, UPrimit
             DamageRx = StrickenArmor->CalculateDamageRx(StrickenBattlerData, nullptr, DamageTxInfo.DamageTx, DamageTypesToWeightsMap);
         }
         LatestDamageDealt = DamageRx;
-        // todo: this approach only works if we assume all attacks come from components of an Actor who is also a Pawn, e.g. a Monster's claw or Maya's mighty
-        //  jump kicks.  We may wish to eschew the UGameplayStatics::ApplyPointDamage() event so we can both have attacks that are not connected physically
-        //  to a Pawn and also so that we can support multiple damage types.  C'mon Unreal APIs, one damage type?  Really?
-            
-        APawn* InstigatorPawn = Cast<APawn>(StrikingBattler);
-        if(InstigatorPawn)
-        {
-            TArray<TSubclassOf<UDamageType>> Types;
-            DamageTypesToWeightsMap.GenerateKeyArray(Types);
-
-            UE_LOG(LogTemp, Log, TEXT("OnHit; FHitResult says: %s, specifically BoneName is %s and MyBoneName is %s"), *HitInfo.ToString(), *HitInfo.BoneName.ToString(), *HitInfo.MyBoneName.ToString()); 
-            UE_LOG(LogTemp, Log, TEXT("OnHit; striking component says: %s"), *StrikingComp->GetName());
-            UE_LOG(LogTemp, Log, TEXT("OnHit; stricken component says: %s"), *StrickenComp->GetName()); 
-            if (StrickenActor->CanBeDamaged())
-            {
-                UGameplayStatics::ApplyPointDamage(StrickenActor, DamageRx, NormalImpulse, HitInfo, InstigatorPawn->GetController(), StrikingBattler, Types[0]);
-                DataViz::FX_NumberParticles
-                (
-                    GetWorld(),
-                    HitInfo.Location,
-                    FRotator(0.f),
-                    FVector(1.f),
-                    DamageRx,
-                    DamageRx / DamageTxInfo.DamageTx,
-                    DamageTxInfo.IsCrit
-                );
-                UE_LOG(LogTemp, Warning, TEXT("OnHit; applied point damage of %f to %s"), DamageRx, *StrickenBattlerData.BattlerName);
-            }
-            else
-            {
-                UE_LOG(LogTemp, Warning, TEXT("OnHit; skipped applying point damage of %f to %s because of iframes"), DamageRx, *StrickenBattlerData.BattlerName);
-            }
-        }
-        else 
-        {
-            UE_LOG(LogTemp, Error, TEXT("OnHit; failed to apply point damage of %f because the striking component's owner %s is not a APawn"), DamageRx, *StrikingBattler->GetName());
-        }
-            
-        /*
+        
         TArray<TSubclassOf<UDamageType>> Types;
         DamageTypesToWeightsMap.GenerateKeyArray(Types);
-        AController* MonsterInstigator = Cast<ACharacter>(StrikingBattler)->GetController();
-        if (MonsterInstigator) 
+
+        UE_LOG(LogTemp, Log, TEXT("OnHit; FHitResult says: %s, specifically BoneName is %s and MyBoneName is %s"), *HitInfo.ToString(), *HitInfo.BoneName.ToString(), *HitInfo.MyBoneName.ToString()); 
+        UE_LOG(LogTemp, Log, TEXT("OnHit; striking component says: %s"), *StrikingComp->GetName());
+        UE_LOG(LogTemp, Log, TEXT("OnHit; stricken component says: %s"), *StrickenComp->GetName()); 
+        if (StrickenActor->CanBeDamaged())
         {
-            UGameplayStatics::ApplyPointDamage(StrickenBattler, DamageRx, NormalImpulse, HitInfo, MonsterInstigator, StrikingBattler, Types[0]);
-            UE_LOG(LogTemp, Warning, TEXT("OnHit; applied point damage of %f to %s"), DamageRx, *StrickenBattler->GetName());
+            UGameplayStatics::ApplyPointDamage(StrickenActor, DamageRx, NormalImpulse, HitInfo, nullptr, StrikingComp->GetOwner(), Types[0]);
+            DataViz::FX_NumberParticles
+            (
+                GetWorld(),
+                HitInfo.Location,
+                FRotator(0.f),
+                FVector(1.f),
+                DamageRx,
+                DamageRx / DamageTxInfo.DamageTx,
+                DamageTxInfo.IsCrit
+            );
+            UE_LOG(LogTemp, Warning, TEXT("OnHit; applied point damage of %f to %s"), DamageRx, *StrickenBattlerData.BattlerName);
         }
         else
         {
-            UE_LOG(LogTemp, Error, TEXT("OnHit; failed to apply point damage of %f to %s because we failed to look up the instigator controller of %s"), DamageRx, *StrickenBattler->GetName(), *StrikingBattler->GetName());
+            UE_LOG(LogTemp, Warning, TEXT("OnHit; skipped applying point damage of %f to %s because of iframes"), DamageRx, *StrickenBattlerData.BattlerName);
         }
-        */
     }
     else
     {
