@@ -84,16 +84,16 @@ public:
 	{ 
 		if (StatName.Equals("Speed"))
 		{
-			GetCharacterMovement()->MaxWalkSpeed = IsRunning ? MonsterStats->StatsMap["Speed"] * BaseWalkSpeed * RunSpeedFactor : MonsterStats->StatsMap["Speed"] * BaseWalkSpeed;
+			GetCharacterMovement()->MaxWalkSpeed = IsRunning ? MonsterStats->StatsData.StatsMap["Speed"] * BaseWalkSpeed * RunSpeedFactor : MonsterStats->StatsData.StatsMap["Speed"] * BaseWalkSpeed;
 			UE_LOG(LogTemp, Warning, TEXT("UpdateSpeed; monster max walk speed became %f from speed factor %f times BaseWalkSpeed %f %s"),
-				GetCharacterMovement()->MaxWalkSpeed, MonsterStats->StatsMap["Speed"], BaseWalkSpeed, (IsRunning ? *FString::Printf(TEXT("and running factor of %f"), RunSpeedFactor) : *FString(TEXT(""))));
+				GetCharacterMovement()->MaxWalkSpeed, MonsterStats->StatsData.StatsMap["Speed"], BaseWalkSpeed, (IsRunning ? *FString::Printf(TEXT("and running factor of %f"), RunSpeedFactor) : *FString(TEXT(""))));
 		}
 	}
 	void AddStatusEffect_Implementation(UStatusEffect* Effect) 
 	{ 
 		StatusEffects.Add(Effect); 
 	}
-	void RemoveStatusEffect_Implmenetation(const FString& EffectId) 
+	void RemoveStatusEffect_Implementation(const FString& EffectId)
 	{ 
 		const UStatusEffect* StatusToRemove = *StatusEffects.FindByPredicate([&](const UStatusEffect* Effect)
 			{

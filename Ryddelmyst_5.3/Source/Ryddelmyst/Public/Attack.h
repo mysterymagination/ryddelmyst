@@ -112,7 +112,7 @@ public:
 			}
 			*/
 			UBattleStats* BattleStats = IBattleStatsBearer::Execute_GetStats(BattleStatsBearer);
-				float* StatPtr = BattleStats->StatsMap.Find(Cost.Key);
+				float* StatPtr = BattleStats->StatsData.StatsMap.Find(Cost.Key);
 				if(StatPtr)
 				{
 					*StatPtr -= Cost.Value;
@@ -129,7 +129,7 @@ public:
 		for (auto& Cost : Costs)
 		{
 			UBattleStats* BattleStats = IBattleStatsBearer::Execute_GetStats(BattleStatsBearer);
-			float* StatPtr = BattleStats->StatsMap.Find(Cost.Key);
+			float* StatPtr = BattleStats->StatsData.StatsMap.Find(Cost.Key);
 			if (StatPtr)
 			{
 				Affordable &= *StatPtr >= Cost.Value;
