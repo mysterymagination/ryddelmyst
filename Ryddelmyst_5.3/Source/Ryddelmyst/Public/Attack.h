@@ -77,11 +77,11 @@ public:
 	virtual void OnHit_Implementation(FBattleStatsData StrikingBattlerData, UPrimitiveComponent* StrikingComp, AActor* StrickenActor, UPrimitiveComponent* StrickenComp, FVector NormalImpulse, const FHitResult& HitInfo);
 	/**
 	 * @brief Calculates the base damage of our attack from the stats of the input IBattleStatsBearer implementor
-	 * @param BattleStatsBearer the instigator of the attack, whose stats determine its damage output
+	 * @param BattleStatsData the stats of the instigator of the attack, which determine its damage output
 	 */
 	UFUNCTION(BlueprintCallable, BlueprintNativeEvent, Category = "Combat")
-	FAttackTxInfo CalculateDamageTx(AActor* BattleStatsBearer);
-	virtual FAttackTxInfo CalculateDamageTx_Implementation(AActor* BattleStatsBearer) { return FAttackTxInfo(); }
+	FAttackTxInfo CalculateDamageTx(FBattleStatsData BattleStatsData);
+	virtual FAttackTxInfo CalculateDamageTx_Implementation(FBattleStatsData BattleStatsData) { return FAttackTxInfo(); }
 	/**
 	 * @brief Subtracts the costs of the attack from the attacker's resources e.g. MP cost to cast a spell.  This function can't be called from a generic location
 	 * 	      within the Attack impl since different attacks will incur costs differently i.e. casting a spell that summons a bullet will incur costs when cast, not
