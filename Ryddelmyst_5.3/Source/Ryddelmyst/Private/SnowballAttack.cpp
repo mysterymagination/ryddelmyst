@@ -14,12 +14,12 @@ USnowballAttack::USnowballAttack()
     };
 }
 
-void USnowballAttack::OnHit_Implementation(AActor* StrikingBattler, UPrimitiveComponent* StrikingComp, AActor* StrickenActor, UPrimitiveComponent* StrickenComp, FVector NormalImpulse, const FHitResult& HitInfo)
+void USnowballAttack::OnHit_Implementation(FBattleStatsData BattlerData, UPrimitiveComponent* StrikingComp, AActor* StrickenActor, UPrimitiveComponent* StrickenComp, FVector NormalImpulse, const FHitResult& HitInfo)
 {
     UE_LOG(LogTemp, Warning, TEXT("SnowballAttack::OnHit; HitComp says %s, OtherActor says %s, OtherComp says %s, normal impulse says %s, hitres says %s"), 
 		*StrikingComp->GetName(), *StrickenActor->GetName(), *StrickenComp->GetName(), *NormalImpulse.ToString(), *HitInfo.ToString());
 	UE_LOG(LogTemp, Warning, TEXT("SnowballAttack::OnHit; EffectsOnTarget has size %d"), EffectsOnTarget.size());
-    Super::OnHit_Implementation(StrikingBattler, StrikingComp, StrickenActor, StrickenComp, NormalImpulse, HitInfo);
+    Super::OnHit_Implementation(BattlerData, StrikingComp, StrickenActor, StrickenComp, NormalImpulse, HitInfo);
     // auxiliary effect lambdas that Snowball spell can apply
 	for (auto Effect : EffectsOnTarget)
 	{
@@ -32,33 +32,24 @@ void USnowballAttack::OnHit_Implementation(AActor* StrikingBattler, UPrimitiveCo
     StrikingComp->GetOwner()->Destroy();
 }
 
-FAttackTxInfo USnowballAttack::CalculateDamageTx_Implementation(AActor* BattleStatsBearer)
+FAttackTxInfo USnowballAttack::CalculateDamageTx_Implementation(FBattleStatsData BattleStatsData)
 {
     // todo: roll this into UAttack.cpp boilerplate and add UPROPERTYs for the params e.g. diesides and crit range
     // todo: crits should be based on small vital hitboxes on targets that if hit always result in a crit, and crit behavior should be defined in a BlueNativeEvent function per UAttack.
-    if (BattleStatsBearer->GetClass()->ImplementsInterface(UBattleStatsBearer::StaticClass()))
+    float BaseDamage = BasePower * BattleStatsData.StatsMap["Magic"]; 
+    uint8 DieCount = BattleStatsData.StatsMap["Level"];
+    uint8 DieSides = 6;
+    float Rando = MathUtils::RollNdM(DieCount, DieSides);
+    UE_LOG(LogTemp, Warning, TEXT("CalculateDamageTx; Power (%f) * Magic (%f) = BaseDamage (%f) and rando aspect is %f"), BasePower, BattleStatsData.StatsMap["Magic"], BaseDamage, Rando);
+    BaseDamage += Rando;
+    FAttackTxInfo AttackTx;
+    AttackTx.DamageTx = DamageScaleFactor * BaseDamage;
+    AttackTx.IsCrit = Rando / static_cast<float>((DieCount * DieSides)) >= 0.9f;
+    // add on a full diceroll of damage for crit
+    if (AttackTx.IsCrit)
     {
-        float BaseDamage = BasePower * IBattleStatsBearer::Execute_GetStats(BattleStatsBearer)->StatsMap["Magic"];
-        
-        uint8 DieCount = IBattleStatsBearer::Execute_GetStats(BattleStatsBearer)->StatsMap["Level"];
-        uint8 DieSides = 6;
-        float Rando = MathUtils::RollNdM(DieCount, DieSides);
-        UE_LOG(LogTemp, Warning, TEXT("CalculateDamageTx; Power (%f) * Magic (%f) = BaseDamage (%f) and rando aspect is %f"), BasePower, IBattleStatsBearer::Execute_GetStats(BattleStatsBearer)->StatsMap["Magic"], BaseDamage, Rando);
-        BaseDamage += Rando;
-        FAttackTxInfo AttackTx;
-        AttackTx.DamageTx = DamageScaleFactor * BaseDamage;
-        AttackTx.IsCrit = Rando / static_cast<float>((DieCount * DieSides)) >= 0.9f;
-        // add on a full diceroll of damage for crit
-        if (AttackTx.IsCrit)
-        {
-            AttackTx.DamageTx += DieCount * DieSides;
-        }
-        UE_LOG(LogTemp, Warning, TEXT("CalculateDamageTx; IsCrit is %d based on rando %f div max rando %f which is %f"), AttackTx.IsCrit, Rando, static_cast<float>(DieCount * DieSides), Rando / static_cast<float>((DieCount * DieSides)));
-        return AttackTx;
+        AttackTx.DamageTx += DieCount * DieSides;
     }
-    else 
-    {
-        UE_LOG(LogTemp, Error, TEXT("CalculateDamageTx; attacking AActor %s is not a BattleStatsBearer, so we cannot calc damage"), *BattleStatsBearer->GetName());
-        return FAttackTxInfo();
-    }
+    UE_LOG(LogTemp, Warning, TEXT("CalculateDamageTx; IsCrit is %d based on rando %f div max rando %f which is %f"), AttackTx.IsCrit, Rando, static_cast<float>(DieCount * DieSides), Rando / static_cast<float>((DieCount * DieSides)));
+    return AttackTx;
 }
