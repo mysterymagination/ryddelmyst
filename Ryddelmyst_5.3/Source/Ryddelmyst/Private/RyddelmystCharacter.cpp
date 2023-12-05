@@ -701,6 +701,12 @@ void ARyddelmystCharacter::Fire()
 					Bullets.emplace_back(World->SpawnActorDeferred<ASnowball>(SnowballType, SpawnTransform, this, GetInstigator()));
 				}
 
+				// install player battle stats as soon as the bullets are conjured
+				for (auto Bullet : Bullets)
+				{
+					IAttacker::Execute_GetWeapon(Bullet->GetSpellSphereComponent())->WielderData = CharacterStats->StatsData;
+				}
+
 				// Evocation phase: lookup evocation effects for the current spell and apply them to each instance in the bullet array created above.
 				for(const auto& Source : SpellMap)
 				{
