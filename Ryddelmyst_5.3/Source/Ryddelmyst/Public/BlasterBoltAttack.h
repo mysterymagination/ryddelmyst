@@ -15,7 +15,7 @@ class RYDDELMYST_API UBlasterBoltAttack : public UAttack
 	GENERATED_BODY()
 public:
 	UBlasterBoltAttack();
-	virtual FAttackTxInfo CalculateDamageTx_Implementation(AActor* BattleStatsBearer);
+	virtual FAttackTxInfo CalculateDamageTx_Implementation(FBattleStatsData BattleStatsData);
 
 public:
 	static const FString ATTACK_NAME;

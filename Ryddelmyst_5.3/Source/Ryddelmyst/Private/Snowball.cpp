@@ -113,7 +113,6 @@ void ASnowball::FixPhysics()
 // Function that initializes the projectile's velocity in the shoot direction.
 void ASnowball::Cast(ARyddelmystCharacter* LaunchingCharacter, const FVector& LaunchDirection)
 {
-	IAttacker::Execute_GetWeapon(SpellSphereComponent)->Wielder = LaunchingCharacter;
 	UE_LOG(LogTemp, Warning, TEXT("Cast; launchingchar is %s and launchdir is %s"), *LaunchingCharacter->GetName(), *LaunchDirection.ToString());
 	LaunchFn(LaunchingCharacter, LaunchDirection);
 }

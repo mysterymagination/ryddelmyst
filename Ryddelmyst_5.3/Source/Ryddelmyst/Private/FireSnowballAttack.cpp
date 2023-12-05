@@ -16,9 +16,9 @@ UFireSnowballAttack::UFireSnowballAttack()
     BasePower = 20.f;
 }
 
-void UFireSnowballAttack::OnHit_Implementation(AActor* StrikingBattler, UPrimitiveComponent* StrikingComp, AActor* StrickenActor, UPrimitiveComponent* StrickenComp, FVector NormalImpulse, const FHitResult& HitInfo)
+void UFireSnowballAttack::OnHit_Implementation(FBattleStatsData StrikingBattlerData, UPrimitiveComponent* StrikingComp, AActor* StrickenActor, UPrimitiveComponent* StrickenComp, FVector NormalImpulse, const FHitResult& HitInfo)
 {
-    Super::OnHit_Implementation(StrikingBattler, StrikingComp, StrickenActor, StrickenComp, NormalImpulse, HitInfo);
+    Super::OnHit_Implementation(StrikingBattlerData, StrikingComp, StrickenActor, StrickenComp, NormalImpulse, HitInfo);
     // elemental StatusEffect
     if(StrickenActor->GetClass()->ImplementsInterface(UStatusEffected::StaticClass()))
     {
