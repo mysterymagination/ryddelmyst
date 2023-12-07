@@ -84,7 +84,7 @@ void UAttack::OnHit_Implementation(FBattleStatsData StrikingBattlerData, UPrimit
             UGameplayStatics::ApplyPointDamage(StrickenActor, DamageRx, NormalImpulse, HitInfo, nullptr, StrikingComp->GetOwner(), Types[0]);
             DataViz::FX_NumberParticles
             (
-                GetWorld(),
+                StrickenActor->GetWorld(),
                 HitInfo.Location,
                 FRotator(0.f),
                 FVector(1.f),

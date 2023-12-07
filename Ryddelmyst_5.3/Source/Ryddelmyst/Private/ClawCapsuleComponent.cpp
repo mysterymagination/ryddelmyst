@@ -14,7 +14,9 @@ UClawCapsuleComponent::UClawCapsuleComponent()
 FBattleStatsData UClawCapsuleComponent::GetBattleStats_Implementation()
 { 
     // simple case since we can assume the owning Actor would also be the Weapon's wielder
-    return IBattleStatsBearer::Execute_GetStats(GetOwner())->StatsData;
+    FBattleStatsData Data = IBattleStatsBearer::Execute_GetStats(GetOwner())->StatsData;
+    Data.BattlerTransform = GetOwner()->GetActorTransform();
+    return Data;
 }
 
 UWeapon* UClawCapsuleComponent::GetWeapon_Implementation() 
