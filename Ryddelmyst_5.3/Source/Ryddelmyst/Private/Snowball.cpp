@@ -37,6 +37,9 @@ ASnowball::ASnowball()
 		SpellSphereComponent->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
 		SpellSphereComponent->SetCollisionProfileName("Projectile");
 		UE_LOG(LogTemp, Warning, TEXT("snowball ctor; adding OnComponentHit delegate pointing to HitBoxer::OnHit"));
+		// todo: couldn't we bind this to HandleMeshCollision (change the name I guess) so that we can have that function call
+		//  HitBoxer::OnHit() and then after the hitboxing is done call Destroy()? That would be cleaner than having the Attack responsible
+		//  for destroying the owning Actor.
 		FScriptDelegate onHitDelegate;
 		onHitDelegate.BindUFunction(HitBoxer, FName("OnHit"));
 		SpellSphereComponent->OnComponentHit.Add(onHitDelegate);

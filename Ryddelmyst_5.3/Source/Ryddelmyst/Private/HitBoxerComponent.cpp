@@ -22,6 +22,10 @@ void UHitBoxerComponent::OnHit(UPrimitiveComponent* StrikingComp, AActor* Strick
 			(*Attack_Check)->OnHit_Implementation(IAttacker::Execute_GetBattleStats(StrikingComp), StrikingComp, StrickenActor, StrickenComp, NormalImpulse, HitInfo);
 
 		}
+		else
+		{
+			UE_LOG(LogTemp, Error, TEXT("HitBoxer::OnHit; Striking comp %s wielding weapon %s either failed to find an attack (attack ptr is %p) or the stricken Actor came up nullptr (stricken actor is %p)"), *StrikingComp->GetName(), *Weapon->GetName(), Attack_Check, StrickenActor);
+		}
 	}
 	else
 	{
