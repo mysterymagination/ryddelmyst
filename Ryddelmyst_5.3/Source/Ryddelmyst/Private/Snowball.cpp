@@ -37,11 +37,8 @@ ASnowball::ASnowball()
 		SpellSphereComponent->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
 		SpellSphereComponent->SetCollisionProfileName("Projectile");
 		UE_LOG(LogTemp, Warning, TEXT("snowball ctor; adding OnComponentHit delegate pointing to HitBoxer::OnHit"));
-		// todo: couldn't we bind this to HandleMeshCollision (change the name I guess) so that we can have that function call
-		//  HitBoxer::OnHit() and then after the hitboxing is done call Destroy()? That would be cleaner than having the Attack responsible
-		//  for destroying the owning Actor.
 		FScriptDelegate onHitDelegate;
-		onHitDelegate.BindUFunction(HitBoxer, FName("OnHit"));
+		onHitDelegate.BindUFunction(this, FName("OnHit"));
 		SpellSphereComponent->OnComponentHit.Add(onHitDelegate);
 
 		// Set the root component to be the collision component.
@@ -66,12 +63,6 @@ ASnowball::ASnowball()
 		{
 			ProjectileMeshComponent->SetStaticMesh(Mesh.Object);
 		}
-		/* todo: with HitBox collision profile blocking other hitboxes we wind up either bouncing off and doing damage or disappearing and not doing damage, depending on whether the HitBox uprim or the static mesh has a greater radius. If we did ovverlap for HitBox <-> HitBox collision events then maybe we could have the HitBox overlap first and then the mesh hit?
-		ProjectileMeshComponent->SetNotifyRigidBodyCollision(true);
-		ProjectileMeshComponent->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
-		ProjectileMeshComponent->SetCollisionProfileName("Projectile");
-		ProjectileMeshComponent->OnComponentHit.AddDynamic(this, &ASnowball::HandleMeshCollision);
-		*/
 	}
 	
 	ProjectileMeshComponent->SetRelativeScale3D(FVector(0.09f, 0.09f, 0.09f));
@@ -120,9 +111,10 @@ void ASnowball::Cast(ARyddelmystCharacter* LaunchingCharacter, const FVector& La
 	LaunchFn(LaunchingCharacter, LaunchDirection);
 }
 
-void ASnowball::HandleMeshCollision(UPrimitiveComponent* StrikingComp, AActor* StrickenActor, UPrimitiveComponent* StrickenComp, FVector NormalImpulse, const FHitResult& HitInfo)
+void ASnowball::OnHit(UPrimitiveComponent* StrikingComp, AActor* StrickenActor, UPrimitiveComponent* StrickenComp, FVector NormalImpulse, const FHitResult& HitInfo)
 {
-	UE_LOG(LogTemp, Warning, TEXT("HandleMeshCollision; destroying snowball"));
+	UE_LOG(LogTemp, Warning, TEXT("OnHit; delivering attack and then destroying snowball"));
+	HitBoxer->OnHit(StrikingComp, StrickenActor, StrickenComp, NormalImpulse, HitInfo);
 	Destroy();
 }
 
