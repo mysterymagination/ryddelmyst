@@ -22,5 +22,18 @@ public:
 	 */
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Navigation")
 	USplineComponent* Spline;
+	/**
+	 *  A point offset from each bullet's forward vector which we use to sample the closest point on the spline, and then have bullet lookat and move towards that point on the spline.
+	 */
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Navigation")
+	FVector TowingPoint = FVector(100.f,0.f,0.f);
+
+protected:
+	// Called when the game starts
+	virtual void BeginPlay() override;
+
+public:
+	// Called every frame
+	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
 	
 };
