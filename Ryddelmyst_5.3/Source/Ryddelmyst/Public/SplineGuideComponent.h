@@ -3,7 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "GameFramework/SceneComponent.h"
+#include "Components/SceneComponent.h"
 #include "Components/SplineComponent.h"
 #include "SplineGuideComponent.generated.h"
 
@@ -27,6 +27,21 @@ public:
 	 */
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Navigation")
 	FVector TowingPoint = FVector(100.f,0.f,0.f);
+	/**
+	 *	The total FSplinePoints making up our USplineComponent; together with SplineLength, this determines the granularity of the spline and how rapidly the interval function for each dimension should be applied e.g. how much space exists between X values when we run y=x^2 to determine a new Y.
+	 */
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Structure")
+	int SplinePointCount = 10;
+	/**
+	 * The total length in centimeters along our progressions axis (hardcoded to relative X for now) of the entire spline; together with SplineLength, this determines the granularity of the spline and how rapidly the interval function for each dimension should be applied e.g. how much space exists between X values when we run y=x^2 to determine a new Y.
+	 */
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Structure")
+	int SplineLength = 1000;
+	/**
+	 * The radius in centimeters of the circle our trig function (hardcoded to sin() wave for now) rotates points around i.e. how far away from the progression axis our points move on the wave axis (hardcoded to Y for now). 
+	 */
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Structure")
+	int SplineWaveRadius = 250;
 
 protected:
 	// Called when the game starts
