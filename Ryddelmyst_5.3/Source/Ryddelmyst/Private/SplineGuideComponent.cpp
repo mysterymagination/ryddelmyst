@@ -24,12 +24,24 @@ void USplineGuideComponent::BeginPlay()
 		}
 	}
 	// todo: add more splines, maybe three or five total in a one of couple spread patterns out from the host Actor. Ideal thing might be to create a cone with bullet spray range for height out from the host Actor and pick 3-5 vectors randomly inside that cone. 
+	// setup timer to spawn bullets from World.
+	GetOwner()->GetWorldTimerManager().SetTimer(BulletSpawnTimerHandle, this, &USplineGuideComponent::SpawnBullet, SpawnRate, false, 0.f);
+}
+
+void USplineGuideComponent::SpawnBullet()
+{
+	// todo: spawn bullet in the world
+	// if we've reached bullet limit, cancel this timer
+	if (--BulletLimit <= 0)
+	{
+		GetOwner()->GetWorldTimerManager().ClearTimer(BulletSpawnTimerHandle);
+	}
 }
 
 void USplineGuideComponent::TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction)
 {
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
-	// todo: spawn bullet from World.
+	
 	// todo: tack the towingpoint onto the bullet, rotated to match rotation of forward vector and use that point to find the nearest point to it on the spline.
-	// todo: create a timer to spawn additional bullets up to the amount we want on a given spline.
+	
 }

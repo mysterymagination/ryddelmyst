@@ -5,6 +5,8 @@
 #include "CoreMinimal.h"
 #include "Components/SceneComponent.h"
 #include "Components/SplineComponent.h"
+#include "Engine/EngineTypes.h"
+#include "SpellBullet.h"
 #include "SplineGuideComponent.generated.h"
 
 /**
@@ -22,6 +24,11 @@ public:
 	 */
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Navigation")
 	USplineComponent* Spline;
+	/**
+	 * UClass pointer to an ASpellBullet subclass, defining the type of bullet we'll spawn in.
+	 */
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Navigation")
+	TSubclassOf<ASpellBullet> BulletTemplate;
 	/**
 	 *  A point offset from each bullet's forward vector which we use to sample the closest point on the spline, and then have bullet lookat and move towards that point on the spline.
 	 */
@@ -42,6 +49,25 @@ public:
 	 */
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Structure")
 	int SplineWaveRadius = 250;
+	/**
+	 * The rate in seconds at which bullets spawn along the spline.
+	 */
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Structure")
+	float SpawnRate = 0.5f;
+	/**
+	 * The number of bullets we spawn along the spline.
+	 */
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Structure")
+	int BulletLimit = 10;
+
+private:
+	UPROPERTY()
+	FTimerHandler BulletSpawnTimerHandle;
+	/**
+	 * Array tracking our spawned ASpellBullets.
+	 */
+	UPROPERTY()
+	TArray<ASpellBullet> Bullets;
 
 protected:
 	// Called when the game starts
@@ -50,5 +76,8 @@ protected:
 public:
 	// Called every frame
 	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
-	
+	/**
+	 * Spawns a bullet anchored at the 0th spline point. 
+	 */
+	virtual void SpawnBullet();
 };
