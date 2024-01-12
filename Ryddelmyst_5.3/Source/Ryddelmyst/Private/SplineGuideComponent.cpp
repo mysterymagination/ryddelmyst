@@ -2,6 +2,7 @@
 
 #include "SplineGuideComponent.h"
 #include <cmath>
+#include "Kismet/KismetMathLibrary.h"
 
 void USplineGuideComponent::BeginPlay()
 {
@@ -31,6 +32,23 @@ void USplineGuideComponent::BeginPlay()
 void USplineGuideComponent::SpawnBullet()
 {
 	// todo: spawn bullet in the world
+	// FTransform SpawnTransform;
+	FTransform SpawnTransform;
+	FVector ZeroPoint = Spline->GetSplinePointAt(0, ESplineCoordinateSpace::World).Position;
+	FVector OnePoint = Spline->GetSplinePointAt(1, ESplineCoordinateSpace::World).Position;
+	SpawnTransform.SetLocation(ZeroPoint);
+	SpawnTransform.SetRotation(FQuat(UKismetMathLibrary::FindLookAtRotation(OnePoint, ZeroPoint)));
+	SpawnTransform.SetScale3D(FVector(1.f));
+	// todo: install MagicWeapon->WielderData for Clash API projectile collision damage handling. Probably will need to spawn deferred, install, then finish spawning as with snowballs.
+	FActorSpawnParameters SpawnParams;
+	Bullets.Add(
+		(ASpellBullet*)GetOwner()->GetWorld()->SpawnActor
+		(
+			BulletTemplate,
+			&SpawnTransform,
+			SpawnParams
+		)
+	);
 	// if we've reached bullet limit, cancel this timer
 	if (--BulletLimit <= 0)
 	{

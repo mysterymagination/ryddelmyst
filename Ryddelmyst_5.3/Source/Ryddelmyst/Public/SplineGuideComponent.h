@@ -5,7 +5,7 @@
 #include "CoreMinimal.h"
 #include "Components/SceneComponent.h"
 #include "Components/SplineComponent.h"
-#include "Engine/EngineTypes.h"
+#include "Engine/TimerHandle.h"
 #include "SpellBullet.h"
 #include "SplineGuideComponent.generated.h"
 
@@ -62,12 +62,12 @@ public:
 
 private:
 	UPROPERTY()
-	FTimerHandler BulletSpawnTimerHandle;
+	FTimerHandle BulletSpawnTimerHandle;
 	/**
 	 * Array tracking our spawned ASpellBullets.
 	 */
 	UPROPERTY()
-	TArray<ASpellBullet> Bullets;
+	TArray<ASpellBullet*> Bullets;
 
 protected:
 	// Called when the game starts
