@@ -31,5 +31,5 @@ public:
 	float GetBurnPeriod() { return BurnPeriod; };
 	UFUNCTION()
 	void SetBurnPeriod(float Period) { BurnPeriod = Period; };
-	virtual void OnHit_Implementation(AActor* StrikingBattler, UPrimitiveComponent* StrikingComp, AActor* StrickenActor, UPrimitiveComponent* StrickenComp, FVector NormalImpulse, const FHitResult& HitInfo) override;
+	virtual void OnHit_Implementation(FBattleStatsData StrikingBattlerData, UPrimitiveComponent* StrikingComp, AActor* StrickenActor, UPrimitiveComponent* StrickenComp, FVector NormalImpulse, const FHitResult& HitInfo) override;
 };

@@ -14,8 +14,8 @@ AIceySnowball::AIceySnowball()
 	if (Material.Succeeded())
 	{
 		ProjectileMaterialInstance = UMaterialInstanceDynamic::Create(Material.Object, ProjectileMeshComponent);
+		ProjectileMeshComponent->SetMaterial(0, ProjectileMaterialInstance);
 	}
-	ProjectileMeshComponent->SetMaterial(0, ProjectileMaterialInstance);
     // icy particles
     static ConstructorHelpers::FObjectFinder<UParticleSystem> ParticleAsset(TEXT("/Game/Ryddelmyst_Assets/Particles/P_Snowflakes.P_Snowflakes"));
 	if (ParticleAsset.Succeeded())

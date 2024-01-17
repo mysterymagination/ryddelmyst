@@ -4,14 +4,29 @@
 
 #include "CoreMinimal.h"
 #include "Components/CapsuleComponent.h"
+#include "IAttacker.h"
+#include "MagicWeapon.h"
+#include "Utils.h"
 #include "SpellCapsuleComponent.generated.h"
 
 /**
- * 
+ * A capsule collision geometry for a bullet or spell effect
  */
 UCLASS()
-class RYDDELMYST_API USpellCapsuleComponent : public UCapsuleComponent
+class RYDDELMYST_API USpellCapsuleComponent : public UCapsuleComponent, public IAttacker
 {
 	GENERATED_BODY()
-	
+
+public:
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Combat")
+	UMagicWeapon* Magic;
+public:
+	USpellCapsuleComponent();
+	UWeapon* GetWeapon_Implementation() override;
+	FString GetCurrentAttack_Implementation() override;
+	FBattleStatsData GetBattleStats_Implementation() override;
+	void ExecuteAttack_Implementation
+	(
+		const FString& AttackName
+	) override;
 };

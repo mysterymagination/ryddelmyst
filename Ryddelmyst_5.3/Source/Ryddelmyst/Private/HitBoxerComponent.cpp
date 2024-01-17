@@ -14,13 +14,17 @@ void UHitBoxerComponent::OnHit(UPrimitiveComponent* StrikingComp, AActor* Strick
 		UWeapon* Weapon = IAttacker::Execute_GetWeapon(StrikingComp);
 		UE_LOG(LogTemp, Warning, TEXT("HitBoxer::OnHit; Striking comp %s is wielding weapon %s"), *StrikingComp->GetName(), *Weapon->GetName());
 		UAttack** Attack_Check = Weapon->AttackMap.Find(Weapon->CurrentAttackName);
-		// sometimes StrickenActor is nullptr apparently?  At least while having giant debug custom uprims with hitboxers
+		// sometimes StrickenActor is nullptr apparently?  At least while having giant debug custom uprims with hitboxers. BrushComponent at least seems to show up as nullptr StrickenActor.
 		if(Attack_Check && StrickenActor)
 		{
 			UE_LOG(LogTemp, Warning, TEXT("HitBoxer::OnHit; %s's striking comp %s weapon %s is running attack %s on %s's shapely %s"), 
 				*StrikingComp->GetOwner()->GetName(), *StrikingComp->GetName(), (Weapon ? *Weapon->GetName() : TEXT("null weapon")), *(*Attack_Check)->AttackName, *StrickenActor->GetName(), *StrickenComp->GetName());
-			(*Attack_Check)->OnHit_Implementation(IAttacker::Execute_GetBattler(StrikingComp), StrikingComp, StrickenActor, StrickenComp, NormalImpulse, HitInfo);
+			(*Attack_Check)->OnHit_Implementation(IAttacker::Execute_GetBattleStats(StrikingComp), StrikingComp, StrickenActor, StrickenComp, NormalImpulse, HitInfo);
 
+		}
+		else
+		{
+			UE_LOG(LogTemp, Error, TEXT("HitBoxer::OnHit; Striking comp %s wielding weapon %s either failed to find an attack (attack ptr is %p) or the stricken Actor came up nullptr (stricken actor is %p)"), *StrikingComp->GetName(), *Weapon->GetName(), Attack_Check, StrickenActor);
 		}
 	}
 	else
