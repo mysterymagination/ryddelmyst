@@ -7,6 +7,7 @@
 #include "IDefender.h"
 #include "RyddelmystCharacter.h"
 #include "Kismet/GameplayStatics.h"
+#include "DataViz.h"
 
 const FString UAttack::KEY_COSTS_EFFECT("Effect");
 
@@ -31,6 +32,7 @@ void UAttack::OnHit_Implementation(AActor* StrikingBattler, UPrimitiveComponent*
                 AnatomyUnit = IAnatomy::Execute_GetAnatomyUnit(StrickenComp);
             }
         }
+        /*
         else 
         {
             // todo: remove this branch hack if the query collision events on custom uprim IDefenders and IAttackers ever works properly
@@ -57,19 +59,20 @@ void UAttack::OnHit_Implementation(AActor* StrikingBattler, UPrimitiveComponent*
                 UE_LOG(LogTemp, Warning, TEXT("OnHit; the stricken component %s does not implement IDefender, so we can't move forward communicating damage"), *StrickenComp->GetName());
             }
         }
+        */
         if(StrickenArmor)
         {
             // Damage setter is inside the IDefender target check so that we only bother calc/cache of damage if we can actually apply the damage
-            float dmg = CalculateDamageTx(StrikingBattler);
+            FAttackTxInfo DamageTxInfo = CalculateDamageTx(StrikingBattler);
             float DamageRx = 0.f;
             if(AnatomyUnit)
             {
-                DamageRx = StrickenArmor->CalculateDamageRx(StrickenBattler, AnatomyUnit, dmg, DamageTypesToWeightsMap);
+                DamageRx = StrickenArmor->CalculateDamageRx(StrickenBattler, AnatomyUnit, DamageTxInfo.DamageTx, DamageTypesToWeightsMap);
                 AnatomyUnit->Debilitate(StrickenActor);
             }
             else 
             {
-                DamageRx = StrickenArmor->CalculateDamageRx(StrickenBattler, nullptr, dmg, DamageTypesToWeightsMap);
+                DamageRx = StrickenArmor->CalculateDamageRx(StrickenBattler, nullptr, DamageTxInfo.DamageTx, DamageTypesToWeightsMap);
             }
             LatestDamageDealt = DamageRx;
             // todo: this approach only works if we assume all attacks come from components of an Actor who is also a Pawn, e.g. a Monster's claw or Maya's mighty
@@ -85,21 +88,25 @@ void UAttack::OnHit_Implementation(AActor* StrikingBattler, UPrimitiveComponent*
                 UE_LOG(LogTemp, Log, TEXT("OnHit; FHitResult says: %s, specifically BoneName is %s and MyBoneName is %s"), *HitInfo.ToString(), *HitInfo.BoneName.ToString(), *HitInfo.MyBoneName.ToString()); 
                 UE_LOG(LogTemp, Log, TEXT("OnHit; striking component says: %s"), *StrikingComp->GetName());
                 UE_LOG(LogTemp, Log, TEXT("OnHit; stricken component says: %s"), *StrickenComp->GetName()); 
-                /*
-                ARyddelmystCharacter* Ryddelmystress = Cast<ARyddelmystCharacter>(StrickenActor);
-                if (Ryddelmystress)
+                if (StrickenActor->CanBeDamaged())
                 {
-                    Ryddelmystress->HandleDamage(Ryddelmystress, DamageRx, InstigatorPawn->GetController(), 
-                        HitInfo.Location, StrickenComp, HitInfo.BoneName, HitInfo.TraceStart, Cast<UDamageType>(Types[0]->GetDefaultObject()), StrikingBattler);
+                    UGameplayStatics::ApplyPointDamage(StrickenBattler, DamageRx, NormalImpulse, HitInfo, InstigatorPawn->GetController(), StrikingBattler, Types[0]);
+                    DataViz::FX_NumberParticles
+                    (
+                        GetWorld(),
+                        HitInfo.Location,
+                        FRotator(0.f),
+                        FVector(1.f),
+                        DamageRx,
+                        DamageRx / DamageTxInfo.DamageTx,
+                        DamageTxInfo.IsCrit
+                    );
+                    UE_LOG(LogTemp, Warning, TEXT("OnHit; applied point damage of %f to %s"), DamageRx, *StrickenBattler->GetName());
                 }
                 else
                 {
-                    UE_LOG(LogTemp, Error, TEXT("OnHit; failed to HandleDamage() since the stricken actor %s is not a ryddelmystcharacter.... probably should fix that hack"), *StrickenActor->GetName());
+                    UE_LOG(LogTemp, Warning, TEXT("OnHit; skipped applying point damage of %f to %s because of iframes"), DamageRx, *StrickenBattler->GetName());
                 }
-                */
-                UGameplayStatics::ApplyPointDamage(StrickenBattler, DamageRx, NormalImpulse, HitInfo, InstigatorPawn->GetController(), StrikingBattler, Types[0]);
-                //UGameplayStatics::ApplyDamage(StrickenBattler, DamageRx, InstigatorPawn->GetController(), StrikingBattler, Types[0]);
-                UE_LOG(LogTemp, Warning, TEXT("OnHit; applied point damage of %f to %s"), DamageRx, *StrickenBattler->GetName());
             }
             else 
             {

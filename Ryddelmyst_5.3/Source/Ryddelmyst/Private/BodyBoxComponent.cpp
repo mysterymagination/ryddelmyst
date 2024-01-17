@@ -3,6 +3,13 @@
 
 #include "BodyBoxComponent.h"
 
+UBodyBoxComponent::UBodyBoxComponent()
+{
+    SetNotifyRigidBodyCollision(true);
+    SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
+    SetCollisionProfileName("BlockAllDynamic");
+}
+
 UAnatomyUnit* UBodyBoxComponent::GetAnatomyUnit_Implementation() 
 {
     return CoreUnit;

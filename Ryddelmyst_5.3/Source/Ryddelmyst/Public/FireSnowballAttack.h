@@ -19,7 +19,7 @@ protected:
 	float BurnDuration = 5.f;
 	// Period at which the effected Actor will be burned
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Magic)
-	float BurnPeriod = 0.5f;
+	float BurnPeriod = 2.5f;
 public:
 	static const FString ATTACK_NAME;
 	UFireSnowballAttack();

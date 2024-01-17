@@ -26,6 +26,7 @@
 #include "PaperSprite.h"
 #include "HitBoxerComponent.h"
 #include "BodyCapsuleComponent.h"
+#include "RyddelmystGameMode.h"
 #include "RyddelmystCharacter.generated.h"
 
 class UInputComponent;
@@ -257,6 +258,20 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Movement)
 	float RunSpeedFactor = 3.f;
 
+	/**
+	 * @brief The offset from first person camera at which player's projectiles will spawn.
+	 *
+	 */
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Combat")
+	FVector MuzzleOffset = FVector(250.f,0.f,0.f);
+
+	/**
+	 * @brief The rotation relative to the first person camera at which player's projectiles will spawn.
+	 *
+	 */
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Combat")
+	FRotator MuzzleRotation = FRotator(10.f,0.f,0.f);
+
 	/** Base turn rate, in deg/sec. Other scaling may affect final turn rate. */
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category=Camera)
 	float BaseTurnRate;
@@ -264,10 +279,6 @@ public:
 	/** Base look up/down rate, in deg/sec. Other scaling may affect final rate. */
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category=Camera)
 	float BaseLookUpRate;
-
-	// Gun muzzle offset from the camera location.
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Gameplay)
-	FVector MuzzleOffset;
 
 	// Distance at which the player can interact with objects.
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Interaction")
@@ -283,7 +294,7 @@ public:
 
 protected:
 	// List of weapons
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Gameplay)
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Gameplay")
 	TArray<TSubclassOf<ASnowball>> Spells;
 	// Array of inventory items
 	UPROPERTY(EditAnywhere, Category = "Inventory")
@@ -293,7 +304,7 @@ protected:
 	TMap<FString, UObject*> Equipment;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "RPG")
 	TSubclassOf<UBattleStats> CharacterStatsType;
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Collision)
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Collision")
 	UHitBoxerComponent* HitBoxer;
 
 protected:
@@ -332,6 +343,11 @@ protected:
 	 * Called via input to Scroll Down event when weapon scrolling is active
 	 */
 	void CycleWeaponDown();
+
+	/**
+	 * Called via input to ToggleTorch event, turning the BrassLantern light source on/off.
+	 */
+	void ToggleTorch();
 
 	/**
 	 * Called via input to Scroll Up event
