@@ -17,5 +17,5 @@ public:
 	static const FString ATTACK_NAME;
 public:
 	UClawSlashAttack();
-	virtual FAttackTxInfo CalculateDamageTx_Implementation(AActor* BattleStatsBearer) override;
+	virtual FAttackTxInfo CalculateDamageTx_Implementation(FBattleStatsData BattleStatsData) override;
 };

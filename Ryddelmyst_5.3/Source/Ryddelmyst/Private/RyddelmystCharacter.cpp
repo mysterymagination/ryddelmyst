@@ -486,14 +486,14 @@ void ARyddelmystCharacter::Run()
 	if (IsRunning)
 	{
 		// toggle to walk speed
-		GetCharacterMovement()->MaxWalkSpeed = CharacterStats->StatsMap["Speed"] * BaseWalkSpeed;
-		UE_LOG(LogTemp, Warning, TEXT("Run; after switching to walk mode, MaxWalkSpeed is %f from speed stat %f times BaseWalkSpeed %f"), GetCharacterMovement()->MaxWalkSpeed, CharacterStats->StatsMap["Speed"], BaseWalkSpeed);
+		GetCharacterMovement()->MaxWalkSpeed = CharacterStats->StatsData.StatsMap["Speed"] * BaseWalkSpeed;
+		UE_LOG(LogTemp, Warning, TEXT("Run; after switching to walk mode, MaxWalkSpeed is %f from speed stat %f times BaseWalkSpeed %f"), GetCharacterMovement()->MaxWalkSpeed, CharacterStats->StatsData.StatsMap["Speed"], BaseWalkSpeed);
 	}
 	else
 	{
 		// toggle to run speed
-		GetCharacterMovement()->MaxWalkSpeed = CharacterStats->StatsMap["Speed"] * BaseWalkSpeed * RunSpeedFactor;
-		UE_LOG(LogTemp, Warning, TEXT("Run; after switching to run mode, MaxWalkSpeed is %f from speed stat %f times BaseWalkSpeed %f times run speed factor %f"), GetCharacterMovement()->MaxWalkSpeed, CharacterStats->StatsMap["Speed"], BaseWalkSpeed, RunSpeedFactor);
+		GetCharacterMovement()->MaxWalkSpeed = CharacterStats->StatsData.StatsMap["Speed"] * BaseWalkSpeed * RunSpeedFactor;
+		UE_LOG(LogTemp, Warning, TEXT("Run; after switching to run mode, MaxWalkSpeed is %f from speed stat %f times BaseWalkSpeed %f times run speed factor %f"), GetCharacterMovement()->MaxWalkSpeed, CharacterStats->StatsData.StatsMap["Speed"], BaseWalkSpeed, RunSpeedFactor);
 	}
 	IsRunning = !IsRunning;
 }
@@ -662,7 +662,7 @@ void ARyddelmystCharacter::Fire()
 			UAttack* CDOSnowballAttack = IAttacker::Execute_GetWeapon(SnowballType.GetDefaultObject()->GetSpellSphereComponent())->GetCurrentAttack();
 			if (CDOSnowballAttack->CheckCosts(this))
 			{
-				UE_LOG(LogTemp, Warning, TEXT("Fire; magic is %f and cost is %f so firing"), CharacterStats->StatsMap["MP"], CDOSnowballAttack->Costs["MP"]);
+				UE_LOG(LogTemp, Warning, TEXT("Fire; magic is %f and cost is %f so firing"), CharacterStats->StatsData.StatsMap["MP"], CDOSnowballAttack->Costs["MP"]);
 				
 				// todo: order of operations may be a problem with this metamagic model -- say I have a one evocation fx that multiplies damage by 2 and another that adds 2; you'll have different result values depending on which fx is applied first, since PEMDAS isn't factored into this model at all.  Commutativity isn't so much of an issue since that's re: operands rather than operations, and the operands are encapsulated within the function fx.  One possible fix would be to use an ordered map of some sort (or sort the pairs you would iterate over prior to iteration or something) based on a PEMDAS derived priority?  
 
@@ -699,6 +699,12 @@ void ARyddelmystCharacter::Fire()
 					FTransform SpawnTransform;
 					SpawnTransform.SetIdentity();
 					Bullets.emplace_back(World->SpawnActorDeferred<ASnowball>(SnowballType, SpawnTransform, this, GetInstigator()));
+				}
+
+				// install player battle stats as soon as the bullets are conjured
+				for (auto Bullet : Bullets)
+				{
+					IAttacker::Execute_GetWeapon(Bullet->GetSpellSphereComponent())->WielderData = CharacterStats->StatsData;
 				}
 
 				// Evocation phase: lookup evocation effects for the current spell and apply them to each instance in the bullet array created above.
@@ -834,28 +840,28 @@ void ARyddelmystCharacter::Fire()
 
 float ARyddelmystCharacter::GetHealth() 
 {
-	return CharacterStats->StatsMap["HP"];
+	return CharacterStats->StatsData.StatsMap["HP"];
 }
 
 float ARyddelmystCharacter::GetMaxHealth()
 {
-	return CharacterStats->StatsMap["MaxHP"];
+	return CharacterStats->StatsData.StatsMap["MaxHP"];
 }
 
 float ARyddelmystCharacter::GetMagic()
 {
-	return CharacterStats->StatsMap["MP"];
+	return CharacterStats->StatsData.StatsMap["MP"];
 }
 float ARyddelmystCharacter::GetMaxMagic()
 {
-	return CharacterStats->StatsMap["MaxMP"];
+	return CharacterStats->StatsData.StatsMap["MaxMP"];
 }
 
 FText ARyddelmystCharacter::GetHealthText()
 {
-	int32 HP = FMath::RoundHalfFromZero(CharacterStats->StatsMap["HP"]);
+	int32 HP = FMath::RoundHalfFromZero(CharacterStats->StatsData.StatsMap["HP"]);
 	FString HPS = FString::FromInt(HP);
-	FString FullHPS = FString::FromInt(CharacterStats->StatsMap["MaxHP"]);
+	FString FullHPS = FString::FromInt(CharacterStats->StatsData.StatsMap["MaxHP"]);
 	FString HealthHUD = HPS + FString(TEXT("/")) + FullHPS;
 	FText HPText = FText::FromString(HealthHUD);
 	return HPText;
@@ -863,9 +869,9 @@ FText ARyddelmystCharacter::GetHealthText()
 
 FText ARyddelmystCharacter::GetMagicText()
 {
-	int32 MP = FMath::RoundHalfFromZero(CharacterStats->StatsMap["MP"]);
+	int32 MP = FMath::RoundHalfFromZero(CharacterStats->StatsData.StatsMap["MP"]);
 	FString MPS = FString::FromInt(MP);
-	FString FullMPS = FString::FromInt(CharacterStats->StatsMap["MaxMP"]);
+	FString FullMPS = FString::FromInt(CharacterStats->StatsData.StatsMap["MaxMP"]);
 	FString MagicHUD = MPS + FString(TEXT("/")) + FullMPS;
 	FText MPText = FText::FromString(MagicHUD);
 	return MPText;
@@ -873,28 +879,40 @@ FText ARyddelmystCharacter::GetMagicText()
 
 void ARyddelmystCharacter::UpdateHealth(float HealthChange)
 {
-	CharacterStats->StatsMap["HP"] += HealthChange;
-	CharacterStats->StatsMap["HP"] = FMath::Clamp(CharacterStats->StatsMap["HP"], 0.0f, CharacterStats->StatsMap["MaxHP"]);
-	UE_LOG(LogTemp, Warning, TEXT("UpdateHealth; maya HP is %f"), CharacterStats->StatsMap["HP"]);
-	if (CharacterStats->StatsMap["HP"] == 0.0f)
+	CharacterStats->StatsData.StatsMap["HP"] += HealthChange;
+	CharacterStats->StatsData.StatsMap["HP"] = FMath::Clamp(CharacterStats->StatsData.StatsMap["HP"], 0.0f, CharacterStats->StatsData.StatsMap["MaxHP"]);
+	UE_LOG(LogTemp, Warning, TEXT("UpdateHealth; maya HP is %f"), CharacterStats->StatsData.StatsMap["HP"]);
+	if (CharacterStats->StatsData.StatsMap["HP"] == 0.0f)
 	{
-		UE_LOG(LogTemp, Warning, TEXT("UpdateHealth; maya HP is now %f, so broadcasting player death event"), CharacterStats->StatsMap["HP"]);
+		UE_LOG(LogTemp, Warning, TEXT("UpdateHealth; maya HP is now %f, so broadcasting player death event"), CharacterStats->StatsData.StatsMap["HP"]);
 		Cast<URyddelmystGameInstance>(GetWorld()->GetGameInstance())->GetEventManager()->PlayerDeathEvent.Broadcast();
 	}
 }
 
 void ARyddelmystCharacter::UpdateMagic(float MagicChange)
 {
-	CharacterStats->StatsMap["MP"] += MagicChange;
-	CharacterStats->StatsMap["MP"] = FMath::Clamp(CharacterStats->StatsMap["MP"], 0.0f, CharacterStats->StatsMap["MaxMP"]);
+	CharacterStats->StatsData.StatsMap["MP"] += MagicChange;
+	CharacterStats->StatsData.StatsMap["MP"] = FMath::Clamp(CharacterStats->StatsData.StatsMap["MP"], 0.0f, CharacterStats->StatsData.StatsMap["MaxMP"]);
 }
 
 void ARyddelmystCharacter::HandleDamage(AActor* DamagedActor, float Damage, const class UDamageType* DamageType, class AController* InstigatedBy, AActor* DamageCauser)
 {
 	UE_LOG(LogTemp, Warning, TEXT("HandleDamage; ouch for %f to %s"), Damage, *DamagedActor->GetName());
 	UpdateHealth(-Damage);
-	SetCanBeDamaged(false);
-	DamageInvincibilityTimer();
+	// todo: would be cleaner to move iframe processing to UHitBoxerComponent or UAttack
+	if (DamageCauser)
+	{
+		if (DamageCauser->Tags.Find(FName(UAttack::TAG_FLAG_IGNORE_IFRAMES)) == INDEX_NONE)
+		{
+			SetCanBeDamaged(false);
+			DamageInvincibilityTimer();
+		}
+	}
+	else
+	{
+		SetCanBeDamaged(false);
+		DamageInvincibilityTimer();
+	}
 	// todo: send the character flying in some direction derived from HitInfo?
 }
 

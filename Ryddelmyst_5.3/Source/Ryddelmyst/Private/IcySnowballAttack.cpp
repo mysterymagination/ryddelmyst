@@ -1,6 +1,8 @@
 
 #include "IcySnowballAttack.h"
 #include "IceDamageType.h"
+#include "StatusEffected.h"
+#include "FrozenStatusEffect.h"
 #include "BludgeoningDamageType.h"
 
 const FString UIcySnowballAttack::ATTACK_NAME("IcySnowballAttack");
@@ -16,9 +18,9 @@ UIcySnowballAttack::UIcySnowballAttack()
     BasePower = 10.f;
 }
 
-void UIcySnowballAttack::OnHit_Implementation(AActor* StrikingBattler, UPrimitiveComponent* StrikingComp, AActor* StrickenActor, UPrimitiveComponent* StrickenComp, FVector NormalImpulse, const FHitResult& HitInfo)
+void UIcySnowballAttack::OnHit_Implementation(FBattleStatsData StrikingBattlerData, UPrimitiveComponent* StrikingComp, AActor* StrickenActor, UPrimitiveComponent* StrickenComp, FVector NormalImpulse, const FHitResult& HitInfo)
 {
-    Super::OnHit_Implementation(StrikingBattler, StrikingComp, StrickenActor, StrickenComp, NormalImpulse, HitInfo);
+    Super::OnHit_Implementation(StrikingBattlerData, StrikingComp, StrickenActor, StrickenComp, NormalImpulse, HitInfo);
     // todo: would be cleaner to install a functor with this elemental effect in the general SnowballAttack EffectsVector 
     // elemental StatusEffect
     if(StrickenActor->GetClass()->ImplementsInterface(UStatusEffected::StaticClass()))

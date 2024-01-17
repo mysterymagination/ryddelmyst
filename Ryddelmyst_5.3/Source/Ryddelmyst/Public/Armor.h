@@ -5,6 +5,7 @@
 #include "CoreMinimal.h"
 #include "UObject/NoExportTypes.h"
 #include "AnatomyUnit.h"
+#include "Utils.h"
 #include "Armor.generated.h"
 
 UENUM()
@@ -40,8 +41,8 @@ public:
 	 * @param DamageTypes the types of damage the incoming attack deals
 	 */
 	UFUNCTION(BlueprintCallable, BlueprintNativeEvent, Category = "Combat")
-	float CalculateDamageRx(AActor* BattleStatsBearer, UAnatomyUnit* AnatomyCovered, float BaseDamage, const TMap<TSubclassOf<UDamageType>, float>& DamageTypesToWeights);
-	virtual float CalculateDamageRx_Implementation(AActor* BattleStatsBearer, UAnatomyUnit* AnatomyCovered, float BaseDamage, const TMap<TSubclassOf<UDamageType>, float>& DamageTypesToWeights);
+	float CalculateDamageRx(FBattleStatsData BattleStatsData, UAnatomyUnit* AnatomyCovered, float BaseDamage, const TMap<TSubclassOf<UDamageType>, float>& DamageTypesToWeights);
+	virtual float CalculateDamageRx_Implementation(FBattleStatsData BattleStatsData, UAnatomyUnit* AnatomyCovered, float BaseDamage, const TMap<TSubclassOf<UDamageType>, float>& DamageTypesToWeights);
     /**
      * @return the defender's resistance scaling factor for the given damage type, which should reduce the damage if the defender has a resistance to the input damage type and otherwise should be 1 e.g. 0 <= factor <= 1
      *

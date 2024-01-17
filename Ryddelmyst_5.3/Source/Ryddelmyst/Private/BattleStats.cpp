@@ -3,7 +3,7 @@
 
 UBattleStats::UBattleStats()
 {
-    StatsMap = {
+    StatsData.StatsMap = {
         /**
          * @brief Represents the characters experience level, which influences the number of dice rolled to add random damage to spells.  
          * TODO: add some stat growth curve associations with this value so level modifications up and down can affect the character overall.
@@ -60,17 +60,17 @@ UBattleStats::UBattleStats()
 
 void UBattleStats::ResetStats()
 {
-    StatsMap["HP"] = StatsMap["MaxHP"];
-    StatsMap["MP"] = StatsMap["MaxMP"];
+    StatsData.StatsMap["HP"] = StatsData.StatsMap["MaxHP"];
+    StatsData.StatsMap["MP"] = StatsData.StatsMap["MaxMP"];
 }
 
 void UBattleStats::ScaleStats(float ScaleFactor, AActor* BattleStatsBearer)
 {
-    StatsMap["Attack"] *= ScaleFactor;
-    StatsMap["Defense"] *= ScaleFactor;
-    StatsMap["Speed"] *= ScaleFactor;
-    StatsMap["Magic"] *= ScaleFactor;
-    StatsMap["Spirit"] *= ScaleFactor;
+    StatsData.StatsMap["Attack"] *= ScaleFactor;
+    StatsData.StatsMap["Defense"] *= ScaleFactor;
+    StatsData.StatsMap["Speed"] *= ScaleFactor;
+    StatsData.StatsMap["Magic"] *= ScaleFactor;
+    StatsData.StatsMap["Spirit"] *= ScaleFactor;
     IBattleStatsBearer::Execute_HandleStatModification(BattleStatsBearer, "Attack");
     IBattleStatsBearer::Execute_HandleStatModification(BattleStatsBearer, "Defense");
     IBattleStatsBearer::Execute_HandleStatModification(BattleStatsBearer, "Speed");
@@ -81,7 +81,7 @@ void UBattleStats::ScaleStats(float ScaleFactor, AActor* BattleStatsBearer)
 void UBattleStats::ModifyStatByAttribution(const FString& AttributionName, const FString& StatName, float ScaleFactor, float Duration, AActor* BattleStatsBearer)
 {
     UE_LOG(LogTemp, Warning, TEXT("ModifyStatByAttribution; stat %s is being scaled by %f, caused by effect %s"), *StatName, ScaleFactor, *AttributionName);
-    StatsMap[StatName] *= ScaleFactor;
+    StatsData.StatsMap[StatName] *= ScaleFactor;
     StatMods[std::string(TCHAR_TO_UTF8(*AttributionName))].push_back({ TCHAR_TO_UTF8(*StatName), ScaleFactor});
     IBattleStatsBearer::Execute_HandleStatModification(BattleStatsBearer, StatName);
     if (Duration > 0.f)
@@ -105,7 +105,7 @@ void UBattleStats::UnmodifyStatsByAttribution(const FString& AttributionName, AA
         FString StatName(Mod.first.c_str());
         UE_LOG(LogTemp, Warning, TEXT("UnmodifyStatByAttribution; stat %s is being scaled by %f, to reverse the effect %s"), *StatName, 1.f / Mod.second, *AttributionName);
         // scale the stat named by the first element of the pair by the inverse of the scaling factor given in the second element of the pair
-        StatsMap[StatName] *= 1.f/Mod.second;
+        StatsData.StatsMap[StatName] *= 1.f/Mod.second;
     }
     // remove this attribution key from the statsmod map
     StatMods.erase(AttributionString);

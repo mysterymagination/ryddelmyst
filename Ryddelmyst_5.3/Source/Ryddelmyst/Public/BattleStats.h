@@ -5,6 +5,7 @@
 #include <unordered_map>
 #include <string>
 #include <vector>
+#include "Utils.h"
 #include "BattleStats.generated.h"
 
 UCLASS(BlueprintType, Blueprintable)
@@ -31,7 +32,7 @@ public:
 	 * Mapping of string statistic names e.g. "Attack" to corresponding float values that will be used in various gameplay mechanics formulas, such as calculating damage by scaling a base damage value by a given stat value. 
 	 */
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "RPG")
-	TMap<FString, float> StatsMap;
+	FBattleStatsData StatsData;
 
 public:
 	UBattleStats();
@@ -67,6 +68,6 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "RPG")
 	FString ToString()
 	{
-		return FString::Printf(TEXT("{\nAttack: %f,\nDefense: %f,\nSpeed: %f,\nMagic: %f,\nSpirit: %f,\nHP: %f,\nMP: %f\nMaxHP: %f,\nMaxMP: %f\n}"), StatsMap["Attack"], StatsMap["Defense"], StatsMap["Speed"], StatsMap["Magic"], StatsMap["Spirit"], StatsMap["HP"], StatsMap["MP"], StatsMap["MaxHP"], StatsMap["MaxMP"]);
+		return FString::Printf(TEXT("{\nAttack: %f,\nDefense: %f,\nSpeed: %f,\nMagic: %f,\nSpirit: %f,\nHP: %f,\nMP: %f\nMaxHP: %f,\nMaxMP: %f\n}"), StatsData.StatsMap["Attack"], StatsData.StatsMap["Defense"], StatsData.StatsMap["Speed"], StatsData.StatsMap["Magic"], StatsData.StatsMap["Spirit"], StatsData.StatsMap["HP"], StatsData.StatsMap["MP"], StatsData.StatsMap["MaxHP"], StatsData.StatsMap["MaxMP"]);
 	}
 };
