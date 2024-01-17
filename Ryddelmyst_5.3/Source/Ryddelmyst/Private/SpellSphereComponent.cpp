@@ -12,9 +12,9 @@ USpellSphereComponent::USpellSphereComponent()
     Magic = CreateDefaultSubobject<UMagicWeapon>(TEXT("Magic Weapon"));
 }
 
-AActor* USpellSphereComponent::GetBattler_Implementation() 
+FBattleStatsData USpellSphereComponent::GetBattleStats_Implementation()
 { 
-    return Caster; 
+    return Magic->WielderData; 
 }
 
 UWeapon* USpellSphereComponent::GetWeapon_Implementation() 
@@ -33,4 +33,5 @@ void USpellSphereComponent::ExecuteAttack_Implementation
 )
 { 
     // todo: kick off the attack's animation and any other immediate effects; an actual collision event later will lead to the attack's OnHit call. 
+    //  EDIT: for now I'm using a more top-down approach to kicking off the attack's animation since it would be clunky to try to have this leaf node spellsphere guy trying to reach up to whatever skeletal mesh he might be associated with and change its animation graph state, if any.
 }

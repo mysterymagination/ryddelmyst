@@ -160,9 +160,9 @@ public:
 	{ 
 		if (StatName.Equals("Speed"))
 		{
-			GetCharacterMovement()->MaxWalkSpeed = IsRunning ? CharacterStats->StatsMap["Speed"] * BaseWalkSpeed * RunSpeedFactor : CharacterStats->StatsMap["Speed"] * BaseWalkSpeed;
+			GetCharacterMovement()->MaxWalkSpeed = IsRunning ? CharacterStats->StatsData.StatsMap["Speed"] * BaseWalkSpeed * RunSpeedFactor : CharacterStats->StatsData.StatsMap["Speed"] * BaseWalkSpeed;
 			UE_LOG(LogTemp, Warning, TEXT("UpdateSpeed; max walk speed became %f from speed factor %f times BaseWalkSpeed %f %s"),
-				GetCharacterMovement()->MaxWalkSpeed, CharacterStats->StatsMap["Speed"], BaseWalkSpeed, (IsRunning ? *FString::Printf(TEXT("and running factor of %f"), RunSpeedFactor) : *FString(TEXT(""))));
+				GetCharacterMovement()->MaxWalkSpeed, CharacterStats->StatsData.StatsMap["Speed"], BaseWalkSpeed, (IsRunning ? *FString::Printf(TEXT("and running factor of %f"), RunSpeedFactor) : *FString(TEXT(""))));
 		}
 	}
 	void ProcessStatusEffects_Implementation() {UE_LOG(LogTemp, Warning, TEXT("ProcessStatusEffects; dummy impl for RyddelmystCharacter"));}
@@ -170,7 +170,7 @@ public:
 	{ 
 		StatusEffects.Add(Effect); 
 	}
-	void RemoveStatusEffect_Implmenetation(const FString& EffectId) 
+	void RemoveStatusEffect_Implementation(const FString& EffectId) 
 	{ 
 		const UStatusEffect* StatusToRemove = *StatusEffects.FindByPredicate([&](const UStatusEffect* Effect)
 			{

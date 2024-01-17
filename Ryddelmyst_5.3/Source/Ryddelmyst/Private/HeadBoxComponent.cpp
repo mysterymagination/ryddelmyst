@@ -20,9 +20,9 @@ UArmor* UHeadBoxComponent::GetArmor_Implementation()
     return Armor;
 }
 
-AActor* UHeadBoxComponent::GetBattler_Implementation()
+FBattleStatsData UHeadBoxComponent::GetBattleStats_Implementation()
 {
-    return GetOwner();
+    return IBattleStatsBearer::Execute_GetStats(GetOwner())->StatsData;
 }
 
 

@@ -6,6 +6,7 @@
 #include "UObject/NoExportTypes.h"
 #include "Containers/Map.h"
 #include "BattleStatsBearer.h"
+#include "Utils.h"
 #include "Attack.generated.h"
 
 USTRUCT(BlueprintType)
@@ -28,6 +29,10 @@ class RYDDELMYST_API UAttack : public UObject
 	GENERATED_BODY()
 public:
 	static const FString KEY_COSTS_EFFECT;
+	/**
+	 * Tag string to be applied to this Attack's host Actor indicating that stricken Actors' iframes (if any) should be ignored.
+	 */
+	static const FString TAG_FLAG_IGNORE_IFRAMES;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Combat")
 	FString AttackName;
 	/**
@@ -68,15 +73,15 @@ public:
 	 * @param HitInfo collision data
 	 */
 	UFUNCTION(BlueprintCallable, BlueprintNativeEvent, Category = "Combat")
-	void OnHit(AActor* StrikingBattler, UPrimitiveComponent* StrikingComp, AActor* StrickenActor, UPrimitiveComponent* StrickenComp, FVector NormalImpulse, const FHitResult& HitInfo);
-	virtual void OnHit_Implementation(AActor* StrikingBattler, UPrimitiveComponent* StrikingComp, AActor* StrickenActor, UPrimitiveComponent* StrickenComp, FVector NormalImpulse, const FHitResult& HitInfo);
+	void OnHit(FBattleStatsData StrikingBattlerData, UPrimitiveComponent* StrikingComp, AActor* StrickenActor, UPrimitiveComponent* StrickenComp, FVector NormalImpulse, const FHitResult& HitInfo);
+	virtual void OnHit_Implementation(FBattleStatsData StrikingBattlerData, UPrimitiveComponent* StrikingComp, AActor* StrickenActor, UPrimitiveComponent* StrickenComp, FVector NormalImpulse, const FHitResult& HitInfo);
 	/**
 	 * @brief Calculates the base damage of our attack from the stats of the input IBattleStatsBearer implementor
-	 * @param BattleStatsBearer the instigator of the attack, whose stats determine its damage output
+	 * @param BattleStatsData the stats of the instigator of the attack, which determine its damage output
 	 */
 	UFUNCTION(BlueprintCallable, BlueprintNativeEvent, Category = "Combat")
-	FAttackTxInfo CalculateDamageTx(AActor* BattleStatsBearer);
-	virtual FAttackTxInfo CalculateDamageTx_Implementation(AActor* BattleStatsBearer) { return FAttackTxInfo(); }
+	FAttackTxInfo CalculateDamageTx(FBattleStatsData BattleStatsData);
+	virtual FAttackTxInfo CalculateDamageTx_Implementation(FBattleStatsData BattleStatsData) { return FAttackTxInfo(); }
 	/**
 	 * @brief Subtracts the costs of the attack from the attacker's resources e.g. MP cost to cast a spell.  This function can't be called from a generic location
 	 * 	      within the Attack impl since different attacks will incur costs differently i.e. casting a spell that summons a bullet will incur costs when cast, not
@@ -107,7 +112,7 @@ public:
 			}
 			*/
 			UBattleStats* BattleStats = IBattleStatsBearer::Execute_GetStats(BattleStatsBearer);
-				float* StatPtr = BattleStats->StatsMap.Find(Cost.Key);
+				float* StatPtr = BattleStats->StatsData.StatsMap.Find(Cost.Key);
 				if(StatPtr)
 				{
 					*StatPtr -= Cost.Value;
@@ -124,7 +129,7 @@ public:
 		for (auto& Cost : Costs)
 		{
 			UBattleStats* BattleStats = IBattleStatsBearer::Execute_GetStats(BattleStatsBearer);
-			float* StatPtr = BattleStats->StatsMap.Find(Cost.Key);
+			float* StatPtr = BattleStats->StatsData.StatsMap.Find(Cost.Key);
 			if (StatPtr)
 			{
 				Affordable &= *StatPtr >= Cost.Value;

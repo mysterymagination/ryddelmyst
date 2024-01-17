@@ -30,7 +30,6 @@ ASnowball::ASnowball()
 		
 		// todo: trying to lower the impact force of the snowball; maybe mass derives from the radius of the physics sphere?
 		SpellSphereComponent->InitSphereRadius(15.0f);
-		SpellSphereComponent->SetMassOverrideInKg(NAME_None, 0.5f, true);
 
 		// On hit event handling
 		SpellSphereComponent->SetSimulatePhysics(true);
@@ -39,7 +38,7 @@ ASnowball::ASnowball()
 		SpellSphereComponent->SetCollisionProfileName("Projectile");
 		UE_LOG(LogTemp, Warning, TEXT("snowball ctor; adding OnComponentHit delegate pointing to HitBoxer::OnHit"));
 		FScriptDelegate onHitDelegate;
-		onHitDelegate.BindUFunction(HitBoxer, FName("OnHit"));
+		onHitDelegate.BindUFunction(this, FName("OnHit"));
 		SpellSphereComponent->OnComponentHit.Add(onHitDelegate);
 
 		// Set the root component to be the collision component.
@@ -84,7 +83,7 @@ ASnowball::ASnowball()
 void ASnowball::BeginPlay()
 {
 	Super::BeginPlay();
-
+	SpellSphereComponent->SetMassOverrideInKg(NAME_None, 0.5f, true);
 }
 
 // Called every frame
@@ -108,9 +107,15 @@ void ASnowball::FixPhysics()
 // Function that initializes the projectile's velocity in the shoot direction.
 void ASnowball::Cast(ARyddelmystCharacter* LaunchingCharacter, const FVector& LaunchDirection)
 {
-	SpellSphereComponent->Caster = LaunchingCharacter;
 	UE_LOG(LogTemp, Warning, TEXT("Cast; launchingchar is %s and launchdir is %s"), *LaunchingCharacter->GetName(), *LaunchDirection.ToString());
 	LaunchFn(LaunchingCharacter, LaunchDirection);
+}
+
+void ASnowball::OnHit(UPrimitiveComponent* StrikingComp, AActor* StrickenActor, UPrimitiveComponent* StrickenComp, FVector NormalImpulse, const FHitResult& HitInfo)
+{
+	UE_LOG(LogTemp, Warning, TEXT("OnHit; delivering attack and then destroying snowball"));
+	HitBoxer->OnHit(StrikingComp, StrickenActor, StrickenComp, NormalImpulse, HitInfo);
+	Destroy();
 }
 
 

@@ -11,9 +11,13 @@ UClawCapsuleComponent::UClawCapsuleComponent()
     Claw = CreateDefaultSubobject<UClawWeapon>(TEXT("Claw Weapon"));
 }
 
-AActor* UClawCapsuleComponent::GetBattler_Implementation() 
+FBattleStatsData UClawCapsuleComponent::GetBattleStats_Implementation()
 { 
-    return GetOwner(); 
+    // simple case since we can assume the owning Actor would also be the Weapon's wielder
+    FBattleStatsData Data = IBattleStatsBearer::Execute_GetStats(GetOwner())->StatsData;
+    Data.BattlerTransform = GetOwner()->GetActorTransform();
+    Claw->WielderData = Data;
+    return Claw->WielderData;
 }
 
 UWeapon* UClawCapsuleComponent::GetWeapon_Implementation() 

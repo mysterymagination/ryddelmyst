@@ -61,29 +61,29 @@ void AMonster::ToggleRun()
 	if (IsRunning)
 	{
 		// toggle to walk speed
-		GetCharacterMovement()->MaxWalkSpeed = MonsterStats->StatsMap["Speed"] * BaseWalkSpeed;
-		UE_LOG(LogTemp, Warning, TEXT("Run; after switching to walk mode, MaxWalkSpeed of %s is %f from speed stat %f times BaseWalkSpeed %f"), *GetName(), GetCharacterMovement()->MaxWalkSpeed, MonsterStats->StatsMap["Speed"], BaseWalkSpeed);
+		GetCharacterMovement()->MaxWalkSpeed = MonsterStats->StatsData.StatsMap["Speed"] * BaseWalkSpeed;
+		UE_LOG(LogTemp, Warning, TEXT("Run; after switching to walk mode, MaxWalkSpeed of %s is %f from speed stat %f times BaseWalkSpeed %f"), *GetName(), GetCharacterMovement()->MaxWalkSpeed, MonsterStats->StatsData.StatsMap["Speed"], BaseWalkSpeed);
 	}
 	else
 	{
 		// toggle to run speed
-		GetCharacterMovement()->MaxWalkSpeed = MonsterStats->StatsMap["Speed"] * BaseWalkSpeed * RunSpeedFactor;
-		UE_LOG(LogTemp, Warning, TEXT("Run; after switching to run mode, MaxWalkSpeed of %s is %f from speed stat %f times BaseWalkSpeed %f times run speed factor %f"), *GetName(), GetCharacterMovement()->MaxWalkSpeed, MonsterStats->StatsMap["Speed"], BaseWalkSpeed, RunSpeedFactor);
+		GetCharacterMovement()->MaxWalkSpeed = MonsterStats->StatsData.StatsMap["Speed"] * BaseWalkSpeed * RunSpeedFactor;
+		UE_LOG(LogTemp, Warning, TEXT("Run; after switching to run mode, MaxWalkSpeed of %s is %f from speed stat %f times BaseWalkSpeed %f times run speed factor %f"), *GetName(), GetCharacterMovement()->MaxWalkSpeed, MonsterStats->StatsData.StatsMap["Speed"], BaseWalkSpeed, RunSpeedFactor);
 	}
 	IsRunning = !IsRunning;
 }
 
 void AMonster::Run()
 {
-	GetCharacterMovement()->MaxWalkSpeed = MonsterStats->StatsMap["Speed"] * BaseWalkSpeed * RunSpeedFactor;
-	UE_LOG(LogTemp, Warning, TEXT("Run; after switching to run mode, MaxWalkSpeed of %s is %f from speed stat %f times BaseWalkSpeed %f times run speed factor %f"), *GetName(), GetCharacterMovement()->MaxWalkSpeed, MonsterStats->StatsMap["Speed"], BaseWalkSpeed, RunSpeedFactor);
+	GetCharacterMovement()->MaxWalkSpeed = MonsterStats->StatsData.StatsMap["Speed"] * BaseWalkSpeed * RunSpeedFactor;
+	UE_LOG(LogTemp, Warning, TEXT("Run; after switching to run mode, MaxWalkSpeed of %s is %f from speed stat %f times BaseWalkSpeed %f times run speed factor %f"), *GetName(), GetCharacterMovement()->MaxWalkSpeed, MonsterStats->StatsData.StatsMap["Speed"], BaseWalkSpeed, RunSpeedFactor);
 	IsRunning = true;
 }
 
 void AMonster::Walk()
 {
-	GetCharacterMovement()->MaxWalkSpeed = MonsterStats->StatsMap["Speed"] * BaseWalkSpeed;
-	UE_LOG(LogTemp, Warning, TEXT("Walk; after switching to walk mode, MaxWalkSpeed of %s is %f from speed stat %f times BaseWalkSpeed %f"), *GetName(), GetCharacterMovement()->MaxWalkSpeed, MonsterStats->StatsMap["Speed"], BaseWalkSpeed);
+	GetCharacterMovement()->MaxWalkSpeed = MonsterStats->StatsData.StatsMap["Speed"] * BaseWalkSpeed;
+	UE_LOG(LogTemp, Warning, TEXT("Walk; after switching to walk mode, MaxWalkSpeed of %s is %f from speed stat %f times BaseWalkSpeed %f"), *GetName(), GetCharacterMovement()->MaxWalkSpeed, MonsterStats->StatsData.StatsMap["Speed"], BaseWalkSpeed);
 	IsRunning = false;
 }
 
@@ -95,11 +95,11 @@ bool AMonster::GetRunningStatus()
 void AMonster::HandleDamage(AActor* DamagedActor, float Damage, const class UDamageType* DamageType, class AController* InstigatedBy, AActor* DamageCauser)
 {
 	UE_LOG(LogTemp, Warning, TEXT("HandleDamage; %s says ouch for %f"), *DamagedActor->GetName(), Damage);
-	MonsterStats->StatsMap["HP"] -= Damage;
-	MonsterStats->StatsMap["HP"] = FMath::Clamp(MonsterStats->StatsMap["HP"], 0.0f, MonsterStats->StatsMap["MaxHP"]);
-	if (MonsterStats->StatsMap["HP"] == 0.f)
+	MonsterStats->StatsData.StatsMap["HP"] -= Damage;
+	MonsterStats->StatsData.StatsMap["HP"] = FMath::Clamp(MonsterStats->StatsData.StatsMap["HP"], 0.0f, MonsterStats->StatsData.StatsMap["MaxHP"]);
+	if (MonsterStats->StatsData.StatsMap["HP"] == 0.f)
 	{
-		UE_LOG(LogTemp, Warning, TEXT("HandleDamage; %s HP with max %f has been depleted, so it will HandleDeath()"), *DamagedActor->GetName(), MonsterStats->StatsMap["MaxHP"]);
+		UE_LOG(LogTemp, Warning, TEXT("HandleDamage; %s HP with max %f has been depleted, so it will HandleDeath()"), *DamagedActor->GetName(), MonsterStats->StatsData.StatsMap["MaxHP"]);
 		HandleDeath();
 	}
 }

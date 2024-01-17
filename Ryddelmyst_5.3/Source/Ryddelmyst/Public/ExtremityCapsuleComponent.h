@@ -8,6 +8,7 @@
 #include "ExtremityUnit.h"
 #include "IAnatomy.h"
 #include "IDefender.h"
+#include "Utils.h"
 #include "ExtremityCapsuleComponent.generated.h"
 
 /**
@@ -28,5 +29,5 @@ public:
     UExtremityCapsuleComponent();
     UAnatomyUnit* GetAnatomyUnit_Implementation() override;
     UArmor* GetArmor_Implementation() override;
-    AActor* GetBattler_Implementation() override;
+    FBattleStatsData GetBattleStats_Implementation() override;
 };

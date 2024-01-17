@@ -34,10 +34,9 @@ UArmor::UArmor()
     };
 }
 
-float UArmor::CalculateDamageRx_Implementation(AActor* BattleStatsBearer, UAnatomyUnit* AnatomyCovered, float BaseDamage, const TMap<TSubclassOf<UDamageType>, float>& DamageTypesToWeightsMap) 
+float UArmor::CalculateDamageRx_Implementation(FBattleStatsData BattleStatsData, UAnatomyUnit* AnatomyCovered, float BaseDamage, const TMap<TSubclassOf<UDamageType>, float>& DamageTypesToWeightsMap)
 {
-    UBattleStats* Stats = IBattleStatsBearer::Execute_GetStats(BattleStatsBearer);
-    return BaseDamage * (1.f - GetDamageReductionFactorForDamageTypes(DamageTypesToWeightsMap)) * AnatomyCovered->DamageScaleFactor - Stats->StatsMap["Defense"];
+    return BaseDamage * (1.f - GetDamageReductionFactorForDamageTypes(DamageTypesToWeightsMap)) * AnatomyCovered->DamageScaleFactor - BattleStatsData.StatsMap["Defense"];
 }
 
 float UArmor::GetDamageReductionFactorForDamageTypes_Implementation(const TMap<TSubclassOf<UDamageType>, float>& InputDamageTypesMap)

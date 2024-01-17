@@ -16,11 +16,11 @@ UClawSlashAttack::UClawSlashAttack()
     };
 }
 
-FAttackTxInfo UClawSlashAttack::CalculateDamageTx_Implementation(AActor* BattleStatsBearer)
+FAttackTxInfo UClawSlashAttack::CalculateDamageTx_Implementation(FBattleStatsData BattleStatsData)
 {
-    float BaseDamage = BasePower * IBattleStatsBearer::Execute_GetStats(BattleStatsBearer)->StatsMap["Attack"] * MathUtils::MeanVector3D(BattleStatsBearer->GetActorScale());
-	UE_LOG(LogTemp, Warning, TEXT("CalculateDamage; BasePower (%f) * Attack (%f) = BaseDamage (%f)"), BasePower, IBattleStatsBearer::Execute_GetStats(BattleStatsBearer)->StatsMap["Attack"], BaseDamage);
-    uint8 DieCount = IBattleStatsBearer::Execute_GetStats(BattleStatsBearer)->StatsMap["Level"];
+    float BaseDamage = BasePower * BattleStatsData.StatsMap["Attack"] * MathUtils::MeanVector3D(BattleStatsData.BattlerTransform.GetScale3D());
+	UE_LOG(LogTemp, Warning, TEXT("CalculateDamage; BasePower (%f) * Attack (%f) = BaseDamage (%f)"), BasePower, BattleStatsData.StatsMap["Attack"], BaseDamage);
+    uint8 DieCount = BattleStatsData.StatsMap["Level"];
     uint8 DieSides = 8;
     BaseDamage += MathUtils::RollNdM(DieCount, DieSides);
     FAttackTxInfo AttackTx;

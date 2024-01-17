@@ -20,9 +20,9 @@ UArmor* UBodyBoxComponent::GetArmor_Implementation()
     return Armor;
 }
 
-AActor* UBodyBoxComponent::GetBattler_Implementation()
+FBattleStatsData UBodyBoxComponent::GetBattleStats_Implementation()
 {
-    return GetOwner();
+    return IBattleStatsBearer::Execute_GetStats(GetOwner())->StatsData;
 }
 
 

@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "Attack.h"
+#include "Utils.h"
 #include "SnowballAttack.generated.h"
 
 /**
@@ -18,11 +19,11 @@ class RYDDELMYST_API USnowballAttack : public UAttack
 
 public:
 	USnowballAttack();
-	virtual void OnHit_Implementation(AActor* StrikingBattler, UPrimitiveComponent* StrikingComp, AActor* StrickenActor, UPrimitiveComponent* StrickenComp, FVector NormalImpulse, const FHitResult& HitInfo) override;
+	virtual void OnHit_Implementation(FBattleStatsData BattlerData, UPrimitiveComponent* StrikingComp, AActor* StrickenActor, UPrimitiveComponent* StrickenComp, FVector NormalImpulse, const FHitResult& HitInfo) override;
 	UFUNCTION()
 	float GetDamageScaleFactor() { return DamageScaleFactor; };
 	UFUNCTION()
 	void SetDamageScaleFactor(float ScaleFactor) { DamageScaleFactor = ScaleFactor; };
 	std::vector<std::function<void(AActor*, const FHitResult&)>>& GetEffectsVector() { return EffectsOnTarget; };
-	virtual FAttackTxInfo CalculateDamageTx_Implementation(AActor* BattleStatsBearer) override;
+	virtual FAttackTxInfo CalculateDamageTx_Implementation(FBattleStatsData BattleStatsData) override;
 };
