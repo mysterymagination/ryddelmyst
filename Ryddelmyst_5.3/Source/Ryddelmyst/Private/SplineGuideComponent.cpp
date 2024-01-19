@@ -3,6 +3,7 @@
 #include "SplineGuideComponent.h"
 #include <cmath>
 #include "Kismet/KismetMathLibrary.h"
+#include "Kismet/GameplayStatics.h"
 
 void USplineGuideComponent::BeginPlay()
 {
@@ -31,7 +32,7 @@ void USplineGuideComponent::BeginPlay()
 
 void USplineGuideComponent::SpawnBullet()
 {
-	// todo: spawn bullet in the world
+	// spawn bullet in the world
 	// FTransform SpawnTransform;
 	FTransform SpawnTransform;
 	FVector ZeroPoint = Spline->GetSplinePointAt(0, ESplineCoordinateSpace::World).Position;
@@ -39,16 +40,24 @@ void USplineGuideComponent::SpawnBullet()
 	SpawnTransform.SetLocation(ZeroPoint);
 	SpawnTransform.SetRotation(FQuat(UKismetMathLibrary::FindLookAtRotation(OnePoint, ZeroPoint)));
 	SpawnTransform.SetScale3D(FVector(1.f));
-	// todo: install MagicWeapon->WielderData for Clash API projectile collision damage handling. Probably will need to spawn deferred, install, then finish spawning as with snowballs.
 	FActorSpawnParameters SpawnParams;
-	Bullets.Add(
-		(ASpellBullet*)GetOwner()->GetWorld()->SpawnActor
-		(
-			BulletTemplate,
-			&SpawnTransform,
-			SpawnParams
-		)
+	ASpellBullet* Bullet = GetOwner()->GetWorld()->SpawnActorDeferred<ASpellBullet>
+	(
+		BulletTemplate,
+		SpawnTransform,
+		GetOwner(),
+		nullptr,
+		ESpawnActorCollisionHandlingMethod::AlwaysSpawn
 	);
+	// install MagicWeapon->WielderData for Clash API projectile collision damage handling. We're assuming the owner Actor of the SplineGuideComponent is also a BattleStatsBearer here.
+	IAttacker::Execute_GetWeapon(Bullet->GetAttacker())->WielderData = IBattleStatsBearer::Execute_GetStats(GetOwner())->StatsData;
+	UGameplayStatics::FinishSpawningActor
+	(
+		Bullet,
+		SpawnTransform,
+		ESpawnActorScaleMethod::MultiplyWithRoot
+	);
+	Bullets.Add(Bullet);
 	// if we've reached bullet limit, cancel this timer
 	if (--BulletLimit <= 0)
 	{
@@ -60,6 +69,15 @@ void USplineGuideComponent::TickComponent(float DeltaTime, ELevelTick TickType, 
 {
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
 	
-	// todo: tack the towingpoint onto the bullet, rotated to match rotation of forward vector and use that point to find the nearest point to it on the spline.
-	
+	// tack the towingpoint onto the bullet, rotated to match rotation of forward vector and use that point to find the nearest point to it on the spline. Then we rotate our bullet to lookat the nearest point on the spline, which is our actual destination, and set the projectile movement component's velocity to a speed scaled unit vector in the direction of our destination point from our source point.
+	FVector TowPoint(100.f, 0.f, 0.f);
+	for (auto Bullet : Bullets)
+	{
+		FVector BulletRelativeTowPoint = Bullet->GetActorRotation().RotateVector(TowPoint) + Bullet->GetActorLocation();
+		FVector Destination = Spline->FindLocationClosestToWorldLocation(BulletRelativeTowPoint, ESplineCoordinateSpace::World);
+		FRotator DestRotation = UKismetMathLibrary::FindLookAtRotation(Bullet->GetActorLocation(), Destination);
+		Bullet->SetActorRotation(DestRotation);
+		FVector DirectionToTravel = DestRotation.Vector();
+		Bullet->BulletMovement->Velocity = DirectionToTravel * Bullet->BulletMovement->InitialSpeed;
+	}
 }

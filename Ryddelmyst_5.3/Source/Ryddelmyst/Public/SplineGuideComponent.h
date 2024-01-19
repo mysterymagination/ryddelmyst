@@ -58,7 +58,7 @@ public:
 	 * The number of bullets we spawn along the spline.
 	 */
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Structure")
-	int BulletLimit = 10;
+	int BulletLimit = 1;
 
 private:
 	UPROPERTY()
