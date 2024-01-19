@@ -25,9 +25,18 @@ void USplineGuideComponent::BeginPlay()
 			Spline->AddPoint(FSplinePoint(PointIdx, FVector(X, Y, Z)));
 		}
 	}
+	// attach the splinecomponent to the owner actor's transform hierarchy via rootcomponent
+	Spline->AttachToComponent(GetOwner()->GetRootComponent(), FAttachmentTransformRules::KeepWorldTransform);
 	// todo: add more splines, maybe three or five total in a one of couple spread patterns out from the host Actor. Ideal thing might be to create a cone with bullet spray range for height out from the host Actor and pick 3-5 vectors randomly inside that cone. 
-	// setup timer to spawn bullets from World.
-	GetOwner()->GetWorldTimerManager().SetTimer(BulletSpawnTimerHandle, this, &USplineGuideComponent::SpawnBullet, SpawnRate, false, 0.f);
+	if (BulletTemplate)
+	{
+		// setup timer to spawn bullets from World.
+		GetOwner()->GetWorldTimerManager().SetTimer(BulletSpawnTimerHandle, this, &USplineGuideComponent::SpawnBullet, SpawnRate, false, 0.f);
+	}
+	else
+	{
+		UE_LOG(LogTemp, Error, TEXT("SplineGuideComponent::BeginPlay; failed to install bullet spawn timer because bullet template is null. Please set a ASpellBullet subclass as bullet template in the editor."));
+	}
 }
 
 void USplineGuideComponent::SpawnBullet()
