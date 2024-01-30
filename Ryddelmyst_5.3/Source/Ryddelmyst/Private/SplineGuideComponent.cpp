@@ -82,11 +82,38 @@ void USplineGuideComponent::TickComponent(float DeltaTime, ELevelTick TickType, 
 	FVector TowPoint(100.f, 0.f, 0.f);
 	for (auto Bullet : Bullets)
 	{
-		FVector BulletRelativeTowPoint = Bullet->GetActorRotation().RotateVector(TowPoint) + Bullet->GetActorLocation();
-		FVector Destination = Spline->FindLocationClosestToWorldLocation(BulletRelativeTowPoint, ESplineCoordinateSpace::World);
-		FRotator DestRotation = UKismetMathLibrary::FindLookAtRotation(Bullet->GetActorLocation(), Destination);
-		Bullet->SetActorRotation(DestRotation);
-		FVector DirectionToTravel = DestRotation.Vector();
-		Bullet->BulletMovement->Velocity = DirectionToTravel * Bullet->BulletMovement->InitialSpeed;
+		if (IsValid(Bullet))
+		{
+			// check if the bullet has reached the terminal node of the spline
+			FVector TerminalPointLocation = Spline->GetWorldLocationAtSplinePoint(SplinePointCount - 1);
+			if ((TerminalPointLocation - Bullet->GetActorLocation()).Length() <= TowPoint.X/10.f)
+			{
+				// bullet has approximately reached end of spline, despawn it
+				Bullet->Destroy();
+			}
+			else
+			{
+				FVector BulletRelativeTowPoint = Bullet->GetActorRotation().RotateVector(TowPoint) + Bullet->GetActorLocation();
+				FVector Destination = Spline->FindLocationClosestToWorldLocation(BulletRelativeTowPoint, ESplineCoordinateSpace::World);
+				FRotator DestRotation = UKismetMathLibrary::FindLookAtRotation(Bullet->GetActorLocation(), Destination);
+				Bullet->SetActorRotation(DestRotation);
+				FVector DirectionToTravel = DestRotation.Vector();
+				Bullet->BulletMovement->Velocity = DirectionToTravel * Bullet->BulletMovement->InitialSpeed;
+			}
+		}
+	}
+
+	// if all bullets are destroyed, broadcast an event saying the spline guide component is no longer needed
+	int DestroyedBulletCount = 0;
+	for (auto Bullet : Bullets)
+	{
+		if (!IsValid(Bullet))
+		{
+			DestroyedBulletCount++;
+		}
+	}
+	if (DestroyedBulletCount >= Bullets.Num())
+	{
+		// todo: broadcast spline guide completion event
 	}
 }
