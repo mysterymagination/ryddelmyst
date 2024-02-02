@@ -3,6 +3,8 @@
 #include "SplineGuideComponent.h"
 #include <cmath>
 #include "Kismet/KismetMathLibrary.h"
+#include "RyddelmystEventManager.h"
+#include "RyddelmystGameInstance.h"
 #include "Kismet/GameplayStatics.h"
 
 void USplineGuideComponent::BeginPlay()
@@ -114,6 +116,7 @@ void USplineGuideComponent::TickComponent(float DeltaTime, ELevelTick TickType, 
 	}
 	if (DestroyedBulletCount >= Bullets.Num())
 	{
-		// todo: broadcast spline guide completion event
+		// broadcast spline guide completion event
+		Cast<URyddelmystGameInstance>(GetWorld()->GetGameInstance())->GetEventManager()->SplineGuideCompletionEvent.Broadcast(this);
 	}
 }
