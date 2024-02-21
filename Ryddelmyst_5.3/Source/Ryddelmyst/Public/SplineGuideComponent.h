@@ -77,6 +77,13 @@ public:
 	// Called every frame
 	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
 
+	void SetBulletType(TSubclassOf<ASpellBullet> BulletType) { BulletTemplate = BulletType; };
+
+	/**
+	 * Build the spline and kick off the bullet spawn timer. 
+	 */
+	void StartSplineBullets();
+
 private:
 	/**
 	 * Spawns a bullet anchored at the 0th spline point. 

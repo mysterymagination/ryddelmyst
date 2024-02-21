@@ -10,6 +10,10 @@
 void USplineGuideComponent::BeginPlay()
 {
 	Super::BeginPlay();
+}
+
+void USplineGuideComponent::StartSplineBullets()
+{
 	if (!Spline)
 	{
 		// todo: populate spline parametrically. Maybe make a few enum categories for pattern like sine wave and then scalers or something so the wave amplitude and period change.
