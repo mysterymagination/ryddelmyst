@@ -7,11 +7,13 @@
 #include "FlameBeadBullet.generated.h"
 
 /**
- * 
+ * A tiny sphere of fire suitable for bursts of bullets!
  */
-UCLASS(ClassGroup = "Combat", Blueprintable, BlueprintType, meta = (DisplayName = "SpellBullet", BlueprintSpawnableComponent))
+UCLASS(ClassGroup = "Combat", Blueprintable, BlueprintType, meta = (DisplayName = "FlameBeadBullet", BlueprintSpawnableComponent))
 class RYDDELMYST_API AFlameBeadBullet : public ASpellBullet
 {
 	GENERATED_BODY()
 	
+public:
+	AFlameBeadBullet();
 };

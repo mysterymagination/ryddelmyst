@@ -23,7 +23,7 @@ FAttackTxInfo UBlasterBoltAttack::CalculateDamageTx_Implementation(FBattleStatsD
     uint8 DieCount = BattleStatsData.StatsMap["Level"];
     uint8 DieSides = 4;
     float Rando = MathUtils::RollNdM(DieCount, DieSides);
-    UE_LOG(LogTemp, Warning, TEXT("CalculateDamageTx; Power (%f) * Magic (%f) = BaseDamage (%f) and rando aspect is %f"), BasePower, BattleStatsData.StatsMap["Magic"], BaseDamage, Rando);
+    UE_LOG(LogTemp, Warning, TEXT("CalculateDamageTx blaster bolt atk; Power (%f) * Magic (%f) = BaseDamage (%f) and rando aspect is %f"), BasePower, BattleStatsData.StatsMap["Magic"], BaseDamage, Rando);
     BaseDamage += Rando;
     FAttackTxInfo AttackTx;
     AttackTx.DamageTx = DamageScaleFactor * BaseDamage;

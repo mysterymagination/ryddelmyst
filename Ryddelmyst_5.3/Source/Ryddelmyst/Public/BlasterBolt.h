@@ -11,7 +11,7 @@
 /**
  * A spellbullet child with a capsule mesh, purple flame material, and blaster bolt attack. 
  */
-UCLASS(ClassGroup = "Combat", Blueprintable, BlueprintType, meta = (DisplayName = "SpellBullet", BlueprintSpawnableComponent))
+UCLASS(ClassGroup = "Combat", Blueprintable, BlueprintType, meta = (DisplayName = "BlasterBolt", BlueprintSpawnableComponent))
 class RYDDELMYST_API ABlasterBolt : public ASpellBullet
 {
 	GENERATED_BODY()
