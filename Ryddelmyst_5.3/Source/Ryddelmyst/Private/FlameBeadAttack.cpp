@@ -4,6 +4,7 @@
 #include "FireDamageType.h"
 #include "StatusEffected.h"
 #include "BurnedStatusEffect.h"
+#include "MathUtils.h"
 
 const FString UFlameBeadAttack::ATTACK_NAME("FlameBeadAttack");
 
@@ -24,6 +25,7 @@ void UFlameBeadAttack::OnHit_Implementation(FBattleStatsData StrikingBattlerData
     if (StrickenActor->GetClass()->ImplementsInterface(UStatusEffected::StaticClass()))
     {
         // todo: check if the target is already burned and extend the duration by BurnDuration if so, up to DieSides * BurnDuration
+        //auto StatusEffectArray = IStatusEffected::Execute_GetStatusEffects(StrickenActor);
         UBurnedStatusEffect* StatusEffect = NewObject<UBurnedStatusEffect>(StrickenActor, UBurnedStatusEffect::StaticClass());
         StatusEffect->SetId("BurnedStatusEffect");
         StatusEffect->SetBurnDuration(BurnDuration);
