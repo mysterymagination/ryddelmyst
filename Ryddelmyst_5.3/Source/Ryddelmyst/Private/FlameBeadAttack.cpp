@@ -24,17 +24,31 @@ void UFlameBeadAttack::OnHit_Implementation(FBattleStatsData StrikingBattlerData
     // elemental StatusEffect
     if (StrickenActor->GetClass()->ImplementsInterface(UStatusEffected::StaticClass()))
     {
-        // todo: check if the target is already burned and extend the duration by BurnDuration if so, up to DieSides * BurnDuration
-        //auto StatusEffectArray = IStatusEffected::Execute_GetStatusEffects(StrickenActor);
-        UBurnedStatusEffect* StatusEffect = NewObject<UBurnedStatusEffect>(StrickenActor, UBurnedStatusEffect::StaticClass());
-        StatusEffect->SetId("BurnedStatusEffect");
-        StatusEffect->SetBurnDuration(BurnDuration);
-        StatusEffect->SetBurnPeriod(BurnPeriod);
-        // ongoing damage will be init calculated damage over 4
-        StatusEffect->SetBurnDamage(LatestDamageDealt / 4.f);
-        UE_LOG(LogTemp, Warning, TEXT("OnHit; applying primary StatusEffect with id %s"), *StatusEffect->GetId());
-        IStatusEffected::Execute_AddStatusEffect(StrickenActor, StatusEffect);
-        StatusEffect->OnEffectApplied(StrickenActor);
+        // check if the target is already burned and extend the duration by BaseBurnDuration if so, up to DieSides * BaseBurnDuration
+        auto StatusEffectArray = IStatusEffected::Execute_GetStatusEffects(StrickenActor);
+        auto is_burn = [](UStatusEffect* Effect) { return Effect->GetId() == UBurnedStatusEffect::NAME; };
+        if (auto it = std::find_if(std::begin(StatusEffectArray), std::end(StatusEffectArray), is_burn); it != std::end(StatusEffectArray))
+        {
+            float CurrentBurnDuration = Cast<UBurnedStatusEffect>(*it)->GetBurnDuration();
+            float BaseBurnDuration = Cast<UBurnedStatusEffect>(*it)->GetBaseBurnDuration();
+            if (CurrentBurnDuration < DieSides * BaseBurnDuration)
+            {
+                Cast<UBurnedStatusEffect>(*it)->SetBurnDuration(CurrentBurnDuration + BaseBurnDuration);
+            }
+        }
+        else
+        {
+            UBurnedStatusEffect* StatusEffect = NewObject<UBurnedStatusEffect>(StrickenActor, UBurnedStatusEffect::StaticClass());
+
+            StatusEffect->SetBaseBurnDuration(BurnDuration);
+            StatusEffect->SetBurnDuration(BurnDuration);
+            StatusEffect->SetBurnPeriod(BurnPeriod);
+            // ongoing damage will be init calculated damage over 4
+            StatusEffect->SetBurnDamage(LatestDamageDealt / 4.f);
+            UE_LOG(LogTemp, Warning, TEXT("OnHit; applying primary StatusEffect with id %s"), *StatusEffect->GetId());
+            IStatusEffected::Execute_AddStatusEffect(StrickenActor, StatusEffect);
+            StatusEffect->OnEffectApplied(StrickenActor);
+        }
     }
 }
 

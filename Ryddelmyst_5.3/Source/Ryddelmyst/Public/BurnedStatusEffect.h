@@ -15,11 +15,17 @@ class RYDDELMYST_API UBurnedStatusEffect : public UStatusEffect
 	GENERATED_BODY()
 	
 	/**
-	 * @brief Duration for which the effected Actor should take burn damage e.g. 5 seconds total
+	 * @brief Baseline Duration for which the effected Actor should take burn damage e.g. 5 seconds total
+	 *
+	 */
+		UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Magic", meta = (AllowPrivateAccess = "true"))
+		float BaseBurnDuration = 5.f;
+	/**
+	 * @brief Current Duration for which the effected Actor should take burn damage e.g. 5 seconds total; subject to mutation at runtime.
 	 * 
 	 */
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Magic", meta = (AllowPrivateAccess = "true"))
-	float BurnDuration = 5.f;
+	UPROPERTY()
+	float BurnDuration = BaseBurnDuration;
 	/**
 	 * @brief Period at which burn damage is applied e.g. effected Actor takes damage every 1 second until duration is met
 	 * 
@@ -41,6 +47,9 @@ class RYDDELMYST_API UBurnedStatusEffect : public UStatusEffect
 	void Burn(AActor* EffectedActor);
 	
 public:
+	static const FString NAME;
+
+public:
 	UBurnedStatusEffect();
 	/**
 	 * @brief Starts a timer whose function applies fire damage at a set period for a set duration
@@ -60,6 +69,12 @@ public:
 
 	UFUNCTION(BlueprintCallable, Category = "Magic")
 	float GetBurnDuration() { return BurnDuration; };
+
+	UFUNCTION(BlueprintCallable, Category = "Magic")
+	void SetBaseBurnDuration(float Duration) { BaseBurnDuration = Duration; };
+
+	UFUNCTION(BlueprintCallable, Category = "Magic")
+	float GetBaseBurnDuration() { return BaseBurnDuration; };
 
 	UFUNCTION(BlueprintCallable, Category = "Magic")
 	void SetBurnPeriod(float Period) { BurnPeriod = Period; };
