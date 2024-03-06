@@ -20,7 +20,7 @@ class RYDDELMYST_API USplineGuideComponent : public USceneComponent
 
 public:
 	/**
-	 * Pointer to the USplineComponent that this component guides actors along. 
+	 * Pointer to the USplineComponent that this component guides actors along.
 	 */
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Navigation")
 	USplineComponent* Spline;
@@ -45,7 +45,7 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Structure")
 	int SplineLength = 1000;
 	/**
-	 * The radius in centimeters of the circle our trig function (hardcoded to sin() wave for now) rotates points around i.e. how far away from the progression axis our points move on the wave axis (hardcoded to Y for now). 
+	 * The radius in centimeters of the circle our trig function (hardcoded to sin() wave for now) rotates points around i.e. how far away from the progression axis our points move on the wave axis (hardcoded to Y for now).
 	 */
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Structure")
 	int SplineWaveRadius = 250;
@@ -80,13 +80,14 @@ public:
 	void SetBulletType(TSubclassOf<ASpellBullet> BulletType) { BulletTemplate = BulletType; };
 
 	/**
-	 * Build the spline and kick off the bullet spawn timer. 
+	 * Build the spline and kick off the bullet spawn timer.
 	 */
+	UFUNCTION(BlueprintCallable, Category = "Navigation")
 	void StartSplineBullets();
 
 private:
 	/**
-	 * Spawns a bullet anchored at the 0th spline point. 
+	 * Spawns a bullet anchored at the 0th spline point.
 	 */
 	void SpawnBullet();
 };
