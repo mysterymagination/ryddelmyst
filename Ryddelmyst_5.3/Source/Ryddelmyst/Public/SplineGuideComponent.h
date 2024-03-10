@@ -19,6 +19,7 @@ class RYDDELMYST_API USplineGuideComponent : public USceneComponent
 	GENERATED_BODY()
 
 public:
+	USplineGuideComponent();
 	/**
 	 * Pointer to the USplineComponent that this component guides actors along.
 	 */
@@ -38,7 +39,7 @@ public:
 	 *	The total FSplinePoints making up our USplineComponent; together with SplineLength, this determines the granularity of the spline and how rapidly the interval function for each dimension should be applied e.g. how much space exists between X values when we run y=x^2 to determine a new Y.
 	 */
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Structure")
-	int SplinePointCount = 10;
+	int SplinePointCount = 2;
 	/**
 	 * The total length in centimeters along our progressions axis (hardcoded to relative X for now) of the entire spline; together with SplineLength, this determines the granularity of the spline and how rapidly the interval function for each dimension should be applied e.g. how much space exists between X values when we run y=x^2 to determine a new Y.
 	 */
@@ -68,6 +69,11 @@ private:
 	 */
 	UPROPERTY()
 	TArray<ASpellBullet*> Bullets;
+	/**
+	 * The remaining number of bullets we should spawn along the spline.
+	 */
+	UPROPERTY()
+	int BulletsRemaining = BulletLimit;
 
 protected:
 	// Called when the game starts
