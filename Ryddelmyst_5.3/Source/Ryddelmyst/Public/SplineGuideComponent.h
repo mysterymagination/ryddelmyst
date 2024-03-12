@@ -64,7 +64,7 @@ public:
 	 * Array of local space (relative to the attach actor) points defining the spline shape.
 	 */
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Structure")
-	TArray<FVector> SplinePoints;
+	TArray<FVector> BaseSplinePoints;
 
 private:
 	UPROPERTY()

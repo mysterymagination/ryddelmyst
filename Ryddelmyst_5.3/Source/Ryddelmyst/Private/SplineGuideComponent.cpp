@@ -30,7 +30,7 @@ void USplineGuideComponent::StartSplineBullets()
 		// The Spline will run along the relative XZ plane, such that it will be in front or back and up or down from the Actor its attached to.
 		int SplinePointSpacer = SplineLength / SplinePointCount; // the distance from one spline point to the next on local X
 		float SplineWaveAngle = 360.f / (float)SplinePointCount;
-		if (SplinePoints.Num() == 0)
+		if (BaseSplinePoints.Num() == 0)
 		{
 			for (int PointIdx = 0; PointIdx < SplinePointCount; PointIdx++)
 			{
@@ -38,7 +38,7 @@ void USplineGuideComponent::StartSplineBullets()
 				float Y = 100 + PointIdx*100;//SplineWaveRadius * sin(SplineWaveAngle * PointIdx);
 				float Z = 100 + PointIdx*100;//pow(X, 2);
 
-				SplinePoints.Add(FVector(X, Y, Z));
+				BaseSplinePoints.Add(FVector(X, Y, Z));
 
 				// todo: adding these as FSplinePoints seems to stop them from being set relative to the spline's parent Actor.
 				//  I'ma try populating a regular array of FVectors and then update those with the Actor transform manuall per-tick,
@@ -49,7 +49,7 @@ void USplineGuideComponent::StartSplineBullets()
 		}
 
 		// add our points to the spline
-		Spline->SetSplineLocalPoints(SplinePoints);
+		Spline->SetSplineLocalPoints(BaseSplinePoints);
 
 		UE_LOG(LogTemp, Warning, TEXT("SplineGuideComponent::StartSplineBullets; spline itself is at %s"), *Spline->GetComponentLocation().ToString());
 		for (int PointIdx = 0; PointIdx < SplinePointCount; PointIdx++)
@@ -123,19 +123,20 @@ void USplineGuideComponent::TickComponent(float DeltaTime, ELevelTick TickType, 
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
 
 	UE_LOG(LogTemp, Warning, TEXT("SplineGuideComponent::TickComponent; spline itself is at %s"), *Spline->GetComponentLocation().ToString());
-	for (auto Point : SplinePoints)
+	TArray<FVector> SplinePoints;
+	for ( int PointIdx = 0; PointIdx < BaseSplinePoints.Num(); ++PointIdx )
 	{
-		// todo: this doesn't seem to be changing the point positions? The GetSplinePointAt() fn just gives us an FSplinePoint value, so presumably it's just a copy of the underlying data and effectively immutable.
-		// Spline->GetSplinePointAt(PointIdx, ESplineCoordinateSpace::World).Position += Spline->GetComponentLocation();
-		FVector OldPoint = Point;
-		Point += Spline->GetComponentLocation();
+		// should be using the entire Spline transform to adjust the baseline points instead of just position.
+		FVector NewPoint = BaseSplinePoints[PointIdx] + Spline->GetComponentLocation();
 		UE_LOG(LogTemp, Warning, TEXT("SplineGuideComponent::TickComponent; updating spline point %s with spline world location %s which gives us %s."),
-			*OldPoint.ToString(), *Spline->GetComponentLocation().ToString(), *Point.ToString()
+			*BaseSplinePoints[PointIdx].ToString(), *Spline->GetComponentLocation().ToString(), *NewPoint.ToString()
 		);
+		SplinePoints.Add(NewPoint);
 	}
 
 	// update spline points to reflect new location of the spline component
 	Spline->SetSplineLocalPoints(SplinePoints);
+	Spline->UpdateSpline();
 
 	for (int PointIdx = 0; PointIdx < Spline->GetNumberOfSplinePoints(); ++PointIdx)
 	{
@@ -154,6 +155,7 @@ void USplineGuideComponent::TickComponent(float DeltaTime, ELevelTick TickType, 
 	{
 		if (IsValid(Bullet))
 		{
+			/*
 			// check if the bullet has reached the terminal node of the spline
 			FVector TerminalPointLocation = Spline->GetWorldLocationAtSplinePoint(SplinePointCount - 1);
 			if ((TerminalPointLocation - Bullet->GetActorLocation()).Length() <= TowPoint.X/10.f)
@@ -164,6 +166,7 @@ void USplineGuideComponent::TickComponent(float DeltaTime, ELevelTick TickType, 
 			}
 			else
 			{
+			*/
 				FVector BulletRelativeTowPoint = Bullet->GetActorRotation().RotateVector(TowPoint) + Bullet->GetActorLocation();
 				FVector Destination = Spline->FindLocationClosestToWorldLocation(BulletRelativeTowPoint, ESplineCoordinateSpace::World);
 				FRotator DestRotation = UKismetMathLibrary::FindLookAtRotation(Bullet->GetActorLocation(), Destination);
@@ -171,10 +174,13 @@ void USplineGuideComponent::TickComponent(float DeltaTime, ELevelTick TickType, 
 				FVector DirectionToTravel = DestRotation.Vector();
 				Bullet->BulletMovement->Velocity = DirectionToTravel * Bullet->BulletMovement->InitialSpeed;
 				UE_LOG(LogTemp, Warning, TEXT("SplineGuideComponent::TickComponent; setting bullet %s destination to %s"), *Bullet->GetName(), *Destination.ToString());
+			/*
 			}
+			*/
 		}
 	}
 
+	// todo: we're getting here before we've had a chance to populate the Bullets array, so we immediately shut things down.
 	// if all bullets are destroyed, broadcast an event saying the spline guide component is no longer needed
 	int DestroyedBulletCount = 0;
 	for (auto Bullet : Bullets)
@@ -184,11 +190,10 @@ void USplineGuideComponent::TickComponent(float DeltaTime, ELevelTick TickType, 
 			DestroyedBulletCount++;
 		}
 	}
-	if (DestroyedBulletCount >= Bullets.Num())
+	if (DestroyedBulletCount >= BulletLimit)
 	{
-		// broadcast spline guide completion event
-		UE_LOG(LogTemp, Warning, TEXT("SplineGuideComponent::TickComponent; all bullets have been destroyed. Broadcasting spline guide completion event."));
-		Cast<URyddelmystGameInstance>(GetWorld()->GetGameInstance())->GetEventManager()->SplineGuideCompletionEvent.Broadcast(this);
-		SetComponentTickEnabled(false);
+		// shut down spline guide component
+		UE_LOG(LogTemp, Warning, TEXT("SplineGuideComponent::TickComponent; all bullets have been destroyed. Destroying splineguide."));
+		DestroyComponent(false);
 	}
 }
