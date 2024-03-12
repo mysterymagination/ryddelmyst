@@ -22,6 +22,7 @@ void USplineGuideComponent::StartSplineBullets()
 	if (Spline)
 	{
 		Spline->ClearSplinePoints();
+		Spline->bDrawDebug = true;
 		// todo: populate spline parametrically. Maybe make a few enum categories for pattern like sine wave and then scalers or something so the wave amplitude and period change.
 		// todo: as a first step, let's go with sine wave on Y and Z=x^2
 		// The first thing we need is to determine a point granularity; when we draw y=x^2 on a graphing calculator, it increments X by 1 but is bounded by the display resolution being very pixelated and therefore allowing for a visible distance on X before Y gets so big it's outta sight. That's not a 'luxury' we have in UE so instead we need to limit the granularity of points e.g. 1 point per 100 cm or something so that the curve won't immediately rise up into the sky and disappear for y=x^2 and similar exponential curves. To do that, we'll want to establish the number of points in our spline and the length of the spline. The width of the spline could be subject to some function or other, but isn't really of interest to y=x^2. The height of course is a function of the length on the tin.
@@ -29,18 +30,26 @@ void USplineGuideComponent::StartSplineBullets()
 		// The Spline will run along the relative XZ plane, such that it will be in front or back and up or down from the Actor its attached to.
 		int SplinePointSpacer = SplineLength / SplinePointCount; // the distance from one spline point to the next on local X
 		float SplineWaveAngle = 360.f / (float)SplinePointCount;
-		for (int PointIdx = 0; PointIdx < SplinePointCount; PointIdx++)
+		if (SplinePoints.Num() == 0)
 		{
-			float X = 100 + PointIdx*100;//PointIdx * SplinePointSpacer;
-			float Y = 100 + PointIdx*100;//SplineWaveRadius * sin(SplineWaveAngle * PointIdx);
-			float Z = 100 + PointIdx*100;//pow(X, 2);
-			Spline->AddPoint(FSplinePoint(PointIdx, FVector(X, Y, Z)));
-			UE_LOG(LogTemp, Warning, TEXT("SplineGuideComponent::StartSplineBullets; adding spline point at index %d with position %f, %f, %f"), PointIdx, X, Y, Z);
+			for (int PointIdx = 0; PointIdx < SplinePointCount; PointIdx++)
+			{
+				float X = 100 + PointIdx*100;//PointIdx * SplinePointSpacer;
+				float Y = 100 + PointIdx*100;//SplineWaveRadius * sin(SplineWaveAngle * PointIdx);
+				float Z = 100 + PointIdx*100;//pow(X, 2);
+
+				SplinePoints.Add(FVector(X, Y, Z));
+
+				// todo: adding these as FSplinePoints seems to stop them from being set relative to the spline's parent Actor.
+				//  I'ma try populating a regular array of FVectors and then update those with the Actor transform manuall per-tick,
+				//  and finally use one of the Spline point setter methods to set the points.
+				// Spline->AddSplineLocalPoint(FVector(X, Y, Z));
+				UE_LOG(LogTemp, Warning, TEXT("SplineGuideComponent::StartSplineBullets; adding spline point at index %d with position %f, %f, %f"), PointIdx, X, Y, Z);
+			}
 		}
 
-		// attach the splinecomponent to the owner actor's transform hierarchy via rootcomponent
-		Spline->AttachToComponent(GetOwner()->GetDefaultAttachComponent(), FAttachmentTransformRules::KeepWorldTransform);
-		Spline->bDrawDebug = true;
+		// add our points to the spline
+		Spline->SetSplineLocalPoints(SplinePoints);
 
 		UE_LOG(LogTemp, Warning, TEXT("SplineGuideComponent::StartSplineBullets; spline itself is at %s"), *Spline->GetComponentLocation().ToString());
 		for (int PointIdx = 0; PointIdx < SplinePointCount; PointIdx++)
@@ -114,10 +123,22 @@ void USplineGuideComponent::TickComponent(float DeltaTime, ELevelTick TickType, 
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
 
 	UE_LOG(LogTemp, Warning, TEXT("SplineGuideComponent::TickComponent; spline itself is at %s"), *Spline->GetComponentLocation().ToString());
-	for (int PointIdx = 0; PointIdx < SplinePointCount; PointIdx++)
+	for (auto Point : SplinePoints)
 	{
 		// todo: this doesn't seem to be changing the point positions? The GetSplinePointAt() fn just gives us an FSplinePoint value, so presumably it's just a copy of the underlying data and effectively immutable.
-		Spline->GetSplinePointAt(PointIdx, ESplineCoordinateSpace::World).Position += Spline->GetComponentLocation();
+		// Spline->GetSplinePointAt(PointIdx, ESplineCoordinateSpace::World).Position += Spline->GetComponentLocation();
+		FVector OldPoint = Point;
+		Point += Spline->GetComponentLocation();
+		UE_LOG(LogTemp, Warning, TEXT("SplineGuideComponent::TickComponent; updating spline point %s with spline world location %s which gives us %s."),
+			*OldPoint.ToString(), *Spline->GetComponentLocation().ToString(), *Point.ToString()
+		);
+	}
+
+	// update spline points to reflect new location of the spline component
+	Spline->SetSplineLocalPoints(SplinePoints);
+
+	for (int PointIdx = 0; PointIdx < Spline->GetNumberOfSplinePoints(); ++PointIdx)
+	{
 		UE_LOG(LogTemp, Warning, TEXT("SplineGuideComponent::TickComponent; spline point at index %d has world position %s and local position %s. Owning actor %s's origin is at %s."),
 			PointIdx,
 			*Spline->GetSplinePointAt(PointIdx, ESplineCoordinateSpace::World).Position.ToString(),
