@@ -37,13 +37,7 @@ void USplineGuideComponent::StartSplineBullets()
 				float X = 100 + PointIdx*100;//PointIdx * SplinePointSpacer;
 				float Y = 100 + PointIdx*100;//SplineWaveRadius * sin(SplineWaveAngle * PointIdx);
 				float Z = 100 + PointIdx*100;//pow(X, 2);
-
 				BaseSplinePoints.Add(FVector(X, Y, Z));
-
-				// todo: adding these as FSplinePoints seems to stop them from being set relative to the spline's parent Actor.
-				//  I'ma try populating a regular array of FVectors and then update those with the Actor transform manuall per-tick,
-				//  and finally use one of the Spline point setter methods to set the points.
-				// Spline->AddSplineLocalPoint(FVector(X, Y, Z));
 				UE_LOG(LogTemp, Warning, TEXT("SplineGuideComponent::StartSplineBullets; adding spline point at index %d with position %f, %f, %f"), PointIdx, X, Y, Z);
 			}
 		}

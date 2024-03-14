@@ -39,7 +39,7 @@ public:
 	 *	The total FSplinePoints making up our USplineComponent; together with SplineLength, this determines the granularity of the spline and how rapidly the interval function for each dimension should be applied e.g. how much space exists between X values when we run y=x^2 to determine a new Y.
 	 */
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Structure")
-	int SplinePointCount = 2;
+	int SplinePointCount = 10;
 	/**
 	 * The total length in centimeters along our progressions axis (hardcoded to relative X for now) of the entire spline; together with SplineLength, this determines the granularity of the spline and how rapidly the interval function for each dimension should be applied e.g. how much space exists between X values when we run y=x^2 to determine a new Y.
 	 */
@@ -59,7 +59,7 @@ public:
 	 * The number of bullets we spawn along the spline.
 	 */
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Structure")
-	int BulletLimit = 1;
+	int BulletLimit = 10;
 	/**
 	 * Array of local space (relative to the attach actor) points defining the spline shape.
 	 */
