@@ -2,7 +2,7 @@
 
 
 #include "FlameBeadBullet.h"
-//#include "FlameBeadAttack.h"
+#include "FlameBeadAttack.h"
 
 // Sets default values
 AFlameBeadBullet::AFlameBeadBullet()
@@ -46,8 +46,7 @@ AFlameBeadBullet::AFlameBeadBullet()
 	Tags.Add(FName(UAttack::TAG_FLAG_IGNORE_IFRAMES));
 	IAttacker::Execute_GetWeapon(Attacker)->AttackMap =
 	{
-		//{UBlasterBoltAttack::ATTACK_NAME, CreateDefaultSubobject<UBlasterBoltAttack>(FName(UBlasterBoltAttack::ATTACK_NAME))}
+		{UFlameBeadAttack::ATTACK_NAME, CreateDefaultSubobject<UFlameBeadAttack>(FName(UFlameBeadAttack::ATTACK_NAME))}
 	};
-	//IAttacker::Execute_GetWeapon(Attacker)->CurrentAttackName = UBlasterBoltAttack::ATTACK_NAME;
+	IAttacker::Execute_GetWeapon(Attacker)->CurrentAttackName = UFlameBeadAttack::ATTACK_NAME;
 }
-

@@ -62,7 +62,7 @@ void USplineGuideComponent::StartSplineBullets()
 		{
 			// setup timer to spawn bullets from World.
 			UE_LOG(LogTemp, Warning, TEXT("SplineGuideComponent::StartSplineBullets; starting bullet spawn timer with rate %f"), SpawnRate);
-			GetOwner()->GetWorldTimerManager().SetTimer(BulletSpawnTimerHandle, this, &USplineGuideComponent::SpawnBullet, SpawnRate, false, 0.f);
+			GetOwner()->GetWorldTimerManager().SetTimer(BulletSpawnTimerHandle, this, &USplineGuideComponent::SpawnBullet, SpawnRate, true, 0.f);
 		}
 		else
 		{
@@ -144,12 +144,11 @@ void USplineGuideComponent::TickComponent(float DeltaTime, ELevelTick TickType, 
 	}
 
 	// tack the towingpoint onto the bullet, rotated to match rotation of forward vector and use that point to find the nearest point to it on the spline. Then we rotate our bullet to lookat the nearest point on the spline, which is our actual destination, and set the projectile movement component's velocity to a speed scaled unit vector in the direction of our destination point from our source point.
-	FVector TowPoint(100.f, 0.f, 0.f);
+	FVector TowPoint(100.f * DeltaTime, 0.f, 0.f);
 	for (auto Bullet : Bullets)
 	{
 		if (IsValid(Bullet))
 		{
-			/*
 			// check if the bullet has reached the terminal node of the spline
 			FVector TerminalPointLocation = Spline->GetWorldLocationAtSplinePoint(SplinePointCount - 1);
 			if ((TerminalPointLocation - Bullet->GetActorLocation()).Length() <= TowPoint.X/10.f)
@@ -160,7 +159,6 @@ void USplineGuideComponent::TickComponent(float DeltaTime, ELevelTick TickType, 
 			}
 			else
 			{
-			*/
 				FVector BulletRelativeTowPoint = Bullet->GetActorRotation().RotateVector(TowPoint) + Bullet->GetActorLocation();
 				FVector Destination = Spline->FindLocationClosestToWorldLocation(BulletRelativeTowPoint, ESplineCoordinateSpace::World);
 				FRotator DestRotation = UKismetMathLibrary::FindLookAtRotation(Bullet->GetActorLocation(), Destination);
@@ -168,13 +166,10 @@ void USplineGuideComponent::TickComponent(float DeltaTime, ELevelTick TickType, 
 				FVector DirectionToTravel = DestRotation.Vector();
 				Bullet->BulletMovement->Velocity = DirectionToTravel * Bullet->BulletMovement->InitialSpeed;
 				UE_LOG(LogTemp, Warning, TEXT("SplineGuideComponent::TickComponent; setting bullet %s destination to %s"), *Bullet->GetName(), *Destination.ToString());
-			/*
 			}
-			*/
 		}
 	}
 
-	// todo: we're getting here before we've had a chance to populate the Bullets array, so we immediately shut things down.
 	// if all bullets are destroyed, broadcast an event saying the spline guide component is no longer needed
 	int DestroyedBulletCount = 0;
 	for (auto Bullet : Bullets)
