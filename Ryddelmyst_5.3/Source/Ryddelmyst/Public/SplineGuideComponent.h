@@ -39,7 +39,7 @@ public:
 	 *	The total FSplinePoints making up our USplineComponent; together with SplineLength, this determines the granularity of the spline and how rapidly the interval function for each dimension should be applied e.g. how much space exists between X values when we run y=x^2 to determine a new Y.
 	 */
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Structure")
-	int SplinePointCount = 10;
+	int SplinePointCount = 100;
 	/**
 	 * The total length in centimeters along our progressions axis (hardcoded to relative X for now) of the entire spline; together with SplineLength, this determines the granularity of the spline and how rapidly the interval function for each dimension should be applied e.g. how much space exists between X values when we run y=x^2 to determine a new Y.
 	 */

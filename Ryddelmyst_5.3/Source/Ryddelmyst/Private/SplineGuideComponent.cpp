@@ -26,7 +26,7 @@ void USplineGuideComponent::StartSplineBullets()
 		// todo: populate spline parametrically. Maybe make a few enum categories for pattern like sine wave and then scalers or something so the wave amplitude and period change.
 		// todo: as a first step, let's go with sine wave on Y and Z=x^2
 		// The first thing we need is to determine a point granularity; when we draw y=x^2 on a graphing calculator, it increments X by 1 but is bounded by the display resolution being very pixelated and therefore allowing for a visible distance on X before Y gets so big it's outta sight. That's not a 'luxury' we have in UE so instead we need to limit the granularity of points e.g. 1 point per 100 cm or something so that the curve won't immediately rise up into the sky and disappear for y=x^2 and similar exponential curves. To do that, we'll want to establish the number of points in our spline and the length of the spline. The width of the spline could be subject to some function or other, but isn't really of interest to y=x^2. The height of course is a function of the length on the tin.
-		// This design for y=x^2 is just a start; the framework should be easily expandable to three dimensional functions with the main point of interest being that we've established a progression metric dimension, in this case local X, to serve as our function input.
+		// This design for y=x^2 is just a start; the framework shoul  d be easily expandable to three dimensional functions with the main point of interest being that we've established a progression metric dimension, in this case local X, to serve as our function input.
 		// The Spline will run along the relative XZ plane, such that it will be in front or back and up or down from the Actor its attached to.
 		int SplinePointSpacer = SplineLength / SplinePointCount; // the distance from one spline point to the next on local X
 		float SplineWaveAngle = 360.f / (float)SplinePointCount;
@@ -36,7 +36,7 @@ void USplineGuideComponent::StartSplineBullets()
 			{
 				float X = 100 + PointIdx*100;//PointIdx * SplinePointSpacer;
 				float Y = 100 + PointIdx*100;//SplineWaveRadius * sin(SplineWaveAngle * PointIdx);
-				float Z = 100 + PointIdx*100;//pow(X, 2);
+				float Z = 100 + PointIdx*100;//pow(X, 1.2);
 				BaseSplinePoints.Add(FVector(X, Y, Z));
 				UE_LOG(LogTemp, Warning, TEXT("SplineGuideComponent::StartSplineBullets; adding spline point at index %d with position %f, %f, %f"), PointIdx, X, Y, Z);
 			}
@@ -144,13 +144,22 @@ void USplineGuideComponent::TickComponent(float DeltaTime, ELevelTick TickType, 
 	}
 
 	// tack the towingpoint onto the bullet, rotated to match rotation of forward vector and use that point to find the nearest point to it on the spline. Then we rotate our bullet to lookat the nearest point on the spline, which is our actual destination, and set the projectile movement component's velocity to a speed scaled unit vector in the direction of our destination point from our source point.
-	FVector TowPoint(100.f * DeltaTime, 0.f, 0.f);
+	// todo: something something deltatime to smooth movement? Would need to adjust the terminal point location threshold below in that case, probably.
+	FVector TowPoint(100.f, 0.f, 0.f);
 	for (auto Bullet : Bullets)
 	{
 		if (IsValid(Bullet))
 		{
 			// check if the bullet has reached the terminal node of the spline
 			FVector TerminalPointLocation = Spline->GetWorldLocationAtSplinePoint(SplinePointCount - 1);
+			UE_LOG(LogTemp, Warning, TEXT("SplineGuideComponent::TickComponent; spline terminal point location is %s and bullet distance from it is %f"),
+				*TerminalPointLocation.ToString(),
+				(TerminalPointLocation - Bullet->GetActorLocation()).Length()
+			);
+			// todo: is overshoot a possibility e.g. the bullet moves too far in a frame to detect being close enough to the terminal point to trigger despawn?
+			//  If so, how do we detect that? Simply doing terminal point - bullet location and checking for negative is not enough because the bullet's trajectory is arbitrary.
+			//  I guess you could try to take trajectory and relative positions into account, or maybe compare samples across a couple frames to see if the distance from
+			//  terminal point is ever growing (which would indicate an overshoot).
 			if ((TerminalPointLocation - Bullet->GetActorLocation()).Length() <= TowPoint.X/10.f)
 			{
 				// bullet has approximately reached end of spline, despawn it

@@ -34,6 +34,11 @@ void UFlameBeadAttack::OnHit_Implementation(FBattleStatsData StrikingBattlerData
             if (CurrentBurnDuration < DieSides * BaseBurnDuration)
             {
                 Cast<UBurnedStatusEffect>(*it)->SetBurnDuration(CurrentBurnDuration + BaseBurnDuration);
+                UE_LOG(LogTemp, Warning, TEXT("OnHit flamebeadattack; extending existing burn duration to %f"), CurrentBurnDuration + BaseBurnDuration);
+            }
+            else
+            {
+                UE_LOG(LogTemp, Warning, TEXT("OnHit flamebeadattack; target already burned, and current burn duration %f is already at or above the max %f"), CurrentBurnDuration, DieSides * BaseBurnDuration);
             }
         }
         else
@@ -45,7 +50,7 @@ void UFlameBeadAttack::OnHit_Implementation(FBattleStatsData StrikingBattlerData
             StatusEffect->SetBurnPeriod(BurnPeriod);
             // ongoing damage will be init calculated damage over 4
             StatusEffect->SetBurnDamage(LatestDamageDealt / 4.f);
-            UE_LOG(LogTemp, Warning, TEXT("OnHit; applying primary StatusEffect with id %s"), *StatusEffect->GetId());
+            UE_LOG(LogTemp, Warning, TEXT("OnHit flamebeadattack; applying burn to %s"), *StrickenActor->GetName());
             IStatusEffected::Execute_AddStatusEffect(StrickenActor, StatusEffect);
             StatusEffect->OnEffectApplied(StrickenActor);
         }
