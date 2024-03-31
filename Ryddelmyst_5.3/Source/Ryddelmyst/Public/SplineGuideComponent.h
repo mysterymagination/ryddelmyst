@@ -89,9 +89,13 @@ public:
 	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
 
 	void SetBulletType(TSubclassOf<ASpellBullet> BulletType) { BulletTemplate = BulletType; };
-
 	/**
-	 * Build the spline and kick off the bullet spawn timer.
+	 * Populate the linked SplineComponent Spline with generated points.
+	 */
+	UFUNCTION(BlueprintCallable, Category = "Navigation")
+	void BuildSpline();
+	/**
+	 * Kick off the bullet spawn timer.
 	 */
 	UFUNCTION(BlueprintCallable, Category = "Navigation")
 	void StartSplineBullets();
