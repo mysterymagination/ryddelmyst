@@ -126,32 +126,6 @@ void USplineGuideComponent::SpawnBullet()
 void USplineGuideComponent::TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction)
 {
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
-
-	UE_LOG(LogTemp, Warning, TEXT("SplineGuideComponent::TickComponent; spline itself is at %s"), *Spline->GetComponentLocation().ToString());
-
-	// only update procedural spline points if we populated them up in BuildSpline(); a prefab spline won't have to do this.
-	// why is this necessary for procedurally added spline points? EDIT: aHA! The GetSplinePointAt() API apparently doesn't take transform hierarchy into account? No idea why it has a separation of local vs. world space then.
-	//  Anyway, using GetWorldLocationAtSplinePoint() behaves as expected.
-	/*
-	if (BaseSplinePoints.Num() > 0)
-	{
-		TArray<FVector> SplinePoints;
-		for ( int PointIdx = 0; PointIdx < BaseSplinePoints.Num(); ++PointIdx )
-		{
-			// should be using the entire Spline transform to adjust the baseline points instead of just position.
-			FVector NewPoint = BaseSplinePoints[PointIdx] + Spline->GetComponentLocation();
-			UE_LOG(LogTemp, Warning, TEXT("SplineGuideComponent::TickComponent; updating spline point %s with spline world location %s which gives us %s."),
-				*BaseSplinePoints[PointIdx].ToString(), *Spline->GetComponentLocation().ToString(), *NewPoint.ToString()
-			);
-			SplinePoints.Add(NewPoint);
-		}
-
-		// update spline points to reflect new location of the spline component
-		Spline->SetSplineLocalPoints(SplinePoints);
-		Spline->UpdateSpline();
-	}
-	*/
-
 	for (int PointIdx = 0; PointIdx < Spline->GetNumberOfSplinePoints(); ++PointIdx)
 	{
 		UE_LOG(LogTemp, Warning, TEXT("SplineGuideComponent::TickComponent; spline point at index %d has world position %s and local position %s, and world location at spline point API says %s. Owning actor %s's origin is at %s."),
