@@ -172,7 +172,7 @@ void USplineGuideComponent::TickComponent(float DeltaTime, ELevelTick TickType, 
 				Bullet->BulletMovement->Velocity = DirectionToTravel * Bullet->BulletMovement->InitialSpeed;
 				*/
 				FVector Destination = Spline->GetWorldLocationAtSplinePoint(3);
-				UE_LOG(LogTemp, Warning, TEXT("SplineGuideComponent::TickComponent; setting bullet %s destination to %s"), *Bullet->GetName(), *Destination.ToString());
+				UE_LOG(LogTemp, Warning, TEXT("SplineGuideComponent::TickComponent; setting bullet %s destination to %s. Bullet velocity is %s."), *Bullet->GetName(), *Destination.ToString(), *Bullet->BulletMovement->Velocity.ToString());
 				Bullet->SetActorLocation(Destination);
 			}
 		}
