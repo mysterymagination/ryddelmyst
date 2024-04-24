@@ -18,7 +18,7 @@ AFlameBeadBullet::AFlameBeadBullet()
 	}
 
 
-	BulletMesh->SetSimulatePhysics(true);
+	BulletMesh->SetSimulatePhysics(false);
 	BulletMesh->SetEnableGravity(false);
 	// collision config
 	BulletMesh->SetNotifyRigidBodyCollision(true);

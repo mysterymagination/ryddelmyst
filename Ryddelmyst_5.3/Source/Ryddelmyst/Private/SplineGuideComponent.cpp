@@ -163,13 +163,17 @@ void USplineGuideComponent::TickComponent(float DeltaTime, ELevelTick TickType, 
 			}
 			else
 			{
+				/*
 				FVector BulletRelativeTowPoint = Bullet->GetActorRotation().RotateVector(TowPoint) + Bullet->GetActorLocation();
 				FVector Destination = Spline->FindLocationClosestToWorldLocation(BulletRelativeTowPoint, ESplineCoordinateSpace::World);
 				FRotator DestRotation = UKismetMathLibrary::FindLookAtRotation(Bullet->GetActorLocation(), Destination);
 				Bullet->SetActorRotation(DestRotation);
 				FVector DirectionToTravel = DestRotation.Vector();
 				Bullet->BulletMovement->Velocity = DirectionToTravel * Bullet->BulletMovement->InitialSpeed;
+				*/
+				FVector Destination = Spline->GetWorldLocationAtSplinePoint(3);
 				UE_LOG(LogTemp, Warning, TEXT("SplineGuideComponent::TickComponent; setting bullet %s destination to %s"), *Bullet->GetName(), *Destination.ToString());
+				Bullet->SetActorLocation(Destination);
 			}
 		}
 	}
