@@ -18,10 +18,11 @@ AFlameBeadBullet::AFlameBeadBullet()
 	}
 
 
-	BulletMesh->SetSimulatePhysics(false);
+	BulletMesh->SetSimulatePhysics(true);
+	BulletMesh->SetMobility(EComponentMobility::Movable);
 	BulletMesh->SetEnableGravity(false);
 	// collision config
-	BulletMesh->SetNotifyRigidBodyCollision(true);
+	BulletMesh->SetNotifyRigidBodyCollision(false);
 	BulletMesh->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
 	BulletMesh->SetCollisionProfileName("Projectile");
 	FScriptDelegate onHitDelegate;

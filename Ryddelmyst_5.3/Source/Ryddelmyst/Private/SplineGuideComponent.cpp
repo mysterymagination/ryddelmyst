@@ -126,6 +126,7 @@ void USplineGuideComponent::SpawnBullet()
 void USplineGuideComponent::TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction)
 {
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
+	/*
 	for (int PointIdx = 0; PointIdx < Spline->GetNumberOfSplinePoints(); ++PointIdx)
 	{
 		UE_LOG(LogTemp, Warning, TEXT("SplineGuideComponent::TickComponent; spline point at index %d has world position %s and local position %s, and world location at spline point API says %s. Owning actor %s's origin is at %s."),
@@ -163,17 +164,12 @@ void USplineGuideComponent::TickComponent(float DeltaTime, ELevelTick TickType, 
 			}
 			else
 			{
-				/*
 				FVector BulletRelativeTowPoint = Bullet->GetActorRotation().RotateVector(TowPoint) + Bullet->GetActorLocation();
 				FVector Destination = Spline->FindLocationClosestToWorldLocation(BulletRelativeTowPoint, ESplineCoordinateSpace::World);
 				FRotator DestRotation = UKismetMathLibrary::FindLookAtRotation(Bullet->GetActorLocation(), Destination);
 				Bullet->SetActorRotation(DestRotation);
 				FVector DirectionToTravel = DestRotation.Vector();
 				Bullet->BulletMovement->Velocity = DirectionToTravel * Bullet->BulletMovement->InitialSpeed;
-				*/
-				FVector Destination = Spline->GetWorldLocationAtSplinePoint(3);
-				UE_LOG(LogTemp, Warning, TEXT("SplineGuideComponent::TickComponent; setting bullet %s destination to %s. Bullet velocity is %s."), *Bullet->GetName(), *Destination.ToString(), *Bullet->BulletMovement->Velocity.ToString());
-				Bullet->SetActorLocation(Destination);
 			}
 		}
 	}
@@ -192,5 +188,22 @@ void USplineGuideComponent::TickComponent(float DeltaTime, ELevelTick TickType, 
 		// shut down spline guide component
 		UE_LOG(LogTemp, Warning, TEXT("SplineGuideComponent::TickComponent; all bullets have been destroyed. Destroying splineguide."));
 		DestroyComponent(false);
+	}
+	*/
+
+	for (auto Bullet : Bullets)
+	{
+		FVector Destination = Spline->GetWorldLocationAtSplinePoint(3);
+		FVector Diff = Destination - Bullet->GetActorLocation();
+		UE_LOG(LogTemp, Warning, TEXT("SplineGuideComponent::TickComponent; setting bullet; diff prior to normalize is %s"), *Diff.ToString());
+		Diff.Normalize(0.f);
+		UE_LOG(LogTemp, Warning, TEXT("SplineGuideComponent::TickComponent; setting bullet; diff after normalize is %s"), *Diff.ToString());
+		Bullet->BulletMovement->Velocity = Diff * Bullet->BulletMovement->InitialSpeed;
+		UE_LOG(LogTemp, Warning, TEXT("SplineGuideComponent::TickComponent; setting bullet %s destination to %s. Bullet velocity is %s and speed is %f."),
+			*Bullet->GetName(),
+			*Destination.ToString(),
+			*Bullet->BulletMovement->Velocity.ToString(),
+			Bullet->BulletMovement->InitialSpeed
+		);
 	}
 }
