@@ -18,18 +18,24 @@ AFlameBeadBullet::AFlameBeadBullet()
 	}
 
 
-	BulletMesh->SetSimulatePhysics(true);
+	BulletMesh->SetSimulatePhysics(false);
 	BulletMesh->SetMobility(EComponentMobility::Movable);
 	BulletMesh->SetEnableGravity(false);
 	// collision config
 	BulletMesh->SetNotifyRigidBodyCollision(false);
-	BulletMesh->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
+	BulletMesh->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 	BulletMesh->SetCollisionProfileName("Projectile");
 	FScriptDelegate onHitDelegate;
 	onHitDelegate.BindUFunction(HitBoxer, FName("OnHit"));
 	BulletMesh->OnComponentHit.Add(onHitDelegate);
 	RootComponent = BulletMesh;
 	Attacker = BulletMesh;
+
+	if (!BeadMovement)
+	{
+		BeadMovement = CreateDefaultSubobject<UMovementComponent>(TEXT("BeadMovement"));
+		BeadMovement->SetUpdatedComponent(BulletMesh);
+	}
 
 	// material setup
 	static ConstructorHelpers::FObjectFinder<UMaterialInstanceConstant> MaterialInstance(TEXT("'/Game/Ryddelmyst_Assets/Materials/MI_GlowyLava.MI_GlowyLava'"));

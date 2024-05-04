@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "SpellBullet.h"
+#include "GameFramework/MovementComponent.h"
 #include "FlameBeadBullet.generated.h"
 
 /**
@@ -13,7 +14,9 @@ UCLASS(ClassGroup = "Combat", Blueprintable, BlueprintType, meta = (DisplayName 
 class RYDDELMYST_API AFlameBeadBullet : public ASpellBullet
 {
 	GENERATED_BODY()
-	
+
 public:
 	AFlameBeadBullet();
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Movement)
+	TObjectPtr<UMovementComponent> BeadMovement;
 };
