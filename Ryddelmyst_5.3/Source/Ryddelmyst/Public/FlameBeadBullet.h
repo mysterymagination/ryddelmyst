@@ -4,7 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "SpellBullet.h"
-#include "GameFramework/MovementComponent.h"
+#include "SpellSphereComponent.h"
 #include "FlameBeadBullet.generated.h"
 
 /**
@@ -17,6 +17,7 @@ class RYDDELMYST_API AFlameBeadBullet : public ASpellBullet
 
 public:
 	AFlameBeadBullet();
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Movement)
-	TObjectPtr<UMovementComponent> BeadMovement;
+	// Sphere collision component.
+	UPROPERTY(VisibleDefaultsOnly, Category = Projectile)
+	USpellSphereComponent* SpellSphereComponent;
 };

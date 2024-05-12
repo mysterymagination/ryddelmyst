@@ -9,7 +9,7 @@
 #include "HitBoxerComponent.h"
 #include "Components/ShapeComponent.h"
 #include "SpellStaticMeshComponent.h"
-#include "GameFramework/MovementComponent.h"
+#include "GameFramework/ProjectileMovementComponent.h"
 #include "Materials/MaterialInstanceConstant.h"
 #include "SpellBullet.generated.h"
 
@@ -53,7 +53,7 @@ public:
 	float Mass = 0.5f;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Projectile)
 	float InitialSpeed = 0.f;
-	// Abstract bullet movement which will be actualized in subclasses.
+	// Bullet movement
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Projectile)
-	TObjectPtr<UMovementComponent> BulletMovement;
+	TObjectPtr<UProjectileMovementComponent> BulletMovement;
 };
