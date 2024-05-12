@@ -3,6 +3,7 @@
 
 #include "BlasterBolt.h"
 #include "BlasterBoltAttack.h"
+#include "GameFramework/ProjectileMovementComponent.h"
 
 // Sets default values
 ABlasterBolt::ABlasterBolt()
@@ -16,8 +17,20 @@ ABlasterBolt::ABlasterBolt()
 	{
 		BulletMesh->SetStaticMesh(Mesh.Object);
 	}
-	
-	
+
+	if (!BulletMovement)
+	{
+		// Use this component to drive this projectile's movement.
+		BulletMovement = CreateDefaultSubobject<UProjectileMovementComponent>(TEXT("BulletMovement"));
+		auto ProjectileBulletMovement = Cast<UProjectileMovementComponent>(BulletMovement);
+		ProjectileBulletMovement->SetUpdatedComponent(BulletMesh);
+		ProjectileBulletMovement->InitialSpeed = 3000.0f;
+		ProjectileBulletMovement->MaxSpeed = 3000.0f;
+		ProjectileBulletMovement->bRotationFollowsVelocity = true;
+		ProjectileBulletMovement->bShouldBounce = false;
+		ProjectileBulletMovement->ProjectileGravityScale = 0.0f;
+	}
+
 	BulletMesh->SetSimulatePhysics(true);
 	// collision config
 	BulletMesh->SetNotifyRigidBodyCollision(true);
@@ -63,4 +76,3 @@ void ABlasterBolt::Tick(float DeltaTime)
 	Super::Tick(DeltaTime);
 
 }
-

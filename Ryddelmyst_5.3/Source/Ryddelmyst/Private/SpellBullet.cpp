@@ -12,17 +12,6 @@ ASpellBullet::ASpellBullet()
 	{
 		HitBoxer = CreateDefaultSubobject<UHitBoxerComponent>(TEXT("SpellBulletHitBoxer"));
 	}
-	if (!BulletMovement)
-	{
-		// Use this component to drive this projectile's movement.
-		BulletMovement = CreateDefaultSubobject<UProjectileMovementComponent>(TEXT("BulletMovement"));
-		BulletMovement->SetUpdatedComponent(BulletMesh);
-		BulletMovement->InitialSpeed = 3000.0f;
-		BulletMovement->MaxSpeed = 3000.0f;
-		BulletMovement->bRotationFollowsVelocity = true;
-		BulletMovement->bShouldBounce = false;
-		BulletMovement->ProjectileGravityScale = 0.0f;
-	}
 	// material setup
 	if (BulletMaterial)
 	{
@@ -31,7 +20,7 @@ ASpellBullet::ASpellBullet()
 	// particle FX setup
 	if (BulletParticles)
 	{
-		// todo: create niagara component from system and attach to scene root 
+		// todo: create niagara component from system and attach to scene root
 	}
 }
 
@@ -39,7 +28,7 @@ ASpellBullet::ASpellBullet()
 void ASpellBullet::BeginPlay()
 {
 	Super::BeginPlay();
-	
+
 }
 
 // Called every frame

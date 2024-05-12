@@ -9,7 +9,7 @@
 #include "HitBoxerComponent.h"
 #include "Components/ShapeComponent.h"
 #include "SpellStaticMeshComponent.h"
-#include "GameFramework/ProjectileMovementComponent.h"
+#include "GameFramework/MovementComponent.h"
 #include "Materials/MaterialInstanceConstant.h"
 #include "SpellBullet.generated.h"
 
@@ -17,8 +17,8 @@ UCLASS(ClassGroup = "Combat", Blueprintable, BlueprintType, meta = (DisplayName 
 class RYDDELMYST_API ASpellBullet : public AActor
 {
 	GENERATED_BODY()
-	
-public:	
+
+public:
 	// Sets default values for this actor's properties
 	ASpellBullet();
 
@@ -26,12 +26,12 @@ protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 
-public:	
+public:
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 	/**
 	 * @return The IAttacker implementer for this bullet
-	 * 
+	 *
 	 */
 	UFUNCTION(BlueprintCallable, BlueprintNativeEvent, Category = "Combat")
 	UObject* GetAttacker();
@@ -51,7 +51,9 @@ public:
 	TObjectPtr<USpellStaticMeshComponent> BulletMesh;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Projectile)
 	float Mass = 0.5f;
-	// Projectile movement component.
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Projectile)
-	TObjectPtr<UProjectileMovementComponent> BulletMovement;
+	float InitialSpeed = 0.f;
+	// Abstract bullet movement which will be actualized in subclasses.
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Projectile)
+	TObjectPtr<UMovementComponent> BulletMovement;
 };

@@ -17,6 +17,13 @@ AFlameBeadBullet::AFlameBeadBullet()
 		BulletMesh->SetStaticMesh(Mesh.Object);
 	}
 
+	if (!BulletMovement)
+	{
+		// Use this component to drive this projectile's movement.
+		BulletMovement = CreateDefaultSubobject<UMovementComponent>(TEXT("BulletMovement"));
+		BulletMovement->SetUpdatedComponent(BulletMesh);
+		InitialSpeed = 3000.f;
+	}
 
 	BulletMesh->SetSimulatePhysics(false);
 	BulletMesh->SetMobility(EComponentMobility::Movable);
@@ -30,12 +37,6 @@ AFlameBeadBullet::AFlameBeadBullet()
 	BulletMesh->OnComponentHit.Add(onHitDelegate);
 	RootComponent = BulletMesh;
 	Attacker = BulletMesh;
-
-	if (!BeadMovement)
-	{
-		BeadMovement = CreateDefaultSubobject<UMovementComponent>(TEXT("BeadMovement"));
-		BeadMovement->SetUpdatedComponent(BulletMesh);
-	}
 
 	// material setup
 	static ConstructorHelpers::FObjectFinder<UMaterialInstanceConstant> MaterialInstance(TEXT("'/Game/Ryddelmyst_Assets/Materials/MI_GlowyLava.MI_GlowyLava'"));

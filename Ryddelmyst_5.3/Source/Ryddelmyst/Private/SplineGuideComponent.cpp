@@ -199,12 +199,11 @@ void USplineGuideComponent::TickComponent(float DeltaTime, ELevelTick TickType, 
 		UE_LOG(LogTemp, Warning, TEXT("SplineGuideComponent::TickComponent; setting bullet; diff prior to normalize is %s"), *Diff.ToString());
 		Diff.Normalize(0.f);
 		UE_LOG(LogTemp, Warning, TEXT("SplineGuideComponent::TickComponent; setting bullet; diff after normalize is %s"), *Diff.ToString());
-		// Bullet->BulletMovement->Velocity = Diff * Bullet->BulletMovement->InitialSpeed;
-		Cast<AFlameBeadBullet>(Bullet)->BeadMovement->Velocity = Diff * 3000.f;
+		Bullet->BulletMovement->Velocity = Diff * Bullet->InitialSpeed;
 		UE_LOG(LogTemp, Warning, TEXT("SplineGuideComponent::TickComponent; setting bullet %s destination to %s. Bullet velocity is %s and speed is %f."),
 			*Bullet->GetName(),
 			*Destination.ToString(),
-			*Cast<AFlameBeadBullet>(Bullet)->BeadMovement->Velocity.ToString(),
+			*Bullet->BulletMovement->Velocity.ToString(),
 			3000.f
 		);
 	}
