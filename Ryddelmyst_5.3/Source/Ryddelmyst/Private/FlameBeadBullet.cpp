@@ -30,8 +30,8 @@ AFlameBeadBullet::AFlameBeadBullet()
 	SpellSphereComponent->OnComponentHit.Add(onHitDelegate);
 
 	// Set the root component to be the collision component.
-	BulletMovement->InitialSpeed = 0.0f;
-	BulletMovement->MaxSpeed = 0.0f;
+	BulletMovement->InitialSpeed = 10.0f;
+	BulletMovement->MaxSpeed = 10.0f;
 	BulletMovement->SetUpdatedComponent(SpellSphereComponent);
 	RootComponent = SpellSphereComponent;
 	Attacker = SpellSphereComponent;
