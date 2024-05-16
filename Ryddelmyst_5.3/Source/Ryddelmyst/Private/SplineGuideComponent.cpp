@@ -115,6 +115,8 @@ void USplineGuideComponent::SpawnBullet()
 		SpawnTransform,
 		ESpawnActorScaleMethod::MultiplyWithRoot
 	);
+	// attach Bullet to owning Actor's transform hierarchy
+	Bullet->AttachToComponent(GetOwner()->GetDefaultAttachComponent(), FAttachmentTransformRules::KeepWorldTransform);
 	Bullets.Add(Bullet);
 	// if we've reached bullet limit, cancel this timer
 	if (--BulletsRemaining <= 0)
@@ -192,21 +194,11 @@ void USplineGuideComponent::TickComponent(float DeltaTime, ELevelTick TickType, 
 	}
 	*/
 
-	FVector TowPoint(100.f, 0.f, 0.f);
+	FVector TowPoint(10.f, 0.f, 0.f);
 	for (auto Bullet : Bullets)
 	{
-		// todo: update bullet transform with owning actor's transform;
-		//  goal is to teleport it to its expected offset from the owning
-		//  actor and then allow it to move normally towards the tow point each frame.
-		// EDIT: pretty sure we want to attach the Bullet's rootcomponent to the owner actor's default attach component so we
-		// can be part of the owning actor's transform hierarchy; I don't think this hacky manual business will work since it
-		// relies on an offset vector takes the bullet's location from last frame into account for relative positioning when
-		// we don't actually care about that; it'll throw off the relative offset by incremental and seemingly random amounts.
-		FVector BulletOffsetFromActor = GetOwner()->GetActorLocation() - Bullet->GetActorLocation();
-		Bullet->SetActorLocation(GetOwner()->GetActorRotation().RotateVector(BulletOffsetFromActor));
-
 		FVector BulletRelativeTowPoint = GetOwner()->GetActorRotation().RotateVector(TowPoint) + Bullet->GetActorLocation();
-		FVector Destination = Spline->GetWorldLocationAtSplinePoint(3);
+		FVector Destination = Spline->FindLocationClosestToWorldLocation(BulletRelativeTowPoint, ESplineCoordinateSpace::World);
 		FVector Diff = Destination - Bullet->GetActorLocation();
 		UE_LOG(LogTemp, Warning, TEXT("SplineGuideComponent::TickComponent; setting bullet; diff prior to normalize is %s"), *Diff.ToString());
 		Diff.Normalize(0.f);
