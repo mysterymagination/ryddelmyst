@@ -145,7 +145,6 @@ void USplineGuideComponent::TickComponent(float DeltaTime, ELevelTick TickType, 
 
 	// tack the towingpoint onto the bullet, rotated to match rotation of forward vector and use that point to find the nearest point to it on the spline. Then we rotate our bullet to lookat the nearest point on the spline, which is our actual destination, and set the projectile movement component's velocity to a speed scaled unit vector in the direction of our destination point from our source point.
 	// todo: something something deltatime to smooth movement? Would need to adjust the terminal point location threshold below in that case, probably.
-	FVector TowPoint(10.f, 0.f, 0.f);
 	for (auto Bullet : Bullets)
 	{
 		if (IsValid(Bullet))
@@ -160,7 +159,7 @@ void USplineGuideComponent::TickComponent(float DeltaTime, ELevelTick TickType, 
 			//  If so, how do we detect that? Simply doing terminal point - bullet location and checking for negative is not enough because the bullet's trajectory is arbitrary.
 			//  I guess you could try to take trajectory and relative positions into account, or maybe compare samples across a couple frames to see if the distance from
 			//  terminal point is ever growing (which would indicate an overshoot).
-			if ((TerminalPointLocation - Bullet->GetActorLocation()).Length() <= TowPoint.X/10.f)
+			if ((TerminalPointLocation - Bullet->GetActorLocation()).Length() <= TowingPoint.X/10.f)
 			{
 				// bullet has approximately reached end of spline, despawn it
 				UE_LOG(LogTemp, Warning, TEXT("SplineGuideComponent::TickComponent; bullet %s has reached the end of the spline. Despawning."), *Bullet->GetName());
@@ -168,7 +167,7 @@ void USplineGuideComponent::TickComponent(float DeltaTime, ELevelTick TickType, 
 			}
 			else
 			{
-				FVector BulletRelativeTowPoint = GetOwner()->GetActorRotation().RotateVector(TowPoint) + Bullet->GetActorLocation();
+				FVector BulletRelativeTowPoint = GetOwner()->GetActorRotation().RotateVector(TowingPoint) + Bullet->GetActorLocation();
 				FVector Destination = Spline->FindLocationClosestToWorldLocation(BulletRelativeTowPoint, ESplineCoordinateSpace::World);
 				FRotator DestRotation = UKismetMathLibrary::FindLookAtRotation(Bullet->GetActorLocation(), Destination);
 				Bullet->SetActorRotation(DestRotation);
