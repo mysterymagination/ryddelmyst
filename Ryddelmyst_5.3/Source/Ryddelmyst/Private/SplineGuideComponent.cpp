@@ -141,10 +141,11 @@ void USplineGuideComponent::TickComponent(float DeltaTime, ELevelTick TickType, 
 			*GetOwner()->GetActorLocation().ToString()
 		);
 	}
+	*/
 
 	// tack the towingpoint onto the bullet, rotated to match rotation of forward vector and use that point to find the nearest point to it on the spline. Then we rotate our bullet to lookat the nearest point on the spline, which is our actual destination, and set the projectile movement component's velocity to a speed scaled unit vector in the direction of our destination point from our source point.
 	// todo: something something deltatime to smooth movement? Would need to adjust the terminal point location threshold below in that case, probably.
-	FVector TowPoint(100.f, 0.f, 0.f);
+	FVector TowPoint(10.f, 0.f, 0.f);
 	for (auto Bullet : Bullets)
 	{
 		if (IsValid(Bullet))
@@ -167,7 +168,7 @@ void USplineGuideComponent::TickComponent(float DeltaTime, ELevelTick TickType, 
 			}
 			else
 			{
-				FVector BulletRelativeTowPoint = Bullet->GetActorRotation().RotateVector(TowPoint) + Bullet->GetActorLocation();
+				FVector BulletRelativeTowPoint = GetOwner()->GetActorRotation().RotateVector(TowPoint) + Bullet->GetActorLocation();
 				FVector Destination = Spline->FindLocationClosestToWorldLocation(BulletRelativeTowPoint, ESplineCoordinateSpace::World);
 				FRotator DestRotation = UKismetMathLibrary::FindLookAtRotation(Bullet->GetActorLocation(), Destination);
 				Bullet->SetActorRotation(DestRotation);
@@ -192,18 +193,18 @@ void USplineGuideComponent::TickComponent(float DeltaTime, ELevelTick TickType, 
 		UE_LOG(LogTemp, Warning, TEXT("SplineGuideComponent::TickComponent; all bullets have been destroyed. Destroying splineguide."));
 		DestroyComponent(false);
 	}
-	*/
 
+	/* simple spline path debugging block
 	FVector TowPoint(10.f, 0.f, 0.f);
 	for (auto Bullet : Bullets)
 	{
 		FVector BulletRelativeTowPoint = GetOwner()->GetActorRotation().RotateVector(TowPoint) + Bullet->GetActorLocation();
 		FVector Destination = Spline->FindLocationClosestToWorldLocation(BulletRelativeTowPoint, ESplineCoordinateSpace::World);
-		FVector Diff = Destination - Bullet->GetActorLocation();
-		UE_LOG(LogTemp, Warning, TEXT("SplineGuideComponent::TickComponent; setting bullet; diff prior to normalize is %s"), *Diff.ToString());
-		Diff.Normalize(0.f);
-		UE_LOG(LogTemp, Warning, TEXT("SplineGuideComponent::TickComponent; setting bullet; diff after normalize is %s"), *Diff.ToString());
-		Bullet->BulletMovement->Velocity = Diff * Bullet->BulletMovement->InitialSpeed;
+		FRotator DestRotation = UKismetMathLibrary::FindLookAtRotation(Bullet->GetActorLocation(), Destination);
+		Bullet->SetActorRotation(DestRotation);
+		FVector DirectionToTravel = DestRotation.Vector();
+		Bullet->BulletMovement->Velocity = DirectionToTravel * Bullet->BulletMovement->InitialSpeed;
+
 		UE_LOG(LogTemp, Warning, TEXT("SplineGuideComponent::TickComponent; setting bullet %s (whose location is %s) destination to %s. Bullet velocity is %s and speed is %f."),
 			*Bullet->GetName(),
 			*Bullet->GetActorLocation().ToString(),
@@ -212,4 +213,5 @@ void USplineGuideComponent::TickComponent(float DeltaTime, ELevelTick TickType, 
 			Bullet->BulletMovement->InitialSpeed
 		);
 	}
+	*/
 }
