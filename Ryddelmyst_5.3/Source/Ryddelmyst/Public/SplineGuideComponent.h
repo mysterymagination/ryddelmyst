@@ -49,7 +49,12 @@ public:
 	 * The radius in centimeters of the circle our trig function (hardcoded to sin() wave for now) rotates points around i.e. how far away from the progression axis our points move on the wave axis (hardcoded to Y for now).
 	 */
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Structure")
-	int SplineWaveRadius = 250;
+	int SplineWaveRadius = 50;
+	/**
+	 * Whether or not to draw the spline in editor.
+	 */
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Structure")
+	bool DebugDrawSpline = false;
 	/**
 	 * The rate in seconds at which bullets spawn along the spline.
 	 */
