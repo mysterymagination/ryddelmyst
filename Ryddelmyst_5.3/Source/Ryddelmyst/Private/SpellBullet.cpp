@@ -31,7 +31,7 @@ ASpellBullet::ASpellBullet()
 	// particle FX setup
 	if (BulletParticles)
 	{
-		// todo: create niagara component from system and attach to scene root 
+		// todo: create niagara component from system and attach to scene root
 	}
 }
 
@@ -39,7 +39,7 @@ ASpellBullet::ASpellBullet()
 void ASpellBullet::BeginPlay()
 {
 	Super::BeginPlay();
-	
+
 }
 
 // Called every frame

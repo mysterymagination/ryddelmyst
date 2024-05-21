@@ -5,9 +5,11 @@
 #include "FireDamageType.h"
 #include "Kismet/GameplayStatics.h"
 
+const FString UBurnedStatusEffect::NAME = "BurnedStatusEffect";
+
 UBurnedStatusEffect::UBurnedStatusEffect()
 {
-    Id = "BurnedStatusEffect";
+    Id = NAME;
 }
 
 void UBurnedStatusEffect::OnEffectApplied(AActor* EffectedActor)

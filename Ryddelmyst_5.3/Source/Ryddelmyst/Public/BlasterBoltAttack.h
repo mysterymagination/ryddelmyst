@@ -9,7 +9,7 @@
 /**
  * Inflicts piercing fire damage, ignoring target iframes.
  */
-UCLASS()
+UCLASS(ClassGroup = "Combat", editinlinenew, Blueprintable, BlueprintType, meta = (DisplayName = "BlasterBoltAttack", BlueprintSpawnableComponent))
 class RYDDELMYST_API UBlasterBoltAttack : public UAttack
 {
 	GENERATED_BODY()

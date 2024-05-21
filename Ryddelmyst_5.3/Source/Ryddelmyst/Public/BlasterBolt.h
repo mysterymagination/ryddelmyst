@@ -8,7 +8,10 @@
 #include "SpellBullet.h"
 #include "BlasterBolt.generated.h"
 
-UCLASS()
+/**
+ * A spellbullet child with a capsule mesh, purple flame material, and blaster bolt attack. 
+ */
+UCLASS(ClassGroup = "Combat", Blueprintable, BlueprintType, meta = (DisplayName = "BlasterBolt", BlueprintSpawnableComponent))
 class RYDDELMYST_API ABlasterBolt : public ASpellBullet
 {
 	GENERATED_BODY()
@@ -24,8 +27,4 @@ protected:
 public:	
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
-
-private:
-	UPROPERTY()
-	USpellCapsuleComponent* SpellCapsuleComponent;
 };

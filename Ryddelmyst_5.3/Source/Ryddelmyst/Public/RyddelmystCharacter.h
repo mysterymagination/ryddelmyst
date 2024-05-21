@@ -138,7 +138,7 @@ private:
 	UPROPERTY()
 	bool IsInventorySleeping = false;
 	UPROPERTY()
-	TArray<const UStatusEffect*> StatusEffects;
+	TArray<UStatusEffect*> StatusEffects;
 	UPROPERTY()
 	UBattleStats* CharacterStats;
     UPROPERTY()
@@ -170,9 +170,13 @@ public:
 	{ 
 		StatusEffects.Add(Effect); 
 	}
+	TArray<UStatusEffect*> GetStatusEffects_Implementation()
+	{
+		return StatusEffects;
+	}
 	void RemoveStatusEffect_Implementation(const FString& EffectId) 
 	{ 
-		const UStatusEffect* StatusToRemove = *StatusEffects.FindByPredicate([&](const UStatusEffect* Effect)
+		UStatusEffect* StatusToRemove = *StatusEffects.FindByPredicate([&](UStatusEffect* Effect)
 			{
 				return Effect->GetName().Equals(EffectId);
 			}

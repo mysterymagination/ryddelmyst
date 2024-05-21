@@ -16,7 +16,7 @@ AFireSnowball::AFireSnowball()
 		ProjectileMaterialInstance = UMaterialInstanceDynamic::Create(Material.Object, ProjectileMeshComponent);
 	}
 	ProjectileMeshComponent->SetMaterial(0, ProjectileMaterialInstance);
-	
+
 	// Use a fiery particle system
 	static ConstructorHelpers::FObjectFinder<UParticleSystem> ParticleAsset(TEXT("/Game/Ryddelmyst_Assets/Particles/P_Fiery.P_Fiery"));
 	if (ParticleAsset.Succeeded())

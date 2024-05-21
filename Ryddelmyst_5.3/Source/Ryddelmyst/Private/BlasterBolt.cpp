@@ -3,6 +3,7 @@
 
 #include "BlasterBolt.h"
 #include "BlasterBoltAttack.h"
+#include "GameFramework/ProjectileMovementComponent.h"
 
 // Sets default values
 ABlasterBolt::ABlasterBolt()
@@ -16,8 +17,7 @@ ABlasterBolt::ABlasterBolt()
 	{
 		BulletMesh->SetStaticMesh(Mesh.Object);
 	}
-	
-	
+
 	BulletMesh->SetSimulatePhysics(true);
 	// collision config
 	BulletMesh->SetNotifyRigidBodyCollision(true);
@@ -63,4 +63,3 @@ void ABlasterBolt::Tick(float DeltaTime)
 	Super::Tick(DeltaTime);
 
 }
-

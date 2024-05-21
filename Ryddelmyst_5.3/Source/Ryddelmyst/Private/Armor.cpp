@@ -11,7 +11,7 @@
 
 UArmor::UArmor()
 {
-    DamageCatMap = 
+    DamageCatMap =
     {
         {
             UFireDamageType::StaticClass(), EDamageCat::Magical
@@ -36,7 +36,19 @@ UArmor::UArmor()
 
 float UArmor::CalculateDamageRx_Implementation(FBattleStatsData BattleStatsData, UAnatomyUnit* AnatomyCovered, float BaseDamage, const TMap<TSubclassOf<UDamageType>, float>& DamageTypesToWeightsMap)
 {
-    return BaseDamage * (1.f - GetDamageReductionFactorForDamageTypes(DamageTypesToWeightsMap)) * AnatomyCovered->DamageScaleFactor - BattleStatsData.StatsMap["Defense"];
+    float DamageReductionFactor = GetDamageReductionFactorForDamageTypes(DamageTypesToWeightsMap);
+    float AnatomyScaleFactor = AnatomyCovered->DamageScaleFactor;
+    float Defense = BattleStatsData.StatsMap["Defense"];
+    float DamageRx = BaseDamage * (1.f - DamageReductionFactor) * AnatomyScaleFactor - Defense;
+    DamageRx = FMath::Clamp(DamageRx, 0.f, std::numeric_limits<float>::infinity());
+    UE_LOG(LogTemp, Warning, TEXT("CalculateDamageRx_Implementation; BaseDamage %f, anatomy scale factor %f, DR of %f, defense of %f, lead to damagerx %f"),
+        BaseDamage,
+        AnatomyScaleFactor,
+        DamageReductionFactor,
+        Defense,
+        DamageRx
+    );
+    return DamageRx;
 }
 
 float UArmor::GetDamageReductionFactorForDamageTypes_Implementation(const TMap<TSubclassOf<UDamageType>, float>& InputDamageTypesMap)
@@ -48,11 +60,11 @@ float UArmor::GetDamageReductionFactorForDamageTypes_Implementation(const TMap<T
         for(auto& DamageType : InputDamageTypesMap)
         {
             // for each damage type that matches the current DamageCat, tally the weights into a final sum percentage of damage for the current DamageCat (CatSum)
-            if(*DamageCatMap.Find(DamageType.Key) == DamageCat) 
+            if(*DamageCatMap.Find(DamageType.Key) == DamageCat)
             {
                 CatSum += DamageType.Value;
-                UE_LOG(LogTemp, Warning, TEXT("GetDamageReductionFactorForDamageTypes; DamageType %s of DamageCat %s adds itself to the catsum for a running total %f"), 
-                    *DamageType.Key->GetName(), 
+                UE_LOG(LogTemp, Warning, TEXT("GetDamageReductionFactorForDamageTypes; DamageType %s of DamageCat %s adds itself to the catsum for a running total %f"),
+                    *DamageType.Key->GetName(),
                     *UEnum::GetDisplayValueAsText(DamageCat).ToString(),
                     CatSum
                 );
@@ -63,7 +75,7 @@ float UArmor::GetDamageReductionFactorForDamageTypes_Implementation(const TMap<T
         if(DRptr)
         {
             DRFactorSum += CatSum * (*DRptr);
-            UE_LOG(LogTemp, Warning, TEXT("GetDamageReductionFactorForDamageTypes; DamageCat %s sum %f multiplied by relevant DR factor %f adds the product %f to DR factor sum for a running total %f"), 
+            UE_LOG(LogTemp, Warning, TEXT("GetDamageReductionFactorForDamageTypes; DamageCat %s sum %f multiplied by relevant DR factor %f adds the product %f to DR factor sum for a running total %f"),
                     *UEnum::GetDisplayValueAsText(DamageCat).ToString(),
                     CatSum,
                     *DRptr,

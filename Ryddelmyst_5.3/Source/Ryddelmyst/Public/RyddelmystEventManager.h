@@ -4,9 +4,11 @@
 
 #include "CoreMinimal.h"
 #include "UObject/NoExportTypes.h"
+#include "SplineGuideComponent.h"
 #include "RyddelmystEventManager.generated.h"
 
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FWoodEggDangerEvent, bool, InDanger);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FSplineGuideCompletionEvent, USplineGuideComponent*, InCompletedSplineGuideComponent);
 DECLARE_DYNAMIC_MULTICAST_DELEGATE(FPlayerDeathEvent);
 
 /**
@@ -28,4 +30,9 @@ public:
 	 */
 	UPROPERTY(BlueprintAssignable)
 	FPlayerDeathEvent PlayerDeathEvent;
+	/**
+	 * Broadcasts whenever a USplineGuideComponent completes, passing a pointer to the relevant USplineGuideComponent instance.
+	 */
+	UPROPERTY(BlueprintAssignable)
+	FSplineGuideCompletionEvent SplineGuideCompletionEvent;
 };

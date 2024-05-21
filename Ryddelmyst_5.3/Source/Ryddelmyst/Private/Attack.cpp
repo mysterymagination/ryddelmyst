@@ -14,7 +14,7 @@ const FString UAttack::TAG_FLAG_IGNORE_IFRAMES("IgnoreIframes");
 
 void UAttack::OnHit_Implementation(FBattleStatsData StrikingBattlerData, UPrimitiveComponent* StrikingComp, AActor* StrickenActor, UPrimitiveComponent* StrickenComp, FVector NormalImpulse, const FHitResult& HitInfo)
 {
-    UE_LOG(LogTemp, Warning, TEXT("OnHit; attack is %s by striking comp %s against stricken comp %s of stricken actor %s"), 
+    UE_LOG(LogTemp, Warning, TEXT("OnHit; attack is %s by striking comp %s against stricken comp %s of stricken actor %s"),
         *AttackName, *StrikingComp->GetName(), *StrickenComp->GetName(), *StrickenActor->GetName());
     UArmor* StrickenArmor = nullptr;
     UAnatomyUnit* AnatomyUnit = nullptr;
@@ -31,7 +31,7 @@ void UAttack::OnHit_Implementation(FBattleStatsData StrikingBattlerData, UPrimit
             AnatomyUnit = IAnatomy::Execute_GetAnatomyUnit(StrickenComp);
         }
     }
-    else 
+    else
     {
         // todo: remove this branch hack if the query collision events on custom uprim IDefenders and IAttackers ever works properly
         if(StrickenActor->GetClass()->IsChildOf(ARyddelmystCharacter::StaticClass()))
@@ -67,18 +67,19 @@ void UAttack::OnHit_Implementation(FBattleStatsData StrikingBattlerData, UPrimit
             DamageRx = StrickenArmor->CalculateDamageRx(StrickenBattlerData, AnatomyUnit, DamageTxInfo.DamageTx, DamageTypesToWeightsMap);
             AnatomyUnit->Debilitate(StrickenActor);
         }
-        else 
+        else
         {
             DamageRx = StrickenArmor->CalculateDamageRx(StrickenBattlerData, nullptr, DamageTxInfo.DamageTx, DamageTypesToWeightsMap);
         }
+        UE_LOG(LogTemp, Warning, TEXT("OnHit; attack %s tx dmg is %f and rx dmg is %f"), *AttackName, DamageTxInfo.DamageTx, DamageRx);
         LatestDamageDealt = DamageRx;
-        
+
         TArray<TSubclassOf<UDamageType>> Types;
         DamageTypesToWeightsMap.GenerateKeyArray(Types);
 
-        UE_LOG(LogTemp, Log, TEXT("OnHit; FHitResult says: %s, specifically BoneName is %s and MyBoneName is %s"), *HitInfo.ToString(), *HitInfo.BoneName.ToString(), *HitInfo.MyBoneName.ToString()); 
+        UE_LOG(LogTemp, Log, TEXT("OnHit; FHitResult says: %s, specifically BoneName is %s and MyBoneName is %s"), *HitInfo.ToString(), *HitInfo.BoneName.ToString(), *HitInfo.MyBoneName.ToString());
         UE_LOG(LogTemp, Log, TEXT("OnHit; striking component says: %s"), *StrikingComp->GetName());
-        UE_LOG(LogTemp, Log, TEXT("OnHit; stricken component says: %s"), *StrickenComp->GetName()); 
+        UE_LOG(LogTemp, Log, TEXT("OnHit; stricken component says: %s"), *StrickenComp->GetName());
         if (StrickenActor->CanBeDamaged())
         {
             UGameplayStatics::ApplyPointDamage(StrickenActor, DamageRx, NormalImpulse, HitInfo, nullptr, StrikingComp->GetOwner(), Types[0]);

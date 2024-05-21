@@ -43,4 +43,11 @@ public:
 	 */
 	UFUNCTION(BlueprintCallable, BlueprintNativeEvent, Category = "Magic")
 	void RemoveStatusEffect(const FString& EffectId);
+
+	/**
+	 * @brief Retrieve the array of status effects currently affecting the target.
+	 *
+	 */
+	UFUNCTION(BlueprintCallable, BlueprintNativeEvent, Category = "Magic")
+	TArray<UStatusEffect*> GetStatusEffects();
 };
