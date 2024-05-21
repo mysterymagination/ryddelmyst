@@ -5,6 +5,7 @@
 #include "IAttacker.h"
 #include "Weapon.h"
 #include "Attack.h"
+#include "Kismet/GameplayStatics.h"
 #include "ParticleUtils.h"
 
 AMonster::AMonster()
@@ -13,7 +14,7 @@ AMonster::AMonster()
     AIControllerClass = AMonsterAI::StaticClass();
     */
    PrimaryActorTick.bCanEverTick = true;
-   HitBoxer = CreateDefaultSubobject<UHitBoxerComponent>(TEXT("Monstrous HitBoxer")); 
+   HitBoxer = CreateDefaultSubobject<UHitBoxerComponent>(TEXT("Monstrous HitBoxer"));
    static ConstructorHelpers::FObjectFinder<UNiagaraSystem> ParticleAsset(TEXT("/Niagara/DefaultAssets/Templates/Systems/SimpleExplosion.SimpleExplosion"));
    if (ParticleAsset.Succeeded())
    {
@@ -108,5 +109,17 @@ void AMonster::HandleDeath_Implementation()
 {
 	UE_LOG(LogTemp, Warning, TEXT("HandleDamage; %s is destroyed!"), *GetName());
 	ParticleUtils::SpawnParticlesAtLocation(GetWorld(), GetActorLocation(), DeathParticleSystem);
+	UGameplayStatics::PlaySoundAtLocation(
+		GetWorld(),
+		LoadObject<USoundBase>(nullptr, TEXT("/Game/Ryddelmyst_Assets/Audio/SFX/bfxr_sounds/Explosion2.Explosion2"), nullptr, LOAD_None, nullptr),
+		GetActorLocation(),
+		GetActorRotation(),
+		1.f,
+		1.f,
+		0.f,
+		nullptr,
+		nullptr,
+		nullptr
+	);
 	Destroy();
 }

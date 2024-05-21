@@ -20,9 +20,10 @@ AFlameBeadBullet::AFlameBeadBullet()
 
 		// On hit event handling and physkiss
 		SpellSphereComponent->SetSimulatePhysics(false);
-		SpellSphereComponent->SetNotifyRigidBodyCollision(false);
-		SpellSphereComponent->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+		SpellSphereComponent->SetNotifyRigidBodyCollision(true);
+		SpellSphereComponent->SetCollisionEnabled(ECollisionEnabled::QueryOnly);
 		SpellSphereComponent->SetEnableGravity(false);
+		SpellSphereComponent->SetCollisionProfileName("Projectile");
 	}
 
 	FScriptDelegate onHitDelegate;
@@ -90,4 +91,15 @@ AFlameBeadBullet::AFlameBeadBullet()
 		{UFlameBeadAttack::ATTACK_NAME, CreateDefaultSubobject<UFlameBeadAttack>(FName(UFlameBeadAttack::ATTACK_NAME))}
 	};
 	IAttacker::Execute_GetWeapon(Attacker)->CurrentAttackName = UFlameBeadAttack::ATTACK_NAME;
+}
+
+void AFlameBeadBullet::OnHit(UPrimitiveComponent* StrikingComp, AActor* StrickenActor, UPrimitiveComponent* StrickenComp, FVector NormalImpulse, const FHitResult& HitInfo)
+{
+	HitBoxer->OnHit(StrikingComp, StrickenActor, StrickenComp, NormalImpulse, HitInfo);
+	Destroy();
+}
+
+UObject* AFlameBeadBullet::GetAttacker_Implementation()
+{
+	return SpellSphereComponent;
 }

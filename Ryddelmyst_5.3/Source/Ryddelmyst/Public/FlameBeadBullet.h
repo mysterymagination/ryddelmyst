@@ -17,6 +17,11 @@ class RYDDELMYST_API AFlameBeadBullet : public ASpellBullet
 
 public:
 	AFlameBeadBullet();
+	virtual UObject* GetAttacker_Implementation();
+protected:
+	UFUNCTION(BlueprintCallable, Category = "Combat")
+	void OnHit(UPrimitiveComponent* StrikingComp, AActor* StrickenActor, UPrimitiveComponent* StrickenComp, FVector NormalImpulse, const FHitResult& HitInfo);
+public:
 	// Sphere collision component.
 	UPROPERTY(VisibleDefaultsOnly, Category = Projectile)
 	USpellSphereComponent* SpellSphereComponent;
