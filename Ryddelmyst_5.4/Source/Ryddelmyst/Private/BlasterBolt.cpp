@@ -23,6 +23,7 @@ ABlasterBolt::ABlasterBolt()
 	BulletMesh->SetNotifyRigidBodyCollision(true);
 	BulletMesh->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
 	BulletMesh->SetCollisionProfileName("Projectile");
+	BulletMesh->SetEnableGravity(false);
 	FScriptDelegate onHitDelegate;
 	onHitDelegate.BindUFunction(HitBoxer, FName("OnHit"));
 	BulletMesh->OnComponentHit.Add(onHitDelegate);

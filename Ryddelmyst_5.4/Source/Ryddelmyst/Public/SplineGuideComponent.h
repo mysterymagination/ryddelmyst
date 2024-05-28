@@ -56,6 +56,12 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Structure")
 	bool DebugDrawSpline = false;
 	/**
+	 * Whether or not to destroy the given Spline param when the spline guide is being destroyed
+	 * i.e. the Spline was created just for the purpose of this spline guide's use.
+	 */
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Structure")
+	bool DestroySpline = false;
+	/**
 	 * The rate in seconds at which bullets spawn along the spline.
 	 */
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Structure")

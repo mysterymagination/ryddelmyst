@@ -190,6 +190,10 @@ void USplineGuideComponent::TickComponent(float DeltaTime, ELevelTick TickType, 
 	{
 		// shut down spline guide component
 		UE_LOG(LogTemp, Warning, TEXT("SplineGuideComponent::TickComponent; all bullets have been destroyed. Destroying splineguide."));
+		if (DestroySpline)
+		{
+			Spline->DestroyComponent(false);
+		}
 		DestroyComponent(false);
 	}
 
