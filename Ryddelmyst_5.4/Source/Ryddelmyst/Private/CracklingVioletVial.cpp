@@ -35,7 +35,7 @@ void UCracklingVioletVial::OnEquip_Implementation(AActor* EquippedActor)
 			long NumBulletsPerSide = (NumBullets - 1) / 2;
 			// Distribution angle is the angle between our uniformly distributed vectors.  We calculate this per-side as 90 degrees divided by number of bullets per side +1 since we don't want to actually fire bullets at a 90 degree angle to the central launch direction vector (e.g. out to the side of the character) so we pretend there's an extra item in the per-side distribution when calculating the angle per bullet.  Another way of putting it is that we're calculating the angle of the sectors between the bullet 'edges' in our fan, which will be N+1 where N is the number of edges.
 			float DistAngle = 90 / (NumBulletsPerSide + 1);
-			UE_LOG(LogTemp, Warning, TEXT("Metamagic Electric lambda; transmutation behavior -- NumBullets is %u, NumBulletsPerSide is %l, and DistAngle is %f"), NumBullets, NumBulletsPerSide, DistAngle);
+			UE_LOG(LogTemp, Warning, TEXT("Metamagic Electric lambda; transmutation behavior -- NumBullets is %u, NumBulletsPerSide is %ld, and DistAngle is %f"), NumBullets, NumBulletsPerSide, DistAngle);
 			float CurrentAngle = -90;
 			// to avoid wonky physics, we need to move the bullets' spawn points incrementally away from the central spawn point (muzzle location, and the actual SpawnTransform location);  we'll proceed as we do with the angle distribution per side, at the far negative and swinging eventually 'round to far positive offset.  The offset value is going to be the bullet radius times this incremental offset factor.
 			int BulletOffsetFactor = -NumBulletsPerSide;

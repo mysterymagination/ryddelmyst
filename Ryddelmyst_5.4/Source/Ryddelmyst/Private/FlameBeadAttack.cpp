@@ -27,13 +27,18 @@ void UFlameBeadAttack::OnHit_Implementation(FBattleStatsData StrikingBattlerData
         // check if the target is already burned and extend the duration by BaseBurnDuration if so, up to DieSides * BaseBurnDuration
         auto StatusEffectArray = IStatusEffected::Execute_GetStatusEffects(StrickenActor);
         auto is_burn = [](UStatusEffect* Effect) { return Effect->GetId() == UBurnedStatusEffect::NAME; };
-        if (auto it = std::find_if(std::begin(StatusEffectArray), std::end(StatusEffectArray), is_burn); it != std::end(StatusEffectArray))
+        UStatusEffect** StatusEffect_ptr = StatusEffectArray.FindByPredicate([](UStatusEffect* Effect) 
+            { 
+                return Effect->GetId() == UBurnedStatusEffect::NAME; 
+            }
+        );
+        if (StatusEffect_ptr)
         {
-            float CurrentBurnDuration = Cast<UBurnedStatusEffect>(*it)->GetBurnDuration();
-            float BaseBurnDuration = Cast<UBurnedStatusEffect>(*it)->GetBaseBurnDuration();
+            float CurrentBurnDuration = Cast<UBurnedStatusEffect>(*StatusEffect_ptr)->GetBurnDuration();
+            float BaseBurnDuration = Cast<UBurnedStatusEffect>(*StatusEffect_ptr)->GetBaseBurnDuration();
             if (CurrentBurnDuration < DieSides * BaseBurnDuration)
             {
-                Cast<UBurnedStatusEffect>(*it)->SetBurnDuration(CurrentBurnDuration + BaseBurnDuration);
+                Cast<UBurnedStatusEffect>(*StatusEffect_ptr)->SetBurnDuration(CurrentBurnDuration + BaseBurnDuration);
                 UE_LOG(LogTemp, Warning, TEXT("OnHit flamebeadattack; extending existing burn duration to %f"), CurrentBurnDuration + BaseBurnDuration);
             }
             else

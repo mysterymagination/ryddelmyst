@@ -27,7 +27,7 @@ void UOrbitMovementComponent::BeginPlay()
 	}
 	else
 	{
-		UE_LOG(LogTemp, Error, TEXT("OrbitMovementComponent::BeginPlay; could not attach to an orbited body because we don't know what our orbitting body is yet (%p) and/or we don't know what our orbited body is yet (%p)"), UpdatedComponent, OrbitedBody);
+		UE_LOG(LogTemp, Error, TEXT("OrbitMovementComponent::BeginPlay; could not attach to an orbited body because we don't know what our orbitting body is yet (%p) and/or we don't know what our orbited body is yet (%p)"), UpdatedComponent.Get(), OrbitedBody);
 	}
 }
 
