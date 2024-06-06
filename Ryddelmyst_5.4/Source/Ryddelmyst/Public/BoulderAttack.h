@@ -16,7 +16,7 @@ class RYDDELMYST_API UBoulderAttack : public UAttack
 public:
 	// Mass of the boulder, which contributes to damage calculation
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Magic)
-	float Mass = 100;
+	float Mass = 10;
 protected:
 	// Damage die class
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Magic)

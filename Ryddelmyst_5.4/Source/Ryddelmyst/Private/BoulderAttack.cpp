@@ -3,6 +3,7 @@
 
 #include "BoulderAttack.h"
 #include "BludgeoningDamageType.h"
+#include "MathUtils.h"
 
 const FString UBoulderAttack::ATTACK_NAME("BoulderAttack");
 
@@ -20,12 +21,13 @@ void UBoulderAttack::OnHit_Implementation(FBattleStatsData StrikingBattlerData, 
 {
     Super::OnHit_Implementation(StrikingBattlerData, StrikingComp, StrickenActor, StrickenComp, NormalImpulse, HitInfo);
     // todo: stunned StatusEffect?
+    // impart impulse force to the stricken actor proportionate to the boulder mass
+    StrickenComp->AddImpulseAtLocation(Mass * NormalImpulse, StrickenActor->GetActorLocation());
 }
 
 FAttackTxInfo UBoulderAttack::CalculateDamageTx_Implementation(FBattleStatsData BattleStatsData)
 {
-    // todo: factor in boulder mass somehow; maybe thresholds set the die sides? Maybe the mass itself is the base power?
-    float BaseDamage = BasePower * BattleStatsData.StatsMap["Attack"];
+    float BaseDamage = BasePower * BattleStatsData.StatsMap["Attack"] * Mass;
     uint8 DieCount = BattleStatsData.StatsMap["Level"];
     float Rando = MathUtils::RollNdM(DieCount, DieSides);
     UE_LOG(LogTemp, Warning, TEXT("CalculateDamageTx boulder atk; Power (%f) * Magic (%f) = BaseDamage (%f) and rando aspect is %f"), BasePower, BattleStatsData.StatsMap["Magic"], BaseDamage, Rando);

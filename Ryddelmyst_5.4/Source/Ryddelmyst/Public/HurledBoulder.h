@@ -14,4 +14,7 @@ class RYDDELMYST_API AHurledBoulder : public ASpellBullet
 {
 	GENERATED_BODY()
 	
+public:
+	AHurledBoulder();
+	
 };
