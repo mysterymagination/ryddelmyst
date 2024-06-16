@@ -21,7 +21,7 @@ AHurledBoulder::AHurledBoulder()
 	BulletMesh->SetNotifyRigidBodyCollision(true);
 	BulletMesh->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
 	BulletMesh->SetCollisionProfileName("Projectile");
-	BulletMesh->SetEnableGravity(false);
+	BulletMesh->SetEnableGravity(true);
 	FScriptDelegate onHitDelegate;
 	onHitDelegate.BindUFunction(HitBoxer, FName("OnHit"));
 	BulletMesh->OnComponentHit.Add(onHitDelegate);

@@ -21,8 +21,13 @@ void UBoulderAttack::OnHit_Implementation(FBattleStatsData StrikingBattlerData, 
 {
     Super::OnHit_Implementation(StrikingBattlerData, StrikingComp, StrickenActor, StrickenComp, NormalImpulse, HitInfo);
     // todo: stunned StatusEffect?
-    // impart impulse force to the stricken actor proportionate to the boulder mass
-    StrickenComp->AddImpulseAtLocation(Mass * NormalImpulse, StrickenActor->GetActorLocation());
+    // impart impulse force to the stricken actor proportionate to the boulder mass iff stricken actor is a character subclass
+    if (ACharacter* Character = Cast<ACharacter>(StrickenActor))
+    {
+        Character->LaunchCharacter(Mass * NormalImpulse, false, false);
+        // todo: the full physkiss impulse would be nice, but that requires having physics enabled stricken components, which modifies the collision profiles we can use etc. Doable, but painful.
+        // StrickenComp->AddImpulseAtLocation(Mass * NormalImpulse, StrickenActor->GetActorLocation());
+    }
 }
 
 FAttackTxInfo UBoulderAttack::CalculateDamageTx_Implementation(FBattleStatsData BattleStatsData)
