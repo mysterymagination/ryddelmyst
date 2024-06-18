@@ -33,6 +33,10 @@ public:
 	 * Tag string to be applied to this Attack's host Actor indicating that stricken Actors' iframes (if any) should be ignored.
 	 */
 	static const FString TAG_FLAG_IGNORE_IFRAMES;
+	/**
+	 * Tag string to be applied to this Attack's host Actor indicating that it imposes its own knockback and therefore standard knockback should be skipped.
+	 */
+	static const FString TAG_FLAG_CUSTOM_KNOCKBACK;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Combat")
 	FString AttackName;
 	/**

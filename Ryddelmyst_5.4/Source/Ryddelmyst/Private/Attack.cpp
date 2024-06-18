@@ -11,6 +11,7 @@
 
 const FString UAttack::KEY_COSTS_EFFECT("Effect");
 const FString UAttack::TAG_FLAG_IGNORE_IFRAMES("IgnoreIframes");
+const FString UAttack::TAG_FLAG_CUSTOM_KNOCKBACK("CustomKnockback");
 
 void UAttack::OnHit_Implementation(FBattleStatsData StrikingBattlerData, UPrimitiveComponent* StrikingComp, AActor* StrickenActor, UPrimitiveComponent* StrickenComp, FVector NormalImpulse, const FHitResult& HitInfo)
 {

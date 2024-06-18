@@ -913,9 +913,13 @@ void ARyddelmystCharacter::HandleDamage(
 	{
 		if (DamageCauser->Tags.Find(FName(UAttack::TAG_FLAG_IGNORE_IFRAMES)) == INDEX_NONE)
 		{
-			UE_LOG(LogTemp, Warning, TEXT("HandleDamage; starting iframes because damagecauser did not have ignore iframes tag"));
+			UE_LOG(LogTemp, Warning, TEXT("HandleDamage; starting iframes because damagecauser %s did not have ignore iframes tag"), *DamageCauser->GetName());
 			SetCanBeDamaged(false);
 			DamageInvincibilityTimer();
+		}
+		else 
+		{
+			UE_LOG(LogTemp, Warning, TEXT("HandleDamage; skipping iframes because damagecauser %s has ignore iframes tag"), *DamageCauser->GetName());
 		}
 	}
 	else
@@ -924,8 +928,11 @@ void ARyddelmystCharacter::HandleDamage(
 		SetCanBeDamaged(false);
 		DamageInvincibilityTimer();
 	}
-	// good ol' knockback
-	LaunchCharacter(ShotFromDirection * (Damage/10.f), false, false);
+	if (DamageCauser->Tags.Find(FName(UAttack::TAG_FLAG_CUSTOM_KNOCKBACK)) == INDEX_NONE)
+	{
+		// good ol' knockback
+		LaunchCharacter(ShotFromDirection * (Damage/10.f), false, false);
+	}
 }
 
 void ARyddelmystCharacter::SetDamageState()
