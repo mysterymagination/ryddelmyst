@@ -119,7 +119,7 @@ void ARyddelmystCharacter::BeginPlay()
 	
 	FScriptDelegate DamageDelegate;
 	DamageDelegate.BindUFunction(this, FName("HandleDamage"));
-	OnTakeAnyDamage.Add(DamageDelegate);
+	OnTakePointDamage.Add(DamageDelegate);
 
 	HUD = UGameplayStatics::GetPlayerController(GetWorld(), 0)->GetHUD<ARyddelmystHUD>();
 	UE_LOG(LogTemp, Warning, TEXT("BeginPlay; ryddel hud is %p"), HUD);
@@ -895,35 +895,48 @@ void ARyddelmystCharacter::UpdateMagic(float MagicChange)
 	CharacterStats->StatsData.StatsMap["MP"] = FMath::Clamp(CharacterStats->StatsData.StatsMap["MP"], 0.0f, CharacterStats->StatsData.StatsMap["MaxMP"]);
 }
 
-void ARyddelmystCharacter::HandleDamage(AActor* DamagedActor, float Damage, const class UDamageType* DamageType, class AController* InstigatedBy, AActor* DamageCauser)
+void ARyddelmystCharacter::HandleDamage(
+	AActor* DamagedActor, 
+	float Damage, 
+	class AController* InstigatedBy,
+	FVector HitLocation,
+	UPrimitiveComponent* StrickenComp,
+	FName BoneName, 
+	FVector ShotFromDirection,
+	const class UDamageType* DamageType, 
+	AActor* DamageCauser
+)
 {
 	UE_LOG(LogTemp, Warning, TEXT("HandleDamage; ouch for %f to %s"), Damage, *DamagedActor->GetName());
 	UpdateHealth(-Damage);
-	// todo: would be cleaner to move iframe processing to UHitBoxerComponent or UAttack
 	if (DamageCauser)
 	{
 		if (DamageCauser->Tags.Find(FName(UAttack::TAG_FLAG_IGNORE_IFRAMES)) == INDEX_NONE)
 		{
+			UE_LOG(LogTemp, Warning, TEXT("HandleDamage; starting iframes because damagecauser did not have ignore iframes tag"));
 			SetCanBeDamaged(false);
 			DamageInvincibilityTimer();
 		}
 	}
 	else
 	{
+		UE_LOG(LogTemp, Warning, TEXT("HandleDamage; starting iframes without damagecauser"));
 		SetCanBeDamaged(false);
 		DamageInvincibilityTimer();
 	}
-	// todo: send the character flying in some direction derived from HitInfo?
+	// good ol' knockback
+	LaunchCharacter(ShotFromDirection * (Damage/10.f), false, false);
 }
 
 void ARyddelmystCharacter::SetDamageState()
 {
+	UE_LOG(LogTemp, Warning, TEXT("SetDamageState; iframes are gone"));
 	SetCanBeDamaged(true);
 }
 
 void ARyddelmystCharacter::DamageInvincibilityTimer()
 {
-	GetWorldTimerManager().SetTimer(InvincibilityTimerHandle, this, &ARyddelmystCharacter::SetDamageState, 1.f, false);
+	GetWorldTimerManager().SetTimer(InvincibilityTimerHandle, this, &ARyddelmystCharacter::SetDamageState, 3.f, false);
 }
 
 void ARyddelmystCharacter::OnOverlapBegin(class UPrimitiveComponent* OverlappedComp, class AActor* OtherActor, class UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)

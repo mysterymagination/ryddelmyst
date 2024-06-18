@@ -16,5 +16,5 @@ class RYDDELMYST_API AHurledBoulder : public ASpellBullet
 	
 public:
 	AHurledBoulder();
-	
+	void OnHit(UPrimitiveComponent* StrikingComp, AActor* StrickenActor, UPrimitiveComponent* StrickenComp, FVector NormalImpulse, const FHitResult& HitInfo);	
 };

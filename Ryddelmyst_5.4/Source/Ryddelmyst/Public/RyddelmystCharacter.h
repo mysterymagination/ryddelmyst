@@ -444,7 +444,17 @@ protected:
 	void UpdateMagic(float MagicChange);
 
 	UFUNCTION()
-	void HandleDamage(AActor* DamagedActor, float Damage, const class UDamageType* DamageType, class AController* InstigatedBy, AActor* DamageCauser);
+	void HandleDamage(
+		AActor* DamagedActor, 
+		float Damage, 
+		class AController* InstigatedBy,
+		FVector HitLocation,
+		UPrimitiveComponent* StrickenComp,
+		FName BoneName, 
+		FVector ShotFromDirection,
+		const class UDamageType* DamageType, 
+		AActor* DamageCauser
+	);
 
 	/** Damage Timer starts the invincibility clock after taking damage */
 	UFUNCTION()

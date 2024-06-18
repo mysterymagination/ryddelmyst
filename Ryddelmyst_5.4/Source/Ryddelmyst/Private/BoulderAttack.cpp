@@ -35,7 +35,7 @@ FAttackTxInfo UBoulderAttack::CalculateDamageTx_Implementation(FBattleStatsData 
     float BaseDamage = BasePower * BattleStatsData.StatsMap["Attack"] * Mass;
     uint8 DieCount = BattleStatsData.StatsMap["Level"];
     float Rando = MathUtils::RollNdM(DieCount, DieSides);
-    UE_LOG(LogTemp, Warning, TEXT("CalculateDamageTx boulder atk; Power (%f) * Magic (%f) = BaseDamage (%f) and rando aspect is %f"), BasePower, BattleStatsData.StatsMap["Magic"], BaseDamage, Rando);
+    UE_LOG(LogTemp, Warning, TEXT("CalculateDamageTx boulder atk; Power (%f) * Attack (%f) * Mass (%f) = BaseDamage (%f) and rando aspect is %f"), BasePower, BattleStatsData.StatsMap["Attack"], Mass, BaseDamage, Rando);
     BaseDamage += Rando;
     FAttackTxInfo AttackTx;
     AttackTx.DamageTx = DamageScaleFactor * BaseDamage;

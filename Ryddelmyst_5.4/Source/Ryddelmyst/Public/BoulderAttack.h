@@ -4,10 +4,11 @@
 
 #include "CoreMinimal.h"
 #include "Attack.h"
+#include "GameFramework/Character.h"
 #include "BoulderAttack.generated.h"
 
 /**
- * 
+ * An attack of bludgeoning damage from a giant hurled stone. Focus is on mass-derived damage and increased knockback.
  */
 UCLASS()
 class RYDDELMYST_API UBoulderAttack : public UAttack
