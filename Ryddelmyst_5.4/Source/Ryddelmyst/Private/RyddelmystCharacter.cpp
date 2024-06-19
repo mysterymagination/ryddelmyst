@@ -931,7 +931,9 @@ void ARyddelmystCharacter::HandleDamage(
 	if (DamageCauser->Tags.Find(FName(UAttack::TAG_FLAG_CUSTOM_KNOCKBACK)) == INDEX_NONE)
 	{
 		// good ol' knockback
-		LaunchCharacter(ShotFromDirection * (Damage/10.f), false, false);
+		ShotFromDirection.Normalize(0);
+		UE_LOG(LogTemp, Warning, TEXT("HandleDamage; %s inflicts standard knockback via damage piece %f times normalized impluse vector %s"), *DamageCauser->GetName(), Damage/10.f, *ShotFromDirection.ToString());
+		LaunchCharacter(ShotFromDirection * (Damage/100.f), false, false);
 	}
 }
 

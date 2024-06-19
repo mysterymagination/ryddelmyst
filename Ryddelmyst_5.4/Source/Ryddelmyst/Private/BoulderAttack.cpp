@@ -24,7 +24,9 @@ void UBoulderAttack::OnHit_Implementation(FBattleStatsData StrikingBattlerData, 
     // impart impulse force to the stricken actor proportionate to the boulder mass iff stricken actor is a character subclass
     if (ACharacter* Character = Cast<ACharacter>(StrickenActor))
     {
-        Character->LaunchCharacter(Mass * NormalImpulse, false, false);
+        NormalImpulse.Normalize(0);
+        UE_LOG(LogTemp, Warning, TEXT("BoulderAttack OnHit; inflicting custom knockback via mass piece %f times normalized impluse vector %s"), Mass*500.f, *NormalImpulse.ToString());
+        Character->LaunchCharacter((Mass*500.f) * NormalImpulse, false, false);
         // todo: the full physkiss impulse would be nice, but that requires having physics enabled stricken components, which modifies the collision profiles we can use etc. Doable, but painful.
         // StrickenComp->AddImpulseAtLocation(Mass * NormalImpulse, StrickenActor->GetActorLocation());
     }
@@ -32,10 +34,10 @@ void UBoulderAttack::OnHit_Implementation(FBattleStatsData StrikingBattlerData, 
 
 FAttackTxInfo UBoulderAttack::CalculateDamageTx_Implementation(FBattleStatsData BattleStatsData)
 {
-    float BaseDamage = BasePower * BattleStatsData.StatsMap["Attack"] * Mass;
+    float BaseDamage = BasePower * BattleStatsData.StatsMap["Attack"] * (Mass/10.f);
     uint8 DieCount = BattleStatsData.StatsMap["Level"];
     float Rando = MathUtils::RollNdM(DieCount, DieSides);
-    UE_LOG(LogTemp, Warning, TEXT("CalculateDamageTx boulder atk; Power (%f) * Attack (%f) * Mass (%f) = BaseDamage (%f) and rando aspect is %f"), BasePower, BattleStatsData.StatsMap["Attack"], Mass, BaseDamage, Rando);
+    UE_LOG(LogTemp, Warning, TEXT("CalculateDamageTx boulder atk; Power (%f) * Attack (%f) * Mass over ten (%f) = BaseDamage (%f) and rando aspect is %f"), BasePower, BattleStatsData.StatsMap["Attack"], Mass/10.f, BaseDamage, Rando);
     BaseDamage += Rando;
     FAttackTxInfo AttackTx;
     AttackTx.DamageTx = DamageScaleFactor * BaseDamage;
