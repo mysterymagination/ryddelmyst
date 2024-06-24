@@ -15,7 +15,7 @@ AMonster::AMonster()
     */
    PrimaryActorTick.bCanEverTick = true;
    HitBoxer = CreateDefaultSubobject<UHitBoxerComponent>(TEXT("Monstrous HitBoxer"));
-   static ConstructorHelpers::FObjectFinder<UNiagaraSystem> ParticleAsset(TEXT("/Niagara/DefaultAssets/Templates/Systems/SimpleExplosion.SimpleExplosion"));
+   static ConstructorHelpers::FObjectFinder<UNiagaraSystem> ParticleAsset(TEXT("'/Game/Ryddelmyst_Assets/Particles/P_MonsterKillFX.P_MonsterKillFX'"));
    if (ParticleAsset.Succeeded())
    {
 	   DeathParticleSystem = ParticleAsset.Object;
