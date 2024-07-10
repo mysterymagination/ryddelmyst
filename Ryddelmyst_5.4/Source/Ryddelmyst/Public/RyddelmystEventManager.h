@@ -8,6 +8,7 @@
 #include "RyddelmystEventManager.generated.h"
 
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FWoodEggDangerEvent, bool, InDanger);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE(FWoodEggDeathEvent);
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FSplineGuideCompletionEvent, USplineGuideComponent*, InCompletedSplineGuideComponent);
 DECLARE_DYNAMIC_MULTICAST_DELEGATE(FPlayerDeathEvent);
 
@@ -25,6 +26,11 @@ public:
 	 */
 	UPROPERTY(BlueprintAssignable)
 	FWoodEggDangerEvent WoodEggDangerEvent;
+	/**
+	 * Broadcasts when the Wood Egg is destroyed i.e when the player drops it in the lava pool.
+	 */
+	UPROPERTY(BlueprintAssignable)
+	FWoodEggDeathEvent WoodEggDeathEvent;
 	/**
 	 * Broadcasts whenever a player dies.
 	 */
