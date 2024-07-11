@@ -29,7 +29,7 @@ public:
 	/**
 	 * Broadcasts when the Wood Egg is destroyed i.e when the player drops it in the lava pool.
 	 */
-	UPROPERTY(BlueprintAssignable)
+	UPROPERTY(BlueprintAssignable, BlueprintCallable, BlueprintReadOnly)
 	FWoodEggDeathEvent WoodEggDeathEvent;
 	/**
 	 * Broadcasts whenever a player dies.

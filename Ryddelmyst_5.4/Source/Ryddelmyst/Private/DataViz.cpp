@@ -29,7 +29,7 @@ void DataViz::FX_NumberParticles(UObject* World, const FVector& Location, const 
     );
     for (auto DamageCharacter : DamageString)
     {
-        // spawn particle system at the given location plus some offset for each
+        // spawn particle system at the given location plus some offset for each digit
         //  e.g. '1' '2' '3' for input 123.1
         UNiagaraSystem* FloatingNumbersFX_System = LoadObject<UNiagaraSystem>
         (
@@ -44,37 +44,37 @@ void DataViz::FX_NumberParticles(UObject* World, const FVector& Location, const 
         switch (DamageCharacter)
         {
             case '0':
-                DigitTextureFileName = TEXT("0");
+                DigitTextureFileName = TEXT("0.0");
                 break;
             case '1':
-                DigitTextureFileName = TEXT("1");
+                DigitTextureFileName = TEXT("1.1");
                 break;
             case '2':
-                DigitTextureFileName = TEXT("2");
+                DigitTextureFileName = TEXT("2.2");
                 break;
             case '3':
-                DigitTextureFileName = TEXT("3");
+                DigitTextureFileName = TEXT("3.3");
                 break;
             case '4':
-                DigitTextureFileName = TEXT("4");
+                DigitTextureFileName = TEXT("4.4");
                 break;
             case '5':
-                DigitTextureFileName = TEXT("5");
+                DigitTextureFileName = TEXT("5.5");
                 break;
             case '6':
-                DigitTextureFileName = TEXT("6");
+                DigitTextureFileName = TEXT("6.6");
                 break;
             case '7':
-                DigitTextureFileName = TEXT("7");
+                DigitTextureFileName = TEXT("7.7");
                 break;
             case '8':
-                DigitTextureFileName = TEXT("8");
+                DigitTextureFileName = TEXT("8.8");
                 break;
             case '9':
-                DigitTextureFileName = TEXT("9");
+                DigitTextureFileName = TEXT("9.9");
                 break;
             default:
-                DigitTextureFileName = TEXT("0");
+                DigitTextureFileName = TEXT("0.0");
                 break;
         }
         DigitTexturePath += DigitTextureFileName;
