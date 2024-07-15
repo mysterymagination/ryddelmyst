@@ -7,9 +7,9 @@
 #include "WoodfirebreathAttack.generated.h"
 
 /**
- * 
+ * A breath attack based on the user's current defense and HP. Inflicts burned and shocked status effect. 
  */
-UCLASS()
+UCLASS(ClassGroup = "Combat", editinlinenew, Blueprintable, BlueprintType, meta = (DisplayName = "WoodfirebreathAttack", BlueprintSpawnableComponent))
 class RYDDELMYST_API UWoodfirebreathAttack : public UBreathAttack
 {
 	GENERATED_BODY()

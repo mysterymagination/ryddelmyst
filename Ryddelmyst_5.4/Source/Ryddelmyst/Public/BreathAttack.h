@@ -10,7 +10,7 @@
  * An attack that deals damage based on one or more of a creature's stats,
  * usually HP, and ignores any defenses of the target.
  */
-UCLASS()
+UCLASS(ClassGroup = "Combat", editinlinenew, Blueprintable, BlueprintType, meta = (DisplayName = "BreathAttack", BlueprintSpawnableComponent))
 class RYDDELMYST_API UBreathAttack : public UAttack
 {
 	GENERATED_BODY()
