@@ -19,13 +19,14 @@ UWoodfirebreathAttack::UWoodfirebreathAttack()
     };
     AttackName = ATTACK_NAME;
     BasePower = 1.f;
+    Tags.Add(UAttack::TAG_FLAG_IGNORE_DEFENSE);
 }
 
 FAttackTxInfo UWoodfirebreathAttack::CalculateDamageTx_Implementation(FBattleStatsData BattleStatsData)
 {
-
+    // todo
 }
 void UWoodfirebreathAttack::OnHit_Implementation(FBattleStatsData StrikingBattlerData, UPrimitiveComponent* StrikingComp, AActor* StrickenActor, UPrimitiveComponent* StrickenComp, FVector NormalImpulse, const FHitResult& HitInfo)
 {
-
+    // todo
 }
