@@ -22,8 +22,6 @@ class RYDDELMYST_API AMonster : public ACharacter, public IBattleStatsBearer, pu
 {
 	GENERATED_BODY()
 	UPROPERTY()
-	UBattleStats* MonsterStats;
-	UPROPERTY()
 	TArray<UStatusEffect*> StatusEffects;
 	UPROPERTY()
 	bool IsRunning = false;
@@ -35,6 +33,8 @@ protected:
 	UHitBoxerComponent* HitBoxer;
 
 public:
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = RPG)
+	UBattleStats* MonsterStats;
 	/**
 	 * @brief The cm/s walking speed we use for character base speed
 	 * 

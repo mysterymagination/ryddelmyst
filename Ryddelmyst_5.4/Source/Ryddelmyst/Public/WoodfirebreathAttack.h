@@ -26,10 +26,10 @@ protected:
 	// Duration during which the effected Actor will be shocked
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Magic)
 	float ShockDuration = 5.f;
-	// Main stat from which the damage derives
+	// Main stat from which the damage derives; expects to be a big stat resource like HP
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Magic)
 	FString PrimaryStat = TEXT("HP");
-	// Secondary stat from which the damage derives
+	// Secondary stat from which the damage derives; expects to be a small stat resource like Defense
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Magic)
 	FString SecondaryStat = TEXT("Defense");
 public:

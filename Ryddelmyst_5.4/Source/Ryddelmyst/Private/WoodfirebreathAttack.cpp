@@ -6,6 +6,7 @@
 #include "LightningDamageType.h"
 #include "StatusEffected.h"
 #include "BurnedStatusEffect.h"
+#include "ShockedStatusEffect.h"
 #include "MathUtils.h"
 
 const FString UWoodfirebreathAttack::ATTACK_NAME("WoodfirebreathAttack");
@@ -24,8 +25,8 @@ UWoodfirebreathAttack::UWoodfirebreathAttack()
 
 FAttackTxInfo UWoodfirebreathAttack::CalculateDamageTx_Implementation(FBattleStatsData BattleStatsData)
 {
-    float BaseDamage = BasePower * BattleStatsData.StatsMap[PrimaryStat];
-    BaseDamage += BasePower/2.f * BattleStatsData.StatsMap[SecondaryStat];
+    float BaseDamage = BasePower * (BattleStatsData.StatsMap[PrimaryStat]/10.f);
+    BaseDamage += (BasePower/2.f) * BattleStatsData.StatsMap[SecondaryStat];
     uint8 DieCount = BattleStatsData.StatsMap["Level"];
     float Rando = MathUtils::RollNdM(DieCount, DieSides);
     UE_LOG(LogTemp, Warning, TEXT(
