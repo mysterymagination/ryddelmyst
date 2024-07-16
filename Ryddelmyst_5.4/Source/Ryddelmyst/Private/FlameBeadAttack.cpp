@@ -49,7 +49,6 @@ void UFlameBeadAttack::OnHit_Implementation(FBattleStatsData StrikingBattlerData
         else
         {
             UBurnedStatusEffect* StatusEffect = NewObject<UBurnedStatusEffect>(StrickenActor, UBurnedStatusEffect::StaticClass());
-
             StatusEffect->SetBaseBurnDuration(BurnDuration);
             StatusEffect->SetBurnDuration(BurnDuration);
             StatusEffect->SetBurnPeriod(BurnPeriod);

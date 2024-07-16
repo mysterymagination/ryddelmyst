@@ -10,6 +10,7 @@
 #include "DataViz.h"
 
 const FString UAttack::KEY_COSTS_EFFECT("Effect");
+const FString UAttack::TAG_FLAG_IGNORE_DEFENSE("IgnoreDefense");
 const FString UAttack::TAG_FLAG_IGNORE_IFRAMES("IgnoreIframes");
 const FString UAttack::TAG_FLAG_CUSTOM_KNOCKBACK("CustomKnockback");
 
