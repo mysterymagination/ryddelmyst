@@ -30,6 +30,10 @@ class RYDDELMYST_API UAttack : public UObject
 public:
 	static const FString KEY_COSTS_EFFECT;
 	/**
+	 * Tag string to be applied to this Attack indicating that stricken IDefender's defenses and armor should be ignored.
+	 */
+	static const FString TAG_FLAG_IGNORE_DEFENSE;
+	/**
 	 * Tag string to be applied to this Attack's host Actor indicating that stricken Actors' iframes (if any) should be ignored.
 	 */
 	static const FString TAG_FLAG_IGNORE_IFRAMES;
@@ -58,6 +62,11 @@ public:
 	 */
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Combat")
 	TMap<FString, float> Costs;
+	/**
+	 * Array of tag strings that modify attack behavior. 
+	 */
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Combat")
+	TArray<FString> Tags;
 	
 protected:
 	/**

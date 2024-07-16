@@ -14,5 +14,5 @@ UCLASS(ClassGroup = "Combat", editinlinenew, Blueprintable, BlueprintType, meta 
 class RYDDELMYST_API UBreathAttack : public UAttack
 {
 	GENERATED_BODY()
-	
+
 };

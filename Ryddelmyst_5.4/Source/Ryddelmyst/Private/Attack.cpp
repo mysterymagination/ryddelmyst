@@ -62,15 +62,14 @@ void UAttack::OnHit_Implementation(FBattleStatsData StrikingBattlerData, UPrimit
     {
         // Damage setter is inside the IDefender target check so that we only bother calc/cache of damage if we can actually apply the damage
         FAttackTxInfo DamageTxInfo = CalculateDamageTx(StrikingBattlerData);
-        float DamageRx = 0.f;
-        if(AnatomyUnit)
+        float DamageRx = DamageTxInfo.DamageTx;
+        if (!Tags.Contains(UAttack::TAG_FLAG_IGNORE_DEFENSE))
         {
             DamageRx = StrickenArmor->CalculateDamageRx(StrickenBattlerData, AnatomyUnit, DamageTxInfo.DamageTx, DamageTypesToWeightsMap);
-            AnatomyUnit->Debilitate(StrickenActor);
         }
-        else
+        if(AnatomyUnit)
         {
-            DamageRx = StrickenArmor->CalculateDamageRx(StrickenBattlerData, nullptr, DamageTxInfo.DamageTx, DamageTypesToWeightsMap);
+            AnatomyUnit->Debilitate(StrickenActor);
         }
         UE_LOG(LogTemp, Warning, TEXT("OnHit; attack %s tx dmg is %f and rx dmg is %f"), *AttackName, DamageTxInfo.DamageTx, DamageRx);
         LatestDamageDealt = DamageRx;
