@@ -7,7 +7,7 @@
 #include "ShockedStatusEffect.generated.h"
 
 /**
- * 
+ * Status effect that scales all of the afflicted entity's stats, usually scaling down by half.
  */
 UCLASS()
 class RYDDELMYST_API UShockedStatusEffect : public UStatusEffect
@@ -29,6 +29,9 @@ class RYDDELMYST_API UShockedStatusEffect : public UStatusEffect
 	UPROPERTY()
 	FTimerHandle ShockTimerHandle;
 	
+public:
+	static const FString NAME;
+
 public:	
 	UShockedStatusEffect();
 	UFUNCTION(BlueprintCallable, Category = "Magic")

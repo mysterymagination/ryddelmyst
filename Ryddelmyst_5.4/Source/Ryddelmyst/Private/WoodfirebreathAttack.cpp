@@ -59,22 +59,34 @@ void UWoodfirebreathAttack::OnHit_Implementation(FBattleStatsData StrikingBattle
     Super::OnHit_Implementation(StrikingBattlerData, StrikingComp, StrickenActor, StrickenComp, NormalImpulse, HitInfo);
     if(StrickenActor->GetClass()->ImplementsInterface(UStatusEffected::StaticClass()))
     {
+        // We don't want to stack the same status effect type
+        auto StatusEffectArray = IStatusEffected::Execute_GetStatusEffects(StrickenActor);
         if(StrickenActor->GetClass()->ImplementsInterface(UBattleStatsBearer::StaticClass()))
         {
-            // todo: does making OtherActor the outer/owner and then also adding the status effect to a uprop'd tarray inside OtherActor cause the StatusEffect to be doubly referenced by OtherActor?  I want the StatusEffect to be owned by the target TArray, which itself is owned by OtherActor; StatusEffects removed from that array should be garbage collected.
-            UShockedStatusEffect* ShockStatusEffect = NewObject<UShockedStatusEffect>(StrickenActor, UShockedStatusEffect::StaticClass());
-            ShockStatusEffect->SetId("ShockedStatusEffect");
-            ShockStatusEffect->SetShockDuration(ShockDuration);
-            IStatusEffected::Execute_AddStatusEffect(StrickenActor, ShockStatusEffect);
-            ShockStatusEffect->OnEffectApplied(StrickenActor);
+            auto is_shocked = [](UStatusEffect* Effect) { return Effect->GetId() == UShockedStatusEffect::NAME; };
+            UStatusEffect** ShockedStatusEffect_ptr = StatusEffectArray.FindByPredicate(is_shocked);
+            if (!ShockedStatusEffect_ptr)
+            {
+                // todo: does making OtherActor the outer/owner and then also adding the status effect to a uprop'd tarray inside OtherActor cause the StatusEffect to be doubly referenced by OtherActor?  I want the StatusEffect to be owned by the target TArray, which itself is owned by OtherActor; StatusEffects removed from that array should be garbage collected.
+                UShockedStatusEffect* ShockStatusEffect = NewObject<UShockedStatusEffect>(StrickenActor, UShockedStatusEffect::StaticClass());
+                ShockStatusEffect->SetId("ShockedStatusEffect");
+                ShockStatusEffect->SetShockDuration(ShockDuration);
+                IStatusEffected::Execute_AddStatusEffect(StrickenActor, ShockStatusEffect);
+                ShockStatusEffect->OnEffectApplied(StrickenActor);
+            }
         }
-        UBurnedStatusEffect* BurnStatusEffect = NewObject<UBurnedStatusEffect>(StrickenActor, UBurnedStatusEffect::StaticClass());
-        BurnStatusEffect->SetBaseBurnDuration(BurnDuration);
-        BurnStatusEffect->SetBurnDuration(BurnDuration);
-        BurnStatusEffect->SetBurnPeriod(BurnPeriod);
-        // ongoing damage will be init calculated damage over 4
-        BurnStatusEffect->SetBurnDamage(LatestDamageDealt / 4.f);
-        IStatusEffected::Execute_AddStatusEffect(StrickenActor, BurnStatusEffect);
-        BurnStatusEffect->OnEffectApplied(StrickenActor);
+        auto is_burned = [](UStatusEffect* Effect) { return Effect->GetId() == UBurnedStatusEffect::NAME; };
+        UStatusEffect** BurnedStatusEffect_ptr = StatusEffectArray.FindByPredicate(is_burned);
+        if (!BurnedStatusEffect_ptr)
+        {
+            UBurnedStatusEffect* BurnStatusEffect = NewObject<UBurnedStatusEffect>(StrickenActor, UBurnedStatusEffect::StaticClass());
+            BurnStatusEffect->SetBaseBurnDuration(BurnDuration);
+            BurnStatusEffect->SetBurnDuration(BurnDuration);
+            BurnStatusEffect->SetBurnPeriod(BurnPeriod);
+            // ongoing damage will be init calculated damage over 4
+            BurnStatusEffect->SetBurnDamage(LatestDamageDealt / 4.f);
+            IStatusEffected::Execute_AddStatusEffect(StrickenActor, BurnStatusEffect);
+            BurnStatusEffect->OnEffectApplied(StrickenActor);
+        }
     }
 }

@@ -5,6 +5,8 @@
 #include "BattleStatsBearer.h"
 #include "BattleStats.h"
 
+const FString UShockedStatusEffect::NAME = "ShockedStatusEffect";
+
 UShockedStatusEffect::UShockedStatusEffect()
 {
     Id = "ShockedStatusEffect";

@@ -27,11 +27,7 @@ void UFlameBeadAttack::OnHit_Implementation(FBattleStatsData StrikingBattlerData
         // check if the target is already burned and extend the duration by BaseBurnDuration if so, up to DieSides * BaseBurnDuration
         auto StatusEffectArray = IStatusEffected::Execute_GetStatusEffects(StrickenActor);
         auto is_burn = [](UStatusEffect* Effect) { return Effect->GetId() == UBurnedStatusEffect::NAME; };
-        UStatusEffect** StatusEffect_ptr = StatusEffectArray.FindByPredicate([](UStatusEffect* Effect) 
-            { 
-                return Effect->GetId() == UBurnedStatusEffect::NAME; 
-            }
-        );
+        UStatusEffect** StatusEffect_ptr = StatusEffectArray.FindByPredicate(is_burn);
         if (StatusEffect_ptr)
         {
             float CurrentBurnDuration = Cast<UBurnedStatusEffect>(*StatusEffect_ptr)->GetBurnDuration();
