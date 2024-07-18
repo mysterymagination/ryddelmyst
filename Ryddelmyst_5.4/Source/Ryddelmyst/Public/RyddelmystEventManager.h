@@ -8,7 +8,7 @@
 #include "RyddelmystEventManager.generated.h"
 
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FWoodEggDangerEvent, bool, InDanger);
-DECLARE_DYNAMIC_MULTICAST_DELEGATE(FWoodEggDeathEvent);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FWoodEggDeathEvent, FVector, DeathLocation);
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FSplineGuideCompletionEvent, USplineGuideComponent*, InCompletedSplineGuideComponent);
 DECLARE_DYNAMIC_MULTICAST_DELEGATE(FPlayerDeathEvent);
 
