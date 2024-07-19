@@ -301,28 +301,51 @@ void ARyddelmystCharacter::Interact()
 					if (cap == InteractCapability::GRABBABLE)
 					{
 						GrabbedActor = Actor;
+						bool StoryBlock = false;
 						// alert the treant that his offspring is being disturbed!
 						if (GrabbedActor->ActorHasTag(FName(TEXT("WoodEgg"))))
 						{
-							Cast<URyddelmystGameInstance>(GetWorld()->GetGameInstance())->GetEventManager()->WoodEggDangerEvent.Broadcast(true);
+							UObject* HeadSlotItem = Equipment[TEXT("Head")];
+							UObject* NeckSlotItem = Equipment[TEXT("Neck")];
+							UObject* HandsSlotItem = Equipment[TEXT("Hands")];
+							UObject* FeetSlotItem = Equipment[TEXT("Feet")];
+							bool AllQuestItems = HeadSlotItem && HeadSlotItem->GetName().Contains(TEXT("DiademHellfireMight")) &&
+										 NeckSlotItem && NeckSlotItem->GetName().Contains(TEXT("CracklingVioletVial")) &&
+										 HandsSlotItem && HandsSlotItem->GetName().Contains(TEXT("IronSwordCloudConquest")) &&
+										 FeetSlotItem && FeetSlotItem->GetName().Contains(TEXT("SlippersOfLongWintersNap"));
+							StoryBlock = !AllQuestItems;
+							if (!StoryBlock)
+							{
+								Cast<URyddelmystGameInstance>(GetWorld()->GetGameInstance())->GetEventManager()->WoodEggDangerEvent.Broadcast(true);
+							}
+							else 
+							{
+								HUD->ShowDialogue(PortraitMap["weary"], FText::FromString("Some crazy monsterpus force is holding it down! I sense artifacts of power nearby; perhaps I can use one or more of them to pry it loose?"));
+							}
 						}
-
-						// physics on during grab causes the object to not follow us for some reason despite attachment, even with gravity off
-						TArray<UPrimitiveComponent*> OutPrims;
-						GrabbedActor->GetComponents<UPrimitiveComponent>(OutPrims, true);
-						for (auto Prim : OutPrims)
+						if (!StoryBlock)
 						{
-							Prim->SetSimulatePhysics(false);
-						}
-						
-						// todo: if we teleport the object into its carry location relative to the player and that location is inside another collision object, the player and grabbed object get rocketed away.  Funny, but not useful.  
-						GrabbedActor->SetActorEnableCollision(false);
-						GrabbedActor->AttachToActor(this, FAttachmentTransformRules::KeepWorldTransform);
-						GrabbedActor->SetActorRelativeLocation(FVector(CarryDistance, 0.f, 0.f));
-						/* Forward Vector version; it's just a unit vector on X accounting for all your rotations e.g. vector [1,0,0] rotated by all your character's rotations.  
-						GrabbedActor->SetActorLocation(GetActorLocation() + (GetActorForwardVector() * CarryDistance));
-						*/
+							// physics on during grab causes the object to not follow us for some reason despite attachment, even with gravity off
+							TArray<UPrimitiveComponent*> OutPrims;
+							GrabbedActor->GetComponents<UPrimitiveComponent>(OutPrims, true);
+							for (auto Prim : OutPrims)
+							{
+								Prim->SetSimulatePhysics(false);
+							}
+							
+							// todo: if we teleport the object into its carry location relative to the player and that location is inside another collision object, the player and grabbed object get rocketed away.  Funny, but not useful.  
+							GrabbedActor->SetActorEnableCollision(false);
+							GrabbedActor->AttachToActor(this, FAttachmentTransformRules::KeepWorldTransform);
+							GrabbedActor->SetActorRelativeLocation(FVector(CarryDistance, 0.f, 0.f));
+							/* Forward Vector version; it's just a unit vector on X accounting for all your rotations e.g. vector [1,0,0] rotated by all your character's rotations.  
+							GrabbedActor->SetActorLocation(GetActorLocation() + (GetActorForwardVector() * CarryDistance));
+							*/
 						UE_LOG(LogTemp, Warning, TEXT("Interact; player forward vector is %s.  placing grabbed actor at %s relative to player.  Its world coords are %s and world coords of player are %s"), *GetActorForwardVector().ToString(), *GrabbedActor->GetRootComponent()->GetRelativeLocation().ToString(), *GrabbedActor->GetActorLocation().ToString(), *GetActorLocation().ToString());
+						}
+						else 
+						{
+							UE_LOG(LogTemp, Warning, TEXT("Interact; player cannot pick up %s for story reasons"), *GrabbedActor->GetName());
+						}
 					}
 					else if (cap == InteractCapability::DESCRIBABLE)
 					{
