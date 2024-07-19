@@ -300,15 +300,36 @@ void ARyddelmystCharacter::Interact()
 
 					if (cap == InteractCapability::GRABBABLE)
 					{
-						GrabbedActor = Actor;
 						bool StoryBlock = false;
 						// alert the treant that his offspring is being disturbed!
-						if (GrabbedActor->ActorHasTag(FName(TEXT("WoodEgg"))))
+						if (Actor->ActorHasTag(FName(TEXT("WoodEgg"))))
 						{
 							UObject* HeadSlotItem = Equipment[TEXT("Head")];
 							UObject* NeckSlotItem = Equipment[TEXT("Neck")];
 							UObject* HandsSlotItem = Equipment[TEXT("Hands")];
 							UObject* FeetSlotItem = Equipment[TEXT("Feet")];
+							if (HeadSlotItem &&
+								NeckSlotItem &&
+								HandsSlotItem && 
+								FeetSlotItem
+							)
+							{
+								UE_LOG(LogTemp, Log, TEXT("interact:grab; headslot has %s, neckslot has %s, handsslot has %s, and feetslot has %s"),
+									*HeadSlotItem->GetName(),
+									*NeckSlotItem->GetName(),
+									*HandsSlotItem->GetName(),
+									*FeetSlotItem->GetName()
+								);
+							}
+							else 
+							{
+								UE_LOG(LogTemp, Log, TEXT("interact:grab; some slot item value came up null -- headslot %p, neckslot %p, handsslot %p, and feetslot %p"),
+									HeadSlotItem,
+									NeckSlotItem,
+									HandsSlotItem,
+									FeetSlotItem
+								);
+							}
 							bool AllQuestItems = HeadSlotItem && HeadSlotItem->GetName().Contains(TEXT("DiademHellfireMight")) &&
 										 NeckSlotItem && NeckSlotItem->GetName().Contains(TEXT("CracklingVioletVial")) &&
 										 HandsSlotItem && HandsSlotItem->GetName().Contains(TEXT("IronSwordCloudConquest")) &&
@@ -325,6 +346,7 @@ void ARyddelmystCharacter::Interact()
 						}
 						if (!StoryBlock)
 						{
+							GrabbedActor = Actor;
 							// physics on during grab causes the object to not follow us for some reason despite attachment, even with gravity off
 							TArray<UPrimitiveComponent*> OutPrims;
 							GrabbedActor->GetComponents<UPrimitiveComponent>(OutPrims, true);
@@ -340,11 +362,11 @@ void ARyddelmystCharacter::Interact()
 							/* Forward Vector version; it's just a unit vector on X accounting for all your rotations e.g. vector [1,0,0] rotated by all your character's rotations.  
 							GrabbedActor->SetActorLocation(GetActorLocation() + (GetActorForwardVector() * CarryDistance));
 							*/
-						UE_LOG(LogTemp, Warning, TEXT("Interact; player forward vector is %s.  placing grabbed actor at %s relative to player.  Its world coords are %s and world coords of player are %s"), *GetActorForwardVector().ToString(), *GrabbedActor->GetRootComponent()->GetRelativeLocation().ToString(), *GrabbedActor->GetActorLocation().ToString(), *GetActorLocation().ToString());
+							UE_LOG(LogTemp, Warning, TEXT("Interact; player forward vector is %s.  placing grabbed actor at %s relative to player.  Its world coords are %s and world coords of player are %s"), *GetActorForwardVector().ToString(), *GrabbedActor->GetRootComponent()->GetRelativeLocation().ToString(), *GrabbedActor->GetActorLocation().ToString(), *GetActorLocation().ToString());
 						}
 						else 
 						{
-							UE_LOG(LogTemp, Warning, TEXT("Interact; player cannot pick up %s for story reasons"), *GrabbedActor->GetName());
+							UE_LOG(LogTemp, Warning, TEXT("Interact; player cannot pick up %s for story reasons"), *Actor->GetName());
 						}
 					}
 					else if (cap == InteractCapability::DESCRIBABLE)
