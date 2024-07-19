@@ -244,57 +244,27 @@ void ARyddelmystCharacter::Interact()
 		return;
 	}
 
-	// if we're already engaged with an interactable, end that engagement e.g. by dropping a GRABBABLE Actor.
+	// if we're already engaged with an interactable, end that engagement e.g. by tossing a GRABBABLE Actor.
 	if (GrabbedActor)
 	{
-		/* bounding box is better since we don't necessarily want to rely on having a skeletalmesh whose origin happens to be her feet
-		// look up SkeletalMeshComponent of the Character and use her Z so that objects will be placed at her feet.
-		float DroppedZValue = GetActorLocation().Z;
-		UActorComponent* CharacterComponent = GetComponentByClass(USkeletalMeshComponent::StaticClass());
-		USkeletalMeshComponent* CharacterSkeleton = Cast<USkeletalMeshComponent>(CharacterComponent);
-		if (CharacterSkeleton)
-		{
-			DroppedZValue = CharacterSkeleton->GetComponentLocation().Z;
-		}
-		*/
-
-		// since GetActorBounds fills in the BoundBoxExtents output var with values relative to the center of the Actor, e.g. half the full size in a given dimension, we can just use the Z component directly for our half height modifier to DroppedZValue below
-		FVector GrabbedBoundingBoxExtents;
-		FVector GrabbedOrigin;
-		GrabbedActor->GetActorBounds(false, GrabbedOrigin, GrabbedBoundingBoxExtents, false);
-		// todo: the placement on Z gets messed up by crouching iff I use the bounding box extent Z rather than the skeletal mesh origin Z (which happens to be our feet).  I'm guessing this is because one or the other but not both of GetActorLocation().Z and the GetActorBounds bounding box extent Z is being adjusted for crouch, causing our final calculated Z to be slighlty below the ground. EDIT: looks like your bb extent z doesn't fully change for some reason; it went down very slightly but was about the same.  I'm guessing it gets modified by the crouch, but something in my collision bounds is not modified by the crouch, so we get a weird slight modification.
-		FVector CharacterBoundingBoxExtents;
-		FVector CharacterOrigin;
-		GetActorBounds(true, CharacterOrigin, CharacterBoundingBoxExtents, false);
-		UE_LOG(LogTemp, Warning, TEXT("character origin is %s and grabbed obj origin is %s"), *CharacterOrigin.ToString(), *GrabbedOrigin.ToString());
-		UE_LOG(LogTemp, Warning, TEXT("character Z is %f and character bb extent z is %f, and grabbed obj Z is %f and grabbed obj bb extent Z is %f"), GetActorLocation().Z, CharacterBoundingBoxExtents.Z, GrabbedActor->GetActorLocation().Z, GrabbedBoundingBoxExtents.Z);
-		
-		/*
-		// world space strat, for practice and reference
-		FVector DroppedLocationOffset = GetActorRotation().RotateVector(FVector(MaxInteractDistance * 2.f, 0.f, GrabbedBoundingBoxExtents.Z));
-		float CharacterFeetZ = GetActorLocation().Z - CharacterBoundingBoxExtents.Z;
-		// we need to add back our crouched half height as the crouch op does not seem to affect the bounding box extents
-		if (GetCharacterMovement()->IsCrouching())
-		{
-			CharacterFeetZ += GetCharacterMovement()->CrouchedHalfHeight;
-		}
-		GrabbedActor->SetActorLocation(FVector(DroppedLocationOffset.X + GetActorLocation().X, DroppedLocationOffset.Y + GetActorLocation().Y, DroppedLocationOffset.Z + CharacterFeetZ));
-		*/
-
-		// local space strat, cleaner
-		FVector DroppedLocationOffset(CarryDistance, 0.f, GrabbedBoundingBoxExtents.Z);
-		float CharacterFeetZ = -CharacterBoundingBoxExtents.Z;
-		UE_LOG(LogTemp, Warning, TEXT("Interact; dropped location Z raw is %f and feetz is %f so final Z location relative to actor is %f"), DroppedLocationOffset.Z, CharacterFeetZ, DroppedLocationOffset.Z + CharacterFeetZ);
-		// we need to add back our crouched half height as the crouch op does not seem to affect the bounding box extents
-		if (GetCharacterMovement()->IsCrouching())
-		{
-			CharacterFeetZ += GetCharacterMovement()->GetCrouchedHalfHeight();
-		}
-		GrabbedActor->SetActorRelativeLocation(FVector(DroppedLocationOffset.X, DroppedLocationOffset.Y, DroppedLocationOffset.Z + CharacterFeetZ));
-
-		GrabbedActor->SetActorEnableCollision(true);
 		GrabbedActor->DetachFromActor(FDetachmentTransformRules::KeepWorldTransform);
-		// alert the treant that his offspring is now safe again
+		
+		GrabbedActor->SetActorEnableCollision(true);
+		
+		// loop over actor components for primitivecomponents and turn on physics sim for them
+		TArray<UPrimitiveComponent*> OutPrims;
+		GrabbedActor->GetComponents<UPrimitiveComponent>(OutPrims, true);
+		for (auto Prim : OutPrims)
+		{
+			Prim->SetSimulatePhysics(true);
+			Prim->SetNotifyRigidBodyCollision(true);
+			Prim->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
+			Prim->SetCollisionProfileName("WorldDynamic");
+			Prim->SetEnableGravity(true);
+			Prim->AddImpulse(FirstPersonCameraComponent->GetForwardVector() * 1500.f, NAME_None, true);
+		}
+		
+		// alert the treant that his offspring is now safe again... maybe
 		if (GrabbedActor->ActorHasTag(FName(TEXT("WoodEgg"))))
 		{
 			Cast<URyddelmystGameInstance>(GetWorld()->GetGameInstance())->GetEventManager()->WoodEggDangerEvent.Broadcast(false);
@@ -336,9 +306,15 @@ void ARyddelmystCharacter::Interact()
 						{
 							Cast<URyddelmystGameInstance>(GetWorld()->GetGameInstance())->GetEventManager()->WoodEggDangerEvent.Broadcast(true);
 						}
-						// todo: physics on during grab causes the object to not follow us for some reason despite attachment, even with gravity off
-						// todo: check if physics is enabled and iff so, disable.  Also make a note somewhere that we need to renable physics for this grabbed actor at whatever components we find it enabled.
-						GrabbedActor->DisableComponentsSimulatePhysics();
+
+						// physics on during grab causes the object to not follow us for some reason despite attachment, even with gravity off
+						TArray<UPrimitiveComponent*> OutPrims;
+						GrabbedActor->GetComponents<UPrimitiveComponent>(OutPrims, true);
+						for (auto Prim : OutPrims)
+						{
+							Prim->SetSimulatePhysics(false);
+						}
+						
 						// todo: if we teleport the object into its carry location relative to the player and that location is inside another collision object, the player and grabbed object get rocketed away.  Funny, but not useful.  
 						GrabbedActor->SetActorEnableCollision(false);
 						GrabbedActor->AttachToActor(this, FAttachmentTransformRules::KeepWorldTransform);
@@ -909,6 +885,7 @@ void ARyddelmystCharacter::HandleDamage(
 {
 	UE_LOG(LogTemp, Warning, TEXT("HandleDamage; ouch for %f to %s"), Damage, *DamagedActor->GetName());
 	UpdateHealth(-Damage);
+	bool CustomKnockback = false;
 	if (DamageCauser)
 	{
 		if (DamageCauser->Tags.Find(FName(UAttack::TAG_FLAG_IGNORE_IFRAMES)) == INDEX_NONE)
@@ -921,6 +898,10 @@ void ARyddelmystCharacter::HandleDamage(
 		{
 			UE_LOG(LogTemp, Warning, TEXT("HandleDamage; skipping iframes because damagecauser %s has ignore iframes tag"), *DamageCauser->GetName());
 		}
+		if (DamageCauser->Tags.Find(FName(UAttack::TAG_FLAG_CUSTOM_KNOCKBACK)) != INDEX_NONE)
+		{
+			CustomKnockback = true;
+		}
 	}
 	else
 	{
@@ -928,11 +909,11 @@ void ARyddelmystCharacter::HandleDamage(
 		SetCanBeDamaged(false);
 		DamageInvincibilityTimer();
 	}
-	if (DamageCauser->Tags.Find(FName(UAttack::TAG_FLAG_CUSTOM_KNOCKBACK)) == INDEX_NONE)
+	if (!CustomKnockback)
 	{
 		// good ol' knockback
 		ShotFromDirection.Normalize(0);
-		UE_LOG(LogTemp, Warning, TEXT("HandleDamage; %s inflicts standard knockback via damage piece %f times normalized impluse vector %s"), *DamageCauser->GetName(), Damage/10.f, *ShotFromDirection.ToString());
+		UE_LOG(LogTemp, Warning, TEXT("HandleDamage; %s inflicts standard knockback via damage piece %f times normalized impluse vector %s"), DamageCauser ? *DamageCauser->GetName() : TEXT("unknown damage causer"), Damage/10.f, *ShotFromDirection.ToString());
 		LaunchCharacter(ShotFromDirection * (Damage/100.f), false, false);
 	}
 }
