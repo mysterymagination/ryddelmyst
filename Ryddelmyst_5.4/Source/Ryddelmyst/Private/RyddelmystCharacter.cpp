@@ -334,7 +334,7 @@ void ARyddelmystCharacter::Interact()
 										 NeckSlotItem && NeckSlotItem->GetName().Contains(TEXT("CracklingVioletVial")) &&
 										 HandsSlotItem && HandsSlotItem->GetName().Contains(TEXT("IronSwordCloudConquest")) &&
 										 FeetSlotItem && FeetSlotItem->GetName().Contains(TEXT("SlippersOfLongWintersNap"));
-							StoryBlock = !AllQuestItems;
+							// StoryBlock = !AllQuestItems;
 							if (!StoryBlock)
 							{
 								Cast<URyddelmystGameInstance>(GetWorld()->GetGameInstance())->GetEventManager()->WoodEggDangerEvent.Broadcast(true);
