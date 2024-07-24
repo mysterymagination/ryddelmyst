@@ -95,19 +95,19 @@ bool AMonster::GetRunningStatus()
 
 void AMonster::HandleDamage(AActor* DamagedActor, float Damage, const class UDamageType* DamageType, class AController* InstigatedBy, AActor* DamageCauser)
 {
-	UE_LOG(LogTemp, Warning, TEXT("HandleDamage; %s says ouch for %f"), *DamagedActor->GetName(), Damage);
+	UE_LOG(LogTemp, Warning, TEXT("HandleDamage; %s says ouch for %f because of damaging actor %s"), *DamagedActor->GetName(), Damage, DamageCauser ? *DamageCauser->GetName() : TEXT("null"));
 	MonsterStats->StatsData.StatsMap["HP"] -= Damage;
 	MonsterStats->StatsData.StatsMap["HP"] = FMath::Clamp(MonsterStats->StatsData.StatsMap["HP"], 0.0f, MonsterStats->StatsData.StatsMap["MaxHP"]);
 	if (MonsterStats->StatsData.StatsMap["HP"] == 0.f)
 	{
 		UE_LOG(LogTemp, Warning, TEXT("HandleDamage; %s HP with max %f has been depleted, so it will HandleDeath()"), *DamagedActor->GetName(), MonsterStats->StatsData.StatsMap["MaxHP"]);
-		HandleDeath();
+		HandleDeath(DamageCauser);
 	}
 }
 
-void AMonster::HandleDeath_Implementation()
+void AMonster::HandleDeath_Implementation(AActor* DamageCauser)
 {
-	UE_LOG(LogTemp, Warning, TEXT("HandleDeath; %s is destroyed!"), *GetName());
+	UE_LOG(LogTemp, Warning, TEXT("HandleDeath; %s is destroyed by %s!"), *GetName(), DamageCauser ? *DamageCauser->GetName() : TEXT("null"));
 	ParticleUtils::SpawnParticlesAtLocation(GetWorld(), GetActorLocation(), DeathParticleSystem);
 	UGameplayStatics::PlaySoundAtLocation(
 		GetWorld(),
