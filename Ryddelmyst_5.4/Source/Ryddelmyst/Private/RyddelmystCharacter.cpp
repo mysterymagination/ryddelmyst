@@ -21,6 +21,10 @@
 #include "RyddelmystGameInstance.h"
 #include "Components/LightComponent.h"
 #include <stdexcept>
+#include "Components/SkeletalMeshComponent.h"
+#include "Engine/SkeletalMeshSocket.h"
+#include "Engine/SkeletalMesh.h"
+#include "Animation/Skeleton.h"
 
 DEFINE_LOG_CATEGORY_STATIC(LogFPChar, Warning, All);
 
@@ -274,12 +278,27 @@ void ARyddelmystCharacter::Interact()
 	else
 	{
 		FHitResult Hit = FireInteractRay();
-
 		// process any hit actor looking for interactability
 		AActor* Actor = Hit.GetActor();
 		if (Actor)
 		{
-			UE_LOG(LogTemp, Warning, TEXT("Interact; found something in range called %s"), *Actor->GetName());
+			UE_LOG(LogTemp, Warning, TEXT("Interact; found something in range called %s."), *Actor->GetName());
+			USkeletalMeshComponent* Skele = Actor->FindComponentByClass<USkeletalMeshComponent>();
+			if (Skele)
+			{
+				
+				UE_LOG(LogTemp, Warning, TEXT("Interact; sifting through bones, respectfully..."));
+				for (auto BoneName : Skele->GetAllSocketNames())
+				{
+					FVector BoneLocation = Skele->GetSocketLocation(BoneName);
+					UE_LOG(LogTemp, Warning, TEXT("Interact; bone says %s and it lives at %s"), *BoneName.ToString(), *BoneLocation.ToString());
+				}
+				UE_LOG(LogTemp, Warning, TEXT("Interact; found something in range called %s. BoneName says %s, and nearest bone to hit location is %s"), 
+					*Actor->GetName(), 
+					*Hit.BoneName.ToString(),
+					TEXT("fill in later")
+				);
+			}
 			if (Actor->GetClass()->ImplementsInterface(UInteract::StaticClass()))
 			{
 				UE_LOG(LogTemp, Warning, TEXT("Interact; actor is interactable!"));
