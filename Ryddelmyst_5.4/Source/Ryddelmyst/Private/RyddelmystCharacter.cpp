@@ -124,9 +124,12 @@ void ARyddelmystCharacter::BeginPlay()
 	HUD = UGameplayStatics::GetPlayerController(GetWorld(), 0)->GetHUD<ARyddelmystHUD>();
 	UE_LOG(LogTemp, Warning, TEXT("BeginPlay; ryddel hud is %p"), HUD);
 
-	FScriptDelegate OnHitDelegate;
-	OnHitDelegate.BindUFunction(this, FName("OnHit"));
-	GetCapsuleComponent()->OnComponentHit.Add(OnHitDelegate);
+	FScriptDelegate OverlapBeginDelegate;
+	OverlapBeginDelegate.BindUFunction(this, FName("OnOverlapBegin"));
+	GetCapsuleComponent()->OnComponentBeginOverlap.Add(OverlapBeginDelegate);
+	FScriptDelegate OverlapEndDelegate;
+	OverlapEndDelegate.BindUFunction(this, FName("OnOverlapEnd"));
+	GetCapsuleComponent()->OnComponentEndOverlap.Add(OverlapEndDelegate);
 
 	// process any starting equipment effects
 	for (auto& Elem : Equipment)
@@ -153,6 +156,8 @@ void ARyddelmystCharacter::BeginPlay()
 void ARyddelmystCharacter::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
+
+	// todo: generate overlap events with grabbed actor so that any overlap triggered events will fire, such as damage surface... this may not be practical since UE4's collision system really seems to want to handle itself
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -969,17 +974,14 @@ void ARyddelmystCharacter::DamageInvincibilityTimer()
 	GetWorldTimerManager().SetTimer(InvincibilityTimerHandle, this, &ARyddelmystCharacter::SetDamageState, 1.f, false);
 }
 
-void ARyddelmystCharacter::OnHit(UPrimitiveComponent* StrikingComp, AActor* StrickenActor, UPrimitiveComponent* StrickenComp, FVector NormalImpulse, const FHitResult& HitInfo)
+void ARyddelmystCharacter::OnOverlapBegin(class UPrimitiveComponent* OverlappedComp, class AActor* OtherActor, class UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
-	if (StrickenActor)
+	UE_LOG(LogTemp, Warning, TEXT("OnOverlapBegin; character overlapping %s"), *OtherActor->GetName());
+	// if overlap item is an Item then add to onscreen inv as well as data inventory
+	auto ItemActor = Cast<AItemActor>(OtherActor);
+	if (ItemActor)
 	{
-		UE_LOG(LogTemp, Warning, TEXT("OnHit; character hitting %s"), *StrickenActor->GetName());
-		// if hit actor is an Item then add to onscreen inv as well as data inventory
-		auto ItemActor = Cast<AItemActor>(StrickenActor);
-		if (ItemActor)
-		{
-			AddInventoryItemFromActor(ItemActor);
-		}
+		AddInventoryItemFromActor(ItemActor);
 	}
 }
 
@@ -1065,6 +1067,11 @@ void ARyddelmystCharacter::AddEquippedItem(UObject* ItemObj)
 	{
 		UE_LOG(LogTemp, Warning, TEXT("AddEquippedItem; item obj %s does not implement the item interface"), *ItemObj->GetName());
 	}
+}
+
+void ARyddelmystCharacter::OnOverlapEnd(class UPrimitiveComponent* OverlappedComp, class AActor* OtherActor, class UPrimitiveComponent* OtherComp, int32 OtherBodyIndex)
+{
+	UE_LOG(LogTemp, Warning, TEXT("OnOverlapEnd; character no longer overlapping %s"), *OtherActor->GetName());
 }
 
 void ARyddelmystCharacter::UseItem()
