@@ -27,6 +27,7 @@
 #include "HitBoxerComponent.h"
 #include "BodyCapsuleComponent.h"
 #include "RyddelmystGameMode.h"
+#include "Components/PrimitiveComponent.h"
 #include "RyddelmystCharacter.generated.h"
 
 class UInputComponent;
@@ -521,9 +522,6 @@ public:
 
 private:
 	UFUNCTION()
-	void OnOverlapBegin(class UPrimitiveComponent* OverlappedComp, class AActor* OtherActor, class UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
-
-	UFUNCTION()
-	void OnOverlapEnd(class UPrimitiveComponent* OverlappedComp, class AActor* OtherActor, class UPrimitiveComponent* OtherComp, int32 OtherBodyIndex);
+	void OnHit(UPrimitiveComponent* StrikingComp, AActor* StrickenActor, UPrimitiveComponent* StrickenComp, FVector NormalImpulse, const FHitResult& HitInfo);
 };
 
