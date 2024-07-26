@@ -25,6 +25,7 @@
 #include "Engine/SkeletalMeshSocket.h"
 #include "Engine/SkeletalMesh.h"
 #include "Animation/Skeleton.h"
+#include <limits>
 
 DEFINE_LOG_CATEGORY_STATIC(LogFPChar, Warning, All);
 
@@ -284,19 +285,36 @@ void ARyddelmystCharacter::Interact()
 		{
 			UE_LOG(LogTemp, Warning, TEXT("Interact; found something in range called %s."), *Actor->GetName());
 			USkeletalMeshComponent* Skele = Actor->FindComponentByClass<USkeletalMeshComponent>();
+			FName ClosestBone;
 			if (Skele)
 			{
 				
 				UE_LOG(LogTemp, Warning, TEXT("Interact; sifting through bones, respectfully..."));
+				float LeastDistance = std::numeric_limits<float>::max();
 				for (auto BoneName : Skele->GetAllSocketNames())
 				{
 					FVector BoneLocation = Skele->GetSocketLocation(BoneName);
-					UE_LOG(LogTemp, Warning, TEXT("Interact; bone says %s and it lives at %s"), *BoneName.ToString(), *BoneLocation.ToString());
+					FVector Diff = BoneLocation - Hit.Location;
+					float DiffMag = Diff.Length();
+					if (DiffMag < LeastDistance) 
+					{
+						LeastDistance = DiffMag;
+						ClosestBone = BoneName;
+					}
+					/*
+					UE_LOG(LogTemp, Warning, TEXT("Interact; bone says %s and it lives at %s. Diff from hit is %s with mag %f. Least distance so far is %f to %s"), 
+						*BoneName.ToString(), 
+						*BoneLocation.ToString(),
+						*Diff.ToString(),
+						DiffMag,
+						LeastDistance,
+						*ClosestBone.ToString()
+					);
+					*/
 				}
-				UE_LOG(LogTemp, Warning, TEXT("Interact; found something in range called %s. BoneName says %s, and nearest bone to hit location is %s"), 
+				UE_LOG(LogTemp, Warning, TEXT("Interact; found something in range called %s. Nearest bone to hit location is %s"), 
 					*Actor->GetName(), 
-					*Hit.BoneName.ToString(),
-					TEXT("fill in later")
+					*ClosestBone.ToString()
 				);
 			}
 			if (Actor->GetClass()->ImplementsInterface(UInteract::StaticClass()))
@@ -392,7 +410,7 @@ void ARyddelmystCharacter::Interact()
 					{
 						if (Actor->GetClass()->ImplementsInterface(UDescribable::StaticClass()))
 						{
-							FDescriptor Desc = IDescribable::Execute_GenerateDescription(Actor);
+							FDescriptor Desc = IDescribable::Execute_GenerateDescription(Actor, ClosestBone);
 							UPaperSprite* ReactionPortrait = nullptr;
 							switch(Desc.Reaction)
 							{
