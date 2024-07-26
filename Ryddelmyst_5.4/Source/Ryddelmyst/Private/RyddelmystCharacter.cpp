@@ -244,7 +244,7 @@ void ARyddelmystCharacter::PauseGame()
 void ARyddelmystCharacter::Interact()
 {
 	// hide dialogue if showing, and return early so we don't potentially trigger a new dialogue
-	if(HUD->HideDialogue())
+	if(HUD->HideDialogue() || HUD->HideText())
 	{
 		return;
 	}
@@ -301,16 +301,6 @@ void ARyddelmystCharacter::Interact()
 						LeastDistance = DiffMag;
 						ClosestBone = BoneName;
 					}
-					/*
-					UE_LOG(LogTemp, Warning, TEXT("Interact; bone says %s and it lives at %s. Diff from hit is %s with mag %f. Least distance so far is %f to %s"), 
-						*BoneName.ToString(), 
-						*BoneLocation.ToString(),
-						*Diff.ToString(),
-						DiffMag,
-						LeastDistance,
-						*ClosestBone.ToString()
-					);
-					*/
 				}
 				UE_LOG(LogTemp, Warning, TEXT("Interact; found something in range called %s. Nearest bone to hit location is %s"), 
 					*Actor->GetName(), 
@@ -448,6 +438,14 @@ void ARyddelmystCharacter::Interact()
 							HUD->ShowDialogue(ReactionPortrait, Desc.LocalizedDescription);
 							const UEnum* ReactionEnum = FindObject<UEnum>(ANY_PACKAGE, TEXT("InteractReactions"));
 							UE_LOG(LogTemp, Warning, TEXT("Interact; describing %s as %s and reaction %s.  Portrait map at confused says %p"), *Actor->GetName(), *Desc.LocalizedDescription.ToString(), *ReactionEnum->GetNameStringByIndex(static_cast<int32>(Desc.Reaction)), PortraitMap["confused"]);
+						}
+					}
+					else if (cap == InteractCapability::LOREABLE)
+					{
+						if (Actor->GetClass()->ImplementsInterface(UDescribable::StaticClass()))
+						{
+							FDescriptor Desc = IDescribable::Execute_GenerateDescription(Actor, ClosestBone);
+							HUD->ShowText(Desc.LocalizedDescription);
 						}
 					}
 					else if (cap == InteractCapability::POCKETABLE)
