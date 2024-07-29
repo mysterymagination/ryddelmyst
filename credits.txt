@@ -124,6 +124,10 @@ Textures:
     16.1 Source: https://opengameart.org/content/death-in-the-snow
     16.2 Authors: https://opengameart.org/users/justin-nichol
     16.3 License: http://creativecommons.org/licenses/by-sa/3.0/, http://www.gnu.org/licenses/gpl-3.0.html, http://www.gnu.org/licenses/old-licenses/gpl-2.0.html
+ 17. Ryddelmyst/Content/Ryddelmyst_Assets/Sprites/books
+    17.1 Source: https://opengameart.org/content/magic-books
+    17.2 Authors: https://opengameart.org/users/rafaelchm
+    17.3 License: CC0
 
 Fonts:
   1. Ryddelmyst/Content/Ryddelmyst_Assets/Fonts/alagard_by_pix3m-d6awiwp.ttf
