@@ -365,6 +365,7 @@ void ARyddelmystCharacter::Interact()
 							if (!StoryBlock)
 							{
 								Cast<URyddelmystGameInstance>(GetWorld()->GetGameInstance())->GetEventManager()->WoodEggDangerEvent.Broadcast(true);
+								HUD->ShowDialogue(PortraitMap["happy"], FText::FromString("Eh, I got 'im! Feels kinda warm. And wiggly. Hm."));
 							}
 							else 
 							{
