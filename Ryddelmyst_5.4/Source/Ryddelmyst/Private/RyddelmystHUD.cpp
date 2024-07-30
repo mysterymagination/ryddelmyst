@@ -14,6 +14,9 @@
 #include "Components/Image.h"
 #include "Components/ScrollBox.h"
 #include "TextDisplayWidget.h"
+#include "GameFramework/PlayerController.h"
+#include "Kismet/GameplayStatics.h"
+#include "Blueprint/WidgetBlueprintLibrary.h"
 
 ARyddelmystHUD::ARyddelmystHUD()
 {
@@ -238,6 +241,56 @@ bool ARyddelmystHUD::HideDialogue()
 		UE_LOG(LogTemp, Error, TEXT("HideDialogue; status widget not created yet"));
 	}
 	return false;
+}
+
+bool ARyddelmystHUD::IsTextActive()
+{
+	if (TextWidget)
+	{
+		return TextWidget->IsInViewport();
+	}
+	else
+	{
+		return false;
+	}
+}
+
+void ARyddelmystHUD::ScrollTextUp()
+{
+	if (TextWidget && TextWidget->IsInViewport())
+	{
+		UScrollBox* TextScrollBox = TextWidget->WidgetTree->FindWidget<UScrollBox>(FName("TextScrollBox"));
+		if (TextScrollBox)
+		{
+			if (TextScrollBox->GetScrollOffset() > 0.f)
+			{
+				TextScrollBox->SetScrollOffset(TextScrollBox->GetScrollOffset() - 50.f);
+			}
+		}
+		else 
+		{
+			UE_LOG(LogTemp, Error, TEXT("ScrollTextUp; textscrollbox widget not found"));
+		}
+	}
+}
+
+void ARyddelmystHUD::ScrollTextDown()
+{
+	if (TextWidget && TextWidget->IsInViewport())
+	{
+		UScrollBox* TextScrollBox = TextWidget->WidgetTree->FindWidget<UScrollBox>(FName("TextScrollBox"));
+		if (TextScrollBox)
+		{
+			if (TextScrollBox->GetScrollOffset() < TextScrollBox->GetScrollOffsetOfEnd())
+			{
+				TextScrollBox->SetScrollOffset(TextScrollBox->GetScrollOffset() + 50.f);
+			}
+		}
+		else 
+		{
+			UE_LOG(LogTemp, Error, TEXT("ScrollTextDown; textscrollbox widget not found"));
+		}
+	}
 }
 
 bool ARyddelmystHUD::ShowText(const FText& Text)

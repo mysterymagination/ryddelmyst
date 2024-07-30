@@ -20,22 +20,40 @@ public:
 	class UUserWidget* GetStatusWidget();
 
 	/**
-	 * Called via input to Scroll Up event when dialogue scrolling is active
+	 * Called via input to Scroll Up event when dialogue scrolling is active; a dialogue is a minor comment or observation made by the player character that appears in the StatusWidget and does not block gameplay.
 	 */
 	UFUNCTION()
 	void ScrollDialogueUp();
 
 	/**
-	 * Called via input to Scroll Down event when dialogue scrolling is active
+	 * Called via input to Scroll Down event when dialogue scrolling is active; a dialogue is a minor comment or observation made by the player character that appears in the StatusWidget and does not block gameplay.
 	 */
 	UFUNCTION()
 	void ScrollDialogueDown();
+
+	/**
+	 * Called via input to Scroll Up event when text scrolling is active; a text display is a larger lore drop in the TextWidget that takes up the main player viewport and pauses the game.
+	 */
+	UFUNCTION()
+	void ScrollTextUp();
+
+	/**
+	 * Called via input to Scroll Down event when text scrolling is active; a text display is a larger lore drop in the TextWidget that takes up the main player viewport and pauses the game.
+	 */
+	UFUNCTION()
+	void ScrollTextDown();
 
 	/**
 	 * @return true if the dialogue box is displayed in the status widget, false otherwise
 	 */
 	UFUNCTION()
 	bool IsDialogueActive();
+
+	/**
+	 * @return true if the TextWidget exists and is added to the viewport, false otherwise
+	 */
+	UFUNCTION()
+	bool IsTextActive();
 
 	/**
 	 * Adds a UImage icon widget to the InventoryPanel, using the input texture for the image brush 

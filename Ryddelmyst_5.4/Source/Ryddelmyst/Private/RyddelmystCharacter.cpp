@@ -445,7 +445,15 @@ void ARyddelmystCharacter::Interact()
 						if (Actor->GetClass()->ImplementsInterface(UDescribable::StaticClass()))
 						{
 							FDescriptor Desc = IDescribable::Execute_GenerateDescription(Actor, ClosestBone);
+							HUD->ShowDialogue(PortraitMap["eldritch"], Desc.LocalizedDescription);
+							/*
+							// todo: is it better to pause the game and slap the player in the face with discovered lore, or just have Maya pipe up that she found something and will make a note of it for later
+							//  such that the player can peruse the quest log at their leisure and not have gameplay interrupted? That's probably best for observations and diary entries, but maybe conversation
+							//  should actually slap the player in the face since it's essentially a cutscene?
+							PauseGame();
 							HUD->ShowText(Desc.LocalizedDescription);
+							*/
+							// todo: add lore item to quest log
 						}
 					}
 					else if (cap == InteractCapability::POCKETABLE)
@@ -633,6 +641,10 @@ void ARyddelmystCharacter::ScrollUp()
 	{
 		HUD->ScrollDialogueUp();
 	}
+	else if (HUD->IsTextActive())
+	{
+		HUD->ScrollTextUp();
+	}
 	else if (!FirstPersonCameraMode)
 	{
 		Zoom3PPCam(-1.f);
@@ -648,6 +660,10 @@ void ARyddelmystCharacter::ScrollDown()
 	if (HUD->IsDialogueActive())
 	{
 		HUD->ScrollDialogueDown();
+	}
+	else if (HUD->IsTextActive())
+	{
+		HUD->ScrollTextDown();
 	}
 	else if (!FirstPersonCameraMode)
 	{

@@ -12,8 +12,19 @@ struct FDescriptor
 {
 	GENERATED_BODY()
 public:
+	/**
+	 * @brief Quick description of the object, suitable for convo bubble.
+	 */
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Interaction")
 	FText LocalizedDescription;
+	/**
+	 * @brief Long form details about the object, suitable for quest log entry.
+	 */
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Interaction")
+	FText LocalizedLore;
+	/**
+	 * @brief Reaction sprite showing player character's emotional response to the described object.
+	 */
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Interaction")
 	InteractReactions Reaction;
 };
