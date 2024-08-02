@@ -1,0 +1,38 @@
+{
+    "dialogue": [
+        {
+            "name": "Yvyteph Intro Root",
+            "image": "Yvyteph_FontOfFertility",
+            "text": ["Greetings, mortal."] 
+        },
+        {
+            "name": "Maya Is Confusion",
+            "image": "Maya_portraits_Sprite_Confused",
+            "text": [
+                "Hi! Um. I'm Maya. Very happy to meet you!"
+            ],
+            "choices": [
+                {
+                    "text": "So... can I ask about your nips? Why does a tree lady need nipples? And kinda moreover, why boobs?",
+                    "dialogue": [
+                        {
+                            "name": "Yvyteph Free Them",
+                            "image": "Yvyteph_FontOfFertility",
+                            "text": ["Through them you may suckle the essence of molten Desire. Is this your wish? As for my enlarged breasts, well they're just lovely."] 
+                        },
+                        {
+                            "name": "Maya Stranger Danger",
+                            "image": "Maya_portraits_Sprite_Embarrassed",
+                            "text": [
+                                "cool, cool. Uh, maybe when we know each other a little better. They certainly are lovely... *ahem* ANyway..."
+                            ]
+                        }
+                    ]
+                },
+                {
+                    "text": "Where am I?"
+                }
+            ] 
+        }
+    ]
+}
