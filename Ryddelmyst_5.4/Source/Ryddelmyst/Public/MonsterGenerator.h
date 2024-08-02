@@ -12,7 +12,7 @@
  * Spawning can occur on a clock, by event, or both.
  */
 UCLASS(ClassGroup = "LevelDesign", editinlinenew, Blueprintable, BlueprintType, meta = (DisplayName = "MonsterGenerator", BlueprintSpawnableComponent))
-class RYDDELMYST_API MonsterGenerator : public UActorComponent
+class RYDDELMYST_API UMonsterGenerator : public UActorComponent
 {
 	GENERATED_BODY()
 private:
@@ -37,9 +37,13 @@ public:
 public:
 	/**
 	 * @brief Spawns a monster nearby the generator.
-	 * @param MonsterClass - the type of monster to spawn; if nullptr, then a random monster type from SpawnableMonsterClasses will be chosen.
+	 * @param MonsterClass - the type of monster to spawn.
 	 */
-	SpawnMonster(TSubclassOf<AMonster> MonsterClass = nullptr);
+	void SpawnMonster(TSubclassOf<AMonster> MonsterClass);
+	/**
+	 * @brief Spawns a monster nearby the generator, choosing a random monster type from SpawnableMonsterClasses.
+	 */
+	void AutoSpawnMonster();
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;

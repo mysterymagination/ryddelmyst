@@ -3,16 +3,16 @@
 
 #include "MonsterGenerator.h"
 
-void MonsterGenerator::BeginPlay()
+void UMonsterGenerator::BeginPlay()
 {
     Super::BeginPlay();
     if (AutomaticSpawn)
     {
-        GetWorldTimerManager().SetTimer(SpawnTimerHandle, this, &AMonsterGenerator::SpawnMonster, SpawnPeriod, true);
+        GetWorld()->GetTimerManager().SetTimer(SpawnTimerHandle, this, &UMonsterGenerator::AutoSpawnMonster, SpawnPeriod, true);
     }
 }
 
-void MonsterGenerator::SpawnMonster(TSubclassOf<AMontser> MonsterType)
+void UMonsterGenerator::SpawnMonster(TSubclassOf<AMonster> MonsterType)
 {
     if (MonsterType)
     {
@@ -20,6 +20,11 @@ void MonsterGenerator::SpawnMonster(TSubclassOf<AMontser> MonsterType)
     }
     else 
     {
-        // todo: randomly pick a monster from the SpawnableMonsterClasses; if it's empty do nothing and log error.
+        UE_LOG(LogTemp, Error, TEXT("SpawnMonster; no monster type specified, ignoring."));
     }
+}
+
+void UMonsterGenerator::AutoSpawnMonster()
+{
+    // todo: randomly pick a monster from the SpawnableMonsterClasses; if it's empty do nothing and log error.
 }
