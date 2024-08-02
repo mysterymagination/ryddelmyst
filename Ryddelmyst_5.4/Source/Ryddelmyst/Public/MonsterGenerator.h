@@ -19,13 +19,6 @@ private:
 	UPROPERTY()
 	FTimerHandle SpawnTimerHandle;
 public:
-	MonsterGenerator();
-	/**
-	 * @brief Spawns a monster nearby the generator.
-	 * @param MonsterClass - the type of monster to spawn; if nullptr, then a random monster type from SpawnableMonsterClasses will be chosen.
-	 */
-	SpawnMonster(TSubclassOf<AMonster> MonsterClass);
-public:
 	/**
 	 * @brief True if the generator should spawn monsters automatically every SpawnPeriod seconds, false if the generator needs an event to trigger spawning.
 	 */
@@ -41,4 +34,13 @@ public:
 	 */
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "LevelDesign")
 	float SpawnPeriod;
+public:
+	/**
+	 * @brief Spawns a monster nearby the generator.
+	 * @param MonsterClass - the type of monster to spawn; if nullptr, then a random monster type from SpawnableMonsterClasses will be chosen.
+	 */
+	SpawnMonster(TSubclassOf<AMonster> MonsterClass = nullptr);
+protected:
+	// Called when the game starts or when spawned
+	virtual void BeginPlay() override;
 };

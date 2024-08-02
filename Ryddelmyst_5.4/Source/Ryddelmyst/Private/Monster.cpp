@@ -10,9 +10,6 @@
 
 AMonster::AMonster()
 {
-    /* todo: overriding this in BP may not be working?  I'm not seeing BP_ReaperTreantAI doing anything
-    AIControllerClass = AMonsterAI::StaticClass();
-    */
    PrimaryActorTick.bCanEverTick = true;
    HitBoxer = CreateDefaultSubobject<UHitBoxerComponent>(TEXT("Monstrous HitBoxer"));
    static ConstructorHelpers::FObjectFinder<UNiagaraSystem> ParticleAsset(TEXT("'/Game/Ryddelmyst_Assets/Particles/P_MonsterKillFX.P_MonsterKillFX'"));
