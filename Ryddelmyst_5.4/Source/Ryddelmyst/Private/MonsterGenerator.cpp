@@ -2,6 +2,7 @@
 
 
 #include "MonsterGenerator.h"
+#include "Math/UnrealMathUtility.h"
 
 void UMonsterGenerator::BeginPlay()
 {
@@ -16,7 +17,14 @@ void UMonsterGenerator::SpawnMonster(TSubclassOf<AMonster> MonsterType)
 {
     if (MonsterType)
     {
-        // todo: spawn the given monster.
+        // spawn an instance of the given monster type at the location of the 
+        // owning actor of the generator.
+        FVector Location = GetOwner()->GetActorLocation();
+        const FVector* Location_ptr = &Location;
+        FRotator Rotation = GetOwner()->GetActorRotation();
+        const FRotator* Rotation_ptr = &Rotation;
+        const FActorSpawnParameters SpawnInfo;
+        GetWorld()->SpawnActor(MonsterType.Get(), Location_ptr, Rotation_ptr, SpawnInfo);
     }
     else 
     {
@@ -26,5 +34,10 @@ void UMonsterGenerator::SpawnMonster(TSubclassOf<AMonster> MonsterType)
 
 void UMonsterGenerator::AutoSpawnMonster()
 {
-    // todo: randomly pick a monster from the SpawnableMonsterClasses; if it's empty do nothing and log error.
+    // randomly pick a monster from the SpawnableMonsterClasses; if it's empty do nothing and log error.
+    SpawnMonster(
+        SpawnableMonsterClasses[
+            FMath::RandRange(0, SpawnableMonsterClasses.Num()-1)
+        ]
+    );
 }
