@@ -1,0 +1,21 @@
+{
+    "dialogue": [
+        {
+            "name": "Yvyteph's Undercarriage",
+            "image": "Yvyteph_FontOfFertility",
+            "lines": [
+                "What are you doing down here, little mouse? Return to your maze and inspire us!"
+            ] 
+        },
+        {
+            "name": "Maya's Curious Indignation",
+            "image": "Maya_portraits_Sprite_Angry",
+            "lines": [
+                "Hang on now just a moment. I have more than a few questions..."
+            ],
+            "jump": {
+                "clue": "Undercarriage_Questions_Root"
+            }
+        }
+    ]
+}

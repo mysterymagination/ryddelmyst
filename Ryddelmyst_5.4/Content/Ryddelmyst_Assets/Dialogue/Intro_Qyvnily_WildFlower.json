@@ -1,0 +1,45 @@
+{
+    "dialogue": [
+        {
+            "name": "Qyvnily Intro Root",
+            "image": "Qyvnily_WildFlower",
+            "lines": [
+                "Why hello there, intrepid human girl-o-pus! Or is the proper address girlfish? Ah, perhaps girl-o-war or girl-o-wisp?"
+            ] 
+        },
+        {
+            "name": "Maya's Flirty Hiya",
+            "image": "Maya_portraits_Sprite_Flirty",
+            "lines": [
+                "Ooh wow, hello! You must be Qyvnily; lovely to meet you. You and your mum have a similar fashion sense ^_^;",
+                "I'm Maya, just 'girl' will do, thanks. Although I quite like girlfish. Kinda makes it seem like I define the essence of girlhood or girlment or whatever ya call the quintessential femme expression to the point a fish or other unrelated critter might be named girlfish because it bore some resemblance to me and I'm as girl as it gets! Is that unhinged? Well, I like it anyway.",
+                "Girl-o-pus and girl-o-wisp are also pretty cool."
+            ]
+        },
+        {
+            "name": "Qyvnily Wonder",
+            "image": "Qyvnily_WildFlower",
+            "lines": [
+                "Simply wonderful! Mum has instructed me to keep the cards close to my glorious chest, but I am to give you a little background on this place and your role here.",
+                "Ye might've noticed the breathing eldritch glowy statues atop the altar of Our Liege Suzanne yonder? She is to be my form in the material plane (the cute girl, not the cute monkey, this time)!",
+                "We picked her outta your noggin! The very definition of beauty and longing according to your heart. Her name is Molly, yes? You and she must be mates back in your world.",
+                "There had been some consternation on Mumsie's part regarding my incarnate morphology, but you settled all that the moment you embraced me and poured your heart into our heads. As a way of showing you our gratitude, we've taken an interest in you! Hence, the trials."
+            ] 
+        },
+        {
+            "name": "Maya's Embarrassed Entreaty",
+            "image": "Maya_portraits_Sprite_Embarrassed",
+            "lines": [
+                "Oh me and Molly are mates for sure, but not like *mate* mates. If only, if only. I asked once and she sort of blushed like the most gorgeous brilliant perfect sunset ever and then sort of just squeaked and ran away. We've both been sort of pretending that never happened. Not really sure where to go from here, so I've just been quietly crushing on her more 'n more. I'm sure that'll be fine.",
+                "Incidentally, in addition to just generally continuing to live I would very much like to see my Molly again -- could you maybe help with the large tree fellow trying to kill me?"
+            ]
+        },
+        {
+            "name": "Qyvnily Irreverant",
+            "image": "Qyvnily_WildFlower",
+            "lines": [
+                "Nope. But we appreciate your increasingly urgent need for her; keep it up. Have fun!"
+            ] 
+        }
+    ]
+}
