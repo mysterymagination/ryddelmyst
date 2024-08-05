@@ -3,7 +3,7 @@
         {
             "name": "Yvyteph Intro Root",
             "image": "Yvyteph_FontOfFertility",
-            "text": [
+            "lines": [
                 "Greetings, brave Maya. I am Yvyteph, goddess of Desire. My roots run through all that lives and feels, and are knotted even more thoroughly in you than most of your kind.",
                 "You have been worshipping me all your life, even though you didn't know my face until today. Now that we have looked upon each other I know that you will serve me all the more passionately."
             ] 
@@ -11,7 +11,7 @@
         {
             "name": "Maya Is Confusion",
             "image": "Maya_portraits_Sprite_Confused",
-            "text": [
+            "lines": [
                 "Hi! Um. I'm Maya. Very happy to meet you!"
             ],
             "choices": [
@@ -21,14 +21,14 @@
                         {
                             "name": "Maya is Curiosity",
                             "image": "Maya_portraits_Sprite_Eldritch",
-                            "text": [
+                            "lines": [
                                 "So... can I ask about your nips? Why does a tree lady need nipples? And kinda moreover, why boobs?"
                             ]
                         },
                         {
                             "name": "Yvyteph Free Them",
                             "image": "Yvyteph_FontOfFertility",
-                            "text": [
+                            "lines": [
                                 "For fun, of course; same thing yours are for 90% of the time. If you wish you may also suckle the essence of molten Desire from them. Is this your wish?",
                                 "As for my enlarged breasts, well they're just lovely. And also joyous to play with!"
                             ]
@@ -36,10 +36,12 @@
                         {
                             "name": "Maya Stranger Danger",
                             "image": "Maya_portraits_Sprite_Embarrassed",
-                            "text": [
-                                "Cool, cool. Uh, maybe when we know each other a little better. They certainly are lovely... *ahem* ANyway...",
-                                "Although, I have always wondered what molten Desire tastes like."
-                            ]
+                            "lines": [
+                                "Cool, cool. Uh, maybe when we know each other a little better. They certainly are lovely... *ahem* ANyway..."
+                            ],
+                            "thoughts": [
+                                "Sweet crumpets, how did she know I've always wondered what molten Desire tastes like?"
+                            ]    
                         }
                     ]
                 },
@@ -49,26 +51,50 @@
                         {
                             "name": "Maya in Heat",
                             "image": "Maya_portraits_Sprite_Flirty",
-                            "text": [
+                            "lines": [
                                 "Goddess of Desire, eh? I do see that."
                             ]
                         },
                         {
-                            "name": "Yvyteph Free Them",
+                            "name": "Yvyteph Smug Certainty",
                             "image": "Yvyteph_FontOfFertility",
-                            "text": [
-                                "For fun, of course; same thing yours are for 90% of the time. If you wish you may also suckle the essence of molten Desire from them. Is this your wish? As for my enlarged breasts, well they're just lovely."
+                            "lines": [
+                                "You haven't seen anything yet. Please me and I shall return the favor a thousand thousandfold.",
+                                "Have you ever experienced your little death via drowning in your own fluid ecstasy, figuratively and literally? You will."
+                            ]
+                        },
+                        {
+                            "name": "Maya in Heat 2",
+                            "image": "Maya_portraits_Sprite_Confused",
+                            "lines": [
+                                "Now when you say 'please me'--"
+                            ]
+                        },
+                        {
+                            "name": "Yvyteph Smug Certainty",
+                            "image": "Yvyteph_FontOfFertility",
+                            "lines": [
+                                "In time.",
+                                "For now it pleases me to watch you play my little game. My daughter is new at material incarnation and she is learning much from your example.",
+                                "Think of me and my essence as you do battle in the arena, and you shall surely triumph!"
                             ]
                         }
                     ]
                 },
                 {
-                    "text": "Where am I? This place seems kinda rough-hewn, and I recall having a face and not being quite so low-poly.",
+                    "text": "Where am I?",
                     "dialogue": [
+                        {
+                            "name": "Maya in Wonderland",
+                            "image": "Maya_portraits_Sprite_Confused",
+                            "lines": [
+                                "Where am I? This place seems kinda rough-hewn, and I recall having a face and not being quite so low-poly especially in the boobage region. There was like a separate body section and some soft body physics, it was a whole thing. And, hey, is my cleavage drawn on?!"
+                            ]
+                        },
                         {
                             "name": "Yvyteph Megyle Mystery",
                             "image": "Yvyteph_FontOfFertility",
-                            "text": [
+                            "lines": [
                                 "This world is a pocket dimension within the manifestation of my daughter Qyvnily that has taken root on Meigantu. We went to great pains to recreate a perfectly familiar setting and morphology for you.",
                                 "Do you remember embracing her? The serpentfolk were chasing you. Your friends from the Chiropteran are all dead.",
                                 "We offered you sanctuary. In exchange, we wish to learn from you. Your Desire is powerful, and your imagination keen.",
