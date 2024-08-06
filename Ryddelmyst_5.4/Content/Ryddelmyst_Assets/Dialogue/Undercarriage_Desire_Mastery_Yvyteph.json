@@ -16,11 +16,14 @@
                     "text": "Okey-dokey",
                     "dialogue": [
                         {
-                            "name": "Maya Evil Determination",
+                            "name": "Maya's Evil Determination",
                             "image": "Maya_portraits_Sprite_Eldritch",
                             "lines": [
                                 "Looking forward to it! My pursuer shall burn with Desire. *wink*"
-                            ]
+                            ],
+                            "jump": {
+                                "clue": "Maya_Evil_Determination"
+                            }
                         }
                     ]
                 },
@@ -91,7 +94,10 @@
                                             "image": "Yvyteph_FontOfFertility",
                                             "lines": [
                                                 "Very well, mortal girl. You shall always be girlfish to me. Do not cross my path again, for I will not be able to hold back my Desire. I shall not even try."
-                                            ]
+                                            ],
+                                            "jump": {
+                                                "clue": "Maya_Good_Determination_Homeward_Bound"
+                                            }
                                         }
                                     ]
                                 },
@@ -103,7 +109,10 @@
                                             "image": "Maya_portraits_Sprite_Eldritch",
                                             "lines": [
                                                 "All righty-roo, make me a demigoddess or whatever! I have a feeling Molly is going to need me on the squad with you guys."
-                                            ]
+                                            ],
+                                            "jump": {
+                                                "clue": "Maya_Good_Determination_Heavenward"
+                                            }
                                         }
                                     ]
                                 }
