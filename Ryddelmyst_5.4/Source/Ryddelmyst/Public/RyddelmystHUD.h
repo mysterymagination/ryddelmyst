@@ -123,6 +123,14 @@ public:
 	bool HideText();
 
 	/**
+	 * @brief Converts the input JSON string into an interactive UI tree.
+	 * @param JsonString - raw string representation of the JSON conversation script content.
+	 * @return true if the convo was shown, false otherwise.
+	 */
+	UFUNCTION(BlueprintCallable, Category = "Dialogue")
+	bool ShowConversation(const FString& JsonString);
+
+	/**
 	 * @brief hides all parts of the HUD
 	 * 
 	 */

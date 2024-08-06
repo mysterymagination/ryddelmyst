@@ -328,6 +328,12 @@ bool ARyddelmystHUD::HideText()
 	return false;
 }
 
+bool ARyddelmystHUD::ShowConversation(const FString& JsonString)
+{
+	// todo: use convo parser to generate conversation UI from input JSON string; this should include an exit convo button or something at the bottom that removes the whole UI tree from the HUD.
+	return false;
+}
+
 void ARyddelmystHUD::HideStatus()
 {
 	if (StatusWidget)

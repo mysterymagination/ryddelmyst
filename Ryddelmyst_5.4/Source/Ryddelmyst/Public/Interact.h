@@ -27,7 +27,8 @@ enum class InteractCapability : uint8
 	DESCRIBABLE UMETA(DisplayName = "DESCRIBABLE"),
 	POCKETABLE UMETA(DisplayName = "POCKETABLE"),
 	OPENABLE UMETA(DisplayName = "OPENABLE"),
-	LOREABLE UMETA(DisplayName = "LOREABLE")
+	LOREABLE UMETA(DisplayName = "LOREABLE"),
+	TALKABLE UMETA(DisplayName = "TALKABLE")
 };
 
 UENUM(BlueprintType)

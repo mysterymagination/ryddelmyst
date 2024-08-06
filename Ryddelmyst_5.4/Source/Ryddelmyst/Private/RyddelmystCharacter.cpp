@@ -26,6 +26,7 @@
 #include "Engine/SkeletalMesh.h"
 #include "Animation/Skeleton.h"
 #include <limits>
+#include "ITalkable.h"
 
 DEFINE_LOG_CATEGORY_STATIC(LogFPChar, Warning, All);
 
@@ -395,6 +396,14 @@ void ARyddelmystCharacter::Interact()
 						else 
 						{
 							UE_LOG(LogTemp, Warning, TEXT("Interact; player cannot pick up %s for story reasons"), *Actor->GetName());
+						}
+					}
+					else if (cap == InteractCapability::TALKABLE && ClosestBone.ToString().Contains(TEXT("face"), ESearchCase::IgnoreCase))
+					{
+						if (Actor->GetClass()->ImplementsInterface(UTalkable::StaticClass()))
+						{
+							FString jsonString = ITalkable::Execute_GetConversationScript(Actor, ClosestBone, GetWorld()->GetGameState());
+							HUD->ShowConversation(jsonString);
 						}
 					}
 					else if (cap == InteractCapability::DESCRIBABLE)
