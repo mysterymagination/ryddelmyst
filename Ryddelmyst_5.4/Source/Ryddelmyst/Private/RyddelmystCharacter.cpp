@@ -285,7 +285,7 @@ void ARyddelmystCharacter::Interact()
 		if (Actor)
 		{
 			UE_LOG(LogTemp, Warning, TEXT("Interact; found something in range called %s."), *Actor->GetName());
-			USkeletalMeshComponent* Skele = Actor->FindComponentByClass<USkeletalMeshComponent>();
+			USceneComponent* Skele = Actor->FindComponentByClass<USceneComponent>();
 			FName ClosestBone;
 			if (Skele)
 			{
