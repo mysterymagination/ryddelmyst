@@ -46,6 +46,35 @@
                     ]
                 },
                 {
+                    "text": "Two dimensions?...",
+                    "dialogue": [
+                        {
+                            "name": "Maya is Curiosity",
+                            "image": "Maya_portraits_Sprite_Happy",
+                            "lines": [
+                                "Hey how come you're 2D? I mean, clearly you're rockin' more than double Ds."
+                            ]
+                        },
+                        {
+                            "name": "Yvyteph Smug Confidence",
+                            "image": "Yvyteph_FontOfFertility",
+                            "lines": [
+                                "You could not handle three dimensions of me. Seriously. Limiting our manifestations to only two dimensions of our avatars' morphology is the only way to avoid destroying this world and you with the overwhelming force of our majestic presence."
+                            ]
+                        },
+                        {
+                            "name": "Maya Stranger Danger",
+                            "image": "Maya_portraits_Sprite_Confused",
+                            "lines": [
+                                "I believe you! I am feeling kinda exhausted just looking at you, although I think that might be partly from a sudden lack of bloodflow to the brain. Is it hot in here? Is everyone else's heart beating really fast? I need a lie down."
+                            ],
+                            "thoughts": [
+                                "I am in the BEST KIND of danger..."
+                            ]    
+                        }
+                    ]
+                },
+                {
                     "text": "Goddess of Desire, eh?...",
                     "dialogue": [
                         {
