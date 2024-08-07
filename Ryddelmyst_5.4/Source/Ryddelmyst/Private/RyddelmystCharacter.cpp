@@ -287,6 +287,8 @@ void ARyddelmystCharacter::Interact()
 			UE_LOG(LogTemp, Warning, TEXT("Interact; found something in range called %s."), *Actor->GetName());
 			USceneComponent* Skele = Actor->FindComponentByClass<USceneComponent>();
 			FName ClosestBone;
+			// Need to make sure the gaze was actually pretty nearby the closest bone
+			float MinimumRelevantDistance = 10.f;
 			if (Skele)
 			{
 				
@@ -297,7 +299,7 @@ void ARyddelmystCharacter::Interact()
 					FVector BoneLocation = Skele->GetSocketLocation(BoneName);
 					FVector Diff = BoneLocation - Hit.Location;
 					float DiffMag = Diff.Length();
-					if (DiffMag < LeastDistance) 
+					if (DiffMag < LeastDistance && DiffMag <= MinimumRelevantDistance) 
 					{
 						LeastDistance = DiffMag;
 						ClosestBone = BoneName;
