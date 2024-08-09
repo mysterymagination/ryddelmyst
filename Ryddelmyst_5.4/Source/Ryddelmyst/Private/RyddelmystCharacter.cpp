@@ -291,7 +291,6 @@ void ARyddelmystCharacter::Interact()
 			float MinimumRelevantDistance = 10.f;
 			if (Skele)
 			{
-				
 				UE_LOG(LogTemp, Warning, TEXT("Interact; sifting through bones, respectfully..."));
 				float LeastDistance = std::numeric_limits<float>::max();
 				for (auto BoneName : Skele->GetAllSocketNames())
