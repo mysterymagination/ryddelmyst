@@ -13,7 +13,7 @@ void UMonsterGenerator::BeginPlay()
     }
 }
 
-void UMonsterGenerator::SpawnMonster(TSubclassOf<AMonster> MonsterType)
+void UMonsterGenerator::SpawnMonster(const TSubclassOf<AMonster> MonsterType)
 {
     if (MonsterType)
     {
@@ -29,6 +29,17 @@ void UMonsterGenerator::SpawnMonster(TSubclassOf<AMonster> MonsterType)
     else 
     {
         UE_LOG(LogTemp, Error, TEXT("SpawnMonster; no monster type specified, ignoring."));
+    }
+}
+
+void UMonsterGenerator::SpawnMonster(const TMap<TSubclassOf<AMonster>, int>& MonsterClassCountMap)
+{
+    for (auto& Elem : MonsterClassCountMap)
+    {
+        for (int i = 0; i < Elem.Value; i++)
+        {
+            SpawnMonster(Elem.Key);
+        }
     }
 }
 

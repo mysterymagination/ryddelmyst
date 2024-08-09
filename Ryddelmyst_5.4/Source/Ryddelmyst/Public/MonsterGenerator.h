@@ -36,10 +36,15 @@ public:
 	float SpawnPeriod;
 public:
 	/**
-	 * @brief Spawns a monster nearby the generator.
-	 * @param MonsterClass - the type of monster to spawn.
+	 * @brief Spawns an instance of the given monster type nearby the generator.
+	 * @param MonsterClass - the monster type to spawn.
 	 */
-	void SpawnMonster(TSubclassOf<AMonster> MonsterClass);
+	void SpawnMonster(const TSubclassOf<AMonster> MonsterClass);
+	/**
+	 * @brief Spawns a pattern of monsters nearby the generator given by the type:count in the input mapping.
+	 * @param MonsterClassCountMap - a mapping of the monster types to the number of each type that should spawn.
+	 */
+	void SpawnMonster(const TMap<TSubclassOf<AMonster>, int>& MonsterClassCountMap);
 	/**
 	 * @brief Spawns a monster nearby the generator, choosing a random monster type from SpawnableMonsterClasses.
 	 */
