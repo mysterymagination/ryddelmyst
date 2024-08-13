@@ -5,6 +5,7 @@
 #include "CoreMinimal.h"
 #include "GameFramework/HUD.h"
 #include "Blueprint/UserWidget.h"
+#include "LibraryBookWidget.h"
 #include "RyddelmystHUD.generated.h"
 
 UCLASS()
@@ -159,12 +160,10 @@ public:
 
 	/**
 	 * @brief Adds a BP_LibraryBook widget to the BP_Library where the user can review their quest info.
-	 * @param CoverArtPath string path relative to game assets where the desired library book cover art image resides.
-	 * @param Title brief localized summary string to display beneath the library book widget.
-	 * @param Contents the full localized text of the library book, displayed in a text widget when the book is selected in the library. 
+	 * @param Data the data necessary to populate the quest info entry. 
 	 */
-	UFUNCTION(BlueprintCallable, Category = "GameState")
-	void AddLore(const FString& CoverArtPath, const FText& Title, const FText& Contents);
+	UFUNCTION(BlueprintCallable, Category = "Lore")
+	void AddLore(const FLibraryBookData& Data);
 
 private:
 	/** Crosshair asset pointer */

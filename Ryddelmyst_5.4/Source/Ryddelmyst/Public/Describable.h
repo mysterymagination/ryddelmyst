@@ -8,6 +8,28 @@
 #include "Describable.generated.h"
 
 USTRUCT(BlueprintType)
+struct FLibraryBookData
+{
+	GENERATED_BODY()
+public:
+	/**
+	 * @brief Quick description of the object, suitable for library book lists.
+	 */
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Interaction")
+	FText LocalizedTitle;
+	/**
+	 * @brief Long form details about the object, suitable for quest log entry.
+	 */
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Interaction")
+	FText LocalizedLore;
+	/**
+	 * @brief CoverArtPath string path relative to game assets where the desired library book cover art image resides.
+	 */
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Interaction")
+	FString CoverArtPath;
+};
+
+USTRUCT(BlueprintType)
 struct FDescriptor
 {
 	GENERATED_BODY()
@@ -18,10 +40,10 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Interaction")
 	FText LocalizedDescription;
 	/**
-	 * @brief Long form details about the object, suitable for quest log entry.
+	 * @brief Data for the quest log entry.
 	 */
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Interaction")
-	FText LocalizedLore;
+	FLibraryBookData Lore;
 	/**
 	 * @brief Reaction sprite showing player character's emotional response to the described object.
 	 */

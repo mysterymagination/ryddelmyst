@@ -36,9 +36,15 @@ public:
 	void SetContents(const FText& Text) { ContentsText = Text; };
 
 	UFUNCTION(BlueprintCallable, Category = "Lore")
+	const FText& GetTitle() const { return TitleText; };
+
+	UFUNCTION(BlueprintCallable, Category = "Lore")
+	void SetTitle(const FText& Text) { TitleText = Text; };
+
+	UFUNCTION(BlueprintCallable, Category = "Lore")
 	const UTexture2D* GetCoverArt() const { return CoverArt; };
 
 	UFUNCTION(BlueprintCallable, Category = "Lore")
-	void SetPortrait(UTexture2D* Image) { CoverArt = Image; };
+	void SetCoverArt(UTexture2D* Image) { CoverArt = Image; };
 	
 };

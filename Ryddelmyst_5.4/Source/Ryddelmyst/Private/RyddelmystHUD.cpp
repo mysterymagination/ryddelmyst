@@ -17,6 +17,8 @@
 #include "GameFramework/PlayerController.h"
 #include "Kismet/GameplayStatics.h"
 #include "Blueprint/WidgetBlueprintLibrary.h"
+#include "LibraryBookWidget.h"
+#include "Describable.h"
 
 ARyddelmystHUD::ARyddelmystHUD()
 {
@@ -412,12 +414,15 @@ void ARyddelmystHUD::ShowGameOverMenu()
 	}
 }
 
-void ARyddelmystHUD::AddLore(const FString& CoverArtPath, const FText& Title, const FText& Contents)
+void ARyddelmystHUD::AddLore(const FLibraryBookData& Data)
 {
 	if (LibraryBookWidgetClass)
 	{
-		UUserWidget* LibraryBook = CreateWidget<UUserWidget>(GetWorld(), LibraryBookWidgetClass);
-		
+		ULibraryBookWidget* LibraryBook = CreateWidget<ULibraryBookWidget>(GetWorld(), LibraryBookWidgetClass);
+		LibraryBook->SetTitle(Data.LocalizedTitle);
+		LibraryBook->SetContents(Data.LocalizedLore);
+		// todo: look up utexture2d from Data.CoverArtPath
+		//LibraryBook->SetCoverArt(); // mrr... runtime asset loading
 	}
 	else
 	{
