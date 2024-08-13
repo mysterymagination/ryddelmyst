@@ -33,6 +33,9 @@ ARyddelmystHUD::ARyddelmystHUD()
 	static ConstructorHelpers::FClassFinder<UUserWidget> GameOverMenuWidgetObj(TEXT("/Game/Ryddelmyst_Assets/UI/BP_GameOverMenu"));
 	GameOverMenuWidgetClass = GameOverMenuWidgetObj.Class;
 
+	static ConstructorHelpers::FClassFinder<UUserWidget> LibraryBookWidgetObj(TEXT("/Game/Ryddelmyst_Assets/UI/BP_LibraryBook"));
+	LibraryBookWidgetClass = LibraryBookWidgetObj.Class;
+
 	static ConstructorHelpers::FObjectFinder<UTexture2D> SelectionTexObj(TEXT("/Game/Ryddelmyst_Assets/Textures/SelectionHighlight"));
 	InventorySelectionTexture = SelectionTexObj.Object;
 }
@@ -406,5 +409,18 @@ void ARyddelmystHUD::ShowGameOverMenu()
 	else
 	{
 		UE_LOG(LogTemp, Error, TEXT("ShowGameOverMenu; game over menu widget not created"));
+	}
+}
+
+void ARyddelmystHUD::AddLore(const FString& CoverArtPath, const FText& Title, const FText& Contents)
+{
+	if (LibraryBookWidgetClass)
+	{
+		UUserWidget* LibraryBook = CreateWidget<UUserWidget>(GetWorld(), LibraryBookWidgetClass);
+		
+	}
+	else
+	{
+		UE_LOG(LogTemp, Error, TEXT("BeginPlay; no library book widget class set"));
 	}
 }

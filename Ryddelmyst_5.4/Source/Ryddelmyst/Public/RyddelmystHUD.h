@@ -1,9 +1,10 @@
-// Copyright Epic Games, Inc. All Rights Reserved.
+// Fill out your copyright notice in the Description page of Project Settings.
 
 #pragma once 
 
 #include "CoreMinimal.h"
 #include "GameFramework/HUD.h"
+#include "Blueprint/UserWidget.h"
 #include "RyddelmystHUD.generated.h"
 
 UCLASS()
@@ -156,6 +157,15 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "GameState")
 	void ShowGameOverMenu();
 
+	/**
+	 * @brief Adds a BP_LibraryBook widget to the BP_Library where the user can review their quest info.
+	 * @param CoverArtPath string path relative to game assets where the desired library book cover art image resides.
+	 * @param Title brief localized summary string to display beneath the library book widget.
+	 * @param Contents the full localized text of the library book, displayed in a text widget when the book is selected in the library. 
+	 */
+	UFUNCTION(BlueprintCallable, Category = "GameState")
+	void AddLore(const FString& CoverArtPath, const FText& Title, const FText& Contents);
+
 private:
 	/** Crosshair asset pointer */
 	UPROPERTY()
@@ -172,6 +182,9 @@ private:
 
 	UPROPERTY(EditAnywhere, Category = "GameState")
 	TSubclassOf<class UUserWidget> GameOverMenuWidgetClass;
+
+	UPROPERTY(EditAnywhere, Category = "RPG")
+	TSubclassOf<class UUserWidget> LibraryBookWidgetClass;
 
 	UPROPERTY()
 	class UUserWidget* PauseMenuWidget;
