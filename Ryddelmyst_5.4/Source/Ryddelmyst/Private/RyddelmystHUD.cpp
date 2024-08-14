@@ -430,14 +430,22 @@ void ARyddelmystHUD::AddLore(const FLibraryBookData& Data)
 {
 	if (LibraryBookWidgetClass)
 	{
-		ULibraryBookWidget* LibraryBook = CreateWidget<ULibraryBookWidget>(GetWorld(), LibraryBookWidgetClass);
-		LibraryBook->SetLore(Data);
-		LibraryBook->RefreshLore();
+		// todo: so something weird -- for some reason we don't proc the BP constructor script at this point.
+		//  Further, when the book is constructed at the point we show the library (new book instance each time),
+		//  it doesn't have the Lore data we pass in here. That data exists just fine in refresh lore, so the CPP to BP
+		//  pipeline is fine, but the lifecycle and copy-construct (?) is not. With Unreal being so weird about ctors for
+		//  UObjects I don't know if we even could define a copy constructor for the book widget, much less if it would
+		//  actually get called. I think the better thing to do is dodge the whole janky UI object lifecycle mess entirely
+		//  by keeping a map of book data in memory and then having the library construct and populate all needed book widgets
+		//  when it gets displayed. Since it's constructing new instances of the books at this point anyway, we might as well
+		//  consider this the entry point for the actual book widget. 
+		//ULibraryBookWidget* LibraryBook = CreateWidget<ULibraryBookWidget>(GetWorld(), LibraryBookWidgetClass);
+		//LibraryBook->SetLore(Data);
 		// todo: look up utexture2d from Data.CoverArtPath
 		//LibraryBook->SetCoverArt(); // mrr... runtime asset loading. Nevermind, the book logo is good enough for demo!
 
 		// add library book to library
-		LibraryWidget->AddBook(LibraryBook);
+		LibraryWidget->AddBook(Data);
 	}
 	else
 	{

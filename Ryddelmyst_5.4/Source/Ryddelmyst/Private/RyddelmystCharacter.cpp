@@ -457,6 +457,7 @@ void ARyddelmystCharacter::Interact()
 						{
 							FDescriptor Desc = IDescribable::Execute_GenerateDescription(Actor, ClosestBone);
 							HUD->ShowDialogue(PortraitMap["eldritch"], Desc.LocalizedDescription);
+							UE_LOG(LogTemp, Warning, TEXT("Interact; loreable desc says title %s and lore %s"), *Desc.Lore.LocalizedTitle.ToString(), *Desc.Lore.LocalizedLore.ToString());
 							HUD->AddLore(Desc.Lore);
 						}
 					}
