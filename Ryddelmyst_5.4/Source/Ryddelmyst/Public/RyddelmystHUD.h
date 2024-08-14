@@ -6,6 +6,7 @@
 #include "GameFramework/HUD.h"
 #include "Blueprint/UserWidget.h"
 #include "LibraryBookWidget.h"
+#include "LibraryWidget.h"
 #include "RyddelmystHUD.generated.h"
 
 UCLASS()
@@ -109,6 +110,20 @@ public:
 	bool HideDialogue();
 
 	/**
+	 * @brief Attempts to show the library, if it is not already showing
+	 * @return true if library was shown, false otherwise 
+	 */
+	UFUNCTION(BlueprintCallable, Category = "Dialogue")
+	bool ShowLibrary();
+
+	/**
+	 * @brief Attempts to hide the library, if it is showing
+	 * @return true if a library was hidden, false otherwise
+	 */
+	UFUNCTION(BlueprintCallable, Category = "Dialogue")
+	bool HideLibrary();
+
+	/**
 	 * @brief Attempts to show text in the mostly full screen text box, if one is not already showing
 	 * @param Text the text to show over most of the screen
 	 * @return true if text was shown, false otherwise 
@@ -182,8 +197,11 @@ private:
 	UPROPERTY(EditAnywhere, Category = "GameState")
 	TSubclassOf<class UUserWidget> GameOverMenuWidgetClass;
 
-	UPROPERTY(EditAnywhere, Category = "RPG")
-	TSubclassOf<class UUserWidget> LibraryBookWidgetClass;
+	UPROPERTY(EditAnywhere, Category = "Lore")
+	TSubclassOf<class ULibraryBookWidget> LibraryBookWidgetClass;
+
+	UPROPERTY(EditAnywhere, Category = "Lore")
+	TSubclassOf<class ULibraryWidget> LibraryWidgetClass;
 
 	UPROPERTY()
 	class UUserWidget* PauseMenuWidget;
@@ -193,6 +211,9 @@ private:
 
 	UPROPERTY()
 	class UTextDisplayWidget* TextWidget;
+
+	UPROPERTY()
+	class ULibraryWidget* LibraryWidget;
 
 	/** Handle to the InventoryPanel UI widget in the HUD */
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Inventory", meta = (AllowPrivateAccess = "true"))

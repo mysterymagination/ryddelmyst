@@ -5,29 +5,8 @@
 #include "CoreMinimal.h"
 #include "UObject/Interface.h"
 #include "Interact.h"
+#include "LibraryBookWidget.h"
 #include "Describable.generated.h"
-
-USTRUCT(BlueprintType)
-struct FLibraryBookData
-{
-	GENERATED_BODY()
-public:
-	/**
-	 * @brief Quick description of the object, suitable for library book lists.
-	 */
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Interaction")
-	FText LocalizedTitle;
-	/**
-	 * @brief Long form details about the object, suitable for quest log entry.
-	 */
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Interaction")
-	FText LocalizedLore;
-	/**
-	 * @brief CoverArtPath string path relative to game assets where the desired library book cover art image resides.
-	 */
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Interaction")
-	FString CoverArtPath;
-};
 
 USTRUCT(BlueprintType)
 struct FDescriptor

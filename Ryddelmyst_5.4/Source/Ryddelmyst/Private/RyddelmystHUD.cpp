@@ -35,6 +35,9 @@ ARyddelmystHUD::ARyddelmystHUD()
 	static ConstructorHelpers::FClassFinder<UUserWidget> GameOverMenuWidgetObj(TEXT("/Game/Ryddelmyst_Assets/UI/BP_GameOverMenu"));
 	GameOverMenuWidgetClass = GameOverMenuWidgetObj.Class;
 
+	static ConstructorHelpers::FClassFinder<UUserWidget> LibraryWidgetObj(TEXT("/Game/Ryddelmyst_Assets/UI/BP_Library"));
+	LibraryWidgetClass = LibraryWidgetObj.Class;
+
 	static ConstructorHelpers::FClassFinder<UUserWidget> LibraryBookWidgetObj(TEXT("/Game/Ryddelmyst_Assets/UI/BP_LibraryBook"));
 	LibraryBookWidgetClass = LibraryBookWidgetObj.Class;
 
@@ -122,6 +125,15 @@ void ARyddelmystHUD::BeginPlay()
 		else
 		{
 			UE_LOG(LogTemp, Error, TEXT("BeginPlay; no game over menu widget class set"));
+		}
+
+		if (LibraryWidgetClass)
+		{
+			LibraryWidget = CreateWidget<ULibraryWidget>(GetWorld(), LibraryWidgetClass);
+		}
+		else
+		{
+			UE_LOG(LogTemp, Error, TEXT("BeginPlay; no library widget class set"));
 		}
 	}
 }
@@ -419,13 +431,50 @@ void ARyddelmystHUD::AddLore(const FLibraryBookData& Data)
 	if (LibraryBookWidgetClass)
 	{
 		ULibraryBookWidget* LibraryBook = CreateWidget<ULibraryBookWidget>(GetWorld(), LibraryBookWidgetClass);
-		LibraryBook->SetTitle(Data.LocalizedTitle);
-		LibraryBook->SetContents(Data.LocalizedLore);
+		LibraryBook->SetLore(Data);
+		LibraryBook->RefreshLore();
 		// todo: look up utexture2d from Data.CoverArtPath
-		//LibraryBook->SetCoverArt(); // mrr... runtime asset loading
+		//LibraryBook->SetCoverArt(); // mrr... runtime asset loading. Nevermind, the book logo is good enough for demo!
+
+		// add library book to library
+		LibraryWidget->AddBook(LibraryBook);
 	}
 	else
 	{
 		UE_LOG(LogTemp, Error, TEXT("BeginPlay; no library book widget class set"));
 	}
+}
+
+bool ARyddelmystHUD::ShowLibrary()
+{
+	if (LibraryWidget)
+	{
+		if (!LibraryWidget->IsInViewport())
+		{
+			LibraryWidget->AddToViewport();
+			return true;
+		}
+	}
+	else
+	{
+		UE_LOG(LogTemp, Error, TEXT("ShowLibrary; library widget not created yet"));
+	}
+	return false;
+}
+
+bool ARyddelmystHUD::HideLibrary()
+{
+	if (LibraryWidget)
+	{
+		if (LibraryWidget->IsInViewport())
+		{
+			LibraryWidget->RemoveFromViewport();
+			return true;
+		}
+	}
+	else
+	{
+		UE_LOG(LogTemp, Error, TEXT("HideLibrary; Library widget not created yet"));
+	}
+	return false;
 }
