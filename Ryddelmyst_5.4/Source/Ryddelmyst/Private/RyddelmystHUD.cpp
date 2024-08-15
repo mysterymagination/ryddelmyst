@@ -460,6 +460,7 @@ bool ARyddelmystHUD::ShowLibrary()
 		if (!LibraryWidget->IsInViewport())
 		{
 			LibraryWidget->AddToViewport();
+			LibraryWidget->ReshelveBooks();
 			return true;
 		}
 	}
