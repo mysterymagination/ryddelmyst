@@ -428,7 +428,7 @@ void ARyddelmystHUD::ShowGameOverMenu()
 
 void ARyddelmystHUD::AddLore(const FLibraryBookData& Data)
 {
-	if (LibraryBookWidgetClass)
+	if (LibraryWidget)
 	{
 		// todo: so something weird -- for some reason we don't proc the BP constructor script at this point.
 		//  Further, when the book is constructed at the point we show the library (new book instance each time),
@@ -449,8 +449,13 @@ void ARyddelmystHUD::AddLore(const FLibraryBookData& Data)
 	}
 	else
 	{
-		UE_LOG(LogTemp, Error, TEXT("BeginPlay; no library book widget class set"));
+		UE_LOG(LogTemp, Error, TEXT("BeginPlay; no library widget set"));
 	}
+}
+
+FLibraryBookData ARyddelmystHUD::PullUnshelved(ELibraryCat Category)
+{
+	return LibraryWidget->PullUnshelved(Category);
 }
 
 bool ARyddelmystHUD::ShowLibrary()
@@ -461,6 +466,7 @@ bool ARyddelmystHUD::ShowLibrary()
 		{
 			LibraryWidget->AddToViewport();
 			LibraryWidget->ReshelveBooks();
+			LibraryWidget->PopulateUnshelved();
 			return true;
 		}
 	}

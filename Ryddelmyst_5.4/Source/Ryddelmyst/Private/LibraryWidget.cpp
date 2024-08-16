@@ -16,3 +16,46 @@ void ULibraryWidget::AddBook(const FLibraryBookData& Data)
         BookBank.Add(Data.Genre, Shelf);
     }
 }
+
+void ULibraryWidget::PopulateUnshelved()
+{
+    if (BookBank.Contains(ELibraryCat::Observation))
+    {
+        UnshelvedObservations = BookBank[ELibraryCat::Observation].Books;
+    }
+    else if (BookBank.Contains(ELibraryCat::Conversation))
+    {
+        UnshelvedConversations = BookBank[ELibraryCat::Conversation].Books;
+    }
+    else if (BookBank.Contains(ELibraryCat::Diary))
+    {
+        UnshelvedDiaries = BookBank[ELibraryCat::Diary].Books;
+    }
+}
+
+FLibraryBookData ULibraryWidget::PullUnshelved(ELibraryCat Category)
+{
+    FLibraryBookData data;
+    switch(Category)
+	{
+		case ELibraryCat::Observation:
+            data = UnshelvedObservations[UnshelvedObservations.Num()-1];
+            UnshelvedObservations.RemoveAt(UnshelvedObservations.Num()-1);
+            return data;
+			break;
+        case ELibraryCat::Conversation:
+			data = UnshelvedConversations[UnshelvedConversations.Num()-1];
+            UnshelvedConversations.RemoveAt(UnshelvedConversations.Num()-1);
+            return data;
+			break;
+        case ELibraryCat::Diary:
+			data = UnshelvedDiaries[UnshelvedDiaries.Num()-1];
+            UnshelvedDiaries.RemoveAt(UnshelvedDiaries.Num()-1);
+            return data;
+			break;
+        default:
+            UE_LOG(LogTemp, Error, TEXT("Unrecognized book genre %i"), Category);
+            return FLibraryBookData();
+            break;
+	}
+}

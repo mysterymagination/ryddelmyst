@@ -180,6 +180,13 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "Lore")
 	void AddLore(const FLibraryBookData& Data);
 
+	/**
+	 * @brief Asks the library to pulls a book from the appropriate pool for a book widget to display.
+	 * @param Category the genre this book should be shelved into. 
+	 */
+	UFUNCTION(BlueprintCallable, Category = "Lore")
+	FLibraryBookData PullUnshelved(ELibraryCat Category);
+
 private:
 	/** Crosshair asset pointer */
 	UPROPERTY()

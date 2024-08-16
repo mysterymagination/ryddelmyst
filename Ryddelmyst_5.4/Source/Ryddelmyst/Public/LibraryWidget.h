@@ -28,6 +28,26 @@ class RYDDELMYST_API ULibraryWidget : public UUserWidget
 {
 	GENERATED_BODY()
 
+private:
+	/**
+	 * @brief pool of observation book data that library book widgets haven't picked up yet.
+	 * They fight me at every turn setting their data before or after display except via ctor script or bound function;
+	 * since we're not able to assign any genre etc. data to a given book widget we have no choice but to assume a blind
+	 * bottom-up approach where we just pull in the next data chunk available in the relevant pool without much regard for sequence.
+	 */
+	UPROPERTY()
+	TArray<FLibraryBookData> UnshelvedObservations;
+	/**
+	 * @brief pool of diary book data that library book widgets haven't picked up yet.
+	 */
+	UPROPERTY()
+	TArray<FLibraryBookData> UnshelvedDiaries;
+	/**
+	 * @brief pool of conversation book data that library book widgets haven't picked up yet.
+	 */
+	UPROPERTY()
+	TArray<FLibraryBookData> UnshelvedConversations;
+
 public:
 	/**
 	 * @brief collection of book data which the library will need to create LibraryBookWidgets in the UI; it is organized as a 
@@ -38,10 +58,23 @@ public:
 
 public:
 	/**
+	 * @brief Pulls a book from the appropriate pool for a book widget to display.
+	 * @param Category the genre this book should be shelved into. 
+	 */
+	UFUNCTION(BlueprintCallable, Category = "Lore")
+	FLibraryBookData PullUnshelved(ELibraryCat Category);
+	/**
 	 * @brief adds FLibraryBookData to the BookBank mapping
 	 */
 	UFUNCTION(BlueprintCallable, Category = "Lore")
 	void AddBook(const FLibraryBookData& Data);
+
+	/**
+	 * @brief reads the content of BookBank into three emptyable pools of book data which the book widgets can blindly consume.
+	 * Not bothering to properly set this up with N pools to support N genres because this is a stupid workaround to a widget quirk.
+	 */
+	UFUNCTION(BlueprintCallable, Category = "Lore")
+	void PopulateUnshelved();
 
 	/**
 	 * @brief iterates over the BookBank map to create a UI filled with interactable ULibraryBookWidgets
