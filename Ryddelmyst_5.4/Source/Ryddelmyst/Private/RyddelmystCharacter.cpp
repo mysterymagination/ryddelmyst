@@ -288,7 +288,7 @@ void ARyddelmystCharacter::Interact()
 			USceneComponent* Skele = Actor->FindComponentByClass<USceneComponent>();
 			FName ClosestBone;
 			// Need to make sure the gaze was actually pretty nearby the closest bone
-			float MinimumRelevantDistance = 10.f;
+			float MinimumRelevantDistance = 100.f;
 			if (Skele)
 			{
 				UE_LOG(LogTemp, Warning, TEXT("Interact; sifting through bones, respectfully..."));
@@ -482,6 +482,11 @@ void ARyddelmystCharacter::Interact()
 							UE_LOG(LogTemp, Warning, TEXT("Interact; closing opencloseable object %s"), *Actor->GetName());
 							IOpenClose::Execute_Close(Actor, this);
 						}
+					}
+
+					if (cap == InteractCapability::CONSUMABLE)
+					{
+						Actor->Destroy();
 					}
 
 					// todo: extend player collision bounds to encompass the grabbable object; I guess toss a cubeoid around it?  Alternative would be to lean on the existing collision of the object and somehow get a message sent to the player iff the player is holding it that it has collided with something.

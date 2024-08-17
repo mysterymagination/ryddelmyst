@@ -23,11 +23,11 @@ void ULibraryWidget::PopulateUnshelved()
     {
         UnshelvedObservations = BookBank[ELibraryCat::Observation].Books;
     }
-    else if (BookBank.Contains(ELibraryCat::Conversation))
+    if (BookBank.Contains(ELibraryCat::Conversation))
     {
         UnshelvedConversations = BookBank[ELibraryCat::Conversation].Books;
     }
-    else if (BookBank.Contains(ELibraryCat::Diary))
+    if (BookBank.Contains(ELibraryCat::Diary))
     {
         UnshelvedDiaries = BookBank[ELibraryCat::Diary].Books;
     }
