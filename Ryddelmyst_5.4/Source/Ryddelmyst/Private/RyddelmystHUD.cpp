@@ -464,9 +464,11 @@ bool ARyddelmystHUD::ShowLibrary()
 	{
 		if (!LibraryWidget->IsInViewport())
 		{
-			LibraryWidget->AddToViewport();
+			// order of operations here is important -- we need to take care of data mucking about before
+			// actually displaying the library, which triggers its 'construction' script.
 			LibraryWidget->ReshelveBooks();
 			LibraryWidget->PopulateUnshelved();
+			LibraryWidget->AddToViewport();
 			return true;
 		}
 	}

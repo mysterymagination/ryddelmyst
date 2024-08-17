@@ -84,10 +84,7 @@ public:
 	void ShelveBooks_Implementation() {};
 
 	/**
-	 * @brief for some awful reason the ULibraryBook widgets clear themselves of data or something
-	 * when we add the library and the shelf lists to the viewport. So, here we iterates over the 
-	 * interactable ULibraryBookWidgets we added in the original shelving and populate their data (again).
-	 * Maybe it'll stick this time. Fuggin UI, man.
+	 * @brief do whatever's necessary to get a clean population of BookBank books represented on the shelves.
 	 */
 	UFUNCTION(BlueprintCallable, BlueprintNativeEvent, Category = "Lore")
 	void ReshelveBooks();

@@ -7,7 +7,7 @@
 #include "Engine/Texture2D.h"
 #include "LibraryBookWidget.generated.h"
 
-UENUM()
+UENUM(BlueprintType)
 enum class ELibraryCat : uint8
 {
 	Conversation	UMETA(DisplayName = "Conversation"),
