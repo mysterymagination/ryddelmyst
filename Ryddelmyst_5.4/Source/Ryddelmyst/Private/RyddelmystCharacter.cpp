@@ -288,7 +288,7 @@ void ARyddelmystCharacter::Interact()
 			USceneComponent* Skele = Actor->FindComponentByClass<USceneComponent>();
 			FName ClosestBone;
 			// Need to make sure the gaze was actually pretty nearby the closest bone
-			float MinimumRelevantDistance = 100.f;
+			float MinimumRelevantDistance = 25.f;
 			if (Skele)
 			{
 				UE_LOG(LogTemp, Warning, TEXT("Interact; sifting through bones, respectfully..."));
