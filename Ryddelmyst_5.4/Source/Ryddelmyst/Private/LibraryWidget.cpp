@@ -7,10 +7,34 @@ void ULibraryWidget::AddBook(const FLibraryBookData& Data)
 {
     if (BookBank.Contains(Data.Genre))
     {
-        BookBank[Data.Genre].Books.Add(Data);
+        // update case where we need to ensure the given genre book array does not contain an entry with identical information.
+        bool Duplicate = false;
+        for (auto Book : BookBank[Data.Genre].Books)
+        {
+            if (Data.Genre == ELibraryCat::Observation || Data.Genre == ELibraryCat::Diary)
+            {
+                if (Data.LocalizedLore.EqualToCaseIgnored(Book.LocalizedLore))
+                {
+                    Duplicate = true;
+                }
+            }
+            else 
+            {
+                if (Data.ConversationScript.Equals(Book.ConversationScript, ESearchCase::IgnoreCase))
+                {
+                    Duplicate = true;
+                }
+            }
+        }
+
+        if (!Duplicate)
+        {
+            BookBank[Data.Genre].Books.Add(Data);
+        }
     }
     else 
     {
+        // simple insert case for novel genre.
         FLibraryBookShelf Shelf;
         Shelf.Books.Add(Data);
         BookBank.Add(Data.Genre, Shelf);
