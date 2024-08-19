@@ -64,10 +64,17 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "Lore")
 	FLibraryBookData PullUnshelved(ELibraryCat Category);
 	/**
-	 * @brief adds FLibraryBookData to the BookBank mapping
+	 * @brief adds FLibraryBookData to the BookBank mapping under the relevant genre.
+	 * @param Data the library book data to add.
 	 */
 	UFUNCTION(BlueprintCallable, Category = "Lore")
 	void AddBook(const FLibraryBookData& Data);
+	/**
+	 * @brief modified a given book data struct, replacing string template vars with state-based values and reassembling the contents into localized text.
+	 * @param Data the library book data to be doctored.
+	 */
+	UFUNCTION(BlueprintCallable, Category = "Lore")
+	void BookDoctor(FLibraryBookData& Data);
 
 	/**
 	 * @brief reads the content of BookBank into three emptyable pools of book data which the book widgets can blindly consume.

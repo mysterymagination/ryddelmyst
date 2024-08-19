@@ -17,18 +17,35 @@ void ULibraryWidget::AddBook(const FLibraryBookData& Data)
     }
 }
 
+void ULibraryWidget::BookDoctor(FLibraryBookData& Data)
+{
+    // todo: scan the book for string template vars and replace them based on current game state.
+}
+
 void ULibraryWidget::PopulateUnshelved()
 {
     if (BookBank.Contains(ELibraryCat::Observation))
     {
+        for (auto Book : BookBank[ELibraryCat::Observation].Books)
+        {
+            BookDoctor(Book);
+        }
         UnshelvedObservations = BookBank[ELibraryCat::Observation].Books;
     }
     if (BookBank.Contains(ELibraryCat::Conversation))
     {
+        for (auto Book : BookBank[ELibraryCat::Conversation].Books)
+        {
+            BookDoctor(Book);
+        }
         UnshelvedConversations = BookBank[ELibraryCat::Conversation].Books;
     }
     if (BookBank.Contains(ELibraryCat::Diary))
     {
+        for (auto Book : BookBank[ELibraryCat::Diary].Books)
+        {
+            BookDoctor(Book);
+        }
         UnshelvedDiaries = BookBank[ELibraryCat::Diary].Books;
     }
 }
