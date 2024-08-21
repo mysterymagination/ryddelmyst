@@ -85,25 +85,25 @@ ARyddelmystCharacter::ARyddelmystCharacter()
     
 	PortraitMap = 
 	{
-		{"happy", ConstructorHelpers::FObjectFinder<UPaperSprite>
+		{InteractReactions::HAPPY, ConstructorHelpers::FObjectFinder<UPaperSprite>
  (TEXT("/Game/Ryddelmyst_Assets/Textures/maya_portraits_Sprite_Happy.maya_portraits_Sprite_Happy")).Object},
-		{"sad", ConstructorHelpers::FObjectFinder<UPaperSprite>
+		{InteractReactions::SAD, ConstructorHelpers::FObjectFinder<UPaperSprite>
  (TEXT("/Game/Ryddelmyst_Assets/Textures/maya_portraits_Sprite_Sad.maya_portraits_Sprite_Sad")).Object},
-		{"weary", ConstructorHelpers::FObjectFinder<UPaperSprite>
+		{InteractReactions::WEARY, ConstructorHelpers::FObjectFinder<UPaperSprite>
  (TEXT("/Game/Ryddelmyst_Assets/Textures/maya_portraits_Sprite_Weary.maya_portraits_Sprite_Weary")).Object},
-		{"eldritch", ConstructorHelpers::FObjectFinder<UPaperSprite>
+		{InteractReactions::ELDRITCH, ConstructorHelpers::FObjectFinder<UPaperSprite>
  (TEXT("/Game/Ryddelmyst_Assets/Textures/maya_portraits_Sprite_Eldritch.maya_portraits_Sprite_Eldritch")).Object},
-		{"flirty", ConstructorHelpers::FObjectFinder<UPaperSprite>
+		{InteractReactions::FLIRTY, ConstructorHelpers::FObjectFinder<UPaperSprite>
  (TEXT("/Game/Ryddelmyst_Assets/Textures/maya_portraits_Sprite_Flirty.maya_portraits_Sprite_Flirty")).Object},
-		{"angry", ConstructorHelpers::FObjectFinder<UPaperSprite>
+		{InteractReactions::ANGRY, ConstructorHelpers::FObjectFinder<UPaperSprite>
  (TEXT("/Game/Ryddelmyst_Assets/Textures/maya_portraits_Sprite_Angry.maya_portraits_Sprite_Angry")).Object},
-		{"embarrassed", ConstructorHelpers::FObjectFinder<UPaperSprite>
+		{InteractReactions::EMBARRASSED, ConstructorHelpers::FObjectFinder<UPaperSprite>
  (TEXT("/Game/Ryddelmyst_Assets/Textures/maya_portraits_Sprite_Embarrassed.maya_portraits_Sprite_Embarrassed")).Object},
-		{"confused", ConstructorHelpers::FObjectFinder<UPaperSprite>
+		{InteractReactions::CONFUSED, ConstructorHelpers::FObjectFinder<UPaperSprite>
  (TEXT("/Game/Ryddelmyst_Assets/Textures/maya_portraits_Sprite_Confused.maya_portraits_Sprite_Confused")).Object}
 	};
 
-	UE_LOG(LogTemp, Warning, TEXT("ryddelcharacter ctor; portraitmap at happy says %p"), PortraitMap["happy"]);
+	UE_LOG(LogTemp, Warning, TEXT("ryddelcharacter ctor; portraitmap at happy says %p"), PortraitMap[InteractReactions::HAPPY]);
 }
 
 void ARyddelmystCharacter::BeginPlay()
@@ -367,11 +367,11 @@ void ARyddelmystCharacter::Interact()
 							if (!StoryBlock)
 							{
 								Cast<URyddelmystGameInstance>(GetWorld()->GetGameInstance())->GetEventManager()->WoodEggDangerEvent.Broadcast(true);
-								HUD->ShowDialogue(PortraitMap["happy"], FText::FromString("Eh, I got 'im! Feels kinda warm. And wiggly. Hm."));
+								HUD->ShowDialogue(PortraitMap[InteractReactions::HAPPY], FText::FromString("Eh, I got 'im! Feels kinda warm. And wiggly. Hm."));
 							}
 							else 
 							{
-								HUD->ShowDialogue(PortraitMap["weary"], FText::FromString("Some crazy monsterpus force is holding it down! I sense artifacts of power nearby; perhaps I can use one or more of them to pry it loose?"));
+								HUD->ShowDialogue(PortraitMap[InteractReactions::WEARY], FText::FromString("Some crazy monsterpus force is holding it down! I sense artifacts of power nearby; perhaps I can use one or more of them to pry it loose?"));
 							}
 						}
 						if (!StoryBlock)
@@ -412,43 +412,15 @@ void ARyddelmystCharacter::Interact()
 						if (Actor->GetClass()->ImplementsInterface(UDescribable::StaticClass()))
 						{
 							FDescriptor Desc = IDescribable::Execute_GenerateDescription(Actor, ClosestBone);
-							UPaperSprite* ReactionPortrait = nullptr;
-							switch(Desc.Reaction)
+							UPaperSprite* ReactionPortrait = PortraitMap[Desc.Reaction];
+							// Maya defaults to a happy outlook!  That's the way to be.
+							if (!ReactionPortrait)
 							{
-								// Maya defaults to a happy outlook!  That's the way to be.
-								case InteractReactions::HAPPY:
-								case InteractReactions::NEUTRAL:
-									ReactionPortrait = PortraitMap["happy"];
-									break;
-								case InteractReactions::SAD:
-									ReactionPortrait = PortraitMap["sad"];
-									break;
-								case InteractReactions::FLIRTY:
-									ReactionPortrait = PortraitMap["flirty"];
-									break;
-								case InteractReactions::CONFUSED:
-									ReactionPortrait = PortraitMap["confused"];
-									break;
-								case InteractReactions::ANGRY:
-									ReactionPortrait = PortraitMap["angry"];
-									break;
-								case InteractReactions::EMBARRASSED:
-									ReactionPortrait = PortraitMap["embarrassed"];
-									break;
-								case InteractReactions::WEARY:
-									ReactionPortrait = PortraitMap["weary"];
-									break;
-								case InteractReactions::ELDRITCH:
-									ReactionPortrait = PortraitMap["eldritch"];
-									break;
-								default:
-									ReactionPortrait = PortraitMap["happy"];
-									break;
-
+								ReactionPortrait = PortraitMap[InteractReactions::HAPPY];
 							}
 							HUD->ShowDialogue(ReactionPortrait, Desc.LocalizedDescription);
 							const UEnum* ReactionEnum = FindObject<UEnum>(ANY_PACKAGE, TEXT("InteractReactions"));
-							UE_LOG(LogTemp, Warning, TEXT("Interact; describing %s as %s and reaction %s.  Portrait map at confused says %p"), *Actor->GetName(), *Desc.LocalizedDescription.ToString(), *ReactionEnum->GetNameStringByIndex(static_cast<int32>(Desc.Reaction)), PortraitMap["confused"]);
+							UE_LOG(LogTemp, Warning, TEXT("Interact; describing %s as %s and reaction %s.  Portrait map at confused says %p"), *Actor->GetName(), *Desc.LocalizedDescription.ToString(), *ReactionEnum->GetNameStringByIndex(static_cast<int32>(Desc.Reaction)), PortraitMap[InteractReactions::CONFUSED]);
 						}
 					}
 					else if (cap == InteractCapability::LOREABLE)
@@ -456,7 +428,13 @@ void ARyddelmystCharacter::Interact()
 						if (Actor->GetClass()->ImplementsInterface(UDescribable::StaticClass()))
 						{
 							FDescriptor Desc = IDescribable::Execute_GenerateDescription(Actor, ClosestBone);
-							HUD->ShowDialogue(PortraitMap["eldritch"], Desc.LocalizedDescription);
+							UPaperSprite* ReactionPortrait = PortraitMap[Desc.Reaction];
+							// Maya defaults to a happy outlook!  That's the way to be.
+							if (!ReactionPortrait)
+							{
+								ReactionPortrait = PortraitMap[InteractReactions::HAPPY];
+							}
+							HUD->ShowDialogue(ReactionPortrait, Desc.LocalizedDescription);
 							UE_LOG(LogTemp, Warning, TEXT("Interact; loreable desc says title %s and lore %s"), *Desc.Lore.LocalizedTitle.ToString(), *Desc.Lore.LocalizedLore.ToString());
 							HUD->AddLore(Desc.Lore);
 						}
@@ -1103,7 +1081,7 @@ bool ARyddelmystCharacter::AddInventoryItem(UObject* ItemObj)
 	}
 	else
 	{
-		HUD->ShowDialogue(PortraitMap["weary"], NSLOCTEXT("NSFeedback", "KeyInvFull", "My inventory is full!  Insert overflowing junk in my trunk joke here."));
+		HUD->ShowDialogue(PortraitMap[InteractReactions::WEARY], NSLOCTEXT("NSFeedback", "KeyInvFull", "My inventory is full!  Insert overflowing junk in my trunk joke here."));
 		UE_LOG(LogTemp, Warning, TEXT("AddInventoryItem; inventory is full"));
 		return false;
 	}

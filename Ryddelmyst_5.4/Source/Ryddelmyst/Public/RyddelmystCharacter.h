@@ -27,6 +27,7 @@
 #include "HitBoxerComponent.h"
 #include "BodyCapsuleComponent.h"
 #include "RyddelmystGameMode.h"
+#include "Interact.h"
 #include "RyddelmystCharacter.generated.h"
 
 class UInputComponent;
@@ -142,7 +143,7 @@ private:
 	UPROPERTY()
 	UBattleStats* CharacterStats;
     UPROPERTY()
-	TMap<FString, UPaperSprite*> PortraitMap;
+	TMap<InteractReactions, UPaperSprite*> PortraitMap;
 	/** The number of map units we move the 3PP cam along its offset vector direction towards or away from the character */
 	UPROPERTY()
 	float ZoomRate = 50.f;
