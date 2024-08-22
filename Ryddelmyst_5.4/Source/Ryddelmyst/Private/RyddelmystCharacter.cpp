@@ -87,6 +87,8 @@ ARyddelmystCharacter::ARyddelmystCharacter()
 	{
 		{InteractReactions::HAPPY, ConstructorHelpers::FObjectFinder<UPaperSprite>
  (TEXT("/Game/Ryddelmyst_Assets/Textures/maya_portraits_Sprite_Happy.maya_portraits_Sprite_Happy")).Object},
+ 		{InteractReactions::NEUTRAL, ConstructorHelpers::FObjectFinder<UPaperSprite>
+ (TEXT("/Game/Ryddelmyst_Assets/Textures/maya_portraits_Sprite_Happy.maya_portraits_Sprite_Happy")).Object},
 		{InteractReactions::SAD, ConstructorHelpers::FObjectFinder<UPaperSprite>
  (TEXT("/Game/Ryddelmyst_Assets/Textures/maya_portraits_Sprite_Sad.maya_portraits_Sprite_Sad")).Object},
 		{InteractReactions::WEARY, ConstructorHelpers::FObjectFinder<UPaperSprite>
@@ -412,12 +414,17 @@ void ARyddelmystCharacter::Interact()
 						if (Actor->GetClass()->ImplementsInterface(UDescribable::StaticClass()))
 						{
 							FDescriptor Desc = IDescribable::Execute_GenerateDescription(Actor, ClosestBone);
-							UPaperSprite* ReactionPortrait = PortraitMap[Desc.Reaction];
-							// Maya defaults to a happy outlook!  That's the way to be.
-							if (!ReactionPortrait)
+							UPaperSprite* ReactionPortrait;
+							if (PortraitMap.Contains(Desc.Reaction))
 							{
+								ReactionPortrait = PortraitMap[Desc.Reaction];
+							}
+							else
+							{
+								// Maya defaults to a happy outlook!  That's the way to be.
 								ReactionPortrait = PortraitMap[InteractReactions::HAPPY];
 							}
+							
 							HUD->ShowDialogue(ReactionPortrait, Desc.LocalizedDescription);
 							const UEnum* ReactionEnum = FindObject<UEnum>(ANY_PACKAGE, TEXT("InteractReactions"));
 							UE_LOG(LogTemp, Warning, TEXT("Interact; describing %s as %s and reaction %s.  Portrait map at confused says %p"), *Actor->GetName(), *Desc.LocalizedDescription.ToString(), *ReactionEnum->GetNameStringByIndex(static_cast<int32>(Desc.Reaction)), PortraitMap[InteractReactions::CONFUSED]);
@@ -428,12 +435,17 @@ void ARyddelmystCharacter::Interact()
 						if (Actor->GetClass()->ImplementsInterface(UDescribable::StaticClass()))
 						{
 							FDescriptor Desc = IDescribable::Execute_GenerateDescription(Actor, ClosestBone);
-							UPaperSprite* ReactionPortrait = PortraitMap[Desc.Reaction];
-							// Maya defaults to a happy outlook!  That's the way to be.
-							if (!ReactionPortrait)
+							UPaperSprite* ReactionPortrait;
+							if (PortraitMap.Contains(Desc.Reaction))
 							{
+								ReactionPortrait = PortraitMap[Desc.Reaction];
+							}
+							else
+							{
+								// Maya defaults to a happy outlook!  That's the way to be.
 								ReactionPortrait = PortraitMap[InteractReactions::HAPPY];
 							}
+							
 							HUD->ShowDialogue(ReactionPortrait, Desc.LocalizedDescription);
 							UE_LOG(LogTemp, Warning, TEXT("Interact; loreable desc says title %s and lore %s"), *Desc.Lore.LocalizedTitle.ToString(), *Desc.Lore.LocalizedLore.ToString());
 							HUD->AddLore(Desc.Lore);
