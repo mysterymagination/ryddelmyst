@@ -43,6 +43,9 @@ ARyddelmystHUD::ARyddelmystHUD()
 
 	static ConstructorHelpers::FObjectFinder<UTexture2D> SelectionTexObj(TEXT("/Game/Ryddelmyst_Assets/Textures/SelectionHighlight"));
 	InventorySelectionTexture = SelectionTexObj.Object;
+
+	static ConstructorHelpers::FClassFinder<UTextDisplayWidget> BookTextWidgetObj(TEXT("/Game/Ryddelmyst_Assets/UI/BP_BookTextDisplay"));
+	BookTextWidgetClass = BookTextWidgetObj.Class;
 }
 
 
@@ -107,6 +110,15 @@ void ARyddelmystHUD::BeginPlay()
 		else
 		{
 			UE_LOG(LogTemp, Error, TEXT("BeginPlay; no text widget class set"));
+		}
+
+		if (BookTextWidgetClass)
+		{
+			BookTextWidget = CreateWidget<UTextDisplayWidget>(GetWorld(), BookTextWidgetClass);
+		}
+		else
+		{
+			UE_LOG(LogTemp, Error, TEXT("BeginPlay; no book text widget class set"));
 		}
 
 		if (PauseMenuWidgetClass)
@@ -341,6 +353,41 @@ bool ARyddelmystHUD::HideText()
 	else
 	{
 		UE_LOG(LogTemp, Error, TEXT("HideDialogue; text widget not created yet"));
+	}
+	return false;
+}
+
+bool ARyddelmystHUD::ShowBookText(const FText& Text)
+{
+	if (BookTextWidget)
+	{
+		BookTextWidget->SetText(Text);
+		if (!BookTextWidget->IsInViewport())
+		{
+			BookTextWidget->AddToViewport();
+			return true;
+		}
+	}
+	else
+	{
+		UE_LOG(LogTemp, Error, TEXT("ShowDialogue; book text widget not created yet"));
+	}
+	return false;
+}
+
+bool ARyddelmystHUD::HideBookText()
+{
+	if (BookTextWidget)
+	{
+		if (BookTextWidget->IsInViewport())
+		{
+			BookTextWidget->RemoveFromViewport();
+			return true;
+		}
+	}
+	else
+	{
+		UE_LOG(LogTemp, Error, TEXT("HideDialogue; book text widget not created yet"));
 	}
 	return false;
 }

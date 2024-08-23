@@ -140,6 +140,23 @@ public:
 	bool HideText();
 
 	/**
+	 * @brief Attempts to show book-like longform text in the mostly full screen text box, if one is not already showing
+	 * @param Text the text to show over most of the screen
+	 * @return true if text was shown, false otherwise 
+	 * 
+	 */
+	UFUNCTION(BlueprintCallable, Category = "Lore")
+	bool ShowBookText(const FText& Text);
+
+	/**
+	 * @brief Attempts to hide the book-like longform text box, if one is showing
+	 * @return true if text was hidden, false otherwise 
+	 * 
+	 */
+	UFUNCTION(BlueprintCallable, Category = "Lore")
+	bool HideBookText();
+
+	/**
 	 * @brief Converts the input JSON string into an interactive UI tree.
 	 * @param JsonString - raw string representation of the JSON conversation script content.
 	 * @return true if the convo was shown, false otherwise.
@@ -210,14 +227,26 @@ private:
 	UPROPERTY(EditAnywhere, Category = "Lore")
 	TSubclassOf<class ULibraryWidget> LibraryWidgetClass;
 
+	UPROPERTY(EditAnywhere, Category = "Lore")
+	TSubclassOf<class UTextDisplayWidget> BookTextWidgetClass;
+
 	UPROPERTY()
 	class UUserWidget* PauseMenuWidget;
 
 	UPROPERTY()
 	class UUserWidget* GameOverMenuWidget;
 
+	/**
+	 * @brief UTextDisplayWidget for displaying pop-up billboard-like text, center aligned etc.  
+	 */
 	UPROPERTY()
 	class UTextDisplayWidget* TextWidget;
+
+	/**
+	 * @brief UTextDisplayWidget for displaying book-like text, left and top aligned etc.  
+	 */
+	UPROPERTY()
+	class UTextDisplayWidget* BookTextWidget;
 
 	UPROPERTY()
 	class ULibraryWidget* LibraryWidget;
