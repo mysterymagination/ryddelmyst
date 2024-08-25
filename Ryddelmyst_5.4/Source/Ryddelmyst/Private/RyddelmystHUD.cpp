@@ -44,7 +44,10 @@ ARyddelmystHUD::ARyddelmystHUD()
 	static ConstructorHelpers::FObjectFinder<UTexture2D> SelectionTexObj(TEXT("/Game/Ryddelmyst_Assets/Textures/SelectionHighlight"));
 	InventorySelectionTexture = SelectionTexObj.Object;
 
-	static ConstructorHelpers::FClassFinder<UTextDisplayWidget> BookTextWidgetObj(TEXT("/Game/Ryddelmyst_Assets/UI/BP_BookTextDisplay"));
+	static ConstructorHelpers::FClassFinder<UUserWidget> TextWidgetObj(TEXT("/Game/Ryddelmyst_Assets/UI/BP_TextDisplay"));
+	TextWidgetClass = TextWidgetObj.Class;
+
+	static ConstructorHelpers::FClassFinder<UUserWidget> BookTextWidgetObj(TEXT("/Game/Ryddelmyst_Assets/UI/BP_BookTextDisplay"));
 	BookTextWidgetClass = BookTextWidgetObj.Class;
 }
 
