@@ -5,6 +5,7 @@
 #include "CoreMinimal.h"
 #include "Attack.h"
 #include "Utils.h"
+#include <functional>
 #include "SnowballAttack.generated.h"
 
 /**
