@@ -321,13 +321,6 @@ void ARyddelmystCharacter::Interact()
 				{
 					UE_LOG(LogTemp, Warning, TEXT("Interact; cap array index is %d, and ordinal says %u"), idx, (uint8)cap);
 					idx++;
-					UEnum* MyEnum = FindObject<UEnum>(ANY_PACKAGE, TEXT("InteractCapability"));
-					UE_LOG(LogTemp, Warning, TEXT("Interact; myenum ptr is %p"), MyEnum);
-					if (MyEnum)
-					{
-						FString DisplayString = MyEnum->GetNameStringByValue((uint8)cap);
-						UE_LOG(LogTemp, Warning, TEXT("Interact; cap array of interactable says %s"), *DisplayString);
-					}
 
 					if (cap == InteractCapability::GRABBABLE)
 					{
@@ -426,8 +419,6 @@ void ARyddelmystCharacter::Interact()
 							}
 							
 							HUD->ShowDialogue(ReactionPortrait, Desc.LocalizedDescription);
-							const UEnum* ReactionEnum = FindObject<UEnum>(ANY_PACKAGE, TEXT("InteractReactions"));
-							UE_LOG(LogTemp, Warning, TEXT("Interact; describing %s as %s and reaction %s.  Portrait map at confused says %p"), *Actor->GetName(), *Desc.LocalizedDescription.ToString(), *ReactionEnum->GetNameStringByIndex(static_cast<int32>(Desc.Reaction)), PortraitMap[InteractReactions::CONFUSED]);
 						}
 					}
 					else if (cap == InteractCapability::LOREABLE)

@@ -96,7 +96,7 @@ void ARyddelmystHUD::BeginPlay()
 				if (InventorySelectionTexture)
 				{
 					InventorySelectionIcon = StatusWidget->WidgetTree->ConstructWidget<UImage>();
-					InventorySelectionIcon->Brush.ImageSize = FVector2D(FIntPoint(128, 128));
+					InventorySelectionIcon->SetDesiredSizeOverride(FVector2D(FIntPoint(128, 128)));
 					InventorySelectionIcon->SetBrushFromTexture(InventorySelectionTexture, false);
 				}
 			}
@@ -162,7 +162,7 @@ void ARyddelmystHUD::AddEquipIcon(class UTexture2D* tex)
 {
 	UImage* IconWidget = StatusWidget->WidgetTree->ConstructWidget<UImage>();
 	IconWidget->SetBrushFromTexture(tex, false);
-	IconWidget->Brush.ImageSize = FVector2D(FIntPoint(96, 96));
+	IconWidget->SetDesiredSizeOverride(FVector2D(FIntPoint(96, 96)));
 	EquipmentPanel->AddChildToHorizontalBox(IconWidget);
 }
 
@@ -170,7 +170,7 @@ void ARyddelmystHUD::AddItemIcon(class UTexture2D* tex)
 {
 	UImage* IconWidget = StatusWidget->WidgetTree->ConstructWidget<UImage>();
 	IconWidget->SetBrushFromTexture(tex, false);
-	IconWidget->Brush.ImageSize = FVector2D(FIntPoint(128, 128));
+	IconWidget->SetDesiredSizeOverride(FVector2D(FIntPoint(128, 128)));
 	InventoryPanel->AddChildToHorizontalBox(IconWidget);
 }
 
@@ -349,7 +349,7 @@ bool ARyddelmystHUD::HideText()
 	{
 		if (TextWidget->IsInViewport())
 		{
-			TextWidget->RemoveFromViewport();
+			TextWidget->RemoveFromParent();
 			return true;
 		}
 	}
@@ -384,7 +384,7 @@ bool ARyddelmystHUD::HideBookText()
 	{
 		if (BookTextWidget->IsInViewport())
 		{
-			BookTextWidget->RemoveFromViewport();
+			BookTextWidget->RemoveFromParent();
 			return true;
 		}
 	}
@@ -407,7 +407,7 @@ void ARyddelmystHUD::HideStatus()
 	{
 		if (StatusWidget->IsInViewport())
 		{
-			StatusWidget->RemoveFromViewport();
+			StatusWidget->RemoveFromParent();
 		}
 	}
 	else
@@ -535,7 +535,7 @@ bool ARyddelmystHUD::HideLibrary()
 	{
 		if (LibraryWidget->IsInViewport())
 		{
-			LibraryWidget->RemoveFromViewport();
+			LibraryWidget->RemoveFromParent();
 			return true;
 		}
 	}

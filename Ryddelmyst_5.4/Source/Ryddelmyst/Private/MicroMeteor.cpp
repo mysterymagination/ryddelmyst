@@ -102,8 +102,8 @@ void AMicroMeteor::MeteoricLaunch()
 	float Mag1X = FMath::Sqrt(1/(FMath::Square(directionRatio) + 1));
 	float Mag1Y = FMath::Sqrt(1/(FMath::Square(invDirectionRatio) + 1));
 	// renew signage
-	Mag1X *= FMath::IsNegativeFloat(DirectionVector.X) ? -1 : 1;
-	Mag1Y *= FMath::IsNegativeFloat(DirectionVector.Y) ? -1 : 1;
+	Mag1X *= DirectionVector.X < 0 ? -1 : 1;
+	Mag1Y *= DirectionVector.Y < 0 ? -1 : 1;
 	if (FMath::IsNaN(Mag1X) || FMath::IsNaN(Mag1Y))
 	{
 		UE_LOG(LogTemp, Warning, TEXT("TickComponent; launch -- NaN detected for X or Y components, which are %f,%f.  Full details: dirrat is %f, invdirrat is %f, DirectionVector.X is %f, and DirectionVector.Y is %f, for meteor with id %d"), Mag1X, Mag1Y, directionRatio, invDirectionRatio, DirectionVector.X, DirectionVector.Y, mId);

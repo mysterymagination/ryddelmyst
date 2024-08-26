@@ -120,9 +120,9 @@ void DataViz::FX_NumberParticles(UObject* World, const FVector& Location, const 
         );
         FloatingNumbersFX_Component->AddLocalRotation(Rotation);
         FloatingNumbersFX_Component->AddLocalOffset(FVector(0.f, OffsetAccumulator, 0.f), false, nullptr, ETeleportType::None);
-        FloatingNumbersFX_Component->SetNiagaraVariableFloat(TEXT("DamageAmp"), DamageAmp);
-        FloatingNumbersFX_Component->SetNiagaraVariableBool(TEXT("IsCrit"), IsCrit);
-        FloatingNumbersFX_Component->SetNiagaraVariableVec3(TEXT("RandomVelocity"), RandomVelocity);
+        FloatingNumbersFX_Component->SetVariableFloat(FName(TEXT("DamageAmp")), DamageAmp);
+        FloatingNumbersFX_Component->SetVariableBool(FName(TEXT("IsCrit")), IsCrit);
+        FloatingNumbersFX_Component->SetVariableVec3(FName(TEXT("RandomVelocity")), RandomVelocity);
         UNiagaraDataInterface* DataInterfaceForDigitTexture = UNiagaraFunctionLibrary::GetDataInterface(UNiagaraDataInterface::StaticClass(), FloatingNumbersFX_Component, FName{ TEXT("DigitTexture") });
         if (DataInterfaceForDigitTexture)
         {
