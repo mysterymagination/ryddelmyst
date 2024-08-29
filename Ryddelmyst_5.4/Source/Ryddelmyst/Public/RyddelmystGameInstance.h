@@ -22,4 +22,10 @@ public:
 private:
 	UPROPERTY()
 	URyddelmystEventManager* EventManager;
+public:
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Sound")
+	float MusicVolumeScale = 0.25f;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Sound")
+	float SFXVolumeScale = 0.25f;
 };

@@ -241,10 +241,8 @@ bool ARyddelmystHUD::IsDialogueActive()
 
 bool ARyddelmystHUD::ShowDialogue(UPaperSprite* Portrait, const FText& Text)
 {
-	UE_LOG(LogTemp, Error, TEXT("ShowDialogue; attempt to show %s"), *Text.ToString());
 	if (StatusWidget)
 	{
-		UE_LOG(LogTemp, Error, TEXT("ShowDialogue; showing %s"), *Text.ToString());
 		StatusWidget->SetText(Text);
 		if(Portrait)
 		{
@@ -266,10 +264,8 @@ bool ARyddelmystHUD::HideDialogue()
 {
 	if (StatusWidget)
 	{
-		UE_LOG(LogTemp, Error, TEXT("ShowDialogue; attempt to hide"));
 		if (StatusWidget->IsDialogueDisplayed)
 		{
-			UE_LOG(LogTemp, Error, TEXT("ShowDialogue; hiding"));
 			StatusWidget->IsDialogueDisplayed = false;
 			return true;
 		}

@@ -5,6 +5,7 @@
 #include "IAttacker.h"
 #include "Weapon.h"
 #include "Attack.h"
+#include "RyddelmystGameInstance.h"
 #include "Kismet/GameplayStatics.h"
 #include "ParticleUtils.h"
 
@@ -106,12 +107,13 @@ void AMonster::HandleDeath_Implementation(AActor* DamageCauser)
 {
 	UE_LOG(LogTemp, Warning, TEXT("HandleDeath; %s is destroyed by %s!"), *GetName(), DamageCauser ? *DamageCauser->GetName() : TEXT("null"));
 	ParticleUtils::SpawnParticlesAtLocation(GetWorld(), GetActorLocation(), DeathParticleSystem);
+	URyddelmystGameInstance* GameInstance = Cast<URyddelmystGameInstance>(UGameplayStatics::GetGameInstance(GetWorld()));
 	UGameplayStatics::PlaySoundAtLocation(
 		GetWorld(),
 		LoadObject<USoundBase>(nullptr, TEXT("/Game/Ryddelmyst_Assets/Audio/SFX/bfxr_sounds/Explosion2.Explosion2"), nullptr, LOAD_None, nullptr),
 		GetActorLocation(),
 		GetActorRotation(),
-		1.f,
+		GameInstance->SFXVolumeScale,
 		1.f,
 		0.f,
 		nullptr,
