@@ -99,6 +99,8 @@ void ARyddelmystHUD::BeginPlay()
 					InventorySelectionIcon->SetDesiredSizeOverride(FVector2D(128, 128));
 					InventorySelectionIcon->SetBrushFromTexture(InventorySelectionTexture, false);
 				}
+
+				ShowDialogue(nullptr, FText::FromString("What the?! Where am I? Hm, pretty cozy actually. I like it! For some reason I feel compelled to tell myself, aloud, that I can press the 'E Button' to interact with objects and close out or advance 'UI Elements' including my own 'speech bubble'. Oooookay... Ooh wait here comes another -- I can also press the 'Q Button' to pause and review my gathered 'quest logs'. Girl-o, my intrusive thoughts are getting intricate!"));
 			}
 		}
 		else
@@ -239,8 +241,10 @@ bool ARyddelmystHUD::IsDialogueActive()
 
 bool ARyddelmystHUD::ShowDialogue(UPaperSprite* Portrait, const FText& Text)
 {
+	UE_LOG(LogTemp, Error, TEXT("ShowDialogue; attempt to show %s"), *Text.ToString());
 	if (StatusWidget)
 	{
+		UE_LOG(LogTemp, Error, TEXT("ShowDialogue; showing %s"), *Text.ToString());
 		StatusWidget->SetText(Text);
 		if(Portrait)
 		{
@@ -262,8 +266,10 @@ bool ARyddelmystHUD::HideDialogue()
 {
 	if (StatusWidget)
 	{
+		UE_LOG(LogTemp, Error, TEXT("ShowDialogue; attempt to hide"));
 		if (StatusWidget->IsDialogueDisplayed)
 		{
+			UE_LOG(LogTemp, Error, TEXT("ShowDialogue; hiding"));
 			StatusWidget->IsDialogueDisplayed = false;
 			return true;
 		}
@@ -355,7 +361,7 @@ bool ARyddelmystHUD::HideText()
 	}
 	else
 	{
-		UE_LOG(LogTemp, Error, TEXT("HideDialogue; text widget not created yet"));
+		UE_LOG(LogTemp, Error, TEXT("HideText; text widget not created yet"));
 	}
 	return false;
 }
@@ -390,7 +396,7 @@ bool ARyddelmystHUD::HideBookText()
 	}
 	else
 	{
-		UE_LOG(LogTemp, Error, TEXT("HideDialogue; book text widget not created yet"));
+		UE_LOG(LogTemp, Error, TEXT("HideBookText; book text widget not created yet"));
 	}
 	return false;
 }
