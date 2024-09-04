@@ -106,3 +106,10 @@ FLibraryBookData ULibraryWidget::PullUnshelved(ELibraryCat Category)
 	}
     return data;
 }
+
+void ULibraryWidget::BookDoctor(FLibraryBookData& Data)
+{
+    // todo: search for instances of ${} template vars in the Lore of the input data
+    // todo: parse out the variable name inside the template syntax
+    // todo: look up the variable name and query gamestate to see what the replacement text value should be
+}
