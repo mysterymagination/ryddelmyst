@@ -41,11 +41,6 @@ void ULibraryWidget::AddBook(const FLibraryBookData& Data)
     }
 }
 
-void ULibraryWidget::BookDoctor(FLibraryBookData& Data)
-{
-    // todo: scan the book for string template vars and replace them based on current game state.
-}
-
 void ULibraryWidget::PopulateUnshelved()
 {
     if (BookBank.Contains(ELibraryCat::Observation))
@@ -110,6 +105,8 @@ FLibraryBookData ULibraryWidget::PullUnshelved(ELibraryCat Category)
 void ULibraryWidget::BookDoctor(FLibraryBookData& Data)
 {
     // todo: search for instances of ${} template vars in the Lore of the input data
+    FString LoreString = Data.LocalizedLore.ToString();
+    
     // todo: parse out the variable name inside the template syntax
     // todo: look up the variable name and query gamestate to see what the replacement text value should be
 }
