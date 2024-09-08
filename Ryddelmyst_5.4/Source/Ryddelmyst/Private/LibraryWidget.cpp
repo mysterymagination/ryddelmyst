@@ -106,7 +106,34 @@ void ULibraryWidget::BookDoctor(FLibraryBookData& Data)
 {
     // todo: search for instances of ${} template vars in the Lore of the input data
     FString LoreString = Data.LocalizedLore.ToString();
-    
-    // todo: parse out the variable name inside the template syntax
-    // todo: look up the variable name and query gamestate to see what the replacement text value should be
+    FString VarOpenToken = TEXT("${");
+    FString VarCloseToken = TEXT("}");
+    while (int OpenVarIndex = LoreString.Find(VarOpenToken) != -1) 
+    {
+        int CloseVarIndex = LoreString.Find(VarCloseToken, ESearchCase::IgnoreCase, ESearchDir::FromStart, OpenVarIndex);
+        if (CloseVarIndex != -1 && CloseVarIndex > OpenVarIndex)
+        {
+            // The open index will be index of the start of the open token substring, so we need to account for that in skipping to the varname content
+            int VarNameStartPos = OpenVarIndex + VarOpenToken.Len();
+            // The length of the VarCloseToken doesn't matter here since we just want to make sure we discount the index where it 
+            // begins to catch only the end of the varname content
+            int VarNameCount = CloseVarIndex - StartPos - 1;
+            FString VarName = LoreString.Mid(VarNameStartPos, VarNameCount);
+            FString Sub = LookupVariableSubstitution(VarName);
+            // Excise the variable template substring
+            LoreString.RemoveAt(OpenVarIndex, VarOpenToken.Len() + VarName.Len() + VarCloseToken.Len(), true);
+            // Insert the actual variable substitution value
+            LoreString.InsertAt(OpenVarIndex, Sub);
+        }
+        else 
+        {
+            UE_LOG(LogTemp, Error, TEXT("Malformed variable sub at %i"), OpenVarIndex);
+            continue;
+        }
+    }
+}
+
+FString ULibraryWidget::LookupVariableSubstitution(const FString& VariableName)
+{
+    // todo: use gamestate to figure out the appropriate variable substitution string
 }

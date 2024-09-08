@@ -7,6 +7,17 @@
 #include "RyddelmystGameState.generated.h"
 
 /**
+ * enum to store the current state of Maya's journey through the trials
+ */
+UENUM()
+enum class EMegyleTrialFlags : uint8
+{
+	EMegReveal,
+	EDiaryID,
+	EUnknown
+};
+
+/**
  * Tracks the current state of Maya's journey through the Megyle trial.
  */
 UCLASS()

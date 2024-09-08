@@ -19,6 +19,37 @@ public:
 	TArray<FLibraryBookData> Books;
 };
 
+/*
+ todo: not sure how best to represent what we want which is a data structure that 
+  maps a set of boolean story flags or other key story variable values to the appropriate string.
+  The easiest solution would be to just write the conditionals directly in the solver fn and hardcode the
+  returned strings from various branches, but that's not very data driveny. Using a state machine with
+  a nice integer backed enum could work, except that we're not really talking about discrete states --
+  Maya can flip various story flags and modify story variable values in any order and they should be 
+  mostly independent; having a state for all possible combinations of story vars doesn't make sense.
+  Anyway, to host the actual string data I was thinking about a mapping of maps i.e.
+  {
+	"varNameKey" : {
+		"some sorta condition aggregate data structure key" : "context relevant cheeky string replacement value" 
+	}
+  }
+  which we'd need to represent as like a TMap<FString, FBookContextMapping> with FBookContextMapping hosting a TMap<aggregate thing, FString>
+  since Unreal doesn't believe in nested collection types for some reason.
+  Bitfields suggest themselves since it's easy to shove a bunch of PoT values into one and then mask 'em out as needed. However, we're not
+  necessarily dealing with just booleans. Also Bitfields are basically never actually a good idea no matter how sexily simple they seem.
+*/
+// USTRUCT()
+// struct FBookContextMapping
+// {
+// 	GENERATED_BODY()
+// public:
+// 	/**
+// 	 * @brief Array of books for this categorical shelf.
+// 	 */
+// 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Lore")
+// 	TMap<EMegyleTrialFlags, Fstring> Books;
+// };
+
 /**
  * A displayable UI collection of lore entry LibraryBookWidgets. Buncha cruncha books. Home. Love.
  * Intended to be implemented in BP; default CPP impl will be a nop.
@@ -96,5 +127,9 @@ public:
 	UFUNCTION(BlueprintCallable, BlueprintNativeEvent, Category = "Lore")
 	void ReshelveBooks();
 	void ReshelveBooks_Implementation() {};
+
+private:
+	UFUNCTION(Category = "Lore")
+	FString LookupVariableSubstitution(const FString& VariableName);
 	
 };
