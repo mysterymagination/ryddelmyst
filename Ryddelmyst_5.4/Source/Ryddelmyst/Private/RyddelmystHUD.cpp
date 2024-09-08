@@ -100,7 +100,7 @@ void ARyddelmystHUD::BeginPlay()
 					InventorySelectionIcon->SetBrushFromTexture(InventorySelectionTexture, false);
 				}
 
-				ShowDialogue(nullptr, FText::FromString("What the?! Where am I? Hm, pretty cozy actually. I like it! For some reason I feel compelled to tell myself, aloud, that I can press the 'E Button' to interact with objects and close out or advance 'UI Elements' including my own 'speech bubble'. Oooookay... Ooh wait here comes another -- I can also press the 'Q Button' to pause and review my gathered 'quest logs'. Girl-o, my intrusive thoughts are getting intricate!"));
+				ShowDialogue(nullptr, FText::FromString("What the?! Where am I? Hm, pretty cozy actually. I like it! For some reason I feel compelled to tell myself, aloud, that I can press the 'E Button' to interact with objects and close out or advance 'UI Elements' including my own 'speech bubble'. Oooookay... Ooh wait here comes another -- I can also press the 'Q Button' to pause and review my gathered 'quest logs'. Girl-o, my intrusive thoughts are getting intricate! ALso, what am I doing standing on a table? AGAIN?"));
 			}
 		}
 		else
