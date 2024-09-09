@@ -20,7 +20,6 @@ void UHitBoxerComponent::OnHit(UPrimitiveComponent* StrikingComp, AActor* Strick
 			UE_LOG(LogTemp, Warning, TEXT("HitBoxer::OnHit; %s's striking comp %s weapon %s is running attack %s on %s's shapely %s"),
 				*StrikingComp->GetOwner()->GetName(), *StrikingComp->GetName(), (Weapon ? *Weapon->GetName() : TEXT("null weapon")), *(*Attack_Check)->AttackName, *StrickenActor->GetName(), *StrickenComp->GetName());
 			(*Attack_Check)->OnHit_Implementation(IAttacker::Execute_GetBattleStats(StrikingComp), StrikingComp, StrickenActor, StrickenComp, NormalImpulse, HitInfo);
-
 		}
 		else
 		{
