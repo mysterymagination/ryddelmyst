@@ -192,3 +192,7 @@ Audio:
    13.1 Source: https://opengameart.org/content/laser-weapon-burst-fire
    13.2 Authors: https://opengameart.org/users/celestialghost8
    13.3 License: CC0
+  13. Ryddelmyst/Content/Ryddelmyst_Assets/Audio/VO/Maya 
+   13.1 Source: https://opengameart.org/users/nocturnalvanguard
+   13.2 Authors: https://www.fiverr.com/auravoice
+   13.3 License: CC0
