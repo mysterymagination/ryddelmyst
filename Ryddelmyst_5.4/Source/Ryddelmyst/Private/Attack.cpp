@@ -32,10 +32,6 @@ void UAttack::OnHit_Implementation(FBattleStatsData StrikingBattlerData, UPrimit
         {
             AnatomyUnit = IAnatomy::Execute_GetAnatomyUnit(StrickenComp);
         }
-        // todo: load up a nice juicy explosion sound to indicate a good hit. A doink or something for hitting a part of a creature that can't be damaged might be nice,
-        //  but that ain't easy to do here since most of the instances of that we have going on are accidental and probably derive from something something confunsion between
-        //  root collision shape and the physics asset of a sk. mesh which is somewhat obscured while editing the Actor BP. Anyway, if we really need that we could put a tag in
-        //  some armor plates or wrap certain undamageable places in unharmor which gives some nice doink feedback to the player.
     }
     else
     {
@@ -52,7 +48,6 @@ void UAttack::OnHit_Implementation(FBattleStatsData StrikingBattlerData, UPrimit
                 AnatomyUnit = IAnatomy::Execute_GetAnatomyUnit(Body);
                 UE_LOG(LogTemp, Log, TEXT("OnHit; looked up the stricken stuff using hardcoded RMystCharacter cast hack. Armor says: %s, StrickenBattler says: %s, and Anatomy says: %s"),
                     *StrickenArmor->GetName(), *StrickenBattlerData.BattlerName, *AnatomyUnit->GetName());
-                // todo: load up a different successful hit sound, lady exclaiming sort of thing
             }
             else
             {

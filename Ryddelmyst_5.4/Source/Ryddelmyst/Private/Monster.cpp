@@ -93,6 +93,10 @@ bool AMonster::GetRunningStatus()
 
 void AMonster::HandleDamage(AActor* DamagedActor, float Damage, const class UDamageType* DamageType, class AController* InstigatedBy, AActor* DamageCauser)
 {
+	// todo: load up a nice juicy explosion sound to indicate a good hit. A doink or something for hitting a part of a creature that can't be damaged might be nice,
+        //  but that ain't easy to do here since most of the instances of that we have going on are accidental and probably derive from something something confunsion between
+        //  root collision shape and the physics asset of a sk. mesh which is somewhat obscured while editing the Actor BP. Anyway, if we really need that we could put a tag in
+        //  some armor plates or wrap certain undamageable places in unharmor which gives some nice doink feedback to the player.
 	UE_LOG(LogTemp, Warning, TEXT("HandleDamage; %s says ouch for %f because of damaging actor %s"), *DamagedActor->GetName(), Damage, DamageCauser ? *DamageCauser->GetName() : TEXT("null"));
 	MonsterStats->StatsData.StatsMap["HP"] -= Damage;
 	MonsterStats->StatsData.StatsMap["HP"] = FMath::Clamp(MonsterStats->StatsData.StatsMap["HP"], 0.0f, MonsterStats->StatsData.StatsMap["MaxHP"]);

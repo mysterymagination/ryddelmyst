@@ -27,6 +27,7 @@
 #include "Animation/Skeleton.h"
 #include <limits>
 #include "ITalkable.h"
+#include "AssetUtils.h"
 
 DEFINE_LOG_CATEGORY_STATIC(LogFPChar, Warning, All);
 
@@ -971,6 +972,28 @@ void ARyddelmystCharacter::HandleDamage(
 )
 {
 	UE_LOG(LogTemp, Warning, TEXT("HandleDamage; ouch for %f to %s"), Damage, *DamagedActor->GetName());
+	// load up a different successful hit sound, lady exclaiming sort of thing
+	FString ImpactLadyNoises = AssetUtils::ChooseRandomLadyExclamationAsset();
+    USoundBase* Exclamation = LoadObject<USoundBase>(nullptr, *ImpactLadyNoises, nullptr, LOAD_None, nullptr);
+	if (Exclamation)
+	{
+		UGameplayStatics::PlaySoundAtLocation(
+			GetWorld(),
+			Exclamation,
+			GetActorLocation(),
+			GetActorRotation(),
+			Cast<URyddelmystGameInstance>(UGameplayStatics::GetGameInstance(GetWorld()))->SFXVolumeScale,
+			1.f,
+			0.f,
+			nullptr,
+			nullptr,
+			nullptr
+		);
+	}
+	else 
+	{
+		UE_LOG(LogTemp, Error, TEXT("HandleDamage; exclamation sound from file %s came up null"), *ImpactLadyNoises);
+	}
 	UpdateHealth(-Damage);
 	bool CustomKnockback = false;
 	if (DamageCauser)

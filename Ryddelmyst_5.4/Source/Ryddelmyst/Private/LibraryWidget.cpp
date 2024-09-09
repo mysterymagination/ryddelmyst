@@ -117,7 +117,7 @@ void ULibraryWidget::BookDoctor(FLibraryBookData& Data)
             int VarNameStartPos = OpenVarIndex + VarOpenToken.Len();
             // The length of the VarCloseToken doesn't matter here since we just want to make sure we discount the index where it 
             // begins to catch only the end of the varname content
-            int VarNameCount = CloseVarIndex - StartPos - 1;
+            int VarNameCount = CloseVarIndex - VarNameStartPos - 1;
             FString VarName = LoreString.Mid(VarNameStartPos, VarNameCount);
             FString Sub = LookupVariableSubstitution(VarName);
             // Excise the variable template substring
@@ -136,4 +136,5 @@ void ULibraryWidget::BookDoctor(FLibraryBookData& Data)
 FString ULibraryWidget::LookupVariableSubstitution(const FString& VariableName)
 {
     // todo: use gamestate to figure out the appropriate variable substitution string
+    return TEXT("FillInLater");
 }
