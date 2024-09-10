@@ -200,7 +200,11 @@ Audio:
    15.1 Source: https://opengameart.org/content/level-up-power-up-coin-get-13-sounds
    15.2 Authors: https://opengameart.org/users/wobbleboxx, wobbleboxx.com
    15.3 License: CC0
-  16. Ryddelmyst/Content/Ryddelmyst_Assets/Audio/SFX/cloth_sounds 
+  16. Ryddelmyst/Content/Ryddelmyst_Assets/Audio/SFX/cloth_sounds (wardrobe_malfunction)
    16.1 Source: https://opengameart.org/content/cloth-swing-sounds
    16.2 Authors: https://opengameart.org/users/vinrax, Vladislav Krotov, http://vinraxarts.ru
    16.3 License: http://creativecommons.org/licenses/by/3.0/
+  17. Ryddelmyst/Content/Ryddelmyst_Assets/Audio/SFX/Stationary_07 (wardrobe_malfunction)
+   17.1 Source: https://opengameart.org/content/202-more-sound-effects
+   17.2 Authors: https://opengameart.org/users/owlishmedia
+   17.3 License: CC0

@@ -1170,7 +1170,7 @@ void ARyddelmystCharacter::AddEquippedItem(UObject* ItemObj)
 			);
 			UGameplayStatics::PlaySound2D(
 				GetWorld(),
-				LoadObject<USoundBase>(nullptr, TEXT("/Game/Ryddelmyst_Assets/Audio/SFX/cloth_sounds.cloth_sounds"), nullptr, LOAD_None, nullptr),
+				LoadObject<USoundBase>(nullptr, TEXT("/Game/Ryddelmyst_Assets/Audio/SFX/wardrobe_malfunction.wardrobe_malfunction"), nullptr, LOAD_None, nullptr),
 				Cast<URyddelmystGameInstance>(UGameplayStatics::GetGameInstance(GetWorld()))->SFXVolumeScale,
 				1.f,
 				0.f,
