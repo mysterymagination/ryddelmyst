@@ -360,15 +360,30 @@ void ARyddelmystCharacter::Interact()
 										 HandsSlotItem && HandsSlotItem->GetName().Contains(TEXT("IronSwordCloudConquest")) &&
 										 FeetSlotItem && FeetSlotItem->GetName().Contains(TEXT("SlippersOfLongWintersNap"));
 							StoryBlock = !AllQuestItems;
+							USoundBase* Eggsclamation = nullptr;
 							if (!StoryBlock)
 							{
 								Cast<URyddelmystGameInstance>(GetWorld()->GetGameInstance())->GetEventManager()->WoodEggDangerEvent.Broadcast(true);
 								HUD->ShowDialogue(PortraitMap[InteractReactions::HAPPY], FText::FromString("Eh, I got 'im! Feels kinda warm. And wiggly. Hm."));
+								Eggsclamation = LoadObject<USoundBase>(nullptr, TEXT("/Game/Ryddelmyst_Assets/Audio/VO/Maya/gotcha.gotcha"), nullptr, LOAD_None, nullptr);
 							}
 							else 
 							{
-								HUD->ShowDialogue(PortraitMap[InteractReactions::WEARY], FText::FromString("Some crazy monsterpus force is holding it down! I sense artifacts of power nearby; perhaps I can use one or more of them to pry it loose?"));
+								HUD->ShowDialogue(PortraitMap[InteractReactions::WEARY], FText::FromString("OOOH GODS ALL AROUND US, MY BACK! Some crazy monsterpus force is holding it down. I sense artifacts of power nearby; perhaps I can use one or more of them to pry it loose?"));
+								Eggsclamation = LoadObject<USoundBase>(nullptr, *AssetUtils::ChooseRandomLadyExclamationAsset(), nullptr, LOAD_None, nullptr);
 							}
+							UGameplayStatics::PlaySoundAtLocation(
+								GetWorld(),
+								Eggsclamation,
+								GetActorLocation(),
+								GetActorRotation(),
+								Cast<URyddelmystGameInstance>(GetWorld()->GetGameInstance())->SFXVolumeScale,
+								1.f,
+								0.f,
+								nullptr,
+								nullptr,
+								nullptr
+							);
 						}
 						if (!StoryBlock)
 						{
@@ -895,6 +910,20 @@ void ARyddelmystCharacter::Fire()
 						}
 					}
 				}
+				
+				UGameplayStatics::PlaySoundAtLocation(
+					GetWorld(),
+					LoadObject<USoundBase>(nullptr, TEXT("/Game/Ryddelmyst_Assets/Audio/SFX/bfxr_sounds/Laser2.Laser2"), nullptr, LOAD_None, nullptr),
+					GetActorLocation(),
+					GetActorRotation(),
+					Cast<URyddelmystGameInstance>(UGameplayStatics::GetGameInstance(GetWorld()))->SFXVolumeScale,
+					1.f,
+					0.f,
+					nullptr,
+					nullptr,
+					nullptr
+				);
+
 				// last, we incur the cost of casting the spell
 				CDOSnowballAttack->ProcessCosts(this);
 			}

@@ -105,6 +105,21 @@ void AMonster::HandleDamage(AActor* DamagedActor, float Damage, const class UDam
 		UE_LOG(LogTemp, Warning, TEXT("HandleDamage; %s HP with max %f has been depleted, so it will HandleDeath()"), *DamagedActor->GetName(), MonsterStats->StatsData.StatsMap["MaxHP"]);
 		HandleDeath(DamageCauser);
 	}
+	else 
+	{
+		UGameplayStatics::PlaySoundAtLocation(
+			GetWorld(),
+			LoadObject<USoundBase>(nullptr, TEXT("/Game/Ryddelmyst_Assets/Audio/SFX/bfxr_sounds/Explosion.Explosion"), nullptr, LOAD_None, nullptr),
+			GetActorLocation(),
+			GetActorRotation(),
+			Cast<URyddelmystGameInstance>(UGameplayStatics::GetGameInstance(GetWorld()))->SFXVolumeScale,
+			1.f,
+			0.f,
+			nullptr,
+			nullptr,
+			nullptr
+		);
+	}
 }
 
 void AMonster::HandleDeath_Implementation(AActor* DamageCauser)
