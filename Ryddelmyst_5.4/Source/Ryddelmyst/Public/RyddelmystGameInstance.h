@@ -19,6 +19,8 @@ public:
 	URyddelmystGameInstance();
 	UFUNCTION(BlueprintCallable, Category = "Event")
 	URyddelmystEventManager* GetEventManager() { return EventManager; }
+	UFUNCTION(BlueprintCallable, Category = "Sound")
+	void AdjustAmbientSounds(float ScaleFactor);
 private:
 	UPROPERTY()
 	URyddelmystEventManager* EventManager;
@@ -27,5 +29,5 @@ public:
 	float MusicVolumeScale = 0.25f;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Sound")
-	float SFXVolumeScale = 0.25f;
+	float SFXVolumeScale = 0.5f;
 };
