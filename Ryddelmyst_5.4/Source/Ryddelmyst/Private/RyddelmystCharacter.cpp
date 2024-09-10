@@ -1117,6 +1117,16 @@ bool ARyddelmystCharacter::AddInventoryItem(UObject* ItemObj)
 	{
 		if (ItemObj->GetClass()->ImplementsInterface(UItem::StaticClass()))
 		{
+			UGameplayStatics::PlaySound2D(
+				GetWorld(),
+				LoadObject<USoundBase>(nullptr, TEXT("/Game/Ryddelmyst_Assets/Audio/SFX/bfxr_sounds/Pickup_Coin.Pickup_Coin"), nullptr, LOAD_None, nullptr),
+				Cast<URyddelmystGameInstance>(UGameplayStatics::GetGameInstance(GetWorld()))->SFXVolumeScale,
+				1.f,
+				0.f,
+				nullptr,
+				nullptr,
+				true
+			);
 			HUD->AddItemIcon(IItem::Execute_GetDisplayIcon(ItemObj));
 			IItem::Execute_OnPickup(ItemObj, this);
 			Inventory.Add(ItemObj);
@@ -1148,6 +1158,26 @@ void ARyddelmystCharacter::AddEquippedItem(UObject* ItemObj)
 	{
 		if (IItem::Execute_IsEquippable(ItemObj))
 		{
+			UGameplayStatics::PlaySound2D(
+				GetWorld(),
+				LoadObject<USoundBase>(nullptr, TEXT("/Game/Ryddelmyst_Assets/Audio/SFX/Rise07.Rise07"), nullptr, LOAD_None, nullptr),
+				Cast<URyddelmystGameInstance>(UGameplayStatics::GetGameInstance(GetWorld()))->SFXVolumeScale,
+				1.f,
+				0.f,
+				nullptr,
+				nullptr,
+				true
+			);
+			UGameplayStatics::PlaySound2D(
+				GetWorld(),
+				LoadObject<USoundBase>(nullptr, TEXT("/Game/Ryddelmyst_Assets/Audio/SFX/cloth_sounds.cloth_sounds"), nullptr, LOAD_None, nullptr),
+				Cast<URyddelmystGameInstance>(UGameplayStatics::GetGameInstance(GetWorld()))->SFXVolumeScale,
+				1.f,
+				0.f,
+				nullptr,
+				nullptr,
+				true
+			);
 			HUD->AddEquipIcon(IItem::Execute_GetDisplayIcon(ItemObj));
 			IItem::Execute_OnEquip(ItemObj, this);
 			Equipment.Add(IItem::Execute_GetEquipSlot(ItemObj), ItemObj);
