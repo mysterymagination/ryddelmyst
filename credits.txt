@@ -56,9 +56,13 @@
     14.2: Authors: https://www.artstation.com/ruslanholonko
     14.3: License: CC-BY-SA-4.0
  15. Ryddelmyst/Content/Ryddelmyst_Assets/Meshes/Sign
-    14.1: Source: https://opengameart.org/content/wooden-sign
-    14.2: Authors: https://opengameart.org/users/overactiongs, Overaction Game Studio
-    14.3: License: CC0
+    15.1: Source: https://opengameart.org/content/wooden-sign
+    15.2: Authors: https://opengameart.org/users/overactiongs, Overaction Game Studio
+    15.3: License: CC0
+ 16. Ryddelmyst/Content/Ryddelmyst_Assets/Meshes/SM_MagicalBush
+    16.1: Source: https://opengameart.org/content/colorful-bushes
+    16.2: Authors: https://opengameart.org/users/rubberduck
+    16.3: License: CC0
 
 Textures:
   1. Ryddelmyst/Content/Ryddelmyst_Assets/Textures/snowflake.png
