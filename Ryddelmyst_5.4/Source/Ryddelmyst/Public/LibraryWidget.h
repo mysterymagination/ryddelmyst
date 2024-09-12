@@ -28,9 +28,23 @@ public:
   Maya can flip various story flags and modify story variable values in any order and they should be 
   mostly independent; having a state for all possible combinations of story vars doesn't make sense.
   Anyway, to host the actual string data I was thinking about a mapping of maps i.e.
+  EDIT: oh yeah, json
   {
-	"varNameKey" : {
-		"some sorta condition aggregate data structure key" : "context relevant cheeky string replacement value" 
+	"subVarNameKey" : {
+		"conditions" : [
+			{
+				"stateVarName" : "MegRevealed",
+				"type" : "boolean",
+				"expected" : "true",
+			},
+			{
+				"stateVarName" : "TreasuresCollected",
+				"type" : "integer",
+				"expected" : "1",
+			}
+		],
+		"passSubstitution" : "hey there Meg!",
+		"failSubstitution" : ""
 	}
   }
   which we'd need to represent as like a TMap<FString, FBookContextMapping> with FBookContextMapping hosting a TMap<aggregate thing, FString>
