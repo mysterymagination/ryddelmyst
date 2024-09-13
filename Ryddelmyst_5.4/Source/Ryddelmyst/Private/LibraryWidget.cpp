@@ -104,7 +104,7 @@ FLibraryBookData ULibraryWidget::PullUnshelved(ELibraryCat Category)
 
 void ULibraryWidget::BookDoctor(FLibraryBookData& Data)
 {
-    // todo: search for instances of ${} template vars in the Lore of the input data
+    // search for instances of ${} template vars in the Lore of the input data
     FString LoreString = Data.LocalizedLore.ToString();
     FString VarOpenToken = TEXT("${");
     FString VarCloseToken = TEXT("}");
@@ -139,10 +139,12 @@ FString ULibraryWidget::LookupVariableSubstitution(const FString& VariableName)
     //   So the idea is we have text sub lookup the relevant sub var in TextVTable.json and check each condition using
     //   the given boolean operator. If the result is true, we provide the pass substitution string. Else, we provide the fail substitution string.
     //   These substitution strings also should be scanned recursively for sub vars to support nonlinear (as in gameplay, not algebra) substitution chains.
-    if (!TextVTableJSON)
+    if (TextVTableJSON.IsEmpty())
     {
         TextVTableJSON = TEXT("/Game/Ryddelmyst_Assets/Text/TextVTable.json");
     }
+    const FString JsonFilePath = (FPaths::ProjectDir() + "/Game/Ryddelmyst_Assets/Text/TextVTable.json");
+    UE_LOG(LogTemp, Log, TEXT("LookupVariableSub; json path is %s"), *JsonFilePath);
     // todo: use FFileHelper to load in JSON text from additional text dir added to the game output package
     return TEXT("FillInLater");
 }

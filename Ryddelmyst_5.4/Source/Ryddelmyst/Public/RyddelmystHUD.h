@@ -225,9 +225,6 @@ private:
 	TSubclassOf<class ULibraryBookWidget> LibraryBookWidgetClass;
 
 	UPROPERTY(EditAnywhere, Category = "Lore")
-	TSubclassOf<class ULibraryWidget> LibraryWidgetClass;
-
-	UPROPERTY(EditAnywhere, Category = "Lore")
 	TSubclassOf<class UTextDisplayWidget> BookTextWidgetClass;
 
 	UPROPERTY()
@@ -247,9 +244,6 @@ private:
 	 */
 	UPROPERTY()
 	class UTextDisplayWidget* BookTextWidget;
-
-	UPROPERTY()
-	class ULibraryWidget* LibraryWidget;
 
 	/** Handle to the InventoryPanel UI widget in the HUD */
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Inventory", meta = (AllowPrivateAccess = "true"))
@@ -274,5 +268,14 @@ private:
 public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Dialogue")
 	TSubclassOf<class UTextDisplayWidget> TextWidgetClass;
+
+	UPROPERTY(EditAnywhere, Category = "Lore")
+	TSubclassOf<class ULibraryWidget> LibraryWidgetClass;
+
+	/**
+	 * @brief user widget that manages Lore display and access via the quest log.
+	 */
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Lore")
+	class ULibraryWidget* LibraryWidget;
 };
 
