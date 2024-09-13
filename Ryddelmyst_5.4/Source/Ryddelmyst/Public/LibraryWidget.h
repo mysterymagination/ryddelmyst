@@ -18,55 +18,7 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Lore")
 	TArray<FLibraryBookData> Books;
 };
-
-/*
- todo: not sure how best to represent what we want which is a data structure that 
-  maps a set of boolean story flags or other key story variable values to the appropriate string.
-  The easiest solution would be to just write the conditionals directly in the solver fn and hardcode the
-  returned strings from various branches, but that's not very data driveny. Using a state machine with
-  a nice integer backed enum could work, except that we're not really talking about discrete states --
-  Maya can flip various story flags and modify story variable values in any order and they should be 
-  mostly independent; having a state for all possible combinations of story vars doesn't make sense.
-  Anyway, to host the actual string data I was thinking about a mapping of maps i.e.
-  EDIT: oh yeah, json. So the idea below is we have text sub lookup the relevant sub var in this table and check each condition using
-  the given boolean operator. If the result is true, we provide the pass substitution string. Else, we provide the fail substitution string.
-  These substitution strings also should be scanned recursively for sub vars to support nonlinear (as in gameplay, not algebra) substitution chains. 
-  {
-	"subVarNameKey" : {
-		"conditions" : [
-			{
-				"stateVarName" : "MegRevealed",
-				"type" : "boolean",
-				"expected" : "true",
-			},
-			{
-				"operator" : "and"
-				"stateVarName" : "TreasuresCollected",
-				"type" : "integer",
-				"expected" : "1",
-			}
-		],
-		"passSubstitution" : "hey there Meg!",
-		"failSubstitution" : ""
-	}
-  }
-  which we'd need to represent as like a TMap<FString, FBookContextMapping> with FBookContextMapping hosting a TMap<aggregate thing, FString>
-  since Unreal doesn't believe in nested collection types for some reason.
-  Bitfields suggest themselves since it's easy to shove a bunch of PoT values into one and then mask 'em out as needed. However, we're not
-  necessarily dealing with just booleans. Also Bitfields are basically never actually a good idea no matter how sexily simple they seem.
-*/
-// USTRUCT()
-// struct FBookContextMapping
-// {
-// 	GENERATED_BODY()
-// public:
-// 	/**
-// 	 * @brief Array of books for this categorical shelf.
-// 	 */
-// 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Lore")
-// 	TMap<EMegyleTrialFlags, Fstring> Books;
-// };
-
+  
 /**
  * A displayable UI collection of lore entry LibraryBookWidgets. Buncha cruncha books. Home. Love.
  * Intended to be implemented in BP; default CPP impl will be a nop.
@@ -103,6 +55,11 @@ public:
 	 */
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Lore")
 	TMap<ELibraryCat, FLibraryBookShelf> BookBank;
+	/**
+	 * @brief the game assets relative path of the JSON file containing our text VTable for lore variable substitution e.g. "Oh sheep, it's ${Is_Monsterpus_Name_Discovered}"
+	 */
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Lore")
+	FString TextVTableJSON;
 
 public:
 	/**
