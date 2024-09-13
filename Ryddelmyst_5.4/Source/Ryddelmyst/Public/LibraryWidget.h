@@ -28,7 +28,9 @@ public:
   Maya can flip various story flags and modify story variable values in any order and they should be 
   mostly independent; having a state for all possible combinations of story vars doesn't make sense.
   Anyway, to host the actual string data I was thinking about a mapping of maps i.e.
-  EDIT: oh yeah, json
+  EDIT: oh yeah, json. So the idea below is we have text sub lookup the relevant sub var in this table and check each condition using
+  the given boolean operator. If the result is true, we provide the pass substitution string. Else, we provide the fail substitution string.
+  These substitution strings also should be scanned recursively for sub vars to support nonlinear (as in gameplay, not algebra) substitution chains. 
   {
 	"subVarNameKey" : {
 		"conditions" : [
@@ -38,6 +40,7 @@ public:
 				"expected" : "true",
 			},
 			{
+				"operator" : "and"
 				"stateVarName" : "TreasuresCollected",
 				"type" : "integer",
 				"expected" : "1",
