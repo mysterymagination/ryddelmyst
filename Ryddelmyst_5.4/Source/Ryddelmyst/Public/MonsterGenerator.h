@@ -30,7 +30,7 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "LevelDesign")
 	TArray<TSubclassOf<AMonster>> SpawnableMonsterClasses;
 	/**
-	 * @brief The amount of time between spawns.
+	 * @brief The amount of time in seconds between spawns.
 	 */
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "LevelDesign")
 	float SpawnPeriod;

@@ -20,11 +20,21 @@ void UMonsterGenerator::SpawnMonster(const TSubclassOf<AMonster> MonsterType)
         // spawn an instance of the given monster type at the location of the 
         // owning actor of the generator.
         FVector Location = GetOwner()->GetActorLocation();
-        const FVector* Location_ptr = &Location;
         FRotator Rotation = GetOwner()->GetActorRotation();
-        const FRotator* Rotation_ptr = &Rotation;
-        const FActorSpawnParameters SpawnInfo;
-        GetWorld()->SpawnActor(MonsterType.Get(), Location_ptr, Rotation_ptr, SpawnInfo);
+        FTransform SpawnTransform;
+		SpawnTransform.SetIdentity();
+        SpawnTransform.SetTranslation(Location);
+        SpawnTransform.SetRotation(FQuat(Rotation));
+        SpawnTransform.SetScale3D(FVector(1.f));
+        AMonster* Monster = GetWorld()->SpawnActorDeferred<AMonster>(
+            MonsterType.Get(), 
+            SpawnTransform, 
+            nullptr, 
+            nullptr, 
+            ESpawnActorCollisionHandlingMethod::AdjustIfPossibleButAlwaysSpawn
+        );
+        Monster->AutoPossessAI = EAutoPossessAI::Spawned;
+        Monster->FinishSpawning(SpawnTransform);
     }
     else 
     {
