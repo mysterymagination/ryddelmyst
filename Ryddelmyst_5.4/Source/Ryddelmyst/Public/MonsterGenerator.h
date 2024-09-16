@@ -17,23 +17,36 @@ class RYDDELMYST_API UMonsterGenerator : public UActorComponent
 	GENERATED_BODY()
 private:
 	UPROPERTY()
-	FTimerHandle SpawnTimerHandle;
+	FTimerHandle AutoSpawnTimerHandle;
+	UPROPERTY()
+	FTimerHandle AllowSpawnTimerHandle;
+	/**
+	 * @brief True if the generator is currently able to spawn a monster, false otherwise.
+	 */
+	UPROPERTY()
+	bool AllowSpawn = true;
 public:
 	/**
 	 * @brief True if the generator should spawn monsters automatically every SpawnPeriod seconds, false if the generator needs an event to trigger spawning.
 	 */
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "LevelDesign")
-	bool AutomaticSpawn;
+	bool AutomaticSpawn = false;
 	/**
 	 * @brief Array containing the types of monsters this spawner can spawn. Queried when SpawnMonster is passed nullptr.
 	 */
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "LevelDesign")
 	TArray<TSubclassOf<AMonster>> SpawnableMonsterClasses;
 	/**
-	 * @brief The amount of time in seconds between spawns.
+	 * @brief The amount of time in seconds between automatic spawns, if AutomaticSpawn is enabled.
 	 */
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "LevelDesign")
-	float SpawnPeriod;
+	float SpawnAutoPeriod = 1.f;
+	/**
+	 * @brief The amount of time in seconds that must pass between spawns, regardless of trigger. This prevents accidental over-spawn situations from
+	 * e.g. colliding with a spawn trap tile repeatedly.
+	 */
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "LevelDesign")
+	float SpawnCooldownPeriod = 1.f;
 public:
 	/**
 	 * @brief Spawns an instance of the given monster type nearby the generator.
@@ -62,4 +75,6 @@ public:
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
+private:
+	void SpawnCooled() { AllowSpawn = !AllowSpawn; };
 };

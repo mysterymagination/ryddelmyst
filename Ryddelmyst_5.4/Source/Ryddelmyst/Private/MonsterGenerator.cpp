@@ -9,7 +9,7 @@ void UMonsterGenerator::BeginPlay()
     Super::BeginPlay();
     if (AutomaticSpawn)
     {
-        GetWorld()->GetTimerManager().SetTimer(SpawnTimerHandle, this, &UMonsterGenerator::AutoSpawnMonster, SpawnPeriod, true);
+        GetWorld()->GetTimerManager().SetTimer(AutoSpawnTimerHandle, this, &UMonsterGenerator::AutoSpawnMonster, SpawnAutoPeriod, true);
     }
 }
 
@@ -36,7 +36,7 @@ void UMonsterGenerator::SpawnMonster(const TSubclassOf<AMonster> MonsterType)
 
 void UMonsterGenerator::SpawnMonsterAt(const TSubclassOf<AMonster> MonsterType, const FTransform& Transform)
 {
-    if (MonsterType)
+    if (MonsterType && AllowSpawn)
     {
         AMonster* Monster = GetWorld()->SpawnActorDeferred<AMonster>(
             MonsterType.Get(), 
@@ -47,10 +47,14 @@ void UMonsterGenerator::SpawnMonsterAt(const TSubclassOf<AMonster> MonsterType, 
         );
         Monster->AutoPossessAI = EAutoPossessAI::Spawned;
         Monster->FinishSpawning(Transform);
+        
+        // Now that we've spawned, disabled until cooldown elapses
+        AllowSpawn = false;
+        GetWorld()->GetTimerManager().SetTimer(AllowSpawnTimerHandle, this, &UMonsterGenerator::SpawnCooled, SpawnCooldownPeriod, false);
     }
     else 
     {
-        UE_LOG(LogTemp, Error, TEXT("SpawnMonsterAt; no monster type specified, ignoring."));
+        UE_LOG(LogTemp, Error, TEXT("SpawnMonsterAt; no monster type specified (monster says %s) or cannot spawn at the moment (allow spawn says %d)."), *MonsterType->GetName(), AllowSpawn);
     }
 }
 
