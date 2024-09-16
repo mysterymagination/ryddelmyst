@@ -26,15 +26,7 @@ void UMonsterGenerator::SpawnMonster(const TSubclassOf<AMonster> MonsterType)
         SpawnTransform.SetTranslation(Location);
         SpawnTransform.SetRotation(FQuat(Rotation));
         SpawnTransform.SetScale3D(FVector(1.f));
-        AMonster* Monster = GetWorld()->SpawnActorDeferred<AMonster>(
-            MonsterType.Get(), 
-            SpawnTransform, 
-            nullptr, 
-            nullptr, 
-            ESpawnActorCollisionHandlingMethod::AdjustIfPossibleButAlwaysSpawn
-        );
-        Monster->AutoPossessAI = EAutoPossessAI::Spawned;
-        Monster->FinishSpawning(SpawnTransform);
+        SpawnMonsterAt(MonsterType, SpawnTransform);
     }
     else 
     {
@@ -42,7 +34,27 @@ void UMonsterGenerator::SpawnMonster(const TSubclassOf<AMonster> MonsterType)
     }
 }
 
-void UMonsterGenerator::SpawnMonster(const TMap<TSubclassOf<AMonster>, int>& MonsterClassCountMap)
+void UMonsterGenerator::SpawnMonsterAt(const TSubclassOf<AMonster> MonsterType, const FTransform& Transform)
+{
+    if (MonsterType)
+    {
+        AMonster* Monster = GetWorld()->SpawnActorDeferred<AMonster>(
+            MonsterType.Get(), 
+            Transform, 
+            nullptr, 
+            nullptr, 
+            ESpawnActorCollisionHandlingMethod::AdjustIfPossibleButAlwaysSpawn
+        );
+        Monster->AutoPossessAI = EAutoPossessAI::Spawned;
+        Monster->FinishSpawning(Transform);
+    }
+    else 
+    {
+        UE_LOG(LogTemp, Error, TEXT("SpawnMonsterAt; no monster type specified, ignoring."));
+    }
+}
+
+void UMonsterGenerator::SpawnMonsterMap(const TMap<TSubclassOf<AMonster>, int>& MonsterClassCountMap)
 {
     for (auto& Elem : MonsterClassCountMap)
     {

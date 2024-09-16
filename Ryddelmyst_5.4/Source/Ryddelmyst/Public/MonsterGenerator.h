@@ -39,15 +39,25 @@ public:
 	 * @brief Spawns an instance of the given monster type nearby the generator.
 	 * @param MonsterClass - the monster type to spawn.
 	 */
+	UFUNCTION(BlueprintCallable, Category = "LevelDesign")
 	void SpawnMonster(const TSubclassOf<AMonster> MonsterClass);
+	/**
+	 * @brief Spawns an instance of the given monster type nearby the generator.
+	 * @param MonsterClass - the monster type to spawn.
+	 * @param Transform - the spawn transform to use.
+	 */
+	UFUNCTION(BlueprintCallable, Category = "LevelDesign")
+	void SpawnMonsterAt(const TSubclassOf<AMonster> MonsterClass, const FTransform& Transform);
 	/**
 	 * @brief Spawns a pattern of monsters nearby the generator given by the type:count in the input mapping.
 	 * @param MonsterClassCountMap - a mapping of the monster types to the number of each type that should spawn.
 	 */
-	void SpawnMonster(const TMap<TSubclassOf<AMonster>, int>& MonsterClassCountMap);
+	UFUNCTION(BlueprintCallable, Category = "LevelDesign")
+	void SpawnMonsterMap(const TMap<TSubclassOf<AMonster>, int>& MonsterClassCountMap);
 	/**
 	 * @brief Spawns a monster nearby the generator, choosing a random monster type from SpawnableMonsterClasses.
 	 */
+	UFUNCTION(BlueprintCallable, Category = "LevelDesign")
 	void AutoSpawnMonster();
 protected:
 	// Called when the game starts or when spawned
