@@ -40,13 +40,13 @@ public:
 	 * @brief The amount of time in seconds between automatic spawns, if AutomaticSpawn is enabled.
 	 */
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "LevelDesign")
-	float SpawnAutoPeriod = 1.f;
+	float SpawnAutoPeriod = 30.f;
 	/**
 	 * @brief The amount of time in seconds that must pass between spawns, regardless of trigger. This prevents accidental over-spawn situations from
 	 * e.g. colliding with a spawn trap tile repeatedly.
 	 */
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "LevelDesign")
-	float SpawnCooldownPeriod = 1.f;
+	float SpawnCooldownPeriod = 3.f;
 public:
 	/**
 	 * @brief Spawns an instance of the given monster type nearby the generator.
