@@ -24,6 +24,18 @@ public:
 private:
 	UPROPERTY()
 	URyddelmystEventManager* EventManager;
+	/**
+	 * @brief Maximum number of monsters allowed on the map at once; too many leads to lag. A better/complementary approach would be 
+	 * map sectors and loading/unloading monsters nearby the player.
+	 */
+	UPROPERTY()
+	int MaxMonsterCount = 25;
+	/**
+	 * @brief Current number of monsters spawned; each monster reports in at its BeginPlay() to increment this number and
+	 * reports its destruction in HandleDeath().
+	 */
+	UPROPERTY()
+	int CurrentMonsterCount = 0;
 public:
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Sound")
 	float MusicVolumeScale = 0.25f;
