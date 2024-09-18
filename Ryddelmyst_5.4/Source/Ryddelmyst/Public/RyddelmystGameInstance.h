@@ -5,6 +5,7 @@
 #include "CoreMinimal.h"
 #include "Engine/GameInstance.h"
 #include "RyddelmystEventManager.h"
+#include "Monster.h"
 #include "RyddelmystGameInstance.generated.h"
 
 /**
@@ -21,6 +22,13 @@ public:
 	URyddelmystEventManager* GetEventManager() { return EventManager; }
 	UFUNCTION(BlueprintCallable, Category = "Sound")
 	void AdjustAmbientSounds(float ScaleFactor);
+	/**
+	 * @brief Check to see if the current gameinstance can support more monsters at the moment.
+	 * @param MonsterType - the monster type we want to spawn; this is presently ignored in favor of simply checking the total number of monsters spawned.
+	 * @return true if the game instance supports spawning another monster, false otherwise e.g. if max monster count has been reached.
+	 */
+	UFUNCTION(BlueprintCallable, Category = "LevelDesign")
+	bool CanSpawnMonster(TSubclassOf<AMonster> MonsterType);
 private:
 	UPROPERTY()
 	URyddelmystEventManager* EventManager;
@@ -30,16 +38,17 @@ private:
 	 */
 	UPROPERTY()
 	int MaxMonsterCount = 25;
-	/**
-	 * @brief Current number of monsters spawned; each monster reports in at its BeginPlay() to increment this number and
-	 * reports its destruction in HandleDeath().
-	 */
-	UPROPERTY()
-	int CurrentMonsterCount = 0;
 public:
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Sound")
 	float MusicVolumeScale = 0.25f;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Sound")
 	float SFXVolumeScale = 0.5f;
+
+	/**
+	 * @brief Current number of monsters spawned; each monster reports in at its BeginPlay() to increment this number and
+	 * reports its destruction in HandleDeath().
+	 */
+	UPROPERTY()
+	int CurrentMonsterCount = 0;
 };

@@ -22,6 +22,11 @@ void URyddelmystGameInstance::AdjustAmbientSounds(float ScaleFactor)
 	}
 }
 
+bool URyddelmystGameInstance::CanSpawnMonster(TSubclassOf<AMonster> MonsterType)
+{
+	return CurrentMonsterCount < MaxMonsterCount;
+}
+
 
 
 

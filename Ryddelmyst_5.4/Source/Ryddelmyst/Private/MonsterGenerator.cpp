@@ -3,6 +3,8 @@
 
 #include "MonsterGenerator.h"
 #include "Math/UnrealMathUtility.h"
+#include "RyddelmystGameInstance.h"
+#include "Kismet/GameplayStatics.h"
 
 void UMonsterGenerator::BeginPlay()
 {
@@ -36,25 +38,32 @@ void UMonsterGenerator::SpawnMonster(const TSubclassOf<AMonster> MonsterType)
 
 void UMonsterGenerator::SpawnMonsterAt(const TSubclassOf<AMonster> MonsterType, const FTransform& Transform)
 {
-    if (MonsterType && AllowSpawn)
+    if (Cast<URyddelmystGameInstance>(UGameplayStatics::GetGameInstance(GetWorld()))->CanSpawnMonster(MonsterType))
     {
-        AMonster* Monster = GetWorld()->SpawnActorDeferred<AMonster>(
-            MonsterType.Get(), 
-            Transform, 
-            nullptr, 
-            nullptr, 
-            ESpawnActorCollisionHandlingMethod::AdjustIfPossibleButAlwaysSpawn
-        );
-        Monster->AutoPossessAI = EAutoPossessAI::Spawned;
-        Monster->FinishSpawning(Transform);
-        
-        // Now that we've spawned, disabled until cooldown elapses
-        AllowSpawn = false;
-        GetWorld()->GetTimerManager().SetTimer(AllowSpawnTimerHandle, this, &UMonsterGenerator::SpawnCooled, SpawnCooldownPeriod, false);
+        if (MonsterType && AllowSpawn)
+        {
+            AMonster* Monster = GetWorld()->SpawnActorDeferred<AMonster>(
+                MonsterType.Get(), 
+                Transform, 
+                nullptr, 
+                nullptr, 
+                ESpawnActorCollisionHandlingMethod::AdjustIfPossibleButAlwaysSpawn
+            );
+            Monster->AutoPossessAI = EAutoPossessAI::Spawned;
+            Monster->FinishSpawning(Transform);
+            
+            // Now that we've spawned, disabled until cooldown elapses
+            AllowSpawn = false;
+            GetWorld()->GetTimerManager().SetTimer(AllowSpawnTimerHandle, this, &UMonsterGenerator::SpawnCooled, SpawnCooldownPeriod, false);
+        }
+        else 
+        {
+            UE_LOG(LogTemp, Error, TEXT("SpawnMonsterAt; no monster type specified (monster says %s) or cannot spawn at the moment (allow spawn says %d)."), *MonsterType->GetName(), AllowSpawn);
+        }
     }
     else 
     {
-        UE_LOG(LogTemp, Error, TEXT("SpawnMonsterAt; no monster type specified (monster says %s) or cannot spawn at the moment (allow spawn says %d)."), *MonsterType->GetName(), AllowSpawn);
+        UE_LOG(LogTemp, Error, TEXT("SpawnMonsterAt; gameinstance cannot handle spawn of type %s at the moment (current monster count says %d)."), *MonsterType->GetName(), Cast<URyddelmystGameInstance>(UGameplayStatics::GetGameInstance(GetWorld()))->CurrentMonsterCount);
     }
 }
 

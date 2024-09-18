@@ -39,6 +39,7 @@ void AMonster::BeginPlay()
 	FScriptDelegate DamageDelegate;
 	DamageDelegate.BindUFunction(this, FName("HandleDamage"));
 	OnTakeAnyDamage.Add(DamageDelegate);
+	Cast<URyddelmystGameInstance>(UGameplayStatics::GetGameInstance(GetWorld()))->CurrentMonsterCount++;
 }
 
 // Called every frame
@@ -140,4 +141,5 @@ void AMonster::HandleDeath_Implementation(AActor* DamageCauser)
 		nullptr
 	);
 	Destroy();
+	Cast<URyddelmystGameInstance>(UGameplayStatics::GetGameInstance(GetWorld()))->CurrentMonsterCount--;
 }
