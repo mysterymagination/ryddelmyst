@@ -124,6 +124,7 @@ void ULibraryWidget::BookDoctor(FLibraryBookData& Data)
             LoreString.RemoveAt(OpenVarIndex, VarOpenToken.Len() + VarName.Len() + VarCloseToken.Len(), true);
             // Insert the actual variable substitution value
             LoreString.InsertAt(OpenVarIndex, Sub);
+            Data.LocalizedLore = FText::FromString(LoreString);
         }
         else 
         {
@@ -136,14 +137,16 @@ void ULibraryWidget::BookDoctor(FLibraryBookData& Data)
 FString ULibraryWidget::LookupVariableSubstitution(const FString& VariableName)
 {
     // todo: use gamestate to figure out the appropriate variable substitution string
-    //   So the idea is we have text sub lookup the relevant sub var in TextVTable.json and check each condition using
-    //   the given boolean operator. If the result is true, we provide the pass substitution string. Else, we provide the fail substitution string.
-    //   These substitution strings also should be scanned recursively for sub vars to support nonlinear (as in gameplay, not algebra) substitution chains.
+    //  So the idea is we have text sub lookup the relevant sub var in TextVTable.json and check each condition using
+    //  the given boolean operator. If the result is true, we provide the pass substitution string. Else, we provide the fail substitution string.
+    //  These substitution strings also should be scanned recursively for sub vars to support nonlinear (as in gameplay, not algebra) substitution chains.
+    //  Actually reading the game state variable values is going to need some kind of string varname to actual cpp var
+    //  mapping; this could also map to functions by name if we wanna get real weird with it, but that's probably not necessary for now.
     if (TextVTableJSON.IsEmpty())
     {
         TextVTableJSON = TEXT("/Game/Ryddelmyst_Assets/Text/TextVTable.json");
     }
-    const FString JsonFilePath = (FPaths::ProjectDir() + "/Game/Ryddelmyst_Assets/Text/TextVTable.json");
+    const FString JsonFilePath = (FPaths::ProjectDir() + "Content/Ryddelmyst_Assets/Text/TextVTable.json");
     UE_LOG(LogTemp, Log, TEXT("LookupVariableSub; json path is %s"), *JsonFilePath);
     // todo: use FFileHelper to load in JSON text from additional text dir added to the game output package
     return TEXT("FillInLater");
