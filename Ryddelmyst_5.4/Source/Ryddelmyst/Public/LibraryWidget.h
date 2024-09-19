@@ -56,10 +56,10 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Lore")
 	TMap<ELibraryCat, FLibraryBookShelf> BookBank;
 	/**
-	 * @brief the game assets relative path of the JSON file containing our text VTable for lore variable substitution e.g. "Oh sheep, it's ${Is_Monsterpus_Name_Discovered}"
+	 * @brief the game content dir relative path of the JSON file containing our text VTable for lore variable substitution e.g. "Oh sheep, it's ${Is_Monsterpus_Name_Discovered}"
 	 */
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Lore")
-	FString TextVTableJSON;
+	FString TextVTableJSONPath;
 
 public:
 	/**

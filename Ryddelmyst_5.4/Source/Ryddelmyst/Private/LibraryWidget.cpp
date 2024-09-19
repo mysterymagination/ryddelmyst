@@ -2,6 +2,7 @@
 
 
 #include "LibraryWidget.h"
+#include "Misc/Paths.h"
 
 void ULibraryWidget::AddBook(const FLibraryBookData& Data)
 {
@@ -142,12 +143,32 @@ FString ULibraryWidget::LookupVariableSubstitution(const FString& VariableName)
     //  These substitution strings also should be scanned recursively for sub vars to support nonlinear (as in gameplay, not algebra) substitution chains.
     //  Actually reading the game state variable values is going to need some kind of string varname to actual cpp var
     //  mapping; this could also map to functions by name if we wanna get real weird with it, but that's probably not necessary for now.
-    if (TextVTableJSON.IsEmpty())
+    if (TextVTableJSONPath.IsEmpty())
     {
-        TextVTableJSON = TEXT("/Game/Ryddelmyst_Assets/Text/TextVTable.json");
+        TextVTableJSONPath = FPaths::ProjectContentDir().Append(TEXT("Ryddelmyst_Assets/Text/TextVTable.json"));
     }
-    const FString JsonFilePath = (FPaths::ProjectDir() + "Content/Ryddelmyst_Assets/Text/TextVTable.json");
-    UE_LOG(LogTemp, Log, TEXT("LookupVariableSub; json path is %s"), *JsonFilePath);
+    // We will use this FileManager to deal with the file.
+    // IPlatformFile& FileManager = FPlatformFileManager::Get().GetPlatformFile();
+
+    FString TextVTableJSON;
+    // if (FileManager.FileExists(*TextVTableJSONPath))
+    // {
+        /* todo: super hard crashes the editor, causing ANR that neither the crash reporter nor debugger picks up.
+        if(FFileHelper::LoadFileToString(TextVTableJSON, *TextVTableJSONPath, FFileHelper::EHashOptions::None))
+        {
+            UE_LOG(LogTemp, Log, TEXT("LookupVariableSub; json path is %s and contents says %s"), *TextVTableJSONPath, *TextVTableJSON);
+        }
+        else 
+        {
+            UE_LOG(LogTemp, Log, TEXT("LookupVariableSub; failed to load json contents of file path %s"), *TextVTableJSONPath);
+        }
+        */
+    // }
+    // else 
+    // {
+    //      UE_LOG(LogTemp, Log, TEXT("LookupVariableSub; failed to find json vtable file at %s"), *TextVTableJSONPath);
+    // }
+    
     // todo: use FFileHelper to load in JSON text from additional text dir added to the game output package
     return TEXT("FillInLater");
 }
