@@ -360,7 +360,7 @@ void ARyddelmystCharacter::Interact()
 										 NeckSlotItem && NeckSlotItem->GetName().Contains(TEXT("CracklingVioletVial")) &&
 										 HandsSlotItem && HandsSlotItem->GetName().Contains(TEXT("IronSwordCloudConquest")) &&
 										 FeetSlotItem && FeetSlotItem->GetName().Contains(TEXT("SlippersOfLongWintersNap"));
-							StoryBlock = false;//!AllQuestItems;
+							StoryBlock = !AllQuestItems;
 							USoundBase* Eggsclamation = nullptr;
 							if (!StoryBlock)
 							{

@@ -37,7 +37,7 @@ private:
 	 * map sectors and loading/unloading monsters nearby the player.
 	 */
 	UPROPERTY()
-	int MaxMonsterCount = 25;
+	int MaxMonsterCount = 15;
 public:
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Sound")
 	float MusicVolumeScale = 0.25f;
