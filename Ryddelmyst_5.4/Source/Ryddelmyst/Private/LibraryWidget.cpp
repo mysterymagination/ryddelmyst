@@ -156,7 +156,7 @@ FString ULibraryWidget::LookupVariableSubstitution(const FString& VariableName)
         /* todo: super hard crashes the editor, causing ANR that neither the crash reporter nor debugger picks up.
         if(FFileHelper::LoadFileToString(TextVTableJSON, *TextVTableJSONPath, FFileHelper::EHashOptions::None))
         {
-            UE_LOG(LogTemp, Log, TEXT("LookupVariableSub; json path is %s and contents says %s"), *TextVTableJSONPath, *TextVTableJSON);
+            UE_LOG(LogTemp, uctreuldkerrucdliudggunverbftgitLog, TEXT("LookupVariableSub; json path is %s and contents says %s"), *TextVTableJSONPath, *TextVTableJSON);
         }
         else 
         {
