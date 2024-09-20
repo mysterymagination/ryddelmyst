@@ -147,27 +147,17 @@ FString ULibraryWidget::LookupVariableSubstitution(const FString& VariableName)
     {
         TextVTableJSONPath = FPaths::ProjectContentDir().Append(TEXT("Ryddelmyst_Assets/Text/TextVTable.json"));
     }
-    // We will use this FileManager to deal with the file.
-    // IPlatformFile& FileManager = FPlatformFileManager::Get().GetPlatformFile();
 
     FString TextVTableJSON;
-    // if (FileManager.FileExists(*TextVTableJSONPath))
-    // {
-        /* todo: super hard crashes the editor, causing ANR that neither the crash reporter nor debugger picks up.
-        if(FFileHelper::LoadFileToString(TextVTableJSON, *TextVTableJSONPath, FFileHelper::EHashOptions::None))
-        {
-            UE_LOG(LogTemp, uctreuldkerrucdliudggunverbftgitLog, TEXT("LookupVariableSub; json path is %s and contents says %s"), *TextVTableJSONPath, *TextVTableJSON);
-        }
-        else 
-        {
-            UE_LOG(LogTemp, Log, TEXT("LookupVariableSub; failed to load json contents of file path %s"), *TextVTableJSONPath);
-        }
-        */
-    // }
-    // else 
-    // {
-    //      UE_LOG(LogTemp, Log, TEXT("LookupVariableSub; failed to find json vtable file at %s"), *TextVTableJSONPath);
-    // }
+    if(FFileHelper::LoadFileToString(TextVTableJSON, *TextVTableJSONPath))
+    {
+        UE_LOG(LogTemp, Log, TEXT("LookupVariableSub; json path is %s and contents says %s"), *TextVTableJSONPath, *TextVTableJSON);
+    }
+    else 
+    {
+        UE_LOG(LogTemp, Log, TEXT("LookupVariableSub; failed to load json contents of file path %s"), *TextVTableJSONPath);
+    }
+        
     
     // todo: use FFileHelper to load in JSON text from additional text dir added to the game output package
     return TEXT("FillInLater");
