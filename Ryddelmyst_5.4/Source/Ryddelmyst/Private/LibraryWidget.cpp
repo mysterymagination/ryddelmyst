@@ -3,6 +3,8 @@
 
 #include "LibraryWidget.h"
 #include "Misc/Paths.h"
+#include "Serialization/JsonReader.h"
+#include "Dom/JsonObject.h"
 
 void ULibraryWidget::AddBook(const FLibraryBookData& Data)
 {
@@ -157,8 +159,19 @@ FString ULibraryWidget::LookupVariableSubstitution(const FString& VariableName)
     {
         UE_LOG(LogTemp, Log, TEXT("LookupVariableSub; failed to load json contents of file path %s"), *TextVTableJSONPath);
     }
+
+    TSharedPtr<FJsonObject> TextVTableJsonObject;
+    auto Reader = TJsonReaderFactory<>::Create(TextVTableJSON);
+    if (FJsonSerializer::Deserialize(Reader, TextVTableJsonObject))
+    {
+        const TSharedPtr<FJsonObject>* TopLevelVarEntry;
+        TextVTableJsonObject->TryGetObjectField(VariableName, TopLevelVarEntry);
+        const TArray<TSharedPtr<FJsonValue>>* ConditionsArray;
+        (*TopLevelVarEntry)->TryGetArrayField(TEXT("conditions"), ConditionsArray);
+        // todo: parse out condition vars and functions and call 'em from predicate map
+        // todo: run pass/fail sub string through StringDoctor() for recursive var sub
+        // todo: return the fully substituted string
+    }
         
-    
-    // todo: use FFileHelper to load in JSON text from additional text dir added to the game output package
     return TEXT("FillInLater");
 }
