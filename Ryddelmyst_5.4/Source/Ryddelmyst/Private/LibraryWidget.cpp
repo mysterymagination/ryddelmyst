@@ -168,7 +168,7 @@ FString ULibraryWidget::LookupVariableSubstitution(const FString& VariableName)
         TextVTableJsonObject->TryGetObjectField(VariableName, TopLevelVarEntry);
         const TArray<TSharedPtr<FJsonValue>>* ConditionsArray;
         (*TopLevelVarEntry)->TryGetArrayField(TEXT("conditions"), ConditionsArray);
-        // todo: parse out condition vars and functions and call 'em from predicate map
+        // todo: parse out condition vars and functions and call 'em from predicate map based on metadata attributes
         // todo: run pass/fail sub string through StringDoctor() for recursive var sub
         // todo: return the fully substituted string
     }
