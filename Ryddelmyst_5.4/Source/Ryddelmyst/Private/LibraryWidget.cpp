@@ -5,6 +5,8 @@
 #include "Misc/Paths.h"
 #include "Serialization/JsonReader.h"
 #include "Dom/JsonObject.h"
+#include "RyddelmystGameState.h"
+#include "Kismet/KismetStringLibrary.h"
 
 const FString ULibraryWidget::KEY_CONDITION_STATE_VARIABLE_NAME{TEXT("stateVarName")};
 const FString ULibraryWidget::KEY_CONDITION_STATE_VARIABLE_TYPE{TEXT("type")};
@@ -191,7 +193,7 @@ FString ULibraryWidget::LookupVariableSubstitution(const FString& VariableName)
         TextVTableJsonObject->TryGetObjectField(VariableName, TopLevelVarEntry);
         const TArray<TSharedPtr<FJsonValue>>* ConditionsArray;
         (*TopLevelVarEntry)->TryGetArrayField(TEXT("conditions"), ConditionsArray);
-        // todo: parse out condition vars and call 'em from predicate map based on metadata attributes
+        // parse out condition vars and look 'em up from predicate map based on metadata attributes
         bool AllConditionsPassed = false;
         for (auto Condition : *ConditionsArray)
         {
@@ -199,17 +201,17 @@ FString ULibraryWidget::LookupVariableSubstitution(const FString& VariableName)
             const TSharedPtr<FJsonObject>* ConditionObject;
             if (Condition->TryGetObject(ConditionObject))
             {
+                // parse out the pass condition value and comparison operator, and compare accordingly to actual state value
                 FString StateVarName = (*ConditionObject)->GetStringField(KEY_CONDITION_STATE_VARIABLE_NAME);
                 FString StateVarType = (*ConditionObject)->GetStringField(KEY_CONDITION_STATE_VARIABLE_TYPE);
                 FString ComparisonOp = (*ConditionObject)->GetStringField(KEY_CONDITION_COMPARISON_OPERATOR);
                 FString PassVal = (*ConditionObject)->GetStringField(KEY_CONDITION_PASS_VALUE);
-                auto GameState = Cast<RyddelmystGameState>(GetWorld()->GetGameState());
+                auto GameState = Cast<ARyddelmystGameState>(GetWorld()->GetGameState());
                 if (StateVarType == VALUE_CONDITION_STATE_VARIABLE_TYPE_BOOLEAN)
                 {
                     bool* StateValue_ptr = GameState->StatesMapBool.Find(StateVarName);
                     if (StateValue_ptr)
                     {
-                        // parse out the pass condition value and comparison operator (which for boolean type can only be EQ), and compare accordingly to actual state value
                         if (ComparisonOp == VALUE_CONDITION_COMPARISON_OPERATOR_EQ)
                         {
                             if (PassVal == "true")
@@ -228,14 +230,13 @@ FString ULibraryWidget::LookupVariableSubstitution(const FString& VariableName)
                     int* StateValue_ptr = GameState->StatesMapInt.Find(StateVarName);
                     if (StateValue_ptr)
                     {
-                        // parse out the pass condition value and comparison operator, and compare accordingly to actual state value
                         if (ComparisonOp == VALUE_CONDITION_COMPARISON_OPERATOR_EQ)
                         {
-                            ConditionPassed = *StateValue_ptr == PassVal;
+                            ConditionPassed = *StateValue_ptr == UKismetStringLibrary::Conv_StringToInt(PassVal);
                         }
                         else if (ComparisonOp == VALUE_CONDITION_COMPARISON_OPERATOR_GTE)
                         {
-                            ConditionPassed = *StateValue_ptr >= PassVal;
+                            ConditionPassed = *StateValue_ptr >= UKismetStringLibrary::Conv_StringToInt(PassVal);
                         }
                     }
                 }
@@ -259,7 +260,7 @@ FString ULibraryWidget::LookupVariableSubstitution(const FString& VariableName)
             }
             else 
             {
-                UE_LOG(LogTemp, Error, TEXT("LookupVariableSub; failed to coerce a Condition FJsonValue to JSON object. It's type comes back as %s"), *Condition->GetType());
+                UE_LOG(LogTemp, Error, TEXT("LookupVariableSub; failed to coerce a Condition FJsonValue to JSON object."));
             }
         }
 
