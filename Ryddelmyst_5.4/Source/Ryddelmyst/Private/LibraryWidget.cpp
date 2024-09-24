@@ -6,6 +6,19 @@
 #include "Serialization/JsonReader.h"
 #include "Dom/JsonObject.h"
 
+const FString ULibraryWidget::KEY_CONDITION_STATE_VARIABLE_NAME{TEXT("stateVarName")};
+const FString ULibraryWidget::KEY_CONDITION_STATE_VARIABLE_TYPE{TEXT("type")};
+const FString ULibraryWidget::KEY_CONDITION_BOOLEAN_CHAIN_OPERATOR{TEXT("booleanChainOperator")};
+const FString ULibraryWidget::KEY_CONDITION_COMPARISON_OPERATOR{TEXT("comparisonOperator")};
+const FString ULibraryWidget::KEY_CONDITION_PASS_VALUE{TEXT("passValue")};
+const FString ULibraryWidget::VALUE_CONDITION_COMPARISON_OPERATOR_EQ{TEXT("equalTo")};
+const FString ULibraryWidget::VALUE_CONDITION_COMPARISON_OPERATOR_GTE{TEXT("greaterThanOrEqualTo")};
+const FString ULibraryWidget::VALUE_CONDITION_STATE_VARIABLE_TYPE_INTEGER{TEXT("integer")};
+const FString ULibraryWidget::VALUE_CONDITION_STATE_VARIABLE_TYPE_BOOLEAN{TEXT("boolean")};
+const FString ULibraryWidget::VALUE_CONDITION_BOOLEAN_CHAIN_OPERATOR_OR{TEXT("or")};
+const FString ULibraryWidget::VALUE_CONDITION_BOOLEAN_CHAIN_OPERATOR_AND{TEXT("and")};
+
+
 void ULibraryWidget::AddBook(const FLibraryBookData& Data)
 {
     if (BookBank.Contains(Data.Genre))
@@ -169,6 +182,28 @@ FString ULibraryWidget::LookupVariableSubstitution(const FString& VariableName)
         const TArray<TSharedPtr<FJsonValue>>* ConditionsArray;
         (*TopLevelVarEntry)->TryGetArrayField(TEXT("conditions"), ConditionsArray);
         // todo: parse out condition vars and functions and call 'em from predicate map based on metadata attributes
+        for (auto Condition : *ConditionsArray)
+        {
+            const TSharedPtr<FJsonObject>* ConditionObject;
+            if (Condition->TryGetObject(ConditionObject))
+            {
+                FString StateVarName = (*ConditionObject)->GetStringField(KEY_CONDITION_STATE_VARIABLE_NAME);
+                FString StateVarType = (*ConditionObject)->GetStringField(KEY_CONDITION_STATE_VARIABLE_TYPE);
+                auto GameState = Cast<RyddelmystGameState>(GetWorld()->GetGameState());
+                if (StateVarType == VALUE_CONDITION_STATE_VARIABLE_TYPE_BOOLEAN)
+                {
+                    bool* StateValue_ptr = GameState->StatesMapBool.Find(StateVarName);
+                    if (StateValue_ptr)
+                    {
+                        // todo: parse out the pass value and comparison operator, and compare accordingly to actual state value
+                    }
+                }
+            }
+            else 
+            {
+                UE_LOG(LogTemp, Error, TEXT("LookupVariableSub; failed to coerce a Condition FJsonValue to JSON object. It's type comes back as %s"), *Condition->GetType());
+            }
+        }
         // todo: run pass/fail sub string through StringDoctor() for recursive var sub
         // todo: return the fully substituted string
     }

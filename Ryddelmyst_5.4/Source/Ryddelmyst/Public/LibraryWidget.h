@@ -61,6 +61,18 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Lore")
 	FString TextVTableJSONPath;
 
+	static const FString KEY_CONDITION_STATE_VARIABLE_NAME;
+	static const FString KEY_CONDITION_STATE_VARIABLE_TYPE;
+	static const FString KEY_CONDITION_BOOLEAN_CHAIN_OPERATOR;
+	static const FString KEY_CONDITION_COMPARISON_OPERATOR;
+	static const FString KEY_CONDITION_PASS_VALUE;
+	static const FString VALUE_CONDITION_STATE_VARIABLE_TYPE_BOOLEAN;
+	static const FString VALUE_CONDITION_STATE_VARIABLE_TYPE_INTEGER;
+	static const FString VALUE_CONDITION_COMPARISON_OPERATOR_EQ;
+	static const FString VALUE_CONDITION_COMPARISON_OPERATOR_GTE;
+	static const FString VALUE_CONDITION_BOOLEAN_CHAIN_OPERATOR_OR;
+	static const FString VALUE_CONDITION_BOOLEAN_CHAIN_OPERATOR_AND;
+
 public:
 	/**
 	 * @brief Pulls a book from the appropriate pool for a book widget to display.
