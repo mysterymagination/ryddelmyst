@@ -181,9 +181,11 @@ FString ULibraryWidget::LookupVariableSubstitution(const FString& VariableName)
         TextVTableJsonObject->TryGetObjectField(VariableName, TopLevelVarEntry);
         const TArray<TSharedPtr<FJsonValue>>* ConditionsArray;
         (*TopLevelVarEntry)->TryGetArrayField(TEXT("conditions"), ConditionsArray);
-        // todo: parse out condition vars and functions and call 'em from predicate map based on metadata attributes
+        // todo: parse out condition vars and call 'em from predicate map based on metadata attributes
+        bool AllConditionsPassed = false;
         for (auto Condition : *ConditionsArray)
         {
+            bool ConditionPassed = false;
             const TSharedPtr<FJsonObject>* ConditionObject;
             if (Condition->TryGetObject(ConditionObject))
             {
@@ -195,8 +197,38 @@ FString ULibraryWidget::LookupVariableSubstitution(const FString& VariableName)
                     bool* StateValue_ptr = GameState->StatesMapBool.Find(StateVarName);
                     if (StateValue_ptr)
                     {
-                        // todo: parse out the pass value and comparison operator, and compare accordingly to actual state value
+                        // parse out the pass condition value and comparison operator (which for boolean type can only be EQ), and compare accordingly to actual state value
+                        FString ComparisonOp = (*ConditionObject)->GetStringField(KEY_CONDITION_COMPARISON_OPERATOR);
+                        if (ComparisonOp == VALUE_CONDITION_COMPARISON_OPERATOR_EQ)
+                        {
+                            FString PassVal = (*ConditionObject)->GetStringField(KEY_CONDITION_PASS_VALUE);
+                            if (PassVal == "true")
+                            {
+                                ConditionPassed = *StateValue_ptr;
+                            }
+                            else 
+                            {
+                                ConditionPassed = !*StateValue_ptr;
+                            }
+                        }
                     }
+                }
+
+                FString BooleanChainOp;
+                if ((*ConditionObject)->TryGetStringField(KEY_CONDITION_BOOLEAN_CHAIN_OPERATOR, BooleanChainOp))
+                {
+                    if (BooleanChainOp == "and")
+                    {
+                        AllConditionsPassed = AllConditionsPassed && ConditionPassed;
+                    }
+                    else if (BooleanChainOp == "or")
+                    {
+                        AllConditionsPassed = AllConditionsPassed || ConditionPassed;
+                    }
+                }
+                else 
+                {
+                    AllConditionsPassed = ConditionPassed;
                 }
             }
             else 
