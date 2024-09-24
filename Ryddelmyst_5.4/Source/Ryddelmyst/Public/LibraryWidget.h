@@ -66,6 +66,8 @@ public:
 	static const FString KEY_CONDITION_BOOLEAN_CHAIN_OPERATOR;
 	static const FString KEY_CONDITION_COMPARISON_OPERATOR;
 	static const FString KEY_CONDITION_PASS_VALUE;
+	static const FString KEY_PASS_SUBSTITUTION;
+	static const FString KEY_FAIL_SUBSTITUTION;
 	static const FString VALUE_CONDITION_STATE_VARIABLE_TYPE_BOOLEAN;
 	static const FString VALUE_CONDITION_STATE_VARIABLE_TYPE_INTEGER;
 	static const FString VALUE_CONDITION_COMPARISON_OPERATOR_EQ;
@@ -87,11 +89,17 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "Lore")
 	void AddBook(const FLibraryBookData& Data);
 	/**
-	 * @brief modified a given book data struct, replacing string template vars with state-based values and reassembling the contents into localized text.
+	 * @brief modifies a given book data struct, replacing string template vars with state-based values and reassembling the contents into localized text.
 	 * @param Data the library book data to be doctored.
 	 */
 	UFUNCTION(BlueprintCallable, Category = "Lore")
 	void BookDoctor(FLibraryBookData& Data);
+	/**
+	 * @brief modifies the input LoreString, replacing string template vars with state-based values.
+	 * @param LoreString the string to be doctored.
+	 */
+	UFUNCTION(BlueprintCallable, Category = "Lore")
+	void StringDoctor(FString& LoreString);
 
 	/**
 	 * @brief reads the content of BookBank into three emptyable pools of book data which the book widgets can blindly consume.

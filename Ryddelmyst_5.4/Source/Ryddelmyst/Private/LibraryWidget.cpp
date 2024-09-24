@@ -11,6 +11,8 @@ const FString ULibraryWidget::KEY_CONDITION_STATE_VARIABLE_TYPE{TEXT("type")};
 const FString ULibraryWidget::KEY_CONDITION_BOOLEAN_CHAIN_OPERATOR{TEXT("booleanChainOperator")};
 const FString ULibraryWidget::KEY_CONDITION_COMPARISON_OPERATOR{TEXT("comparisonOperator")};
 const FString ULibraryWidget::KEY_CONDITION_PASS_VALUE{TEXT("passValue")};
+const FString ULibraryWidget::KEY_PASS_SUBSTITUTION{TEXT("passSubstitution")};
+const FString ULibraryWidget::KEY_FAIL_SUBSTITUTION{TEXT("failSubstitution")};
 const FString ULibraryWidget::VALUE_CONDITION_COMPARISON_OPERATOR_EQ{TEXT("equalTo")};
 const FString ULibraryWidget::VALUE_CONDITION_COMPARISON_OPERATOR_GTE{TEXT("greaterThanOrEqualTo")};
 const FString ULibraryWidget::VALUE_CONDITION_STATE_VARIABLE_TYPE_INTEGER{TEXT("integer")};
@@ -120,8 +122,15 @@ FLibraryBookData ULibraryWidget::PullUnshelved(ELibraryCat Category)
 
 void ULibraryWidget::BookDoctor(FLibraryBookData& Data)
 {
-    // search for instances of ${} template vars in the Lore of the input data
     FString LoreString = Data.LocalizedLore.ToString();
+    StringDoctor(LoreString);
+    // todo: this loses any localization; not sure how ye'd look up localized substitutions. perhaps I should have just used the existing FText::Format() APIs for this? XD
+    Data.LocalizedLore = FText::FromString(LoreString);
+}
+
+void ULibraryWidget::StringDoctor(FString& LoreString)
+{
+    // search for instances of ${} template vars in the Lore of the input data
     FString VarOpenToken = TEXT("${");
     FString VarCloseToken = TEXT("}");
     while (int OpenVarIndex = LoreString.Find(VarOpenToken) != -1) 
@@ -140,7 +149,6 @@ void ULibraryWidget::BookDoctor(FLibraryBookData& Data)
             LoreString.RemoveAt(OpenVarIndex, VarOpenToken.Len() + VarName.Len() + VarCloseToken.Len(), true);
             // Insert the actual variable substitution value
             LoreString.InsertAt(OpenVarIndex, Sub);
-            Data.LocalizedLore = FText::FromString(LoreString);
         }
         else 
         {
@@ -152,6 +160,8 @@ void ULibraryWidget::BookDoctor(FLibraryBookData& Data)
 
 FString ULibraryWidget::LookupVariableSubstitution(const FString& VariableName)
 {
+    // *shh* nobody tell him about FText::Format() XD I wanted practice with UE JSON before the scary convo script processor ok?!
+
     // todo: use gamestate to figure out the appropriate variable substitution string
     //  So the idea is we have text sub lookup the relevant sub var in TextVTable.json and check each condition using
     //  the given boolean operator. If the result is true, we provide the pass substitution string. Else, we provide the fail substitution string.
@@ -191,6 +201,8 @@ FString ULibraryWidget::LookupVariableSubstitution(const FString& VariableName)
             {
                 FString StateVarName = (*ConditionObject)->GetStringField(KEY_CONDITION_STATE_VARIABLE_NAME);
                 FString StateVarType = (*ConditionObject)->GetStringField(KEY_CONDITION_STATE_VARIABLE_TYPE);
+                FString ComparisonOp = (*ConditionObject)->GetStringField(KEY_CONDITION_COMPARISON_OPERATOR);
+                FString PassVal = (*ConditionObject)->GetStringField(KEY_CONDITION_PASS_VALUE);
                 auto GameState = Cast<RyddelmystGameState>(GetWorld()->GetGameState());
                 if (StateVarType == VALUE_CONDITION_STATE_VARIABLE_TYPE_BOOLEAN)
                 {
@@ -198,10 +210,8 @@ FString ULibraryWidget::LookupVariableSubstitution(const FString& VariableName)
                     if (StateValue_ptr)
                     {
                         // parse out the pass condition value and comparison operator (which for boolean type can only be EQ), and compare accordingly to actual state value
-                        FString ComparisonOp = (*ConditionObject)->GetStringField(KEY_CONDITION_COMPARISON_OPERATOR);
                         if (ComparisonOp == VALUE_CONDITION_COMPARISON_OPERATOR_EQ)
                         {
-                            FString PassVal = (*ConditionObject)->GetStringField(KEY_CONDITION_PASS_VALUE);
                             if (PassVal == "true")
                             {
                                 ConditionPassed = *StateValue_ptr;
@@ -210,6 +220,22 @@ FString ULibraryWidget::LookupVariableSubstitution(const FString& VariableName)
                             {
                                 ConditionPassed = !*StateValue_ptr;
                             }
+                        }
+                    }
+                }
+                else if (StateVarType == VALUE_CONDITION_STATE_VARIABLE_TYPE_INTEGER)
+                {
+                    int* StateValue_ptr = GameState->StatesMapInt.Find(StateVarName);
+                    if (StateValue_ptr)
+                    {
+                        // parse out the pass condition value and comparison operator, and compare accordingly to actual state value
+                        if (ComparisonOp == VALUE_CONDITION_COMPARISON_OPERATOR_EQ)
+                        {
+                            ConditionPassed = *StateValue_ptr == PassVal;
+                        }
+                        else if (ComparisonOp == VALUE_CONDITION_COMPARISON_OPERATOR_GTE)
+                        {
+                            ConditionPassed = *StateValue_ptr >= PassVal;
                         }
                     }
                 }
@@ -236,9 +262,25 @@ FString ULibraryWidget::LookupVariableSubstitution(const FString& VariableName)
                 UE_LOG(LogTemp, Error, TEXT("LookupVariableSub; failed to coerce a Condition FJsonValue to JSON object. It's type comes back as %s"), *Condition->GetType());
             }
         }
-        // todo: run pass/fail sub string through StringDoctor() for recursive var sub
-        // todo: return the fully substituted string
+
+        FString SubstitutionString;
+        if (AllConditionsPassed)
+        {
+            SubstitutionString = (*TopLevelVarEntry)->GetStringField(KEY_PASS_SUBSTITUTION);
+        }
+        else 
+        {
+            SubstitutionString = (*TopLevelVarEntry)->GetStringField(KEY_FAIL_SUBSTITUTION);
+        }
+        
+        // run pass/fail sub string through StringDoctor() for recursive var sub
+        StringDoctor(SubstitutionString);
+        return SubstitutionString;
+    }
+    else 
+    {
+        UE_LOG(LogTemp, Error, TEXT("LookupVariableSub; failed to *deserialize* json, sure"));
     }
         
-    return TEXT("FillInLater");
+    return TEXT("Oops Error Substitution");
 }
