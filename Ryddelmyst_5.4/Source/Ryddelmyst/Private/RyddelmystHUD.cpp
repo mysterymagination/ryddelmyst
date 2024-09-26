@@ -519,9 +519,9 @@ bool ARyddelmystHUD::ShowLibrary()
 		{
 			// order of operations here is important -- we need to take care of data mucking about before
 			// actually displaying the library, which triggers its 'construction' script.
+			LibraryWidget->SetGameState(GetWorld()->GetGameState<ARyddelmystGameState>());
 			LibraryWidget->ReshelveBooks();
 			LibraryWidget->PopulateUnshelved();
-			LibraryWidget->SetGameState(GetWorld()->GetGameState<ARyddelmystGameState>());
 			LibraryWidget->AddToViewport();
 			return true;
 		}

@@ -66,27 +66,28 @@ void ULibraryWidget::PopulateUnshelved()
 {
     if (BookBank.Contains(ELibraryCat::Observation))
     {
-        for (auto Book : BookBank[ELibraryCat::Observation].Books)
+        UnshelvedObservations = BookBank[ELibraryCat::Observation].Books;
+        for (auto Book : UnshelvedObservations)
         {
             BookDoctor(Book);
         }
-        UnshelvedObservations = BookBank[ELibraryCat::Observation].Books;
     }
     if (BookBank.Contains(ELibraryCat::Conversation))
     {
-        for (auto Book : BookBank[ELibraryCat::Conversation].Books)
+        UnshelvedConversations = BookBank[ELibraryCat::Conversation].Books;
+        for (auto Book : UnshelvedConversations)
         {
             BookDoctor(Book);
         }
-        UnshelvedConversations = BookBank[ELibraryCat::Conversation].Books;
     }
     if (BookBank.Contains(ELibraryCat::Diary))
     {
-        for (auto Book : BookBank[ELibraryCat::Diary].Books)
+        UnshelvedDiaries = BookBank[ELibraryCat::Diary].Books;
+        for (auto Book : UnshelvedDiaries)
         {
             BookDoctor(Book);
+            UE_LOG(LogTemp, Log, TEXT("populateunshelved; after bookdoctor the diary lore says %s"), *Book.LocalizedLore.ToString());
         }
-        UnshelvedDiaries = BookBank[ELibraryCat::Diary].Books;
     }
 }
 
@@ -175,124 +176,131 @@ FString ULibraryWidget::LookupVariableSubstitution(const FString& VariableName)
     UE_LOG(LogTemp, Log, TEXT("LookupVariableSubstitution; var name is: %s"), *VariableName);
     // *shh* nobody tell him about FText::Format() XD I wanted practice with UE JSON before the scary convo script processor ok?!
 
-    // todo: use gamestate to figure out the appropriate variable substitution string
-    //  So the idea is we have text sub lookup the relevant sub var in TextVTable.json and check each condition using
-    //  the given boolean operator. If the result is true, we provide the pass substitution string. Else, we provide the fail substitution string.
-    //  These substitution strings also should be scanned recursively for sub vars to support nonlinear (as in gameplay, not algebra) substitution chains.
-    //  Actually reading the game state variable values is going to need some kind of string varname to actual cpp var
-    //  mapping; this could also map to functions by name if we wanna get real weird with it, but that's probably not necessary for now.
-    if (TextVTableJSONPath.IsEmpty())
+    if (GameState)
     {
-        TextVTableJSONPath = FPaths::ProjectContentDir().Append(TEXT("Ryddelmyst_Assets/Text/TextVTable.json"));
-    }
-
-    FString TextVTableJSON;
-    if(FFileHelper::LoadFileToString(TextVTableJSON, *TextVTableJSONPath))
-    {
-        UE_LOG(LogTemp, Log, TEXT("LookupVariableSub; json path is %s and contents says %s"), *TextVTableJSONPath, *TextVTableJSON);
-    }
-    else 
-    {
-        UE_LOG(LogTemp, Log, TEXT("LookupVariableSub; failed to load json contents of file path %s"), *TextVTableJSONPath);
-    }
-
-    TSharedPtr<FJsonObject> TextVTableJsonObject;
-    auto Reader = TJsonReaderFactory<>::Create(TextVTableJSON);
-    if (FJsonSerializer::Deserialize(Reader, TextVTableJsonObject))
-    {
-        auto TopLevelVarEntry = TextVTableJsonObject->GetObjectField(VariableName);
-        auto ConditionsArray = TopLevelVarEntry->GetArrayField(KEY_CONDITIONS);
-        // parse out condition vars and look 'em up from predicate map based on metadata attributes
-        bool AllConditionsPassed = false;
-        for (auto Condition : ConditionsArray)
+        // use gamestate to figure out the appropriate variable substitution string:
+        //  So the idea is we have text sub lookup the relevant sub var in TextVTable.json and check each condition using
+        //  the given boolean operator. If the result is true, we provide the pass substitution string. Else, we provide the fail substitution string.
+        //  These substitution strings also should be scanned recursively for sub vars to support nonlinear (as in gameplay, not algebra) substitution chains.
+        //  Actually reading the game state variable values is going to need some kind of string varname to actual cpp var
+        //  mapping; this could also map to functions by name if we wanna get real weird with it, but that's probably not necessary for now.
+        if (TextVTableJSONPath.IsEmpty())
         {
-            UE_LOG(LogTemp, Log, TEXT("LookupVariableSub; stepping through conditions array."));
-            bool ConditionPassed = false;
-            const TSharedPtr<FJsonObject>* ConditionObject;
-            if (Condition->TryGetObject(ConditionObject))
-            {
-                UE_LOG(LogTemp, Log, TEXT("LookupVariableSub; parsed condition into object."));
-            
-                // parse out the pass condition value and comparison operator, and compare accordingly to actual state value
-                FString StateVarName = (*ConditionObject)->GetStringField(KEY_CONDITION_STATE_VARIABLE_NAME);
-                FString StateVarType = (*ConditionObject)->GetStringField(KEY_CONDITION_STATE_VARIABLE_TYPE);
-                FString ComparisonOp = (*ConditionObject)->GetStringField(KEY_CONDITION_COMPARISON_OPERATOR);
-                FString PassVal = (*ConditionObject)->GetStringField(KEY_CONDITION_PASS_VALUE);
-                UE_LOG(LogTemp, Log, TEXT("LookupVariableSub; gamestate says %p"), GameState);
-                if (StateVarType == VALUE_CONDITION_STATE_VARIABLE_TYPE_BOOLEAN)
-                {
-                    bool* StateValue_ptr = GameState->StatesMapBool.Find(StateVarName);
-                    if (StateValue_ptr)
-                    {
-                        if (ComparisonOp == VALUE_CONDITION_COMPARISON_OPERATOR_EQ)
-                        {
-                            if (PassVal == "true")
-                            {
-                                ConditionPassed = *StateValue_ptr;
-                            }
-                            else 
-                            {
-                                ConditionPassed = !*StateValue_ptr;
-                            }
-                        }
-                    }
-                }
-                else if (StateVarType == VALUE_CONDITION_STATE_VARIABLE_TYPE_INTEGER)
-                {
-                    int* StateValue_ptr = GameState->StatesMapInt.Find(StateVarName);
-                    if (StateValue_ptr)
-                    {
-                        if (ComparisonOp == VALUE_CONDITION_COMPARISON_OPERATOR_EQ)
-                        {
-                            ConditionPassed = *StateValue_ptr == UKismetStringLibrary::Conv_StringToInt(PassVal);
-                        }
-                        else if (ComparisonOp == VALUE_CONDITION_COMPARISON_OPERATOR_GTE)
-                        {
-                            ConditionPassed = *StateValue_ptr >= UKismetStringLibrary::Conv_StringToInt(PassVal);
-                        }
-                    }
-                }
+            TextVTableJSONPath = FPaths::ProjectContentDir().Append(TEXT("Ryddelmyst_Assets/Text/TextVTable.json"));
+        }
 
-                FString BooleanChainOp;
-                if ((*ConditionObject)->TryGetStringField(KEY_CONDITION_BOOLEAN_CHAIN_OPERATOR, BooleanChainOp))
+        FString TextVTableJSON;
+        if(FFileHelper::LoadFileToString(TextVTableJSON, *TextVTableJSONPath))
+        {
+            UE_LOG(LogTemp, Log, TEXT("LookupVariableSub; json path is %s and contents says %s"), *TextVTableJSONPath, *TextVTableJSON);
+        }
+        else 
+        {
+            UE_LOG(LogTemp, Log, TEXT("LookupVariableSub; failed to load json contents of file path %s"), *TextVTableJSONPath);
+        }
+
+        TSharedPtr<FJsonObject> TextVTableJsonObject;
+        auto Reader = TJsonReaderFactory<>::Create(TextVTableJSON);
+        if (FJsonSerializer::Deserialize(Reader, TextVTableJsonObject))
+        {
+            auto TopLevelVarEntry = TextVTableJsonObject->GetObjectField(VariableName);
+            auto ConditionsArray = TopLevelVarEntry->GetArrayField(KEY_CONDITIONS);
+            // parse out condition vars and look 'em up from predicate map based on metadata attributes
+            bool AllConditionsPassed = false;
+            for (auto Condition : ConditionsArray)
+            {
+                UE_LOG(LogTemp, Log, TEXT("LookupVariableSub; stepping through conditions array."));
+                bool ConditionPassed = false;
+                const TSharedPtr<FJsonObject>* ConditionObject;
+                if (Condition->TryGetObject(ConditionObject))
                 {
-                    if (BooleanChainOp == "and")
+                    UE_LOG(LogTemp, Log, TEXT("LookupVariableSub; parsed condition into object."));
+                
+                    // parse out the pass condition value and comparison operator, and compare accordingly to actual state value
+                    FString StateVarName = (*ConditionObject)->GetStringField(KEY_CONDITION_STATE_VARIABLE_NAME);
+                    FString StateVarType = (*ConditionObject)->GetStringField(KEY_CONDITION_STATE_VARIABLE_TYPE);
+                    FString ComparisonOp = (*ConditionObject)->GetStringField(KEY_CONDITION_COMPARISON_OPERATOR);
+                    FString PassVal = (*ConditionObject)->GetStringField(KEY_CONDITION_PASS_VALUE);
+                    UE_LOG(LogTemp, Log, TEXT("LookupVariableSub; gamestate says %p"), GameState);
+                    if (StateVarType == VALUE_CONDITION_STATE_VARIABLE_TYPE_BOOLEAN)
                     {
-                        AllConditionsPassed = AllConditionsPassed && ConditionPassed;
+                        bool* StateValue_ptr = GameState->StatesMapBool.Find(StateVarName);
+                        if (StateValue_ptr)
+                        {
+                            if (ComparisonOp == VALUE_CONDITION_COMPARISON_OPERATOR_EQ)
+                            {
+                                if (PassVal == "true")
+                                {
+                                    ConditionPassed = *StateValue_ptr;
+                                }
+                                else 
+                                {
+                                    ConditionPassed = !*StateValue_ptr;
+                                }
+                            }
+                        }
                     }
-                    else if (BooleanChainOp == "or")
+                    else if (StateVarType == VALUE_CONDITION_STATE_VARIABLE_TYPE_INTEGER)
                     {
-                        AllConditionsPassed = AllConditionsPassed || ConditionPassed;
+                        int* StateValue_ptr = GameState->StatesMapInt.Find(StateVarName);
+                        if (StateValue_ptr)
+                        {
+                            if (ComparisonOp == VALUE_CONDITION_COMPARISON_OPERATOR_EQ)
+                            {
+                                ConditionPassed = *StateValue_ptr == UKismetStringLibrary::Conv_StringToInt(PassVal);
+                            }
+                            else if (ComparisonOp == VALUE_CONDITION_COMPARISON_OPERATOR_GTE)
+                            {
+                                ConditionPassed = *StateValue_ptr >= UKismetStringLibrary::Conv_StringToInt(PassVal);
+                            }
+                        }
+                    }
+
+                    FString BooleanChainOp;
+                    if ((*ConditionObject)->TryGetStringField(KEY_CONDITION_BOOLEAN_CHAIN_OPERATOR, BooleanChainOp))
+                    {
+                        if (BooleanChainOp == "and")
+                        {
+                            AllConditionsPassed = AllConditionsPassed && ConditionPassed;
+                        }
+                        else if (BooleanChainOp == "or")
+                        {
+                            AllConditionsPassed = AllConditionsPassed || ConditionPassed;
+                        }
+                    }
+                    else 
+                    {
+                        AllConditionsPassed = ConditionPassed;
                     }
                 }
                 else 
                 {
-                    AllConditionsPassed = ConditionPassed;
+                    UE_LOG(LogTemp, Error, TEXT("LookupVariableSub; failed to coerce a Condition FJsonValue to JSON object."));
                 }
+            }
+
+            FString SubstitutionString;
+            if (AllConditionsPassed)
+            {
+                SubstitutionString = TopLevelVarEntry->GetStringField(KEY_PASS_SUBSTITUTION);
             }
             else 
             {
-                UE_LOG(LogTemp, Error, TEXT("LookupVariableSub; failed to coerce a Condition FJsonValue to JSON object."));
+                SubstitutionString = TopLevelVarEntry->GetStringField(KEY_FAIL_SUBSTITUTION);
             }
-        }
-
-        FString SubstitutionString;
-        if (AllConditionsPassed)
-        {
-            SubstitutionString = TopLevelVarEntry->GetStringField(KEY_PASS_SUBSTITUTION);
+            
+            // run pass/fail sub string through StringDoctor() for recursive var sub
+            StringDoctor(SubstitutionString);
+            return SubstitutionString;
         }
         else 
         {
-            SubstitutionString = TopLevelVarEntry->GetStringField(KEY_FAIL_SUBSTITUTION);
+            UE_LOG(LogTemp, Error, TEXT("LookupVariableSub; failed to *deserialize* json, sure"));
         }
-        
-        // run pass/fail sub string through StringDoctor() for recursive var sub
-        StringDoctor(SubstitutionString);
-        return SubstitutionString;
     }
     else 
     {
-        UE_LOG(LogTemp, Error, TEXT("LookupVariableSub; failed to *deserialize* json, sure"));
+        UE_LOG(LogTemp, Error, TEXT("LookupVariableSub; gamestate came up null"));
     }
         
     return TEXT("Oops Error Substitution");
