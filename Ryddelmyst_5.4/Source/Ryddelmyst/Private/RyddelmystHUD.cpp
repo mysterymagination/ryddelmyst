@@ -19,6 +19,7 @@
 #include "Blueprint/WidgetBlueprintLibrary.h"
 #include "LibraryBookWidget.h"
 #include "Describable.h"
+#include "RyddelmystGameState.h"
 
 ARyddelmystHUD::ARyddelmystHUD()
 {
@@ -520,6 +521,7 @@ bool ARyddelmystHUD::ShowLibrary()
 			// actually displaying the library, which triggers its 'construction' script.
 			LibraryWidget->ReshelveBooks();
 			LibraryWidget->PopulateUnshelved();
+			LibraryWidget->SetGameState(GetWorld()->GetGameState<ARyddelmystGameState>());
 			LibraryWidget->AddToViewport();
 			return true;
 		}

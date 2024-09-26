@@ -5,6 +5,7 @@
 #include "CoreMinimal.h"
 #include "Blueprint/UserWidget.h"
 #include "LibraryBookWidget.h"
+#include "RyddelmystGameState.h"
 #include "LibraryWidget.generated.h"
 
 USTRUCT(BlueprintType)
@@ -47,6 +48,11 @@ private:
 	 */
 	UPROPERTY()
 	TArray<FLibraryBookData> UnshelvedConversations;
+	/**
+	 * @brief current game state used to resolve lore variable substitutions.
+	 */
+	UPROPERTY()
+	ARyddelmystGameState* GameState;
 
 public:
 	/**
@@ -61,6 +67,7 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Lore")
 	FString TextVTableJSONPath;
 
+	static const FString KEY_CONDITIONS;
 	static const FString KEY_CONDITION_STATE_VARIABLE_NAME;
 	static const FString KEY_CONDITION_STATE_VARIABLE_TYPE;
 	static const FString KEY_CONDITION_BOOLEAN_CHAIN_OPERATOR;
@@ -76,6 +83,12 @@ public:
 	static const FString VALUE_CONDITION_BOOLEAN_CHAIN_OPERATOR_AND;
 
 public:
+/**
+	 * @brief adds FLibraryBookData to the BookBank mapping under the relevant genre.
+	 * @param Data the library book data to add.
+	 */
+	UFUNCTION(BlueprintCallable, Category = "Lore")
+	void SetGameState(ARyddelmystGameState* _GameState) { GameState = _GameState; };
 	/**
 	 * @brief Pulls a book from the appropriate pool for a book widget to display.
 	 * @param Category the genre this book should be shelved into. 

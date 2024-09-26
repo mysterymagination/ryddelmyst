@@ -8,6 +8,7 @@
 #include "RyddelmystGameState.h"
 #include "Kismet/KismetStringLibrary.h"
 
+const FString ULibraryWidget::KEY_CONDITIONS{TEXT("conditions")};
 const FString ULibraryWidget::KEY_CONDITION_STATE_VARIABLE_NAME{TEXT("stateVarName")};
 const FString ULibraryWidget::KEY_CONDITION_STATE_VARIABLE_TYPE{TEXT("type")};
 const FString ULibraryWidget::KEY_CONDITION_BOOLEAN_CHAIN_OPERATOR{TEXT("booleanChainOperator")};
@@ -132,36 +133,46 @@ void ULibraryWidget::BookDoctor(FLibraryBookData& Data)
 
 void ULibraryWidget::StringDoctor(FString& LoreString)
 {
+    UE_LOG(LogTemp, Log, TEXT("StringDoctor; input LoreString says: %s"), *LoreString);
     // search for instances of ${} template vars in the Lore of the input data
     FString VarOpenToken = TEXT("${");
     FString VarCloseToken = TEXT("}");
-    while (int OpenVarIndex = LoreString.Find(VarOpenToken) != -1) 
+    UE_LOG(LogTemp, Log, TEXT("StringDoctor; index of first var open token %s says %d"), *VarOpenToken, LoreString.Find(VarOpenToken));
+    int OpenVarIndex = LoreString.Find(VarOpenToken);
+    while (OpenVarIndex != -1) 
     {
+        UE_LOG(LogTemp, Log, TEXT("StringDoctor; open var index says %d"), OpenVarIndex);
         int CloseVarIndex = LoreString.Find(VarCloseToken, ESearchCase::IgnoreCase, ESearchDir::FromStart, OpenVarIndex);
+        UE_LOG(LogTemp, Log, TEXT("StringDoctor; close var index says %d"), CloseVarIndex);
         if (CloseVarIndex != -1 && CloseVarIndex > OpenVarIndex)
         {
             // The open index will be index of the start of the open token substring, so we need to account for that in skipping to the varname content
             int VarNameStartPos = OpenVarIndex + VarOpenToken.Len();
             // The length of the VarCloseToken doesn't matter here since we just want to make sure we discount the index where it 
             // begins to catch only the end of the varname content
-            int VarNameCount = CloseVarIndex - VarNameStartPos - 1;
+            int VarNameCount = CloseVarIndex - VarNameStartPos;
             FString VarName = LoreString.Mid(VarNameStartPos, VarNameCount);
+            UE_LOG(LogTemp, Log, TEXT("StringDoctor; parsed out var name is: %s"), *VarName);
             FString Sub = LookupVariableSubstitution(VarName);
             // Excise the variable template substring
             LoreString.RemoveAt(OpenVarIndex, VarOpenToken.Len() + VarName.Len() + VarCloseToken.Len(), true);
             // Insert the actual variable substitution value
             LoreString.InsertAt(OpenVarIndex, Sub);
+            UE_LOG(LogTemp, Log, TEXT("StringDoctor; final LoreString says %s"), *LoreString);
         }
         else 
         {
-            UE_LOG(LogTemp, Error, TEXT("Malformed variable sub at %i"), OpenVarIndex);
+            UE_LOG(LogTemp, Error, TEXT("StringDoctor; Malformed variable sub at %i"), OpenVarIndex);
             continue;
         }
+        // on to the next one, if still applicable
+        OpenVarIndex = LoreString.Find(VarOpenToken);
     }
 }
 
 FString ULibraryWidget::LookupVariableSubstitution(const FString& VariableName)
 {
+    UE_LOG(LogTemp, Log, TEXT("LookupVariableSubstitution; var name is: %s"), *VariableName);
     // *shh* nobody tell him about FText::Format() XD I wanted practice with UE JSON before the scary convo script processor ok?!
 
     // todo: use gamestate to figure out the appropriate variable substitution string
@@ -189,24 +200,25 @@ FString ULibraryWidget::LookupVariableSubstitution(const FString& VariableName)
     auto Reader = TJsonReaderFactory<>::Create(TextVTableJSON);
     if (FJsonSerializer::Deserialize(Reader, TextVTableJsonObject))
     {
-        const TSharedPtr<FJsonObject>* TopLevelVarEntry;
-        TextVTableJsonObject->TryGetObjectField(VariableName, TopLevelVarEntry);
-        const TArray<TSharedPtr<FJsonValue>>* ConditionsArray;
-        (*TopLevelVarEntry)->TryGetArrayField(TEXT("conditions"), ConditionsArray);
+        auto TopLevelVarEntry = TextVTableJsonObject->GetObjectField(VariableName);
+        auto ConditionsArray = TopLevelVarEntry->GetArrayField(KEY_CONDITIONS);
         // parse out condition vars and look 'em up from predicate map based on metadata attributes
         bool AllConditionsPassed = false;
-        for (auto Condition : *ConditionsArray)
+        for (auto Condition : ConditionsArray)
         {
+            UE_LOG(LogTemp, Log, TEXT("LookupVariableSub; stepping through conditions array."));
             bool ConditionPassed = false;
             const TSharedPtr<FJsonObject>* ConditionObject;
             if (Condition->TryGetObject(ConditionObject))
             {
+                UE_LOG(LogTemp, Log, TEXT("LookupVariableSub; parsed condition into object."));
+            
                 // parse out the pass condition value and comparison operator, and compare accordingly to actual state value
                 FString StateVarName = (*ConditionObject)->GetStringField(KEY_CONDITION_STATE_VARIABLE_NAME);
                 FString StateVarType = (*ConditionObject)->GetStringField(KEY_CONDITION_STATE_VARIABLE_TYPE);
                 FString ComparisonOp = (*ConditionObject)->GetStringField(KEY_CONDITION_COMPARISON_OPERATOR);
                 FString PassVal = (*ConditionObject)->GetStringField(KEY_CONDITION_PASS_VALUE);
-                auto GameState = Cast<ARyddelmystGameState>(GetWorld()->GetGameState());
+                UE_LOG(LogTemp, Log, TEXT("LookupVariableSub; gamestate says %p"), GameState);
                 if (StateVarType == VALUE_CONDITION_STATE_VARIABLE_TYPE_BOOLEAN)
                 {
                     bool* StateValue_ptr = GameState->StatesMapBool.Find(StateVarName);
@@ -267,11 +279,11 @@ FString ULibraryWidget::LookupVariableSubstitution(const FString& VariableName)
         FString SubstitutionString;
         if (AllConditionsPassed)
         {
-            SubstitutionString = (*TopLevelVarEntry)->GetStringField(KEY_PASS_SUBSTITUTION);
+            SubstitutionString = TopLevelVarEntry->GetStringField(KEY_PASS_SUBSTITUTION);
         }
         else 
         {
-            SubstitutionString = (*TopLevelVarEntry)->GetStringField(KEY_FAIL_SUBSTITUTION);
+            SubstitutionString = TopLevelVarEntry->GetStringField(KEY_FAIL_SUBSTITUTION);
         }
         
         // run pass/fail sub string through StringDoctor() for recursive var sub

@@ -248,6 +248,7 @@ void ARyddelmystCharacter::PauseGame()
 
 void ARyddelmystCharacter::Interact()
 {
+	UE_LOG(LogTemp, Log, TEXT("interact; gamestate says %p"), GetWorld()->GetGameState());
 	// hide dialogue if showing, and return early so we don't potentially trigger a new dialogue
 	if(HUD->HideDialogue() || HUD->HideText())
 	{
