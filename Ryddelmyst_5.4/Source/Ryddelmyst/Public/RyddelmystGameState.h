@@ -3,7 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "GameFramework/GameState.h"
+#include "GameFramework/GameStateBase.h"
 #include "RyddelmystGameState.generated.h"
 
 /**
@@ -21,7 +21,7 @@ enum class EMegyleTrialFlags : uint8
  * Tracks the current state of Maya's journey through the Megyle trial.
  */
 UCLASS()
-class RYDDELMYST_API ARyddelmystGameState : public AGameState
+class RYDDELMYST_API ARyddelmystGameState : public AGameStateBase
 {
 	GENERATED_BODY()
 

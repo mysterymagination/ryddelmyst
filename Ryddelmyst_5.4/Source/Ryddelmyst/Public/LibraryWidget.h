@@ -29,7 +29,7 @@ class RYDDELMYST_API ULibraryWidget : public UUserWidget
 {
 	GENERATED_BODY()
 
-private:
+public:
 	/**
 	 * @brief pool of observation book data that library book widgets haven't picked up yet.
 	 * They fight me at every turn setting their data before or after display except via ctor script or bound function;

@@ -83,10 +83,15 @@ void ULibraryWidget::PopulateUnshelved()
     if (BookBank.Contains(ELibraryCat::Diary))
     {
         UnshelvedDiaries = BookBank[ELibraryCat::Diary].Books;
-        for (auto Book : UnshelvedDiaries)
+        for (FLibraryBookData& Book : UnshelvedDiaries)
         {
             BookDoctor(Book);
-            UE_LOG(LogTemp, Log, TEXT("populateunshelved; after bookdoctor the diary lore says %s"), *Book.LocalizedLore.ToString());
+            UE_LOG(LogTemp, Log, TEXT("populateunshelved; after bookdoctor iteration the diary lore says %s"), *Book.LocalizedLore.ToString());
+        }
+        for (FLibraryBookData& Book : UnshelvedDiaries)
+        {
+            
+            UE_LOG(LogTemp, Log, TEXT("populateunshelved; after complete bookdoctor loop things the diary lore says %s"), *Book.LocalizedLore.ToString());
         }
     }
 }
@@ -115,6 +120,7 @@ FLibraryBookData ULibraryWidget::PullUnshelved(ELibraryCat Category)
             {
                 data = UnshelvedDiaries[UnshelvedDiaries.Num()-1];
                 UnshelvedDiaries.RemoveAt(UnshelvedDiaries.Num()-1);
+                UE_LOG(LogTemp, Error, TEXT("pullunshelved; diary lore is %s"), *data.LocalizedLore.ToString());
             }
 			break;
         default:
