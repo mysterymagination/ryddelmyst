@@ -519,15 +519,9 @@ bool ARyddelmystHUD::ShowLibrary()
 		{
 			// order of operations here is important -- we need to take care of data mucking about before
 			// actually displaying the library, which triggers its 'construction' script.
-			UE_LOG(LogTemp, Log, TEXT("showlibrary; gamestate says %p"), GetWorld()->GetGameState());
 			LibraryWidget->SetGameState(GetWorld()->GetGameState<ARyddelmystGameState>());
 			LibraryWidget->ReshelveBooks();
 			LibraryWidget->PopulateUnshelved();
-			for (auto Book : LibraryWidget->UnshelvedDiaries)
-			{
-				
-				UE_LOG(LogTemp, Log, TEXT("showlibrary; after shelving things the diary lore says %s"), *Book.LocalizedLore.ToString());
-			}
 			LibraryWidget->AddToViewport();
 			return true;
 		}
