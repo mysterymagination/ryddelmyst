@@ -67,26 +67,33 @@ void ULibraryWidget::PopulateUnshelved()
     if (BookBank.Contains(ELibraryCat::Observation))
     {
         UnshelvedObservations = BookBank[ELibraryCat::Observation].Books;
+        /*
         for (auto Book : UnshelvedObservations)
         {
             BookDoctor(Book);
         }
+        */
     }
     if (BookBank.Contains(ELibraryCat::Conversation))
     {
         UnshelvedConversations = BookBank[ELibraryCat::Conversation].Books;
+        /*
         for (auto Book : UnshelvedConversations)
         {
             BookDoctor(Book);
         }
+        */
     }
     if (BookBank.Contains(ELibraryCat::Diary))
     {
         UnshelvedDiaries = BookBank[ELibraryCat::Diary].Books;
+        /* moving the book doctoring to the last minute, right before we determine what text to show for a given book, in cover art onclick event in BP;
+           that way we can ensure up-to-date string sub within a given quest log browsing session.
         for (FLibraryBookData& Book : UnshelvedDiaries)
         {
             BookDoctor(Book);
         }
+        */
     }
 }
 
@@ -224,11 +231,11 @@ FString ULibraryWidget::LookupVariableSubstitution(const FString& VariableName)
                                         ConditionPassed = !*StateValue_ptr;
                                     }
                                     UE_LOG(LogTemp, Log, 
-                                        TEXT("LookupVariableSub; for variablename %s's condition state var %s, bool eq comparison condition passed says %d based on passval of %d and state val of %d"), 
+                                        TEXT("LookupVariableSub; for variablename %s's condition state var %s, bool eq comparison condition passed says %d based on passval of %s and state val of %d"), 
                                         *VariableName, 
                                         *StateVarName, 
                                         ConditionPassed, 
-                                        PassVal, 
+                                        *PassVal, 
                                         *StateValue_ptr
                                     );
                                 }
@@ -243,11 +250,11 @@ FString ULibraryWidget::LookupVariableSubstitution(const FString& VariableName)
                                 {
                                     ConditionPassed = *StateValue_ptr == UKismetStringLibrary::Conv_StringToInt(PassVal);
                                     UE_LOG(LogTemp, Log, 
-                                        TEXT("LookupVariableSub; for variablename %s's condition state var %s, int eq comparison condition passed says %d based on passval of %d and state val of %d"), 
+                                        TEXT("LookupVariableSub; for variablename %s's condition state var %s, int eq comparison condition passed says %d based on passval of %s and state val of %d"), 
                                         *VariableName, 
                                         *StateVarName, 
                                         ConditionPassed, 
-                                        PassVal, 
+                                        *PassVal, 
                                         *StateValue_ptr
                                     );
                                 }
@@ -255,11 +262,11 @@ FString ULibraryWidget::LookupVariableSubstitution(const FString& VariableName)
                                 {
                                     ConditionPassed = *StateValue_ptr >= UKismetStringLibrary::Conv_StringToInt(PassVal);
                                     UE_LOG(LogTemp, Log, 
-                                        TEXT("LookupVariableSub; for variablename %s's condition state var %s, int gte comparison condition passed says %d based on passval of %d and state val of %d"), 
+                                        TEXT("LookupVariableSub; for variablename %s's condition state var %s, int gte comparison condition passed says %d based on passval of %s and state val of %d"), 
                                         *VariableName, 
                                         *StateVarName, 
                                         ConditionPassed, 
-                                        PassVal, 
+                                        *PassVal, 
                                         *StateValue_ptr
                                     );
                                 }

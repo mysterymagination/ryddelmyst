@@ -20,7 +20,7 @@
 				"passValue" : "true"
 			}
 		],
-		"passSubstitution" : "Sure sounds like I was confident about whatever a Ryddelroot is when I wrote this, but I have no idea at the moment. How weird that I remember going to uni and my cozy dorm ${Molly_Discovered} and my wild plants ${Molly_Discovered} but nothing specific about this mission. Why? Anyway, I wonder how a magical tree chick speaks or generates Ryddelmyst?",
+		"passSubstitution" : "Sure sounds like I was confident about whatever a Ryddelroot is when I wrote this, but I have no idea at the moment. How weird that I remember going to uni and my cozy dorm ${Molly_Discovered} and my wild plants ${Molly_Discovered} but nothing specific about this mission. Why?",
 		"failSubstitution" : "What the heck is a Ryddelroot? How could it generate Ryddelmyst?"
 	},
     "Molly_Discovered" : {
@@ -68,7 +68,7 @@
 				"passValue" : "true"
 			}
 		],
-		"passSubstitution" : "Sweet blighted clydesdale, I must have been given to the Ryddelroot and ${Qyvnily_Ryddelroot_Girlfish} took me here for some reason. That would explain why I'm so poorly rendered, I guess, if this is some kinda dreamscape. Does that mean this is how I see myself or is it how the goddesses see me? Either way, I have many feelings. And these boobs are still inexplicable, on multiple dimensions. Anyway, what does that mean for me? Perhaps if I pass this trial or whatever it is it'll mean something something freedom and asylum from the priestesses? I should have a chin wag with the various Manifestations I've seen about to clear this mystery up!",
+		"passSubstitution" : "Sweet blighted clydesdale, I must have been given to the Ryddelroot and ${Qyvnily_Ryddelroot_Girlfish} took me here for some reason. That would explain why I'm so poorly rendered, I guess, if this is some kinda dreamscape. Does that mean this is how I see myself or is it how the goddesses see me? Either way, I have many feelings. And these boobs are still inexplicable, on multiple dimensions. Anyway, what does that mean for me? Perhaps if I pass this trial or whatever it is it'll mean something something freedom and asylum from the priestesses? I should have a chin wag with the various Manifestations I've seen about to clear this mystery up! Anyway, I wonder how a magical tree chick speaks or generates Ryddelmyst? Could they really be goddesses?",
 		"failSubstitution" : "Hm. Hrm. Hrmn."
 	},
     "Qyvnily_Ryddelroot_Girlfish" : {

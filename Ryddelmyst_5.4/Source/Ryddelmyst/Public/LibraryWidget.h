@@ -106,13 +106,13 @@ public:
 	 * @param Data the library book data to be doctored.
 	 */
 	UFUNCTION(BlueprintCallable, Category = "Lore")
-	void BookDoctor(FLibraryBookData& Data);
+	void BookDoctor(UPARAM(ref) FLibraryBookData& Data);
 	/**
 	 * @brief modifies the input LoreString, replacing string template vars with state-based values.
 	 * @param LoreString the string to be doctored.
 	 */
 	UFUNCTION(BlueprintCallable, Category = "Lore")
-	void StringDoctor(FString& LoreString);
+	void StringDoctor(UPARAM(ref) FString& LoreString);
 
 	/**
 	 * @brief reads the content of BookBank into three emptyable pools of book data which the book widgets can blindly consume.
