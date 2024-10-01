@@ -29,6 +29,7 @@
 #include "ITalkable.h"
 #include "AssetUtils.h"
 #include "Engine/EngineTypes.h"
+#include "RyddelmystGameState.h"
 
 DEFINE_LOG_CATEGORY_STATIC(LogFPChar, Warning, All);
 
@@ -433,7 +434,7 @@ void ARyddelmystCharacter::Interact()
 					{
 						if (Actor->GetClass()->ImplementsInterface(UTalkable::StaticClass()))
 						{
-							FString jsonString = ITalkable::Execute_GetConversationScript(Actor, ClosestBone, GetWorld()->GetGameState());
+							FString jsonString = ITalkable::Execute_GetConversationScript(Actor, ClosestBone, GetWorld()->GetGameState<ARyddelmystGameState>());
 							HUD->ShowConversation(jsonString);
 						}
 					}
