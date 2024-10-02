@@ -30,5 +30,5 @@ public:
 	 * @param GameState - handle to the current game state so that it can modify which conversation script is returned.
 	 */
 	UFUNCTION(BlueprintCallable, BlueprintNativeEvent, Category = "NPC")
-	FString GetConversationScript(FString ConvoTx, FString ConvoRx, FName ClosestBone, ARyddelmystGameState* GameState);
+	FString GetConversationScript(const FString& ConvoTx, const FString& ConvoRx, FName ClosestBone, ARyddelmystGameState* GameState);
 };

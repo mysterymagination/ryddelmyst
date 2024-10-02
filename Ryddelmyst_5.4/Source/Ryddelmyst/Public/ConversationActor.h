@@ -23,6 +23,6 @@ protected:
 public:	
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
-	FString GetConversationScript_Implementation(FString ConvoTx, FString ConvoRx, FName ClosestBone, ARyddelmystGameState* GameState);
+	FString GetConversationScript_Implementation(const FString& ConvoTx, const FString& ConvoRx, FName ClosestBone, ARyddelmystGameState* GameState);
 
 };

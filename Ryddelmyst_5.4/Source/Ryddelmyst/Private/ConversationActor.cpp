@@ -25,7 +25,7 @@ void AConversationActor::Tick(float DeltaTime)
 
 }
 
-FString AConversationActor::GetConversationScript_Implementation(FString ConvoTx, FString ConvoRx, FName ClosestBone, ARyddelmystGameState* GameState)
+FString AConversationActor::GetConversationScript_Implementation(const FString& ConvoTx, const FString& ConvoRx, FName ClosestBone, ARyddelmystGameState* GameState)
 {
 	// todo: use params to figure out the conversation script we should use.
 	// todo: should each convo actor instance override this with a limited set of relevant scripts that query game state only?
@@ -33,6 +33,16 @@ FString AConversationActor::GetConversationScript_Implementation(FString ConvoTx
 	//  just not a big fan of the notion of having a global convo 'db' which every convo actor queries from scratch; I know we don't care much for optimization for the demo,
 	//  but it's not very data driven of me -- consider the case where we want to mod a convo later: presently that could involve modifying both a JSON script
 	//  AND this shared monolith of logic which could cause merry hell among the convo actor instances. If instead we have the data provided by the instance itself
-	//  we need only mod one instance (or convo actor subclass) and possibly its particular state query logic. Subtle difference at this scale, but non-data-drivenness in game design makes my spirit itch. 
+	//  we need only mod one instance (or convo actor subclass) and possibly its particular state query logic. Subtle difference at this scale, but non-data-drivenness in game design makes my spirit itch.
+	//  On the other hand, creating a convoactor subclass for each character and/or character permutation doesn't scale. Perhaps the JSON convo data is data-driven enough
+	//  and then sticking ITalkable in an ActorComponent would be the thing to do? That would go back a bit to the monolithic selection logic, but since it's only for
+	//  script selection (and we support runtime script mods from gamestate already) I think that's fine.
+	FString ConvoPath = FPaths::ProjectContentDir().Append(TEXT("Ryddelmyst_Assets/Text/Dialogue/Intro_Qyvnily_WildFlower.json"));
+	FString ConvoJSON;
+	if (!FFileHelper::LoadFileToString(ConvoJSON, *ConvoPath))
+	{
+		UE_LOG(LogTemp, Error, TEXT("GetConversationScript; failed loading script %s"), *ConvoPath);
+	}
+	return  ConvoJSON;
 }
 

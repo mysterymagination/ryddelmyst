@@ -434,7 +434,7 @@ void ARyddelmystCharacter::Interact()
 					{
 						if (Actor->GetClass()->ImplementsInterface(UTalkable::StaticClass()))
 						{
-							FString jsonString = ITalkable::Execute_GetConversationScript(Actor, ClosestBone, GetWorld()->GetGameState<ARyddelmystGameState>());
+							FString jsonString = ITalkable::Execute_GetConversationScript(Actor, GetName(), Actor->GetName(), ClosestBone, GetWorld()->GetGameState<ARyddelmystGameState>());
 							HUD->ShowConversation(jsonString);
 						}
 					}
