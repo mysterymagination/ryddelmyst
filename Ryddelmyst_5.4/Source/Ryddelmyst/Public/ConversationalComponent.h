@@ -1,4 +1,4 @@
-ng// Copyright Jeff Creswell 2024. Subject to the GPL v3.0 license.
+// Copyright Jeff Creswell 2024. Subject to the GPL v3.0 license.
 
 #pragma once
 
@@ -33,3 +33,4 @@ public:
 	FString GetConversationScript_Implementation(const FString& ConvoTx, const FString& ConvoRx, FName ClosestBone, ARyddelmystGameState* GameState);
 	void StartConversation_Implementation(const FString& ConvoTx, const FString& ConvoRx, FName ClosestBone, ARyddelmystGameState* GameState, const FString& ConvoJSON);
 };
+

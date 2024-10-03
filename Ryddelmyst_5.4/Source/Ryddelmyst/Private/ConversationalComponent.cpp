@@ -38,12 +38,12 @@ FString UConversationalComponent::GetConversationScript_Implementation(const FSt
 	FString ChosenScript;
 	FString ConvoJSON;
 	IFileManager& FileManager = IFileManager::Get();
-	TArray<FString>& ConvoScriptFiles;
+	TArray<FString> ConvoScriptFiles;
 	// enumerate list of scripts
 	FileManager.FindFiles(ConvoScriptFiles, *ConvoPath, true, false);
 	// filter list by convo tx and rx, particularly rx goddess form
 	// at the moment, we only ever have Maya as the tx and we only care to search for the form name in the rx
-	ConvoScriptFiles.RemoveAll([](const FString& String) {
+	ConvoScriptFiles.RemoveAll([&](const FString& String) {
 		return !String.Contains(ConvoRx);
 	});
 	for (auto Script : ConvoScriptFiles)
@@ -61,5 +61,6 @@ void UConversationalComponent::StartConversation_Implementation(const FString& C
 {
 	// todo: use conversationstarter to render and process convo UI.
 	FString Script = GetConversationScript_Implementation(ConvoTx, ConvoRx, ClosestBone, GameState);
+	UE_LOG(LogTemp, Log, TEXT("startconversation; script says: %s"), *Script);
 }
 
