@@ -5,6 +5,7 @@
 #include "CoreMinimal.h"
 #include "UObject/Interface.h"
 #include "RyddelmystGameState.h"
+#include "Blueprint/UserWidget.h"
 #include "ITalkable.generated.h"
 
 // This class does not need to be modified.
@@ -38,8 +39,10 @@ public:
 	 * @param ConvoRx - the name of the Actor who ConvoTx started a conversation with.
 	 * @param ClosestBone - indicates where the player was looking when initiating the convo.
 	 * @param GameState - handle to the current game state so that it can modify which conversation script is returned.
-	 * @param ConvoJSON - json script as FString that details the conversation flow and options. 
+	 * @param ConvoJSON - optional json script as FString that details the conversation flow and options; 
+	 * if not specified, we will call GetConversationScript() to figure out the script content. 
+	 * @return UUserWidget containing the rendered conversation in a container suitable for replacing or appending to a conversation container in the HUD.
 	 */
 	UFUNCTION(BlueprintCallable, BlueprintNativeEvent, Category = "NPC")
-	void StartConversation(const FString& ConvoTx, const FString& ConvoRx, FName ClosestBone, ARyddelmystGameState* GameState, const FString& ConvoJSON);
+	UUserWidget* StartConversation(const FString& ConvoTx, const FString& ConvoRx, FName ClosestBone, ARyddelmystGameState* GameState, const FString& ConvoJSON);
 };

@@ -30,6 +30,8 @@
 #include "AssetUtils.h"
 #include "Engine/EngineTypes.h"
 #include "RyddelmystGameState.h"
+#include "Blueprint/UserWidget.h"
+#include "ConversationalComponent.h"
 
 DEFINE_LOG_CATEGORY_STATIC(LogFPChar, Warning, All);
 
@@ -432,10 +434,11 @@ void ARyddelmystCharacter::Interact()
 					}
 					else if (cap == InteractCapability::TALKABLE && ClosestBone.ToString().Contains(TEXT("face"), ESearchCase::IgnoreCase))
 					{
-						if (Actor->GetClass()->ImplementsInterface(UTalkable::StaticClass()))
+						UConversationalComponent* Convo = Actor->FindComponentByClass<UConversationalComponent>();
+						if (Convo && Convo->GetClass()->ImplementsInterface(UTalkable::StaticClass()))
 						{
-							FString jsonString = ITalkable::Execute_GetConversationScript(Actor, GetName(), Actor->GetName(), ClosestBone, GetWorld()->GetGameState<ARyddelmystGameState>());
-							HUD->ShowConversation(jsonString);
+							UUserWidget* ConvoWidget = ITalkable::Execute_StartConversation(Actor, GetName(), Actor->GetName(), ClosestBone, GetWorld()->GetGameState<ARyddelmystGameState>(), TEXT(""));
+							HUD->ShowConversation(ConvoWidget);
 						}
 					}
 					else if (cap == InteractCapability::DESCRIBABLE)

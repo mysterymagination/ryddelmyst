@@ -398,9 +398,9 @@ bool ARyddelmystHUD::HideBookText()
 	return false;
 }
 
-bool ARyddelmystHUD::ShowConversation(const FString& JsonString)
+bool ARyddelmystHUD::ShowConversation(UUserWidget* ConvoContent)
 {
-	// todo: use convo parser to generate conversation UI from input JSON string; this should include an exit convo button or something at the bottom that removes the whole UI tree from the HUD.
+	// todo: append to conversation container content, if any.
 	return false;
 }
 

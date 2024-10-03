@@ -57,10 +57,16 @@ FString UConversationalComponent::GetConversationScript_Implementation(const FSt
 	return  ConvoJSON;
 }
 
-void UConversationalComponent::StartConversation_Implementation(const FString& ConvoTx, const FString& ConvoRx, FName ClosestBone, ARyddelmystGameState* GameState, const FString& ConvoJSON)
+UUserWidget* UConversationalComponent::StartConversation_Implementation(const FString& ConvoTx, const FString& ConvoRx, FName ClosestBone, ARyddelmystGameState* GameState, const FString& ConvoJSON)
 {
-	// todo: use conversationstarter to render and process convo UI.
-	FString Script = GetConversationScript_Implementation(ConvoTx, ConvoRx, ClosestBone, GameState);
+	// todo: use conversationstarter to render and process convo UI, then return it.
+	//  This should include an exit convo button or something at the bottom that removes the whole UI tree from the HUD.
+	FString Script = ConvoJSON;
+	if (Script.IsEmpty())
+	{
+		Script = GetConversationScript_Implementation(ConvoTx, ConvoRx, ClosestBone, GameState);
+	}
 	UE_LOG(LogTemp, Log, TEXT("startconversation; script says: %s"), *Script);
+	return nullptr;
 }
 

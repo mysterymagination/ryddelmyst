@@ -158,11 +158,11 @@ public:
 
 	/**
 	 * @brief Converts the input JSON string into an interactive UI tree.
-	 * @param JsonString - raw string representation of the JSON conversation script content.
+	 * @param UUserWidget - convo content to append to the current conversation container, if any.
 	 * @return true if the convo was shown, false otherwise.
 	 */
 	UFUNCTION(BlueprintCallable, Category = "Dialogue")
-	bool ShowConversation(const FString& JsonString);
+	bool ShowConversation(UUserWidget* ConvoContent);
 
 	/**
 	 * @brief hides all parts of the HUD
