@@ -437,7 +437,7 @@ void ARyddelmystCharacter::Interact()
 						UConversationalComponent* Convo = Actor->FindComponentByClass<UConversationalComponent>();
 						if (Convo && Convo->GetClass()->ImplementsInterface(UTalkable::StaticClass()))
 						{
-							UUserWidget* ConvoWidget = ITalkable::Execute_StartConversation(Actor, GetName(), Actor->GetName(), ClosestBone, GetWorld()->GetGameState<ARyddelmystGameState>(), TEXT(""));
+							UUserWidget* ConvoWidget = ITalkable::Execute_StartConversation(Convo, GetName(), Actor->GetName(), ClosestBone, GetWorld()->GetGameState<ARyddelmystGameState>(), TEXT(""));
 							HUD->ShowConversation(ConvoWidget);
 						}
 					}
