@@ -44,16 +44,28 @@ FString UConversationalComponent::GetConversationScript_Implementation(const FSt
 	// filter list by convo tx and rx, particularly rx goddess form
 	// at the moment, we only ever have Maya as the tx and we only care to search for the form name in the rx
 	ConvoScriptFiles.RemoveAll([&](const FString& String) {
+		UE_LOG(LogTemp, Log, TEXT("GetConversationScript; looking at %s to see if we should remove based on convorx %s"), *String, *ConvoRx);
 		return !String.Contains(ConvoRx);
 	});
 	for (auto Script : ConvoScriptFiles)
 	{
 		UE_LOG(LogTemp, Log, TEXT("GetConversationScript; filtered scripts contains %s"), *Script);
 	}
-	if (!FFileHelper::LoadFileToString(ConvoJSON, *ConvoPath.Append(ChosenScript)))
+
+	if (ConvoScriptFiles.Num() > 0)
 	{
-		UE_LOG(LogTemp, Error, TEXT("GetConversationScript; failed loading script %s"), *ConvoPath);
+		ConvoPath.Append(ConvoScriptFiles[0]);
+		if (!FFileHelper::LoadFileToString(ConvoJSON, *ConvoPath.Append(ChosenScript)))
+		{
+			UE_LOG(LogTemp, Error, TEXT("GetConversationScript; failed loading script %s"), *ConvoPath);
+		}
+		UE_LOG(LogTemp, Log, TEXT("GetConversationScript; convojson content says %s"), *ConvoJSON);
 	}
+	else 
+	{
+		UE_LOG(LogTemp, Error, TEXT("GetConversationScript; filtered script array size is 0"));
+	}
+
 	return  ConvoJSON;
 }
 
