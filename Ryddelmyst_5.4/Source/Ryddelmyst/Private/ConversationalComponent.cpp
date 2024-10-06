@@ -40,12 +40,13 @@ FString UConversationalComponent::GetConversationScript_Implementation(const FSt
 	IFileManager& FileManager = IFileManager::Get();
 	TArray<FString> ConvoScriptFiles;
 	// enumerate list of scripts
-	FileManager.FindFiles(ConvoScriptFiles, *ConvoPath, true, false);
+	FileManager.FindFiles(ConvoScriptFiles, *ConvoPath, TEXT("*.json"));
 	// filter list by convo tx and rx, particularly rx goddess form
 	// at the moment, we only ever have Maya as the tx and we only care to search for the form name in the rx
 	ConvoScriptFiles.RemoveAll([&](const FString& String) {
 		UE_LOG(LogTemp, Log, TEXT("GetConversationScript; looking at %s to see if we should remove based on convorx %s"), *String, *ConvoRx);
-		return !String.Contains(ConvoRx);
+		// todo: need to first extract known const identifier substrings from the convorx name e.g. yvyteph from BP_YvytephConvo_Actor_C_2
+		return !String.Contains(ConvoRx, ESearchCase::IgnoreCase, ESearchDir::FromStart);
 	});
 	for (auto Script : ConvoScriptFiles)
 	{
@@ -63,7 +64,7 @@ FString UConversationalComponent::GetConversationScript_Implementation(const FSt
 	}
 	else 
 	{
-		UE_LOG(LogTemp, Error, TEXT("GetConversationScript; filtered script array size is 0"));
+		UE_LOG(LogTemp, Error, TEXT("GetConversationScript; filtered script array in convopath %s size is 0"), *ConvoPath);
 	}
 
 	return  ConvoJSON;
