@@ -3,6 +3,9 @@
 
 #include "ConversationalComponent.h"
 
+const FString MATCHER_YVYTEPH{TEXT("yvyteph")};
+const FString MATCHER_QYVNILY{TEXT("qyvnily")};
+
 // Sets default values for this component's properties
 UConversationalComponent::UConversationalComponent()
 {
@@ -31,6 +34,22 @@ void UConversationalComponent::TickComponent(float DeltaTime, ELevelTick TickTyp
 	// ...
 }
 
+FString UConversationalComponent::MatchCharacter(const FString& ActorName)
+{
+	if (ActorName.Contains(MATCHER_YVYTEPH, ESearchCase::IgnoreCase, ESearchDir::FromStart))
+	{
+		return MATCHER_YVYTEPH;
+	}
+	else if (ActorName.Contains(MATCHER_QYVNILY, ESearchCase::IgnoreCase, ESearchDir::FromStart))
+	{
+		return MATCHER_QYVNILY;
+	}
+	else 
+	{
+		return TEXT("");
+	}
+}
+
 FString UConversationalComponent::GetConversationScript_Implementation(const FString& ConvoTx, const FString& ConvoRx, FName ClosestBone, ARyddelmystGameState* GameState)
 {
 	// todo: use game state to find best fit script
@@ -43,14 +62,22 @@ FString UConversationalComponent::GetConversationScript_Implementation(const FSt
 	FileManager.FindFiles(ConvoScriptFiles, *ConvoPath, TEXT("*.json"));
 	// filter list by convo tx and rx, particularly rx goddess form
 	// at the moment, we only ever have Maya as the tx and we only care to search for the form name in the rx
-	ConvoScriptFiles.RemoveAll([&](const FString& String) {
-		UE_LOG(LogTemp, Log, TEXT("GetConversationScript; looking at %s to see if we should remove based on convorx %s"), *String, *ConvoRx);
-		// todo: need to first extract known const identifier substrings from the convorx name e.g. yvyteph from BP_YvytephConvo_Actor_C_2
-		return !String.Contains(ConvoRx, ESearchCase::IgnoreCase, ESearchDir::FromStart);
-	});
-	for (auto Script : ConvoScriptFiles)
+	FString CharacterName = MatchCharacter(ConvoRx);
+	if (!CharacterName.IsEmpty())
 	{
-		UE_LOG(LogTemp, Log, TEXT("GetConversationScript; filtered scripts contains %s"), *Script);
+		ConvoScriptFiles.RemoveAll([&](const FString& String) {
+			UE_LOG(LogTemp, Log, TEXT("GetConversationScript; looking at %s to see if we should remove based on convorx %s"), *String, *CharacterName);
+			// todo: need to first extract known const identifier substrings from the convorx name e.g. yvyteph from BP_YvytephConvo_Actor_C_2
+			return !String.Contains(CharacterName, ESearchCase::IgnoreCase, ESearchDir::FromStart);
+		});
+		for (auto Script : ConvoScriptFiles)
+		{
+			UE_LOG(LogTemp, Log, TEXT("GetConversationScript; filtered scripts contains %s"), *Script);
+		}
+	}
+	else 
+	{
+		UE_LOG(LogTemp, Error, TEXT("GetConversationScript; convorx %s did not match any character names"), *ConvoRx);
 	}
 
 	if (ConvoScriptFiles.Num() > 0)

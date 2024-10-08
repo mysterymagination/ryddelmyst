@@ -18,9 +18,21 @@ private:
 	UPROPERTY()
 	UConversationStarter* ConversationStarter;
 
+public:
+	static const FString MATCHER_YVYTEPH;
+	static const FString MATCHER_QYVNILY;
+
 public:	
 	// Sets default values for this component's properties
 	UConversationalComponent();
+private:
+	/**
+	 * @brief Tries to match a known game character name token within a given actor's full GetName() result.
+	 * @param ActorName - GetName() result for an actor in a conversation.
+	 * @return matched character name or empty string. 
+	 */
+	UFUNCTION()
+	FString MatchCharacter(const FString& ActorName);
 
 protected:
 	// Called when the game starts
