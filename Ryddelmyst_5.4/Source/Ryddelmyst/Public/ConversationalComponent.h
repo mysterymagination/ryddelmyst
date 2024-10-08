@@ -19,8 +19,14 @@ private:
 	UConversationStarter* ConversationStarter;
 
 public:
-	static const FString MATCHER_YVYTEPH;
-	static const FString MATCHER_QYVNILY;
+	static const FString MATCHER_YVYTEPH_FONTOFFERTILITY;
+	static const FString MATCHER_YVYTEPH_GLORYFORM;
+	static const FString MATCHER_YVYTEPH_WILDFORM;
+	static const FString MATCHER_YVYTEPH_WILDFORMSHARP;
+	static const FString MATCHER_QYVNILY_WILDFLOWER;
+	static const FString MATCHER_QYVNILY_WILDFORM;
+	static const FString MATCHER_QYVNILY_GLORYFORM;
+	static const FString MATCHER_QYVNILY_GLORYFORMRAGE;
 
 public:	
 	// Sets default values for this component's properties

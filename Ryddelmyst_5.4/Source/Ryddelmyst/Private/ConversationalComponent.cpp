@@ -3,8 +3,15 @@
 
 #include "ConversationalComponent.h"
 
-const FString MATCHER_YVYTEPH{TEXT("yvyteph")};
-const FString MATCHER_QYVNILY{TEXT("qyvnily")};
+const FString UConversationalComponent::MATCHER_YVYTEPH_FONTOFFERTILITY{TEXT("yvyteph_fontoffertility")};
+const FString UConversationalComponent::MATCHER_YVYTEPH_GLORYFORM{TEXT("yvyteph_gloryform")};
+const FString UConversationalComponent::MATCHER_YVYTEPH_WILDFORM{TEXT("yvyteph_wildform")};
+const FString UConversationalComponent::MATCHER_YVYTEPH_WILDFORMSHARP{TEXT("yvyteph_wildformsharp")};
+const FString UConversationalComponent::MATCHER_YVYTEPH_MASTERMIND{TEXT("yvyteph_mastermind")};
+const FString UConversationalComponent::MATCHER_QYVNILY_WILDFLOWER{TEXT("qyvnily_wildflower")};
+const FString UConversationalComponent::MATCHER_QYVNILY_WILDFORM{TEXT("qyvnily_wildform")};
+const FString UConversationalComponent::MATCHER_QYVNILY_GLORYFORM{TEXT("qyvnily_gloryform")};
+const FString UConversationalComponent::MATCHER_QYVNILY_GLORYFORMRAGE{TEXT("qyvnily_gloryformrage")};
 
 // Sets default values for this component's properties
 UConversationalComponent::UConversationalComponent()
@@ -36,13 +43,45 @@ void UConversationalComponent::TickComponent(float DeltaTime, ELevelTick TickTyp
 
 FString UConversationalComponent::MatchCharacter(const FString& ActorName)
 {
-	if (ActorName.Contains(MATCHER_YVYTEPH, ESearchCase::IgnoreCase, ESearchDir::FromStart))
+	// sequence matters because some forms have subforms like gloryform -> gloryformrage, so we want to make sure
+	// we search from the bottom up so to speak in terms of branch terminals to avoid partial matches. Some sort of 
+	// more robust naming scheme or parsing logic to account for this possibility might be a better solution,
+	// but I couldn't be arsed. 
+	if (ActorName.Contains(MATCHER_YVYTEPH_FONTOFFERTILITY, ESearchCase::IgnoreCase, ESearchDir::FromStart))
 	{
-		return MATCHER_YVYTEPH;
+		return MATCHER_YVYTEPH_FONTOFFERTILITY;
 	}
-	else if (ActorName.Contains(MATCHER_QYVNILY, ESearchCase::IgnoreCase, ESearchDir::FromStart))
+	else if (ActorName.Contains(MATCHER_YVYTEPH_GLORYFORM, ESearchCase::IgnoreCase, ESearchDir::FromStart))
 	{
-		return MATCHER_QYVNILY;
+		return MATCHER_YVYTEPH_GLORYFORM;
+	}
+	else if (ActorName.Contains(MATCHER_YVYTEPH_WILDFORMSHARP, ESearchCase::IgnoreCase, ESearchDir::FromStart))
+	{
+		return MATCHER_YVYTEPH_WILDFORMSHARP;
+	}
+	else if (ActorName.Contains(MATCHER_YVYTEPH_WILDFORM, ESearchCase::IgnoreCase, ESearchDir::FromStart))
+	{
+		return MATCHER_YVYTEPH_WILDFORM;
+	}
+	else if (ActorName.Contains(MATCHER_YVYTEPH_MASTERMIND, ESearchCase::IgnoreCase, ESearchDir::FromStart))
+	{
+		return MATCHER_YVYTEPH_MASTERMIND;
+	}
+	else if (ActorName.Contains(MATCHER_QYVNILY_WILDFLOWER, ESearchCase::IgnoreCase, ESearchDir::FromStart))
+	{
+		return MATCHER_QYVNILY_WILDFLOWER;
+	}
+	else if (ActorName.Contains(MATCHER_QYVNILY_WILDFORM, ESearchCase::IgnoreCase, ESearchDir::FromStart))
+	{
+		return MATCHER_QYVNILY_WILDFORM;
+	}
+	else if (ActorName.Contains(MATCHER_QYVNILY_GLORYFORMRAGE, ESearchCase::IgnoreCase, ESearchDir::FromStart))
+	{
+		return MATCHER_QYVNILY_GLORYFORMRAGE;
+	}
+	else if (ActorName.Contains(MATCHER_QYVNILY_GLORYFORM, ESearchCase::IgnoreCase, ESearchDir::FromStart))
+	{
+		return MATCHER_QYVNILY_GLORYFORM;
 	}
 	else 
 	{
