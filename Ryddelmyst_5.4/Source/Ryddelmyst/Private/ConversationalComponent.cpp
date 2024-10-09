@@ -101,6 +101,7 @@ FString UConversationalComponent::GetConversationScript_Implementation(const FSt
 	FileManager.FindFiles(ConvoScriptFiles, *ConvoPath, TEXT("*.json"));
 	// filter list by convo tx and rx, particularly rx goddess form
 	// at the moment, we only ever have Maya as the tx and we only care to search for the form name in the rx
+	UE_LOG(LogTemp, Log, TEXT("GetConversationScript; convorx says %s"), *ConvoRx);
 	FString CharacterName = MatchCharacter(ConvoRx);
 	if (!CharacterName.IsEmpty())
 	{

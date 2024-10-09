@@ -23,6 +23,7 @@ public:
 	static const FString MATCHER_YVYTEPH_GLORYFORM;
 	static const FString MATCHER_YVYTEPH_WILDFORM;
 	static const FString MATCHER_YVYTEPH_WILDFORMSHARP;
+	static const FString MATCHER_YVYTEPH_MASTERMIND;
 	static const FString MATCHER_QYVNILY_WILDFLOWER;
 	static const FString MATCHER_QYVNILY_WILDFORM;
 	static const FString MATCHER_QYVNILY_GLORYFORM;
