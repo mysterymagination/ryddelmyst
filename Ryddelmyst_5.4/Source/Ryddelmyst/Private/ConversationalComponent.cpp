@@ -123,7 +123,9 @@ FString UConversationalComponent::GetConversationScript_Implementation(const FSt
 		// todo: use game state to find best fit script
 		//  In particular, look at states related to Yvyteph 
 		//  Mastermind stuff since she has several scripts that select from 
-		//  and possibly are jumping to from another script.
+		//  and possibly are jumping to from another script. For the jal, maybe the clue
+		//  could be shoved into the gamestate and then we can happily call this fella
+		//  recursively from ConversationStarter's processing?
 		ConvoPath.Append(ConvoScriptFiles[0]);
 		if (!FFileHelper::LoadFileToString(ConvoJSON, *ConvoPath.Append(ChosenScript)))
 		{
