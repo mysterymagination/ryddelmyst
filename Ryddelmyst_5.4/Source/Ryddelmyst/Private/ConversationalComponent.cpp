@@ -91,7 +91,6 @@ FString UConversationalComponent::MatchCharacter(const FString& ActorName)
 
 FString UConversationalComponent::GetConversationScript_Implementation(const FString& ConvoTx, const FString& ConvoRx, FName ClosestBone, ARyddelmystGameState* GameState)
 {
-	// todo: use game state to find best fit script
 	FString ConvoPath = FPaths::ProjectContentDir().Append(TEXT("Ryddelmyst_Assets/Text/Dialogue/"));
 	FString ChosenScript;
 	FString ConvoJSON;
@@ -107,7 +106,6 @@ FString UConversationalComponent::GetConversationScript_Implementation(const FSt
 	{
 		ConvoScriptFiles.RemoveAll([&](const FString& String) {
 			UE_LOG(LogTemp, Log, TEXT("GetConversationScript; looking at %s to see if we should remove based on convorx %s"), *String, *CharacterName);
-			// todo: need to first extract known const identifier substrings from the convorx name e.g. yvyteph from BP_YvytephConvo_Actor_C_2
 			return !String.Contains(CharacterName, ESearchCase::IgnoreCase, ESearchDir::FromStart);
 		});
 		for (auto Script : ConvoScriptFiles)
@@ -122,6 +120,10 @@ FString UConversationalComponent::GetConversationScript_Implementation(const FSt
 
 	if (ConvoScriptFiles.Num() > 0)
 	{
+		// todo: use game state to find best fit script
+		//  In particular, look at states related to Yvyteph 
+		//  Mastermind stuff since she has several scripts that select from 
+		//  and possibly are jumping to from another script.
 		ConvoPath.Append(ConvoScriptFiles[0]);
 		if (!FFileHelper::LoadFileToString(ConvoJSON, *ConvoPath.Append(ChosenScript)))
 		{
