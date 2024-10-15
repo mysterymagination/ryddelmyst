@@ -125,8 +125,11 @@ FString UConversationalComponent::GetConversationScript_Implementation(const FSt
 		//  Mastermind stuff since she has several scripts that select from 
 		//  and possibly are jumping to from another script. For the jal, maybe the clue
 		//  could be shoved into the gamestate and then we can happily call this fella
-		//  recursively from ConversationStarter's processing?
-		ConvoPath.Append(ConvoScriptFiles[0]);
+		//  recursively from ConversationStarter's processing? Won't actually be recursive 
+		//  whatever the case since jals will happen from UI events after the rendering
+		//  completes.
+		FString ScriptName = CalculateScriptName(CharacterName, GameState);
+		ConvoPath.Append(ScriptName);
 		if (!FFileHelper::LoadFileToString(ConvoJSON, *ConvoPath.Append(ChosenScript)))
 		{
 			UE_LOG(LogTemp, Error, TEXT("GetConversationScript; failed loading script %s"), *ConvoPath);
@@ -139,6 +142,18 @@ FString UConversationalComponent::GetConversationScript_Implementation(const FSt
 	}
 
 	return  ConvoJSON;
+}
+
+FString UConversationalComponent::CalculateScriptName(const FString& Character, URyddelmystGameState* GameState)
+{
+	if (CharacterName.Equals(MATCHER_YVYTEPH_MASTERMIND))
+	{
+		if (GameState->ClueState == URyddelmystGameState::STATE_CLUE_INPUT_CRUELTY_QUERY)
+		{
+			// todo: check the input value and if it contains any mention of the wood egg, proceed to Undercarriage_Desire_Mastery_Yvyteph_Mastermind.json. 
+			//  Else, kick the player back to the arena with Undercarriage_Rejected_Angel_Yvyteph_Mastermind.json.
+		}
+	}
 }
 
 UUserWidget* UConversationalComponent::StartConversation_Implementation(const FString& ConvoTx, const FString& ConvoRx, FName ClosestBone, ARyddelmystGameState* GameState, const FString& ConvoJSON)

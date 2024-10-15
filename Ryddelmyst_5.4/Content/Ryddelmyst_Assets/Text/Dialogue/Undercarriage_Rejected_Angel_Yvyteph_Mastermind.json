@@ -1,0 +1,21 @@
+{
+    "dialogue": [
+        {
+            "name": "Yvyteph's Undercarriage",
+            "image": "Yvyteph_FontOfFertility",
+            "lines": [
+                "Your work in the Maze is clearly not yet done. Return now and trouble me no longer!"
+            ] 
+        },
+        {
+            "name": "Maya's Curious Indignation",
+            "image": "Maya_portraits_Sprite_Angry",
+            "lines": [
+                "Hey, wai-...!"
+            ],
+            "deadend": {
+                "clue": "Return_To_Maze"
+            }
+        }
+    ]
+}
