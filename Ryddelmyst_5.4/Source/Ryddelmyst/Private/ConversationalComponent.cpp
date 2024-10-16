@@ -2,6 +2,7 @@
 
 
 #include "ConversationalComponent.h"
+#include "RyddelmystGameState.h"
 
 const FString UConversationalComponent::MATCHER_YVYTEPH_FONTOFFERTILITY{TEXT("yvyteph_fontoffertility")};
 const FString UConversationalComponent::MATCHER_YVYTEPH_GLORYFORM{TEXT("yvyteph_gloryform")};
@@ -152,6 +153,7 @@ FString UConversationalComponent::CalculateScriptName(const FString& Character, 
 		{
 			// todo: check the input value and if it contains any mention of the wood egg, proceed to Undercarriage_Desire_Mastery_Yvyteph_Mastermind.json. 
 			//  Else, kick the player back to the arena with Undercarriage_Rejected_Angel_Yvyteph_Mastermind.json.
+			if (GameState->UserInput.Contains())
 		}
 	}
 }

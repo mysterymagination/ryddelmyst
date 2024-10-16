@@ -29,6 +29,10 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Game State")
 	bool WoodEggBeholden = false;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Game State")
+	FString ClueState;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Game State")
+	FString UserInputValue;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Game State")
 	TMap<FString, bool> StatesMapBool = { 
 		{TEXT("Read_Diary_BlastoffEnthusiasm1"), false},
 		{TEXT("Read_Diary_Signature"), false},
@@ -39,4 +43,7 @@ public:
 		{TEXT("Molly_Glances"), 0},
 		{TEXT("Qyvnily_Forms_Visited"), 0}
 	};
+	static const FString STATE_CLUE_INPUT_CRUELTY_QUERY;
+	static const FString VALUE_INPUT_EGG_TOKEN;
+	static const FString VALUE_INPUT_LAVA_TOKEN;
 };
