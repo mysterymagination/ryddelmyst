@@ -147,15 +147,33 @@ FString UConversationalComponent::GetConversationScript_Implementation(const FSt
 
 FString UConversationalComponent::CalculateScriptName(const FString& Character, URyddelmystGameState* GameState)
 {
+	FString ConvoScriptName;
 	if (CharacterName.Equals(MATCHER_YVYTEPH_MASTERMIND))
 	{
 		if (GameState->ClueState == URyddelmystGameState::STATE_CLUE_INPUT_CRUELTY_QUERY)
 		{
-			// todo: check the input value and if it contains any mention of the wood egg, proceed to Undercarriage_Desire_Mastery_Yvyteph_Mastermind.json. 
-			//  Else, kick the player back to the arena with Undercarriage_Rejected_Angel_Yvyteph_Mastermind.json.
-			if (GameState->UserInput.Contains())
+			if (
+				GameState->UserInput.Contains(URyddelmystGameState::VALUE_INPUT_EGG_TOKEN) && 
+				GameState->UserInput.Contains(URyddelmystGameState::VALUE_INPUT_LAVA_TOKEN)
+			)
+			{
+				ConvoScriptName = TEXT("Undercarriage_Desire_Mastery_Yvyteph_Mastermind.json");
+			}
+			else 
+			{
+				ConvoScriptName = TEXT("Undercarriage_Rejected_Angel_Yvyteph_Mastermind.json");
+			}
 		}
 	}
+	else if (CharacterName.Equals(MATCHER_YVYTEPH_FONTOFFERTILITY))
+	{
+		ConvoScriptName = TEXT("Intro_Yvyteph_FontOfFertility.json");
+	}
+	else if (CharacterName.Equals(MATCHER_QYVNILY_WILDFLOWER))
+	{
+		ConvoScriptName = TEXT("Intro_Qyvnily_WildFlower.json");
+	}
+	// todo: other characters
 }
 
 UUserWidget* UConversationalComponent::StartConversation_Implementation(const FString& ConvoTx, const FString& ConvoRx, FName ClosestBone, ARyddelmystGameState* GameState, const FString& ConvoJSON)

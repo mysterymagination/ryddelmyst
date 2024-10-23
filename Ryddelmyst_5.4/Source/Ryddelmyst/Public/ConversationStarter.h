@@ -17,5 +17,9 @@ UCLASS()
 class RYDDELMYST_API UConversationStarter : public UObject
 {
 	GENERATED_BODY()
+
+public:
+	UFUNCTION(BlueprintCallable, Category = "Dialogue")
+	UUserWidget* ParseConversationScript(const FString& Script);
 	
 };
