@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "UObject/NoExportTypes.h"
+#include "Blueprint/UserWidget.h"
 #include "ConversationStarter.generated.h"
 
 /**
@@ -18,8 +19,34 @@ class RYDDELMYST_API UConversationStarter : public UObject
 {
 	GENERATED_BODY()
 
+private:
+	UConversationStarter();
+
+private:
+	UPROPERTY(EditAnywhere, Category = "Dialogue")
+	TSubclassOf<UUserWidget> ConvoBaseWidgetClass;
+
+	UPROPERTY(EditAnywhere, Category = "Dialogue")
+	TSubclassOf<UUserWidget> DialogueWidgetClass;
+
+	UPROPERTY(EditAnywhere, Category = "Dialogue")
+	TSubclassOf<UUserWidget> ChoicesWidgetClass;
+
+public:
+	static const FString KEY_ARRAY_DIALOGUES;
+	static const FString KEY_STRING_NAME;
+	static const FString KEY_STRING_IMAGE;
+	static const FString KEY_ARRAY_LINES;
+	static const FString KEY_ARRAY_CHOICES;
+	static const FString KEY_STRING_TEXT;
+	static const FString KEY_ARRAY_THOUGHTS;
+	static const FString KEY_OBJECT_DEADEND;
+	static const FString KEY_OBJECT_JUMP;
+	static const FString KEY_STRING_CLUE;
+	static const FString KEY_STRING_INPUT;
+
 public:
 	UFUNCTION(BlueprintCallable, Category = "Dialogue")
-	UUserWidget* ParseConversationScript(const FString& Script);
+	UUserWidget* ParseConversationScript(const FString& Script, ARyddelmystGameState* GameState);
 	
 };
