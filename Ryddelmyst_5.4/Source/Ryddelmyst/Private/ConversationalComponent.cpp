@@ -145,16 +145,16 @@ FString UConversationalComponent::GetConversationScript_Implementation(const FSt
 	return  ConvoJSON;
 }
 
-FString UConversationalComponent::CalculateScriptName(const FString& Character, URyddelmystGameState* GameState)
+FString UConversationalComponent::CalculateScriptName(const FString& CharacterName, ARyddelmystGameState* GameState)
 {
 	FString ConvoScriptName;
 	if (CharacterName.Equals(MATCHER_YVYTEPH_MASTERMIND))
 	{
-		if (GameState->ClueState == URyddelmystGameState::STATE_CLUE_INPUT_CRUELTY_QUERY)
+		if (GameState->ClueState == ARyddelmystGameState::STATE_CLUE_INPUT_CRUELTY_QUERY)
 		{
 			if (
-				GameState->UserInput.Contains(URyddelmystGameState::VALUE_INPUT_EGG_TOKEN) && 
-				GameState->UserInput.Contains(URyddelmystGameState::VALUE_INPUT_LAVA_TOKEN)
+				GameState->UserInputValue.Contains(ARyddelmystGameState::VALUE_INPUT_EGG_TOKEN) && 
+				GameState->UserInputValue.Contains(ARyddelmystGameState::VALUE_INPUT_LAVA_TOKEN)
 			)
 			{
 				ConvoScriptName = TEXT("Undercarriage_Desire_Mastery_Yvyteph_Mastermind.json");
@@ -174,6 +174,7 @@ FString UConversationalComponent::CalculateScriptName(const FString& Character, 
 		ConvoScriptName = TEXT("Intro_Qyvnily_WildFlower.json");
 	}
 	// todo: other characters
+	return ConvoScriptName;
 }
 
 UUserWidget* UConversationalComponent::StartConversation_Implementation(const FString& ConvoTx, const FString& ConvoRx, FName ClosestBone, ARyddelmystGameState* GameState, const FString& ConvoJSON)

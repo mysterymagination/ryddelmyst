@@ -6,6 +6,7 @@
 #include "Components/ActorComponent.h"
 #include "ITalkable.h"
 #include "ConversationStarter.h"
+#include "RyddelmystGameState.h"
 #include "ConversationalComponent.generated.h"
 
 
@@ -47,7 +48,7 @@ private:
 	 * @return best fit script name or empty string if none could be found. 
 	 */
 	UFUNCTION()
-	FString CalculateScriptName(const FString& Character, URyddelmystGameState* GameState);
+	FString CalculateScriptName(const FString& Character, ARyddelmystGameState* GameState);
 
 protected:
 	// Called when the game starts

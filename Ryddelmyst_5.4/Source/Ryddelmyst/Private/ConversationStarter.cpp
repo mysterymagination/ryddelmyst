@@ -50,8 +50,8 @@ UUserWidget* UConversationStarter::ParseConversationScript(const FString& Script
                 //  also means we'll need to manually parse out those variables from the JSON and use reflection or something
                 //  to look up the appropriate GameState symbol... or just use the existing jank variable replacement I wrote 
                 //  for LibraryBookWidget. Or nevermind variable templates in convo text for now.
-                const TArray<TSharedPtr<FJsonValue>>* ChoicesArray;
-                if (DialogueObject->TryGetArrayField(KEY_ARRAY_CHOICES, ChoicesArray))
+                const TArray<TSharedPtr<FJsonValue>>& ChoicesArray = (*DialogueObject)->GetArrayField(KEY_ARRAY_CHOICES);
+                if (ChoicesArray.Num() > 0)
                 {
                     UUserWidget* ChoicesWidget = CreateWidget<UUserWidget>(GetWorld(), ChoicesWidgetClass);
                     // todo: populate choiceswidget with buttons hosting the choices array text
