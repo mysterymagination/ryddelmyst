@@ -28,6 +28,13 @@
 #include "BodyCapsuleComponent.h"
 #include "RyddelmystGameMode.h"
 #include "Interact.h"
+
+#include "Blueprint/UserWidget.h"
+#include "Blueprint/WidgetTree.h"
+#include "Components/TextBlock.h"
+#include "Components/Button.h"
+#include "Components/PanelWidget.h"
+
 #include "RyddelmystCharacter.generated.h"
 
 class UInputComponent;
