@@ -36,6 +36,14 @@ UUserWidget* UConversationStarter::ParseConversationScript(const FString& Script
 {
     // todo: parse script json into UI elements added to a wrapper slate widget; for simplicity and prettyness I guess the best approach would be to create a UI asset in the editor that acts as a scrollable container and then add generated elements such as images, text, and buttons from the parsing.
     UUserWidget* ConvoWidget = CreateWidget<UUserWidget>(GetWorld(), ConvoBaseWidgetClass);
+
+    UUserWidget* ChoicesWidget = ConvoWidget->WidgetTree->ConstructWidget(ChoicesWidgetClass);
+    auto* ChoiceButton = ChoicesWidget->WidgetTree->ConstructWidget<UButton>();
+    auto* ChoiceText = ChoicesWidget->WidgetTree->ConstructWidget<UTextBlock>();
+    ChoiceText->SetText(FText::FromString(TEXT("Fuzlor")));
+    ChoiceButton->AddChild(ChoiceText);
+
+    /*
     TSharedPtr<FJsonObject> ScriptJsonObject;
     auto Reader = TJsonReaderFactory<>::Create(Script);
     if (FJsonSerializer::Deserialize(Reader, ScriptJsonObject))
@@ -61,13 +69,15 @@ UUserWidget* UConversationStarter::ParseConversationScript(const FString& Script
                     for (auto Choice : ChoicesArray)
                     {
                         auto* ChoiceButton = ChoicesWidget->WidgetTree->ConstructWidget<UButton>();
-                        auto* ChoiceText = ChoiceButton->WidgetTree->ConstructWidget<UTextBlock>();
+                        auto* ChoiceText = ChoicesWidget->WidgetTree->ConstructWidget<UTextBlock>();
                         ChoiceText->Text = FText::FromString(Choice->AsString());
+                        ChoiceButton->AddChild(ChoiceText);
                     }
                 } 
             }
         }       
     }
+    */
     // todo: when we parse out text strings from the 'lines' json elements, let's use FText and format args this time instead of our eliptical wheel version
     //  that doesn't support localization. NSLOCTEXT() is the macro you want, with namespace, key, and translatable string. Making the character names the namespace might be handy?
     return ConvoWidget;
