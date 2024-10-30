@@ -4,6 +4,9 @@
 #include "ConversationStarter.h"
 #include "Dom/JsonObject.h"
 #include "Dom/JsonValue.h"
+#include "Blueprint/WidgetTree.h"
+#include "Components/TextBlock.h"
+#include "Components/Button.h"
 
 const FString UConversationStarter::KEY_ARRAY_DIALOGUES{TEXT("dialogues")};
 const FString UConversationStarter::KEY_STRING_NAME{TEXT("name")};
@@ -59,8 +62,7 @@ UUserWidget* UConversationStarter::ParseConversationScript(const FString& Script
                     {
                         auto* ChoiceButton = ChoicesWidget->WidgetTree->ConstructWidget<UButton>();
                         auto* ChoiceText = ChoiceButton->WidgetTree->ConstructWidget<UTextBlock>();
-                        FString GeneratedKeyPrefix = TEXT("DialogueChoice_");
-                        ChoiceText->Text = NSLOCTEXT("DialogueChoices", *GeneratedKeyPrefix.Append(Choice->AsString()), Choice->AsString());
+                        ChoiceText->Text = FText::FromString(Choice->AsString());
                     }
                 } 
             }
