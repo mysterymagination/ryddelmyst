@@ -187,6 +187,6 @@ UUserWidget* UConversationalComponent::StartConversation_Implementation(const FS
 		Script = GetConversationScript_Implementation(ConvoTx, ConvoRx, ClosestBone, GameState);
 	}
 	UE_LOG(LogTemp, Log, TEXT("startconversation; script says: %s"), *Script);
-	return nullptr;
+	return ConversationStarter->ParseConversationScript(Script, GameState);
 }
 

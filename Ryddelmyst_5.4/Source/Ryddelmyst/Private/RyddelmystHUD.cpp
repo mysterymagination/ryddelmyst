@@ -411,7 +411,8 @@ bool ARyddelmystHUD::HideBookText()
 bool ARyddelmystHUD::ShowConversation(UUserWidget* ConvoContent)
 {
 	// todo: append to conversation container content, if any.
-	return false;
+	ConvoContent->AddToViewport();
+	return true;
 }
 
 void ARyddelmystHUD::HideStatus()

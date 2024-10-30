@@ -32,7 +32,7 @@ UConversationStarter::UConversationStarter()
 UUserWidget* UConversationStarter::ParseConversationScript(const FString& Script, ARyddelmystGameState* GameState)
 {
     // todo: parse script json into UI elements added to a wrapper slate widget; for simplicity and prettyness I guess the best approach would be to create a UI asset in the editor that acts as a scrollable container and then add generated elements such as images, text, and buttons from the parsing.
-    UUserWidget* ConvoBaseWidget = CreateWidget<UUserWidget>(GetWorld(), ConvoBaseWidgetClass);
+    UUserWidget* ConvoWidget = CreateWidget<UUserWidget>(GetWorld(), ConvoBaseWidgetClass);
     TSharedPtr<FJsonObject> ScriptJsonObject;
     auto Reader = TJsonReaderFactory<>::Create(Script);
     if (FJsonSerializer::Deserialize(Reader, ScriptJsonObject))
@@ -43,7 +43,7 @@ UUserWidget* UConversationStarter::ParseConversationScript(const FString& Script
             const TSharedPtr<FJsonObject>* DialogueObject;
             if (DialogueElement->TryGetObject(DialogueObject))
             {
-                UUserWidget* DialogueWidget = CreateWidget<UUserWidget>(GetWorld(), DialogueWidgetClass);
+                UUserWidget* DialogueWidget = ConvoWidget->WidgetTree->ConstructWidget(DialogueWidgetClass);
                 // todo: populate the dialogue
                 // todo: when pulling in strings from a lines or text data, use NSLOCTEXT and create it using format text;
                 //  This will entail having variables in the text like FText::FormatNamed(LOCTEXT("SnippetHeader", "There are {Count} snippets in group {Name}"),TEXT("Count"), SnippetCount, TEXT("Name"), GroupNameText); which
@@ -53,13 +53,20 @@ UUserWidget* UConversationStarter::ParseConversationScript(const FString& Script
                 const TArray<TSharedPtr<FJsonValue>>& ChoicesArray = (*DialogueObject)->GetArrayField(KEY_ARRAY_CHOICES);
                 if (ChoicesArray.Num() > 0)
                 {
-                    UUserWidget* ChoicesWidget = CreateWidget<UUserWidget>(GetWorld(), ChoicesWidgetClass);
-                    // todo: populate choiceswidget with buttons hosting the choices array text
+                    UUserWidget* ChoicesWidget = ConvoWidget->WidgetTree->ConstructWidget(ChoicesWidgetClass);
+                    // populate choiceswidget with buttons hosting the choices array text
+                    for (auto Choice : ChoicesArray)
+                    {
+                        auto* ChoiceButton = ChoicesWidget->WidgetTree->ConstructWidget<UButton>();
+                        auto* ChoiceText = ChoiceButton->WidgetTree->ConstructWidget<UTextBlock>();
+                        FString GeneratedKeyPrefix = TEXT("DialogueChoice_");
+                        ChoiceText->Text = NSLOCTEXT("DialogueChoices", *GeneratedKeyPrefix.Append(Choice->AsString()), Choice->AsString());
+                    }
                 } 
             }
         }       
     }
     // todo: when we parse out text strings from the 'lines' json elements, let's use FText and format args this time instead of our eliptical wheel version
     //  that doesn't support localization. NSLOCTEXT() is the macro you want, with namespace, key, and translatable string. Making the character names the namespace might be handy?
-    return nullptr;
+    return ConvoWidget;
 }
