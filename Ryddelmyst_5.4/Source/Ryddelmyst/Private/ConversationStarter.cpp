@@ -9,6 +9,7 @@
 #include "Components/Button.h"
 #include "Components/PanelWidget.h"
 #include "Components/ScrollBox.h"
+#include "Components/VerticalBox.h"
 
 
 const FString UConversationStarter::KEY_ARRAY_DIALOGUES{TEXT("dialogues")};
@@ -39,17 +40,18 @@ UUserWidget* UConversationStarter::ParseConversationScript(const FString& Script
 {
     // todo: parse script json into UI elements added to a wrapper slate widget; for simplicity and prettyness I guess the best approach would be to create a UI asset in the editor that acts as a scrollable container and then add generated elements such as images, text, and buttons from the parsing.
     UUserWidget* ConvoWidget = CreateWidget<UUserWidget>(GetWorld(), ConvoBaseWidgetClass);
-    //UPanelWidget* RootContainer = Cast<UPanelWidget>(ConvoWidget->GetRootWidget());
     UScrollBox* ScrollBox = Cast<UScrollBox>(ConvoWidget->WidgetTree->FindWidget(TEXT("DialogueScrollBox")));
-
     UUserWidget* ChoicesWidget = ConvoWidget->WidgetTree->ConstructWidget(ChoicesWidgetClass);
     ScrollBox->AddChild(ChoicesWidget);
-    /*
+    
     auto* ChoiceButton = ChoicesWidget->WidgetTree->ConstructWidget<UButton>();
+    auto* ChoicesList = Cast<UVerticalBox>(ChoicesWidget->WidgetTree->FindWidget(TEXT("ChoicesList")));
+    UE_LOG(LogTemp, Error, TEXT("ParseConvoScript; choiceslist says %p"), ChoicesList);
+    ChoicesList->AddChild(ChoiceButton);
     auto* ChoiceText = ChoicesWidget->WidgetTree->ConstructWidget<UTextBlock>();
-    ChoiceText->SetText(FText::FromString(TEXT("Fuzlor")));
     ChoiceButton->AddChild(ChoiceText);
-    */
+    ChoiceText->SetText(FText::FromString(TEXT("Fuzlor")));
+    
 
     /*
     TSharedPtr<FJsonObject> ScriptJsonObject;
