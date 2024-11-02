@@ -43,17 +43,17 @@ UUserWidget* UConversationStarter::ParseConversationScript(const FString& Script
     UScrollBox* ScrollBox = Cast<UScrollBox>(ConvoWidget->WidgetTree->FindWidget(TEXT("DialogueScrollBox")));
     UUserWidget* ChoicesWidget = ConvoWidget->WidgetTree->ConstructWidget(ChoicesWidgetClass);
     ScrollBox->AddChild(ChoicesWidget);
-    
-    auto* ChoiceButton = ChoicesWidget->WidgetTree->ConstructWidget<UButton>();
     auto* ChoicesList = Cast<UVerticalBox>(ChoicesWidget->WidgetTree->FindWidget(TEXT("ChoicesList")));
     UE_LOG(LogTemp, Error, TEXT("ParseConvoScript; choiceslist says %p"), ChoicesList);
+
+    /*
+    auto* ChoiceButton = ChoicesWidget->WidgetTree->ConstructWidget<UButton>();
     ChoicesList->AddChild(ChoiceButton);
     auto* ChoiceText = ChoicesWidget->WidgetTree->ConstructWidget<UTextBlock>();
     ChoiceButton->AddChild(ChoiceText);
     ChoiceText->SetText(FText::FromString(TEXT("Fuzlor")));
+    */
     
-
-    /*
     TSharedPtr<FJsonObject> ScriptJsonObject;
     auto Reader = TJsonReaderFactory<>::Create(Script);
     if (FJsonSerializer::Deserialize(Reader, ScriptJsonObject))
@@ -74,11 +74,11 @@ UUserWidget* UConversationStarter::ParseConversationScript(const FString& Script
                 const TArray<TSharedPtr<FJsonValue>>& ChoicesArray = (*DialogueObject)->GetArrayField(KEY_ARRAY_CHOICES);
                 if (ChoicesArray.Num() > 0)
                 {
-                    UUserWidget* ChoicesWidget = ConvoWidget->WidgetTree->ConstructWidget(ChoicesWidgetClass);
                     // populate choiceswidget with buttons hosting the choices array text
                     for (auto Choice : ChoicesArray)
                     {
                         auto* ChoiceButton = ChoicesWidget->WidgetTree->ConstructWidget<UButton>();
+                        ChoicesList->AddChild(ChoiceButton);
                         auto* ChoiceText = ChoicesWidget->WidgetTree->ConstructWidget<UTextBlock>();
                         ChoiceText->Text = FText::FromString(Choice->AsString());
                         ChoiceButton->AddChild(ChoiceText);
@@ -87,7 +87,6 @@ UUserWidget* UConversationStarter::ParseConversationScript(const FString& Script
             }
         }       
     }
-    */
     // todo: when we parse out text strings from the 'lines' json elements, let's use FText and format args this time instead of our eliptical wheel version
     //  that doesn't support localization. NSLOCTEXT() is the macro you want, with namespace, key, and translatable string. Making the character names the namespace might be handy?
     return ConvoWidget;
