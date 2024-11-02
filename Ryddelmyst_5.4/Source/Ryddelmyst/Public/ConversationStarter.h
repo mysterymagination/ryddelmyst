@@ -34,7 +34,7 @@ private:
 	TSubclassOf<UUserWidget> ChoicesWidgetClass;
 
 public:
-	static const FString KEY_ARRAY_DIALOGUES;
+	static const FString KEY_ARRAY_DIALOGUE;
 	static const FString KEY_STRING_NAME;
 	static const FString KEY_STRING_IMAGE;
 	static const FString KEY_ARRAY_LINES;

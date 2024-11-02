@@ -12,7 +12,7 @@
 #include "Components/VerticalBox.h"
 
 
-const FString UConversationStarter::KEY_ARRAY_DIALOGUES{TEXT("dialogues")};
+const FString UConversationStarter::KEY_ARRAY_DIALOGUE{TEXT("dialogue")};
 const FString UConversationStarter::KEY_STRING_NAME{TEXT("name")};
 const FString UConversationStarter::KEY_STRING_IMAGE{TEXT("image")};
 const FString UConversationStarter::KEY_ARRAY_LINES{TEXT("lines")};
@@ -58,12 +58,20 @@ UUserWidget* UConversationStarter::ParseConversationScript(const FString& Script
     auto Reader = TJsonReaderFactory<>::Create(Script);
     if (FJsonSerializer::Deserialize(Reader, ScriptJsonObject))
     {
-        auto DialogueElementsArray = ScriptJsonObject->GetArrayField(KEY_ARRAY_DIALOGUES);
+        UE_LOG(LogTemp, Warning, TEXT("ParseConvoScript; deserialized json"));
+
+        auto DialogueElementsArray = ScriptJsonObject->GetArrayField(KEY_ARRAY_DIALOGUE);
+        UE_LOG(LogTemp, Warning, TEXT("ParseConvoScript; dialogue array has %d elements"), DialogueElementsArray.Num());
+
         for (auto DialogueElement : DialogueElementsArray)
         {
+            UE_LOG(LogTemp, Warning, TEXT("ParseConvoScript; got dialogue element in dialogues array"));
+
             const TSharedPtr<FJsonObject>* DialogueObject;
             if (DialogueElement->TryGetObject(DialogueObject))
             {
+                UE_LOG(LogTemp, Warning, TEXT("ParseConvoScript; got dialogue object"));
+            
                 UUserWidget* DialogueWidget = ConvoWidget->WidgetTree->ConstructWidget(DialogueWidgetClass);
                 // todo: populate the dialogue
                 // todo: when pulling in strings from a lines or text data, use NSLOCTEXT and create it using format text;
@@ -77,15 +85,33 @@ UUserWidget* UConversationStarter::ParseConversationScript(const FString& Script
                     // populate choiceswidget with buttons hosting the choices array text
                     for (auto Choice : ChoicesArray)
                     {
-                        auto* ChoiceButton = ChoicesWidget->WidgetTree->ConstructWidget<UButton>();
-                        ChoicesList->AddChild(ChoiceButton);
-                        auto* ChoiceText = ChoicesWidget->WidgetTree->ConstructWidget<UTextBlock>();
-                        ChoiceText->Text = FText::FromString(Choice->AsString());
-                        ChoiceButton->AddChild(ChoiceText);
+                        const TSharedPtr<FJsonObject>* ChoiceObject;
+                        if (Choice->TryGetObject(ChoiceObject))
+                        {
+                            auto* ChoiceButton = ChoicesWidget->WidgetTree->ConstructWidget<UButton>();
+                            ChoicesList->AddChild(ChoiceButton);
+                            auto* ChoiceTextWidget = ChoicesWidget->WidgetTree->ConstructWidget<UTextBlock>();
+                            FString ChoiceText = (*ChoiceObject)->GetStringField(KEY_STRING_TEXT);
+                            ChoiceTextWidget->Text = FText::FromString(ChoiceText);
+                            ChoiceButton->AddChild(ChoiceTextWidget);
+                            // todo: install onclick based on presence of nested dialogue trees, jumps, deadends etc.
+                        }
+                        else
+                        {
+                            UE_LOG(LogTemp, Error, TEXT("ParseConvoScript; choice jsonval could not be converted to object"));
+                        }
                     }
-                } 
+                }
+                else
+                {
+                    UE_LOG(LogTemp, Error, TEXT("ParseConvoScript; no choices found"));
+                }
             }
         }       
+    }
+    else
+    {
+        UE_LOG(LogTemp, Error, TEXT("ParseConvoScript; deserializing json failed"));
     }
     // todo: when we parse out text strings from the 'lines' json elements, let's use FText and format args this time instead of our eliptical wheel version
     //  that doesn't support localization. NSLOCTEXT() is the macro you want, with namespace, key, and translatable string. Making the character names the namespace might be handy?
