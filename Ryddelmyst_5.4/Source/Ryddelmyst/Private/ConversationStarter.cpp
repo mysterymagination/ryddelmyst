@@ -30,8 +30,11 @@ UConversationStarter::UConversationStarter()
     static ConstructorHelpers::FClassFinder<UUserWidget> ConvoBaseWidgetObj(TEXT("/Game/Ryddelmyst_Assets/UI/BP_ConvoBase"));
 	ConvoBaseWidgetClass = ConvoBaseWidgetObj.Class;
 
-    static ConstructorHelpers::FClassFinder<UUserWidget> DialogueWidgetObj(TEXT("/Game/Ryddelmyst_Assets/UI/BP_Dialogue_Overflow"));
-	DialogueWidgetClass = DialogueWidgetObj.Class;
+    static ConstructorHelpers::FClassFinder<UUserWidget> PlayerDialogueWidgetObj(TEXT("/Game/Ryddelmyst_Assets/UI/BP_Convo_Dialogue_Player"));
+	DialogueWidgetClass_Player = PlayerDialogueWidgetObj.Class;
+
+    static ConstructorHelpers::FClassFinder<UUserWidget> OtherDialogueWidgetObj(TEXT("/Game/Ryddelmyst_Assets/UI/BP_Convo_Dialogue_Other"));
+	DialogueWidgetClass_Other = OtherDialogueWidgetObj.Class;
 
     static ConstructorHelpers::FClassFinder<UUserWidget> ChoicesWidgetObj(TEXT("/Game/Ryddelmyst_Assets/UI/BP_Choices"));
 	ChoicesWidgetClass = ChoicesWidgetObj.Class;
@@ -42,14 +45,6 @@ UUserWidget* UConversationStarter::ParseConversationScript(const FString& Script
     // todo: parse script json into UI elements added to a wrapper slate widget; for simplicity and prettyness I guess the best approach would be to create a UI asset in the editor that acts as a scrollable container and then add generated elements such as images, text, and buttons from the parsing.
     UUserWidget* ConvoWidget = CreateWidget<UUserWidget>(GetWorld(), ConvoBaseWidgetClass);
     UScrollBox* ScrollBox = Cast<UScrollBox>(ConvoWidget->WidgetTree->FindWidget(TEXT("DialogueScrollBox")));
-
-    /*
-    auto* ChoiceButton = ChoicesWidget->WidgetTree->ConstructWidget<UButton>();
-    ChoicesList->AddChild(ChoiceButton);
-    auto* ChoiceText = ChoicesWidget->WidgetTree->ConstructWidget<UTextBlock>();
-    ChoiceButton->AddChild(ChoiceText);
-    ChoiceText->SetText(FText::FromString(TEXT("Fuzlor")));
-    */
     
     TSharedPtr<FJsonObject> ScriptJsonObject;
     auto Reader = TJsonReaderFactory<>::Create(Script);
@@ -68,8 +63,17 @@ UUserWidget* UConversationStarter::ParseConversationScript(const FString& Script
             if (DialogueElement->TryGetObject(DialogueObject))
             {
                 UE_LOG(LogTemp, Warning, TEXT("ParseConvoScript; got dialogue object"));
-            
-                UTextDisplayWidget* DialogueWidget = Cast<UTextDisplayWidget>(ConvoWidget->WidgetTree->ConstructWidget(DialogueWidgetClass));
+                FString PortraitName = (*DialogueObject)->GetStringField(KEY_STRING_IMAGE);
+                UTextDisplayWidget* DialogueWidget{nullptr};
+                // todo: my json schema doesn't have a cleaner way to represent point of view atm, so just grep for maya in the portrait name *sigh*
+                if (PortraitName.Contains(TEXT("maya"), ESearchCase::IgnoreCase, ESearchDir::FromStart))
+                {
+                    DialogueWidget = Cast<UTextDisplayWidget>(ConvoWidget->WidgetTree->ConstructWidget(DialogueWidgetClass_Player));
+                }
+                else 
+                {
+                    DialogueWidget = Cast<UTextDisplayWidget>(ConvoWidget->WidgetTree->ConstructWidget(DialogueWidgetClass_Other));
+                }
                 const TArray<TSharedPtr<FJsonValue>>& LinesArray = (*DialogueObject)->GetArrayField(KEY_ARRAY_LINES);
                 FString LinesAggregate;
                 for (auto Line : LinesArray)
@@ -77,7 +81,6 @@ UUserWidget* UConversationStarter::ParseConversationScript(const FString& Script
                     LinesAggregate.Append(Line->AsString());
                 }
                 DialogueWidget->SetText(FText::FromString(LinesAggregate));
-                FString PortraitName = (*DialogueObject)->GetStringField(KEY_STRING_IMAGE);
                 FString PortraitPath = FString::Printf(TEXT("/Game/Ryddelmyst_Assets/Sprites/%s_Portrait_Sprite.%s_Portrait_Sprite"), *PortraitName, *PortraitName);
                 UE_LOG(LogTemp, Warning, TEXT("ParseConvoScript; portraitpath is %s"), *PortraitPath);
                 UPaperSprite* Portrait = LoadObject<UPaperSprite>(nullptr, *PortraitPath);

@@ -28,7 +28,10 @@ private:
 	TSubclassOf<UUserWidget> ConvoBaseWidgetClass;
 
 	UPROPERTY(EditAnywhere, Category = "Dialogue")
-	TSubclassOf<UUserWidget> DialogueWidgetClass;
+	TSubclassOf<UUserWidget> DialogueWidgetClass_Player;
+
+	UPROPERTY(EditAnywhere, Category = "Dialogue")
+	TSubclassOf<UUserWidget> DialogueWidgetClass_Other;
 
 	UPROPERTY(EditAnywhere, Category = "Dialogue")
 	TSubclassOf<UUserWidget> ChoicesWidgetClass;
