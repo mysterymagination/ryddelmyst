@@ -10,6 +10,7 @@
 #include "Components/PanelWidget.h"
 #include "Components/ScrollBox.h"
 #include "Components/VerticalBox.h"
+#include "TextDisplayWidget.h"
 
 
 const FString UConversationStarter::KEY_ARRAY_DIALOGUE{TEXT("dialogue")};
@@ -29,7 +30,7 @@ UConversationStarter::UConversationStarter()
     static ConstructorHelpers::FClassFinder<UUserWidget> ConvoBaseWidgetObj(TEXT("/Game/Ryddelmyst_Assets/UI/BP_ConvoBase"));
 	ConvoBaseWidgetClass = ConvoBaseWidgetObj.Class;
 
-    static ConstructorHelpers::FClassFinder<UUserWidget> DialogueWidgetObj(TEXT("/Game/Ryddelmyst_Assets/UI/BP_Dialogue"));
+    static ConstructorHelpers::FClassFinder<UUserWidget> DialogueWidgetObj(TEXT("/Game/Ryddelmyst_Assets/UI/BP_Dialogue_Overflow"));
 	DialogueWidgetClass = DialogueWidgetObj.Class;
 
     static ConstructorHelpers::FClassFinder<UUserWidget> ChoicesWidgetObj(TEXT("/Game/Ryddelmyst_Assets/UI/BP_Choices"));
@@ -41,10 +42,6 @@ UUserWidget* UConversationStarter::ParseConversationScript(const FString& Script
     // todo: parse script json into UI elements added to a wrapper slate widget; for simplicity and prettyness I guess the best approach would be to create a UI asset in the editor that acts as a scrollable container and then add generated elements such as images, text, and buttons from the parsing.
     UUserWidget* ConvoWidget = CreateWidget<UUserWidget>(GetWorld(), ConvoBaseWidgetClass);
     UScrollBox* ScrollBox = Cast<UScrollBox>(ConvoWidget->WidgetTree->FindWidget(TEXT("DialogueScrollBox")));
-    UUserWidget* ChoicesWidget = ConvoWidget->WidgetTree->ConstructWidget(ChoicesWidgetClass);
-    ScrollBox->AddChild(ChoicesWidget);
-    auto* ChoicesList = Cast<UVerticalBox>(ChoicesWidget->WidgetTree->FindWidget(TEXT("ChoicesList")));
-    UE_LOG(LogTemp, Error, TEXT("ParseConvoScript; choiceslist says %p"), ChoicesList);
 
     /*
     auto* ChoiceButton = ChoicesWidget->WidgetTree->ConstructWidget<UButton>();
@@ -72,18 +69,34 @@ UUserWidget* UConversationStarter::ParseConversationScript(const FString& Script
             {
                 UE_LOG(LogTemp, Warning, TEXT("ParseConvoScript; got dialogue object"));
             
-                UUserWidget* DialogueWidget = ConvoWidget->WidgetTree->ConstructWidget(DialogueWidgetClass);
-                // todo: populate the dialogue
+                UTextDisplayWidget* DialogueWidget = Cast<UTextDisplayWidget>(ConvoWidget->WidgetTree->ConstructWidget(DialogueWidgetClass));
+                const TArray<TSharedPtr<FJsonValue>>& LinesArray = (*DialogueObject)->GetArrayField(KEY_ARRAY_LINES);
+                FString LinesAggregate;
+                for (auto Line : LinesArray)
+                {
+                    LinesAggregate.Append(Line->AsString());
+                }
+                DialogueWidget->SetText(FText::FromString(LinesAggregate));
+                FString PortraitName = (*DialogueObject)->GetStringField(KEY_STRING_IMAGE);
+                FString PortraitPath = FString::Printf(TEXT("/Game/Ryddelmyst_Assets/Sprites/%s_Portrait_Sprite.%s_Portrait_Sprite"), *PortraitName, *PortraitName);
+                UE_LOG(LogTemp, Warning, TEXT("ParseConvoScript; portraitpath is %s"), *PortraitPath);
+                UPaperSprite* Portrait = LoadObject<UPaperSprite>(nullptr, *PortraitPath);
+                DialogueWidget->SetPortrait(Portrait);
+                ScrollBox->AddChild(DialogueWidget);
                 // todo: when pulling in strings from a lines or text data, use NSLOCTEXT and create it using format text;
                 //  This will entail having variables in the text like FText::FormatNamed(LOCTEXT("SnippetHeader", "There are {Count} snippets in group {Name}"),TEXT("Count"), SnippetCount, TEXT("Name"), GroupNameText); which
                 //  also means we'll need to manually parse out those variables from the JSON and use reflection or something
                 //  to look up the appropriate GameState symbol... or just use the existing jank variable replacement I wrote 
                 //  for LibraryBookWidget. Or nevermind variable templates in convo text for now.
-                const TArray<TSharedPtr<FJsonValue>>& ChoicesArray = (*DialogueObject)->GetArrayField(KEY_ARRAY_CHOICES);
-                if (ChoicesArray.Num() > 0)
+                const TArray<TSharedPtr<FJsonValue>>* ChoicesArray;
+                if ((*DialogueObject)->TryGetArrayField(KEY_ARRAY_CHOICES, ChoicesArray))
                 {
+                    UUserWidget* ChoicesWidget = ConvoWidget->WidgetTree->ConstructWidget(ChoicesWidgetClass);
+                    ScrollBox->AddChild(ChoicesWidget);
+                    auto* ChoicesList = Cast<UVerticalBox>(ChoicesWidget->WidgetTree->FindWidget(TEXT("ChoicesList")));
+                    UE_LOG(LogTemp, Error, TEXT("ParseConvoScript; choiceslist says %p"), ChoicesList);
                     // populate choiceswidget with buttons hosting the choices array text
-                    for (auto Choice : ChoicesArray)
+                    for (auto Choice : *ChoicesArray)
                     {
                         const TSharedPtr<FJsonObject>* ChoiceObject;
                         if (Choice->TryGetObject(ChoiceObject))

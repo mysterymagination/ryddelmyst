@@ -91,23 +91,23 @@ ARyddelmystCharacter::ARyddelmystCharacter()
 	PortraitMap = 
 	{
 		{InteractReactions::HAPPY, ConstructorHelpers::FObjectFinder<UPaperSprite>
- (TEXT("/Game/Ryddelmyst_Assets/Textures/maya_portraits_Sprite_Happy.maya_portraits_Sprite_Happy")).Object},
+ (TEXT("/Game/Ryddelmyst_Assets/Sprites/Maya_Happy_Portrait_Sprite.Maya_Happy_Portrait_Sprite")).Object},
  		{InteractReactions::NEUTRAL, ConstructorHelpers::FObjectFinder<UPaperSprite>
- (TEXT("/Game/Ryddelmyst_Assets/Textures/maya_portraits_Sprite_Happy.maya_portraits_Sprite_Happy")).Object},
+ (TEXT("/Game/Ryddelmyst_Assets/Sprites/Maya_Happy_Portrait_Sprite.Maya_Happy_Portrait_Sprite")).Object},
 		{InteractReactions::SAD, ConstructorHelpers::FObjectFinder<UPaperSprite>
- (TEXT("/Game/Ryddelmyst_Assets/Textures/maya_portraits_Sprite_Sad.maya_portraits_Sprite_Sad")).Object},
+ (TEXT("/Game/Ryddelmyst_Assets/Sprites/Maya_Sad_Portrait_Sprite.Maya_Sad_Portrait_Sprite")).Object},
 		{InteractReactions::WEARY, ConstructorHelpers::FObjectFinder<UPaperSprite>
- (TEXT("/Game/Ryddelmyst_Assets/Textures/maya_portraits_Sprite_Weary.maya_portraits_Sprite_Weary")).Object},
+ (TEXT("/Game/Ryddelmyst_Assets/Sprites/Maya_Weary_Portrait_Sprite.Maya_Weary_Portrait_Sprite")).Object},
 		{InteractReactions::ELDRITCH, ConstructorHelpers::FObjectFinder<UPaperSprite>
- (TEXT("/Game/Ryddelmyst_Assets/Textures/maya_portraits_Sprite_Eldritch.maya_portraits_Sprite_Eldritch")).Object},
+ (TEXT("/Game/Ryddelmyst_Assets/Sprites/Maya_Eldritch_Portrait_Sprite.Maya_Eldritch_Portrait_Sprite")).Object},
 		{InteractReactions::FLIRTY, ConstructorHelpers::FObjectFinder<UPaperSprite>
- (TEXT("/Game/Ryddelmyst_Assets/Textures/maya_portraits_Sprite_Flirty.maya_portraits_Sprite_Flirty")).Object},
+ (TEXT("/Game/Ryddelmyst_Assets/Sprites/Maya_Flirty_Portrait_Sprite.Maya_Flirty_Portrait_Sprite")).Object},
 		{InteractReactions::ANGRY, ConstructorHelpers::FObjectFinder<UPaperSprite>
- (TEXT("/Game/Ryddelmyst_Assets/Textures/maya_portraits_Sprite_Angry.maya_portraits_Sprite_Angry")).Object},
+ (TEXT("/Game/Ryddelmyst_Assets/Sprites/Maya_Angry_Portrait_Sprite.Maya_Angry_Portrait_Sprite")).Object},
 		{InteractReactions::EMBARRASSED, ConstructorHelpers::FObjectFinder<UPaperSprite>
- (TEXT("/Game/Ryddelmyst_Assets/Textures/maya_portraits_Sprite_Embarrassed.maya_portraits_Sprite_Embarrassed")).Object},
+ (TEXT("/Game/Ryddelmyst_Assets/Sprites/Maya_Embarrassed_Portrait_Sprite.Maya_Embarrassed_Portrait_Sprite")).Object},
 		{InteractReactions::CONFUSED, ConstructorHelpers::FObjectFinder<UPaperSprite>
- (TEXT("/Game/Ryddelmyst_Assets/Textures/maya_portraits_Sprite_Confused.maya_portraits_Sprite_Confused")).Object}
+ (TEXT("/Game/Ryddelmyst_Assets/Sprites/Maya_Confused_Portrait_Sprite.Maya_Confused_Portrait_Sprite")).Object}
 	};
 
 	UE_LOG(LogTemp, Warning, TEXT("ryddelcharacter ctor; portraitmap at happy says %p"), PortraitMap[InteractReactions::HAPPY]);

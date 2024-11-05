@@ -10,7 +10,7 @@
         },
         {
             "name": "Maya Is Confusion",
-            "image": "Maya_portraits_Sprite_Confused",
+            "image": "Maya_Confused",
             "lines": [
                 "Hi! Um. I'm Maya. Very happy to meet you!"
             ],
@@ -20,7 +20,7 @@
                     "dialogue": [
                         {
                             "name": "Maya is Curiosity",
-                            "image": "Maya_portraits_Sprite_Eldritch",
+                            "image": "Maya_Eldritch",
                             "lines": [
                                 "So... can I ask about your nips? Why does a tree lady need nipples? And kinda moreover, why boobs?"
                             ]
@@ -35,7 +35,7 @@
                         },
                         {
                             "name": "Maya Stranger Danger",
-                            "image": "Maya_portraits_Sprite_Embarrassed",
+                            "image": "Maya_Embarrassed",
                             "lines": [
                                 "Cool, cool. Uh, maybe when we know each other a little better. They certainly are lovely... *ahem* ANyway..."
                             ],
@@ -50,7 +50,7 @@
                     "dialogue": [
                         {
                             "name": "Maya is Curiosity",
-                            "image": "Maya_portraits_Sprite_Happy",
+                            "image": "Maya_Happy",
                             "lines": [
                                 "Hey how come you're 2D? I mean, clearly you're rockin' more than double Ds."
                             ]
@@ -64,7 +64,7 @@
                         },
                         {
                             "name": "Maya Stranger Danger",
-                            "image": "Maya_portraits_Sprite_Confused",
+                            "image": "Maya_Confused",
                             "lines": [
                                 "I believe you! I am feeling kinda exhausted just looking at you, although I think that might be partly from a sudden lack of bloodflow to the brain. Is it hot in here? Is everyone else's heart beating really fast? I need a lie down."
                             ],
@@ -79,7 +79,7 @@
                     "dialogue": [
                         {
                             "name": "Maya in Heat",
-                            "image": "Maya_portraits_Sprite_Flirty",
+                            "image": "Maya_Flirty",
                             "lines": [
                                 "Goddess of Desire, eh? I do see that."
                             ]
@@ -94,7 +94,7 @@
                         },
                         {
                             "name": "Maya in Heat 2",
-                            "image": "Maya_portraits_Sprite_Confused",
+                            "image": "Maya_Confused",
                             "lines": [
                                 "Now when you say 'please me'--"
                             ]
@@ -115,7 +115,7 @@
                     "dialogue": [
                         {
                             "name": "Maya in Wonderland",
-                            "image": "Maya_portraits_Sprite_Confused",
+                            "image": "Maya_Confused",
                             "lines": [
                                 "Where am I? This place seems kinda rough-hewn, and I recall having a face and not being quite so low-poly especially in the boobage region. There was like a separate body section and some soft body physics, it was a whole thing. And, hey, is my cleavage drawn on?!"
                             ]

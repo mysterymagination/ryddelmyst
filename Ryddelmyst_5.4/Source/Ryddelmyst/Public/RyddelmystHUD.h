@@ -158,11 +158,19 @@ public:
 
 	/**
 	 * @brief Converts the input JSON string into an interactive UI tree.
-	 * @param UUserWidget - convo content to append to the current conversation container, if any.
+	 * @param UUserWidget - convo content to display.
 	 * @return true if the convo was shown, false otherwise.
 	 */
 	UFUNCTION(BlueprintCallable, Category = "Dialogue")
 	bool ShowConversation(UUserWidget* ConvoContent);
+
+	/**
+	 * @brief Removes the given convo widget from viewport and restores user control.
+	 * @param UUserWidget - convo content to remove.
+	 * @return true if the convo was removed, false otherwise.
+	 */
+	UFUNCTION(BlueprintCallable, Category = "Dialogue")
+	bool ExitConversation(UUserWidget* ConvoContent);
 
 	/**
 	 * @brief hides all parts of the HUD
