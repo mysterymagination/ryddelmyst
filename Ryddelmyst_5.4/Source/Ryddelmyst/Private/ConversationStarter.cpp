@@ -96,7 +96,7 @@ UUserWidget* UConversationStarter::ParseConversationScript(const FString& Script
                 {
                     UUserWidget* ChoicesWidget = ConvoWidget->WidgetTree->ConstructWidget(ChoicesWidgetClass);
                     ScrollBox->AddChild(ChoicesWidget);
-                    auto* ChoicesList = Cast<UVerticalBox>(ChoicesWidget->WidgetTree->FindWidget(TEXT("ChoicesList")));
+                    auto* ChoicesList = Cast<UScrollBox>(ChoicesWidget->WidgetTree->FindWidget(TEXT("ScrollBox_Choices")));
                     UE_LOG(LogTemp, Error, TEXT("ParseConvoScript; choiceslist says %p"), ChoicesList);
                     // populate choiceswidget with buttons hosting the choices array text
                     for (auto Choice : *ChoicesArray)
@@ -108,7 +108,8 @@ UUserWidget* UConversationStarter::ParseConversationScript(const FString& Script
                             ChoicesList->AddChild(ChoiceButton);
                             auto* ChoiceTextWidget = ChoicesWidget->WidgetTree->ConstructWidget<UTextBlock>();
                             FString ChoiceText = (*ChoiceObject)->GetStringField(KEY_STRING_TEXT);
-                            ChoiceTextWidget->Text = FText::FromString(ChoiceText);
+                            ChoiceTextWidget->SetText(FText::FromString(ChoiceText));
+                            ChoiceTextWidget->SetColorAndOpacity(FSlateColor(FLinearColor(0.f, 0.f, 0.f, 1.f)));
                             ChoiceButton->AddChild(ChoiceTextWidget);
                             // todo: install onclick based on presence of nested dialogue trees, jumps, deadends etc.
                         }
