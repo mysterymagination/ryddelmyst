@@ -19,36 +19,9 @@ private:
 	UPROPERTY()
 	UConversationStarter* ConversationStarter;
 
-public:
-	static const FString MATCHER_YVYTEPH_FONTOFFERTILITY;
-	static const FString MATCHER_YVYTEPH_GLORYFORM;
-	static const FString MATCHER_YVYTEPH_WILDFORM;
-	static const FString MATCHER_YVYTEPH_WILDFORMSHARP;
-	static const FString MATCHER_YVYTEPH_MASTERMIND;
-	static const FString MATCHER_QYVNILY_WILDFLOWER;
-	static const FString MATCHER_QYVNILY_WILDFORM;
-	static const FString MATCHER_QYVNILY_GLORYFORM;
-	static const FString MATCHER_QYVNILY_GLORYFORMRAGE;
-
 public:	
 	// Sets default values for this component's properties
 	UConversationalComponent();
-private:
-	/**
-	 * @brief Tries to match a known game character name token within a given actor's full GetName() result.
-	 * @param ActorName - GetName() result for an actor in a conversation.
-	 * @return matched character name or empty string. 
-	 */
-	UFUNCTION()
-	FString MatchCharacter(const FString& ActorName);
-
-	/**
-	 * @brief Uses character and game state to figure out which specific script we need to load.
-	 * @param Character - the character's name such as MATCHER_YVYTEPH_MASTERMIND.
-	 * @return best fit script name or empty string if none could be found. 
-	 */
-	UFUNCTION()
-	FString CalculateScriptName(const FString& Character, ARyddelmystGameState* GameState);
 
 protected:
 	// Called when the game starts

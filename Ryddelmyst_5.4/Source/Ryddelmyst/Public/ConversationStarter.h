@@ -23,6 +23,22 @@ class RYDDELMYST_API UConversationStarter : public UObject
 private:
 	UConversationStarter();
 
+	/**
+	 * @brief Tries to match a known game character name token within a given actor's full GetName() result.
+	 * @param ActorName - GetName() result for an actor in a conversation.
+	 * @return matched character name or empty string. 
+	 */
+	UFUNCTION()
+	FString MatchCharacter(const FString& ActorName);
+
+	/**
+	 * @brief Uses character and game state to figure out which specific script we need to load.
+	 * @param Character - the character's name such as MATCHER_YVYTEPH_MASTERMIND.
+	 * @return best fit script name or empty string if none could be found. 
+	 */
+	UFUNCTION()
+	FString CalculateScriptName(const FString& Character, ARyddelmystGameState* GameState);
+
 private:
 	UPROPERTY(EditAnywhere, Category = "Dialogue")
 	TSubclassOf<UUserWidget> ConvoBaseWidgetClass;
@@ -49,8 +65,44 @@ public:
 	static const FString KEY_STRING_CLUE;
 	static const FString KEY_STRING_INPUT;
 
+	static const FString MATCHER_YVYTEPH_FONTOFFERTILITY;
+	static const FString MATCHER_YVYTEPH_GLORYFORM;
+	static const FString MATCHER_YVYTEPH_WILDFORM;
+	static const FString MATCHER_YVYTEPH_WILDFORMSHARP;
+	static const FString MATCHER_YVYTEPH_MASTERMIND;
+	static const FString MATCHER_QYVNILY_WILDFLOWER;
+	static const FString MATCHER_QYVNILY_WILDFORM;
+	static const FString MATCHER_QYVNILY_GLORYFORM;
+	static const FString MATCHER_QYVNILY_GLORYFORMRAGE;
+
 public:
+	/**
+	 * @brief Returns the JSON string content of the conversation script that should be used.
+	 * @param ConvoTx - the name of the Actor who instigated the conversation.
+	 * @param ConvoRx - the name of the Actor who ConvoTx started a conversation with.
+	 * @param ClosestBone - indicates where the player was looking when initiating the convo.
+	 * @param GameState - handle to the current game state so that it can modify which conversation script is returned.
+	 * @return the best fit conversation JSON script contents as an FString.
+	 */
+	UFUNCTION(BlueprintCallable, Category = "Dialogue")
+	FString GetScript(const FString& ConvoTx, const FString& ConvoRx, FName ClosestBone, ARyddelmystGameState* GameState);
+
+	/**
+	 * @brief accepts a conversation script as a string and returns a UUserWidget populated by generated conversation UI elements
+	 * @param Script - the raw JSON string of the convo script.
+	 * @param GameState - the current game state, used to modify generated conversation and so that the script can set 'bookmark' variables like clue for further processing.
+	 */
 	UFUNCTION(BlueprintCallable, Category = "Dialogue")
 	UUserWidget* ParseConversationScript(const FString& Script, ARyddelmystGameState* GameState);
+
+	/**
+	 * @brief parses the input convo JSON object and appends generated content to the given UWidget.
+	 * @param ConvoWidget - the top level UUserWidget whose WidgetTree all our generated UWidgets belong to.
+	 * @param Container - the UWidget that should host the UWidgets we generate from the convo JSON.
+	 * @param DialogueElementsArray - the current convo dialogue as a JSON array.
+	 * @param GameState - the current game state, used to modify generated conversation and so that the script can set 'bookmark' variables like clue for further processing.
+	 */
+	UFUNCTION(BlueprintCallable, Category = "Dialogue")
+	void ParseDialogue(UUserWidget* ConvoWidget, UWidget* Container, TArray<TSharedPtr<FJsonValue>>& DialogueElementsArray, ARyddelmystGameState* GameState);
 	
 };
