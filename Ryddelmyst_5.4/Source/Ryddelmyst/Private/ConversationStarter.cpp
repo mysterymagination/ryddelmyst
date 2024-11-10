@@ -199,7 +199,7 @@ UUserWidget* UConversationStarter::ParseConversationScript(const FString& Script
     return ConvoWidget;
 }
 
-void UConversationStarter::ParseDialogue(UUserWidget* ConvoWidget, UWidget* Container, const TArray<TSharedPtr<FJsonValue>>& DialogueElementsArray, ARyddelmystGameState* GameState)
+void UConversationStarter::ParseDialogue(UUserWidget* ConvoWidget, UPanelWidget* Container, const TArray<TSharedPtr<FJsonValue>>& DialogueElementsArray, ARyddelmystGameState* GameState)
 {
     for (auto DialogueElement : DialogueElementsArray)
     {
@@ -231,7 +231,7 @@ void UConversationStarter::ParseDialogue(UUserWidget* ConvoWidget, UWidget* Cont
             UE_LOG(LogTemp, Warning, TEXT("ParseConvoScript; portraitpath is %s"), *PortraitPath);
             UPaperSprite* Portrait = LoadObject<UPaperSprite>(nullptr, *PortraitPath);
             DialogueWidget->SetPortrait(Portrait);
-            ScrollBox->AddChild(DialogueWidget);
+            Container->AddChild(DialogueWidget);
             // todo: when pulling in strings from a lines or text data, use NSLOCTEXT and create it using format text;
             //  This will entail having variables in the text like FText::FormatNamed(LOCTEXT("SnippetHeader", "There are {Count} snippets in group {Name}"),TEXT("Count"), SnippetCount, TEXT("Name"), GroupNameText); which
             //  also means we'll need to manually parse out those variables from the JSON and use reflection or something
@@ -241,7 +241,7 @@ void UConversationStarter::ParseDialogue(UUserWidget* ConvoWidget, UWidget* Cont
             if ((*DialogueObject)->TryGetArrayField(KEY_ARRAY_CHOICES, ChoicesArray))
             {
                 UUserWidget* ChoicesWidget = ConvoWidget->WidgetTree->ConstructWidget(ChoicesWidgetClass);
-                ScrollBox->AddChild(ChoicesWidget);
+                Container->AddChild(ChoicesWidget);
                 auto* ChoicesList = Cast<UScrollBox>(ChoicesWidget->WidgetTree->FindWidget(TEXT("ScrollBox_Choices")));
                 UE_LOG(LogTemp, Error, TEXT("ParseConvoScript; choiceslist says %p"), ChoicesList);
                 
