@@ -6,7 +6,7 @@
 #include "Dom/JsonValue.h"
 #include "Blueprint/WidgetTree.h"
 #include "Components/TextBlock.h"
-#include "Components/Button.h"
+#include "LambdaButton.h"
 #include "Components/PanelWidget.h"
 #include "Components/ScrollBox.h"
 #include "Components/VerticalBox.h"
@@ -251,14 +251,25 @@ void UConversationStarter::ParseDialogue(UUserWidget* ConvoWidget, UPanelWidget*
                     const TSharedPtr<FJsonObject>* ChoiceObject;
                     if (Choice->TryGetObject(ChoiceObject))
                     {
-                        auto* ChoiceButton = ChoicesWidget->WidgetTree->ConstructWidget<UButton>();
+                        auto* ChoiceButton = ChoicesWidget->WidgetTree->ConstructWidget<ULambdaButton>();
                         ChoicesList->AddChild(ChoiceButton);
                         auto* ChoiceTextWidget = ChoicesWidget->WidgetTree->ConstructWidget<UTextBlock>();
                         FString ChoiceText = (*ChoiceObject)->GetStringField(KEY_STRING_TEXT);
                         ChoiceTextWidget->SetText(FText::FromString(ChoiceText));
                         ChoiceTextWidget->SetColorAndOpacity(FSlateColor(FLinearColor(0.f, 0.f, 0.f, 1.f)));
                         ChoiceButton->AddChild(ChoiceTextWidget);
-                        // todo: install onclick based on presence of nested dialogue trees, jumps, deadends etc.
+                        const TArray<TSharedPtr<FJsonValue>>* SubDialogueElements;
+						if (Choice->AsObject()->TryGetArrayField(KEY_ARRAY_DIALOGUE, SubDialogueElements))
+						{
+							// install subdialogue elements to OnClick lambda event
+							ChoiceButton->LambdaEvent.BindLambda([&]() 
+							{
+								ParseDialogue(ConvoWidget, Container, *SubDialogueElements, GameState);
+							});
+							// install OnClicked behavior, instructing it to simply exec the lambda
+							ChoiceButton->OnClicked.AddDynamic(ChoiceButton, &ULambdaButton::ExecLambda);
+						}
+						// todo: install onclick based on presence of nested dialogue trees, jumps, deadends etc.
                         //  There's essentially three cases we need to process:
                         //  1. dialogue: for this key, we'll want to call ParseDialogue() 'recursively' (won't technically be recursive since there's a button press UI event in the way) and pass in the dialogue JSON array for parsing.
                         //  2. jump: when we see this key we should call out to the script selection logic anew, where the GameState clue value will inform what script should be selected. Clue state should be cleared after this?
