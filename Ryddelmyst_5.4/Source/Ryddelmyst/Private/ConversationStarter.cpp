@@ -50,7 +50,15 @@ UConversationStarter::UConversationStarter()
 	ChoicesWidgetClass = ChoicesWidgetObj.Class;
 }
 
-FString UConversationStarter::GetScript(const FString& ConvoTx, const FString& ConvoRx, FName ClosestBone, ARyddelmystGameState* GameState)
+void UConversationStarter::Init(const FString& _ConvoTx, const FString& _ConvoRx, FName _ClosestBone, ARyddelmystGameState* _GameState)
+{
+    ConvoTx = _ConvoTx;
+    ConvoRx = _ConvoRx;
+    ClosestBone = _ClosestBone;
+    GameState = _GameState;
+}
+
+FString UConversationStarter::GetScript()
 {
     FString ConvoPath = FPaths::ProjectContentDir().Append(TEXT("Ryddelmyst_Assets/Text/Dialogue/"));
 	FString ChosenScript;
@@ -177,12 +185,18 @@ FString UConversationStarter::MatchCharacter(const FString& ActorName)
 	}
 }
 
-UUserWidget* UConversationStarter::ParseConversationScript(const FString& Script, ARyddelmystGameState* GameState)
+UUserWidget* UConversationStarter::GenerateConversationUI(const FString& Script)
 {
     // todo: parse script json into UI elements added to a wrapper slate widget; for simplicity and prettyness I guess the best approach would be to create a UI asset in the editor that acts as a scrollable container and then add generated elements such as images, text, and buttons from the parsing.
     UUserWidget* ConvoWidget = CreateWidget<UUserWidget>(GetWorld(), ConvoBaseWidgetClass);
     UScrollBox* ScrollBox = Cast<UScrollBox>(ConvoWidget->WidgetTree->FindWidget(TEXT("DialogueScrollBox")));
-    
+    auto Dialogue = ParseConversationScript(Script);
+    ParseDialogue(ConvoWidget, ScrollBox, Dialogue, GameState);
+    return ConvoWidget;
+}
+
+TArray<TSharedPtr<FJsonValue>> UConversationStarter::ParseConversationScript(const FString& Script)
+{
     TSharedPtr<FJsonObject> ScriptJsonObject;
     auto Reader = TJsonReaderFactory<>::Create(Script);
     if (FJsonSerializer::Deserialize(Reader, ScriptJsonObject))
@@ -190,16 +204,16 @@ UUserWidget* UConversationStarter::ParseConversationScript(const FString& Script
         UE_LOG(LogTemp, Warning, TEXT("ParseConvoScript; deserialized json"));
         auto DialogueElementsArray = ScriptJsonObject->GetArrayField(KEY_ARRAY_DIALOGUE);
         UE_LOG(LogTemp, Warning, TEXT("ParseConvoScript; dialogue array has %d elements"), DialogueElementsArray.Num());
-        ParseDialogue(ConvoWidget, ScrollBox, DialogueElementsArray, GameState);
+        return DialogueElementsArray;
     }
     else
     {
         UE_LOG(LogTemp, Error, TEXT("ParseConvoScript; deserializing json failed"));
     }
-    return ConvoWidget;
+    return TArray<TSharedPtr<FJsonValue>>();
 }
 
-void UConversationStarter::ParseDialogue(UUserWidget* ConvoWidget, UPanelWidget* Container, const TArray<TSharedPtr<FJsonValue>>& DialogueElementsArray, ARyddelmystGameState* GameState)
+void UConversationStarter::ParseDialogue(UUserWidget* ConvoWidget, UPanelWidget* Container, const TArray<TSharedPtr<FJsonValue>>& DialogueElementsArray)
 {
     for (auto DialogueElement : DialogueElementsArray)
     {
@@ -266,14 +280,31 @@ void UConversationStarter::ParseDialogue(UUserWidget* ConvoWidget, UPanelWidget*
 							{
 								ParseDialogue(ConvoWidget, Container, *SubDialogueElements, GameState);
 							});
-							// install OnClicked behavior, instructing it to simply exec the lambda
-							ChoiceButton->OnClicked.AddDynamic(ChoiceButton, &ULambdaButton::ExecLambda);
 						}
+                        FString Clue;
+                        else if (Choice->AsObject()->TryGetStringField(KEY_STRING_JUMP, Clue))
+                        {
+                            ChoiceButton->LambdaEvent.BindLambda([&]() 
+							{
+								GameState->ClueState = Clue;
+                                // re-run script selection logic
+                                // todo: what do we do with the returned widget? Seems like I really want to append like we do with dialogue subtrees above, except with script loading on top. Probably going to need another function so we can decouple script loading and final widget return back up to the frontend.  
+                                auto Dialogue = ParseConversationScript(GetScript());
+                                ParseDialogue(ConvoWidget, Container, Dialogue);
+							});
+                        }
+                        else if (Choice->AsObject()->TryGetStringField(KEY_STRING_DEADEND, Clue))
+                        {
+                            GameState->ClueState = Clue;
+                            // todo: exit conversation
+                        }
+                        // install OnClicked behavior, instructing it to simply exec the lambda
+						ChoiceButton->OnClicked.AddDynamic(ChoiceButton, &ULambdaButton::ExecLambda);
 						// todo: install onclick based on presence of nested dialogue trees, jumps, deadends etc.
                         //  There's essentially three cases we need to process:
                         //  1. dialogue: for this key, we'll want to call ParseDialogue() 'recursively' (won't technically be recursive since there's a button press UI event in the way) and pass in the dialogue JSON array for parsing.
                         //  2. jump: when we see this key we should call out to the script selection logic anew, where the GameState clue value will inform what script should be selected. Clue state should be cleared after this?
-                        //  3. deadend: similar to jump behavior, except instead of going into script selection we want to exit the conversation and do something in the world determined by the GameState clue value. TBD how best to do that from here since it implies hitting up the HUD convo exit fn... I guess we could always get cheeky and FindWidget() the convo exit button in the ConvoWidget and press it, then have the convo exit fn check GameState for a lingering clue? Clue state should be cleared after this?
+                        //  3. deadend: similar to jump behavior, except instead of going into script selection we want to exit the conversation and do something in the world determined by the GameState clue value. TBD how best to do that from here since it implies hitting up the HUD convo exit fn... I guess we could always get cheeky and FindWidget() the convo exit button in the ConvoWidget and press it, then have the convo exit fn check GameState for a lingering clue? A FSM with states for convo and gameplay etc. could be handy, with a transition from convo -> game doing a check of clue for this purpose would be ideal. Dunno if this one case is enough to warrant a whole FSM, but I'm gonna leave this here anyway. Clue state should be cleared after this?
                     }
                     else
                     {

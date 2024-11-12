@@ -53,6 +53,18 @@ private:
 	UPROPERTY(EditAnywhere, Category = "Dialogue")
 	TSubclassOf<UUserWidget> ChoicesWidgetClass;
 
+	UPROPERTY(EditAnywhere, Category = "Dialogue")
+	ARyddelmystGameState* GameState;
+
+	UPROPERTY(EditAnywhere, Category = "Dialogue")
+	FString ConvoRx;
+
+	UPROPERTY(EditAnywhere, Category = "Dialogue")
+	FString ConvoTx;
+
+	UPROPERTY(EditAnywhere, Category = "Dialogue")
+	FName ClosestBone;
+
 public:
 	static const FString KEY_ARRAY_DIALOGUE;
 	static const FString KEY_STRING_NAME;
@@ -85,22 +97,32 @@ public:
 	 * @param GameState - handle to the current game state so that it can modify which conversation script is returned.
 	 * @return the best fit conversation JSON script contents as an FString.
 	 */
-	FString GetScript(const FString& ConvoTx, const FString& ConvoRx, FName ClosestBone, ARyddelmystGameState* GameState);
+	void Init(const FString& ConvoTx, const FString& ConvoRx, FName ClosestBone, ARyddelmystGameState* GameState);
+
+	/**
+	 * Uses the conversing character identities and game state set in Init() to determine the correct conversation script.
+	 */
+	FString GetScript();
+
+	/**
+	 * Parses the input script raw JSON string and generates a conversation UI for display.
+	 * @return a populated BP_ConvoBase widget for display in the HUD.
+	 */
+	UUserWidget* GenerateConversationUI(const FString& Script);
 
 	/**
 	 * @brief accepts a conversation script as a string and returns a UUserWidget populated by generated conversation UI elements
 	 * @param Script - the raw JSON string of the convo script.
-	 * @param GameState - the current game state, used to modify generated conversation and so that the script can set 'bookmark' variables like clue for further processing.
+	 * @return an array of script top level 'dialogue' JSON array elements.
 	 */
-	UUserWidget* ParseConversationScript(const FString& Script, ARyddelmystGameState* GameState);
+	TArray<TSharedPtr<FJsonValue>> ParseConversationScript(const FString& Script);
 
 	/**
 	 * @brief parses the input convo JSON object and appends generated content to the given UWidget.
 	 * @param ConvoWidget - the top level UUserWidget whose WidgetTree all our generated UWidgets belong to.
 	 * @param Container - the UPanelWidget that should host the UWidgets we generate from the convo JSON.
 	 * @param DialogueElementsArray - the current convo dialogue as a JSON array.
-	 * @param GameState - the current game state, used to modify generated conversation and so that the script can set 'bookmark' variables like clue for further processing.
 	 */
-	void ParseDialogue(UUserWidget* ConvoWidget, UPanelWidget* Container, const TArray<TSharedPtr<FJsonValue>>& DialogueElementsArray, ARyddelmystGameState* GameState);
+	void ParseDialogue(UUserWidget* ConvoWidget, UPanelWidget* Container, const TArray<TSharedPtr<FJsonValue>>& DialogueElementsArray);
 	
 };
