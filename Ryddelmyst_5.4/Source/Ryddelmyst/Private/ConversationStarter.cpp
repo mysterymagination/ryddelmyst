@@ -298,14 +298,21 @@ void UConversationStarter::ParseDialogue(UUserWidget* ConvoWidget, UPanelWidget*
                             }
                             else
                             {
-                                UE_LOG(LogTemp, Error, TEXT("ParseDialogue; we do not have a clue for jump in dialogue element %s"), *(*DialogueObject)->GetStringName(KEY_STRING_NAME));
+                                UE_LOG(LogTemp, Error, TEXT("ParseDialogue; we do not have a clue for jump in dialogue element %s"), *(*DialogueObject)->GetStringField(KEY_STRING_NAME));
                             }
                         }
                         else if (Choice->AsObject()->TryGetObjectField(KEY_OBJECT_DEADEND, LeafNode))
                         {
                             FString Clue;
-                            GameState->ClueState = Clue;
-                            // todo: exit conversation
+                            if ((*LeafNode)->TryGetStringField(KEY_STRING_CLUE, Clue))
+                            {
+                                GameState->ClueState = Clue;
+                                // todo: exit conversation
+                            }
+                            else
+                            {
+                                UE_LOG(LogTemp, Error, TEXT("ParseDialogue; we do not have a clue for deadend in dialogue element %s"), *(*DialogueObject)->GetStringField(KEY_STRING_NAME));
+                            }
                         }
                         // install OnClicked behavior, instructing it to simply exec the lambda
 						ChoiceButton->OnClicked.AddDynamic(ChoiceButton, &ULambdaButton::ExecLambda);
