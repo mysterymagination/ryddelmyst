@@ -43,6 +43,6 @@ UUserWidget* UConversationalComponent::StartConversation_Implementation(const FS
 		Script = ConversationStarter->GetScript();
 	}
 	UE_LOG(LogTemp, Log, TEXT("startconversation; script says: %s"), *Script);
-	return ConversationStarter->ParseConversationScript(Script, GameState);
+	return ConversationStarter->GenerateConversationUI(Script);
 }
 

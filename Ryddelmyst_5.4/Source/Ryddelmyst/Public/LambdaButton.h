@@ -17,7 +17,6 @@ class RYDDELMYST_API ULambdaButton : public UButton
 	GENERATED_BODY()
 
 public:
-	UPROPERTY()
 	FLambdaEvent LambdaEvent;
 
 public:

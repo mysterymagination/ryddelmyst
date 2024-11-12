@@ -191,7 +191,7 @@ UUserWidget* UConversationStarter::GenerateConversationUI(const FString& Script)
     UUserWidget* ConvoWidget = CreateWidget<UUserWidget>(GetWorld(), ConvoBaseWidgetClass);
     UScrollBox* ScrollBox = Cast<UScrollBox>(ConvoWidget->WidgetTree->FindWidget(TEXT("DialogueScrollBox")));
     auto Dialogue = ParseConversationScript(Script);
-    ParseDialogue(ConvoWidget, ScrollBox, Dialogue, GameState);
+    ParseDialogue(ConvoWidget, ScrollBox, Dialogue);
     return ConvoWidget;
 }
 
@@ -273,28 +273,37 @@ void UConversationStarter::ParseDialogue(UUserWidget* ConvoWidget, UPanelWidget*
                         ChoiceTextWidget->SetColorAndOpacity(FSlateColor(FLinearColor(0.f, 0.f, 0.f, 1.f)));
                         ChoiceButton->AddChild(ChoiceTextWidget);
                         const TArray<TSharedPtr<FJsonValue>>* SubDialogueElements;
+                        const TSharedPtr<FJsonObject>* LeafNode;
 						if (Choice->AsObject()->TryGetArrayField(KEY_ARRAY_DIALOGUE, SubDialogueElements))
 						{
 							// install subdialogue elements to OnClick lambda event
 							ChoiceButton->LambdaEvent.BindLambda([&]() 
 							{
-								ParseDialogue(ConvoWidget, Container, *SubDialogueElements, GameState);
+								ParseDialogue(ConvoWidget, Container, *SubDialogueElements);
 							});
 						}
-                        FString Clue;
-                        else if (Choice->AsObject()->TryGetStringField(KEY_STRING_JUMP, Clue))
+                        // todo: oops, some crossed wires here -- the choice object itself does not have jump and deadend leafnodes; these currently live on the dialogue object itself. Since those should never be processed until the player has the chance to read the rest of the dialogue subtree, it might make sense to move these into the choice object. However, there are some cases where there isn't actually a `choice` per se e.g. Yvyteph throws the player out of the conversation, so it could be confusing to script it that way. Plus it might be nice to have a click-to-continue mechanism between dialogue elements anyway, at least maybe at some transition points (which leaf nodes could be an example of). So yeah I kinda like the notion of moving these leaf node processings out into the dialogue element as part of a collection of transition attributes that need user interaction; choices itself could be one, jump and deadend could be ones, and maybe something that just says 'wait' or something to indicate a button with 'continue...' should be rendered. Maybe this transition should be its own object, maybe with a type value so we don't have to lean on unintuitively mutex if chains? 
+                        else if (Choice->AsObject()->TryGetObjectField(KEY_OBJECT_JUMP, LeafNode))
                         {
-                            ChoiceButton->LambdaEvent.BindLambda([&]() 
-							{
-								GameState->ClueState = Clue;
-                                // re-run script selection logic
-                                // todo: what do we do with the returned widget? Seems like I really want to append like we do with dialogue subtrees above, except with script loading on top. Probably going to need another function so we can decouple script loading and final widget return back up to the frontend.  
-                                auto Dialogue = ParseConversationScript(GetScript());
-                                ParseDialogue(ConvoWidget, Container, Dialogue);
-							});
+                            FString Clue;
+                            if ((*LeafNode)->TryGetStringField(KEY_STRING_CLUE, Clue))
+                            {
+                                ChoiceButton->LambdaEvent.BindLambda([&]() 
+                                {
+                                    GameState->ClueState = Clue;
+                                    // re-run script selection logic  
+                                    auto Dialogue = ParseConversationScript(GetScript());
+                                    ParseDialogue(ConvoWidget, Container, Dialogue);
+                                });
+                            }
+                            else
+                            {
+                                UE_LOG(LogTemp, Error, TEXT("ParseDialogue; we do not have a clue for jump in dialogue element %s"), *(*DialogueObject)->GetStringName(KEY_STRING_NAME));
+                            }
                         }
-                        else if (Choice->AsObject()->TryGetStringField(KEY_STRING_DEADEND, Clue))
+                        else if (Choice->AsObject()->TryGetObjectField(KEY_OBJECT_DEADEND, LeafNode))
                         {
+                            FString Clue;
                             GameState->ClueState = Clue;
                             // todo: exit conversation
                         }
@@ -314,8 +323,9 @@ void UConversationStarter::ParseDialogue(UUserWidget* ConvoWidget, UPanelWidget*
             }
             else
             {
-                UE_LOG(LogTemp, Error, TEXT("ParseConvoScript; no choices found"));
+                UE_LOG(LogTemp, Warning, TEXT("ParseConvoScript; no choices found"));
             }
+            // todo: text input prompt processing
         }
     }
 }
