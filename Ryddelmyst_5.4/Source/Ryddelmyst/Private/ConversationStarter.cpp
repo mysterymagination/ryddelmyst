@@ -134,7 +134,9 @@ FString UConversationStarter::CalculateScriptName(const FString& CharacterName, 
 		ConvoScriptName = TEXT("Intro_Qyvnily_WildFlower.json");
 	}
 	// todo: other characters
-	return ConvoScriptName;
+	//return ConvoScriptName;
+
+    return TEXT("TestJSON.json");
 }
 
 FString UConversationStarter::MatchCharacter(const FString& ActorName)
@@ -191,7 +193,6 @@ UUserWidget* UConversationStarter::GenerateConversationUI(const FString& Script)
     UUserWidget* ConvoWidget = CreateWidget<UUserWidget>(GetWorld(), ConvoBaseWidgetClass);
     UScrollBox* ScrollBox = Cast<UScrollBox>(ConvoWidget->WidgetTree->FindWidget(TEXT("DialogueScrollBox")));
     ParseConversationScript(Script);
-    /*
     if (CurrentScriptJsonObject)
     {
         auto DialogueElementsArray = CurrentScriptJsonObject->GetArrayField(KEY_ARRAY_DIALOGUE);
@@ -207,31 +208,26 @@ UUserWidget* UConversationStarter::GenerateConversationUI(const FString& Script)
     {
         UE_LOG(LogTemp, Error, TEXT("GenerateConvoUI; failed to extract top level script JSON object"));
     }
-    */
     return ConvoWidget;
 }
 
 void UConversationStarter::ParseConversationScript(const FString& Script)
 {
+    TSharedPtr<FJsonObject> ScriptJsonObject = MakeShareable(new FJsonObject());;
+    auto Reader = TJsonReaderFactory<>::Create(Script);
+    if (FJsonSerializer::Deserialize(Reader, ScriptJsonObject))
     {
-        TSharedPtr<FJsonObject> ScriptJsonObject = MakeShareable(new FJsonObject());;
-        auto Reader = TJsonReaderFactory<>::Create(Script);
-        if (FJsonSerializer::Deserialize(Reader, ScriptJsonObject))
-        {
-            UE_LOG(LogTemp, Warning, TEXT("ParseConvoScript; deserialized json"));
-            CurrentScriptJsonObject = ScriptJsonObject;
+        UE_LOG(LogTemp, Warning, TEXT("ParseConvoScript; deserialized json"));
+        CurrentScriptJsonObject = ScriptJsonObject;
 
 
-            auto DialogueElementsArrayExperiment = CurrentScriptJsonObject->GetArrayField(KEY_ARRAY_DIALOGUE);
-            UE_LOG(LogTemp, Warning, TEXT("ParseConvoScript; in scope of deserialize, current dialogue object has dialogue array of %d elements"), DialogueElementsArrayExperiment.Num());
-        }
-        else
-        {
-            UE_LOG(LogTemp, Error, TEXT("ParseConvoScript; deserializing json failed"));
-        }
+        auto DialogueElementsArrayExperiment = CurrentScriptJsonObject->GetArrayField(KEY_ARRAY_DIALOGUE);
+        UE_LOG(LogTemp, Warning, TEXT("ParseConvoScript; in scope of deserialize, current dialogue object has dialogue array of %d elements"), DialogueElementsArrayExperiment.Num());
     }
-    auto DialogueElementsArrayExperiment = CurrentScriptJsonObject->GetArrayField(KEY_ARRAY_DIALOGUE);
-    UE_LOG(LogTemp, Warning, TEXT("ParseConvoScript; out of scope of deserialize, current dialogue object has dialogue array of %d elements"), DialogueElementsArrayExperiment.Num());
+    else
+    {
+        UE_LOG(LogTemp, Error, TEXT("ParseConvoScript; deserializing json failed"));
+    }
 }
 
 void UConversationStarter::ParseDialogue(UUserWidget* ConvoWidget, UPanelWidget* Container, const TArray<TSharedPtr<FJsonValue>>& DialogueElementsArray)
