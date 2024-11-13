@@ -191,44 +191,62 @@ UUserWidget* UConversationStarter::GenerateConversationUI(const FString& Script)
     UUserWidget* ConvoWidget = CreateWidget<UUserWidget>(GetWorld(), ConvoBaseWidgetClass);
     UScrollBox* ScrollBox = Cast<UScrollBox>(ConvoWidget->WidgetTree->FindWidget(TEXT("DialogueScrollBox")));
     ParseConversationScript(Script);
+    /*
     if (CurrentScriptJsonObject)
     {
         auto DialogueElementsArray = CurrentScriptJsonObject->GetArrayField(KEY_ARRAY_DIALOGUE);
         UE_LOG(LogTemp, Warning, TEXT("ParseConvoScript; dialogue array has %d elements"), DialogueElementsArray.Num());
+
+        // todo: set current dialogue json object in a desperate bid to keep the damn nested crap alive through stack pops
+        CurrentDialogueJsonObject = MakeShareable(new FJsonObject());
+        CurrentDialogueJsonObject->SetArrayField(KEY_ARRAY_DIALOGUE, std::move(DialogueElementsArray));
+
         ParseDialogue(ConvoWidget, ScrollBox, DialogueElementsArray);
     }
     else 
     {
         UE_LOG(LogTemp, Error, TEXT("GenerateConvoUI; failed to extract top level script JSON object"));
     }
+    */
     return ConvoWidget;
 }
 
 void UConversationStarter::ParseConversationScript(const FString& Script)
 {
-    TSharedPtr<FJsonObject> ScriptJsonObject = MakeShareable(new FJsonObject());;
-    auto Reader = TJsonReaderFactory<>::Create(Script);
-    if (FJsonSerializer::Deserialize(Reader, ScriptJsonObject))
     {
-        UE_LOG(LogTemp, Warning, TEXT("ParseConvoScript; deserialized json"));
-        CurrentScriptJsonObject = ScriptJsonObject;
+        TSharedPtr<FJsonObject> ScriptJsonObject = MakeShareable(new FJsonObject());;
+        auto Reader = TJsonReaderFactory<>::Create(Script);
+        if (FJsonSerializer::Deserialize(Reader, ScriptJsonObject))
+        {
+            UE_LOG(LogTemp, Warning, TEXT("ParseConvoScript; deserialized json"));
+            CurrentScriptJsonObject = ScriptJsonObject;
+
+
+            auto DialogueElementsArrayExperiment = CurrentScriptJsonObject->GetArrayField(KEY_ARRAY_DIALOGUE);
+            UE_LOG(LogTemp, Warning, TEXT("ParseConvoScript; in scope of deserialize, current dialogue object has dialogue array of %d elements"), DialogueElementsArrayExperiment.Num());
+        }
+        else
+        {
+            UE_LOG(LogTemp, Error, TEXT("ParseConvoScript; deserializing json failed"));
+        }
     }
-    else
-    {
-        UE_LOG(LogTemp, Error, TEXT("ParseConvoScript; deserializing json failed"));
-    }
+    auto DialogueElementsArrayExperiment = CurrentScriptJsonObject->GetArrayField(KEY_ARRAY_DIALOGUE);
+    UE_LOG(LogTemp, Warning, TEXT("ParseConvoScript; out of scope of deserialize, current dialogue object has dialogue array of %d elements"), DialogueElementsArrayExperiment.Num());
 }
 
 void UConversationStarter::ParseDialogue(UUserWidget* ConvoWidget, UPanelWidget* Container, const TArray<TSharedPtr<FJsonValue>>& DialogueElementsArray)
 {
-    for (auto DialogueElement : DialogueElementsArray)
+    // todo: even storing these fellas in a dedicated sharedptr leads to them coming up as 0 length array once we call into the function afresh. It seems that the inflated JSON only lives in memory within the call scope of deserialize()? But there must be some way to hang onto an entire inflated JSON tree...
+    auto DialogueElementsArrayExperiment = CurrentDialogueJsonObject->GetArrayField(KEY_ARRAY_DIALOGUE);
+    UE_LOG(LogTemp, Warning, TEXT("ParseDialogue; current dialogue object has dialogue array of %d elements"), DialogueElementsArrayExperiment.Num());
+    for (auto DialogueElement : DialogueElementsArrayExperiment)
     {
-        UE_LOG(LogTemp, Warning, TEXT("ParseConvoScript; got dialogue element in dialogues array"));
+        UE_LOG(LogTemp, Warning, TEXT("ParseDialogue; got dialogue element in dialogues array"));
 
         const TSharedPtr<FJsonObject>* DialogueObject;
         if (DialogueElement->TryGetObject(DialogueObject))
         {
-            UE_LOG(LogTemp, Warning, TEXT("ParseConvoScript; got dialogue object"));
+            UE_LOG(LogTemp, Warning, TEXT("ParseDialogue; got dialogue object"));
             FString PortraitName = (*DialogueObject)->GetStringField(KEY_STRING_IMAGE);
             UTextDisplayWidget* DialogueWidget{nullptr};
             // todo: my json schema doesn't have a cleaner way to represent point of view atm, so just grep for maya in the portrait name *sigh*
@@ -293,22 +311,23 @@ void UConversationStarter::ParseDialogue(UUserWidget* ConvoWidget, UPanelWidget*
                         const TSharedPtr<FJsonObject>* LeafNode;
 						if (Choice->AsObject()->TryGetArrayField(KEY_ARRAY_DIALOGUE, SubDialogueElements))
 						{
-                            ParseDialogue(ConvoWidget, Container, *SubDialogueElements);
+                            // ParseDialogue(ConvoWidget, Container, *SubDialogueElements); // checking to make sure dumping everything recursively works
+
+                            // todo: set current dialogue json object in a desperate bid to keep the damn nested crap alive through stack pops
+                            CurrentDialogueJsonObject = MakeShareable(new FJsonObject());
+                            CurrentDialogueJsonObject->SetArrayField(KEY_ARRAY_DIALOGUE, std::move(DialogueElementsArray));
                             /* todo: so far I've assumed the pop off the stack from lambda install to lambda exec is the problem; check what happens if we call ParseDialogue() recursively. EDIT: yeah the recursive approach works, so I guess the above issue is the problem. But why? I hang on to the root jsonobject in a class member field so none of it should be getting deallocated. Another experiment might be to try calling ParseDialogue multiple times from some other context where the initial deserialized jsonobject will have gone out of scope and see if we hit the same problem, just to see if its about the initial sharedptr going out of scope or maybe something else?
+                            */
 
 							// install subdialogue elements to OnClick lambda event
-                            UE_LOG(LogTemp, Warning, TEXT("ParseDialogue; just before setting up subdialogue lambda, current script says %p"), CurrentScriptJsonObject.Get());
-
-                            // todo: deep copy the subdialogue into a new jsonobject sharedptr... but wait fuck the other choices will overwrite this if they have subdialogues. hm. sure wish this JSON API was complete asss
-                            CurrentDialogueJsonObject = MakeShareable(new FJsonObject());
+                            //UE_LOG(LogTemp, Warning, TEXT("ParseDialogue; just before setting up subdialogue lambda, current script says %p"), CurrentScriptJsonObject.Get());
 
 							ChoiceButton->LambdaEvent.BindLambda([&]() 
 							{
-                                UE_LOG(LogTemp, Warning, TEXT("ParseDialogue; in subdialogue lambda, current script says %p"), CurrentScriptJsonObject.Get());
+                                UE_LOG(LogTemp, Warning, TEXT("ParseDialogue; in subdialogue lambda, current script says %p and current dialogue says %p"), CurrentScriptJsonObject.Get(), CurrentDialogueJsonObject.Get());
                                 // todo: getting a SIGBUS or SEGFAULT when this call tries to unpack the SubDialogueElements; not clear why. I thought maybe I needed to hang on to the sharedptr we get in deserialize, but that didn't help. I don't know when/how they 'inflate' JSON string elements into actual JsonObjects in memory though; I assumed it would process the whole JSON file in deserialize, but maybe not? Maybe the subdialogue json objects are only allocated memory when I call TryGetArrayField() and they don't remain valid after we pop off the stack waiting for the button press event to call this lambda? Regardless, we could always just change the API to expect a sharedptr to jsonobject and then create said object to host the subdialogue and capture it here... but then that guy would also go out of scope between lambda install and lambda execute. COuld always hang on to another field for the current dialogue subtree, I guess. *sighs, quietly mutilates API* ... or not since other choices with subdialogues would overwrite it. hrmn.
 								ParseDialogue(ConvoWidget, Container, *SubDialogueElements);
 							});
-                            */
 						}
                         // todo: oops, some crossed wires here -- the choice object itself does not have jump and deadend leafnodes; these currently live on the dialogue object itself. Since those should never be processed until the player has the chance to read the rest of the dialogue subtree, it might make sense to move these into the choice object. However, there are some cases where there isn't actually a `choice` per se e.g. Yvyteph throws the player out of the conversation, so it could be confusing to script it that way. Plus it might be nice to have a click-to-continue mechanism between dialogue elements anyway, at least maybe at some transition points (which leaf nodes could be an example of). So yeah I kinda like the notion of moving these leaf node processings out into the dialogue element as part of a collection of transition attributes that need user interaction; choices itself could be one, jump and deadend could be ones, and maybe something that just says 'wait' or something to indicate a button with 'continue...' should be rendered. Maybe this transition should be its own object, maybe with a type value so we don't have to lean on unintuitively mutex if chains? 
                         else if (Choice->AsObject()->TryGetObjectField(KEY_OBJECT_JUMP, LeafNode))
