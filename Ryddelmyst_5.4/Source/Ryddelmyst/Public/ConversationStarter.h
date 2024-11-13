@@ -65,6 +65,9 @@ private:
 	UPROPERTY(EditAnywhere, Category = "Dialogue")
 	FName ClosestBone;
 
+	TSharedPtr<FJsonObject> CurrentScriptJsonObject{nullptr};
+	TSharedPtr<FJsonObject> CurrentDialogueJsonObject{nullptr};
+
 public:
 	static const FString KEY_ARRAY_DIALOGUE;
 	static const FString KEY_STRING_NAME;
@@ -105,17 +108,16 @@ public:
 	FString GetScript();
 
 	/**
-	 * Parses the input script raw JSON string and generates a conversation UI for display.
+	 * Parses the input script raw JSON string and generates a conversation UI for display. 
 	 * @return a populated BP_ConvoBase widget for display in the HUD.
 	 */
 	UUserWidget* GenerateConversationUI(const FString& Script);
 
 	/**
-	 * @brief accepts a conversation script as a string and returns a UUserWidget populated by generated conversation UI elements
+	 * @brief accepts a conversation script as a string and sets the CurrentScriptJsonObject field.
 	 * @param Script - the raw JSON string of the convo script.
-	 * @return an array of script top level 'dialogue' JSON array elements.
 	 */
-	TArray<TSharedPtr<FJsonValue>> ParseConversationScript(const FString& Script);
+	void ParseConversationScript(const FString& Script);
 
 	/**
 	 * @brief parses the input convo JSON object and appends generated content to the given UWidget.

@@ -190,27 +190,33 @@ UUserWidget* UConversationStarter::GenerateConversationUI(const FString& Script)
     // todo: parse script json into UI elements added to a wrapper slate widget; for simplicity and prettyness I guess the best approach would be to create a UI asset in the editor that acts as a scrollable container and then add generated elements such as images, text, and buttons from the parsing.
     UUserWidget* ConvoWidget = CreateWidget<UUserWidget>(GetWorld(), ConvoBaseWidgetClass);
     UScrollBox* ScrollBox = Cast<UScrollBox>(ConvoWidget->WidgetTree->FindWidget(TEXT("DialogueScrollBox")));
-    auto Dialogue = ParseConversationScript(Script);
-    ParseDialogue(ConvoWidget, ScrollBox, Dialogue);
+    ParseConversationScript(Script);
+    if (CurrentScriptJsonObject)
+    {
+        auto DialogueElementsArray = CurrentScriptJsonObject->GetArrayField(KEY_ARRAY_DIALOGUE);
+        UE_LOG(LogTemp, Warning, TEXT("ParseConvoScript; dialogue array has %d elements"), DialogueElementsArray.Num());
+        ParseDialogue(ConvoWidget, ScrollBox, DialogueElementsArray);
+    }
+    else 
+    {
+        UE_LOG(LogTemp, Error, TEXT("GenerateConvoUI; failed to extract top level script JSON object"));
+    }
     return ConvoWidget;
 }
 
-TArray<TSharedPtr<FJsonValue>> UConversationStarter::ParseConversationScript(const FString& Script)
+void UConversationStarter::ParseConversationScript(const FString& Script)
 {
-    TSharedPtr<FJsonObject> ScriptJsonObject;
+    TSharedPtr<FJsonObject> ScriptJsonObject = MakeShareable(new FJsonObject());;
     auto Reader = TJsonReaderFactory<>::Create(Script);
     if (FJsonSerializer::Deserialize(Reader, ScriptJsonObject))
     {
         UE_LOG(LogTemp, Warning, TEXT("ParseConvoScript; deserialized json"));
-        auto DialogueElementsArray = ScriptJsonObject->GetArrayField(KEY_ARRAY_DIALOGUE);
-        UE_LOG(LogTemp, Warning, TEXT("ParseConvoScript; dialogue array has %d elements"), DialogueElementsArray.Num());
-        return DialogueElementsArray;
+        CurrentScriptJsonObject = ScriptJsonObject;
     }
     else
     {
         UE_LOG(LogTemp, Error, TEXT("ParseConvoScript; deserializing json failed"));
     }
-    return TArray<TSharedPtr<FJsonValue>>();
 }
 
 void UConversationStarter::ParseDialogue(UUserWidget* ConvoWidget, UPanelWidget* Container, const TArray<TSharedPtr<FJsonValue>>& DialogueElementsArray)
@@ -240,6 +246,16 @@ void UConversationStarter::ParseDialogue(UUserWidget* ConvoWidget, UPanelWidget*
             {
                 LinesAggregate.Append(Line->AsString());
             }
+            // todo: create a thoughts dialogue widget template in editor with a cheeky thought baloon border or something and italic text and load the thought text into that widget rather than cramming everything into the dialogue widget.
+            const TArray<TSharedPtr<FJsonValue>>* ThoughtsArray;
+            if ((*DialogueObject)->TryGetArrayField(KEY_ARRAY_THOUGHTS, ThoughtsArray))
+            {
+
+                for (auto Thought : *ThoughtsArray)
+                {
+                    LinesAggregate.Append(Thought->AsString());
+                }
+            }
             DialogueWidget->SetText(FText::FromString(LinesAggregate));
             FString PortraitPath = FString::Printf(TEXT("/Game/Ryddelmyst_Assets/Sprites/%s_Portrait_Sprite.%s_Portrait_Sprite"), *PortraitName, *PortraitName);
             UE_LOG(LogTemp, Warning, TEXT("ParseConvoScript; portraitpath is %s"), *PortraitPath);
@@ -259,6 +275,7 @@ void UConversationStarter::ParseDialogue(UUserWidget* ConvoWidget, UPanelWidget*
                 auto* ChoicesList = Cast<UScrollBox>(ChoicesWidget->WidgetTree->FindWidget(TEXT("ScrollBox_Choices")));
                 UE_LOG(LogTemp, Error, TEXT("ParseConvoScript; choiceslist says %p"), ChoicesList);
                 
+                // todo: remove choiceswidget after a choice is made?
                 // populate choiceswidget with buttons hosting the choices array text
                 for (auto Choice : *ChoicesArray)
                 {
@@ -277,8 +294,15 @@ void UConversationStarter::ParseDialogue(UUserWidget* ConvoWidget, UPanelWidget*
 						if (Choice->AsObject()->TryGetArrayField(KEY_ARRAY_DIALOGUE, SubDialogueElements))
 						{
 							// install subdialogue elements to OnClick lambda event
+                            UE_LOG(LogTemp, Warning, TEXT("ParseDialogue; just before setting up subdialogue lambda, current script says %p"), CurrentScriptJsonObject.Get());
+
+                            // todo: deep copy the subdialogue into a new jsonobject sharedptr... but wait fuck the other choices will overwrite this if they have subdialogues. hm. sure wish this JSON API was complete asss
+                            CurrentDialogueJsonObject = MakeShareable(new FJsonObject());
+
 							ChoiceButton->LambdaEvent.BindLambda([&]() 
 							{
+                                UE_LOG(LogTemp, Warning, TEXT("ParseDialogue; in subdialogue lambda, current script says %p"), CurrentScriptJsonObject.Get());
+                                // todo: getting a SIGBUS or SEGFAULT when this call tries to unpack the SubDialogueElements; not clear why. I thought maybe I needed to hang on to the sharedptr we get in deserialize, but that didn't help. I don't know when/how they 'inflate' JSON string elements into actual JsonObjects in memory though; I assumed it would process the whole JSON file in deserialize, but maybe not? Maybe the subdialogue json objects are only allocated memory when I call TryGetArrayField() and they don't remain valid after we pop off the stack waiting for the button press event to call this lambda? Regardless, we could always just change the API to expect a sharedptr to jsonobject and then create said object to host the subdialogue and capture it here... but then that guy would also go out of scope between lambda install and lambda execute. COuld always hang on to another field for the current dialogue subtree, I guess. *sighs, quietly mutilates API* ... or not since other choices with subdialogues would overwrite it. hrmn.
 								ParseDialogue(ConvoWidget, Container, *SubDialogueElements);
 							});
 						}
@@ -292,8 +316,17 @@ void UConversationStarter::ParseDialogue(UUserWidget* ConvoWidget, UPanelWidget*
                                 {
                                     GameState->ClueState = Clue;
                                     // re-run script selection logic  
-                                    auto Dialogue = ParseConversationScript(GetScript());
-                                    ParseDialogue(ConvoWidget, Container, Dialogue);
+                                    ParseConversationScript(GetScript());
+                                    if (CurrentScriptJsonObject)
+                                    {
+                                        auto SubDialogueElementsArray = CurrentScriptJsonObject->GetArrayField(KEY_ARRAY_DIALOGUE);
+                                        UE_LOG(LogTemp, Warning, TEXT("ParseDialogue; subdialogue array has %d elements"), SubDialogueElementsArray.Num());
+                                        ParseDialogue(ConvoWidget, Container, SubDialogueElementsArray);
+                                    }
+                                    else
+                                    {
+                                        UE_LOG(LogTemp, Error, TEXT("ParseDialogue; current script object is null"));
+                                    }
                                 });
                             }
                             else
