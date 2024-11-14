@@ -65,8 +65,15 @@ private:
 	UPROPERTY(EditAnywhere, Category = "Dialogue")
 	FName ClosestBone;
 
-	TSharedPtr<FJsonObject> CurrentScriptJsonObject{nullptr};
-	TSharedPtr<FJsonObject> CurrentDialogueJsonObject{nullptr};
+	UPROPERTY(EditAnywhere, Category = "Dialogue")
+	UUserWidget* ConvoWidget;
+	
+	UPROPERTY(EditAnywhere, Category = "Dialogue")
+	UPanelWidget* ConvoContainer;
+
+	TSharedPtr<FJsonObject> ScriptJsonObject{nullptr};
+	///TSharedPtr<FJsonObject> CurrentScriptJsonObject{nullptr};
+	///TSharedPtr<FJsonObject> CurrentDialogueJsonObject{nullptr};
 
 public:
 	static const FString KEY_ARRAY_DIALOGUE;
