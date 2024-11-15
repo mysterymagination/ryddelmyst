@@ -134,9 +134,7 @@ FString UConversationStarter::CalculateScriptName(const FString& CharacterName, 
 		ConvoScriptName = TEXT("Intro_Qyvnily_WildFlower.json");
 	}
 	// todo: other characters
-	//return ConvoScriptName;
-
-    return TEXT("TestJSON.json");
+	return ConvoScriptName;
 }
 
 FString UConversationStarter::MatchCharacter(const FString& ActorName)
