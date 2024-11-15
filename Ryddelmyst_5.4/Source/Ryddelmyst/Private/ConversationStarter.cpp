@@ -188,7 +188,7 @@ FString UConversationStarter::MatchCharacter(const FString& ActorName)
 UUserWidget* UConversationStarter::GenerateConversationUI(const FString& Script)
 {
     ConvoWidget = CreateWidget<UUserWidget>(GetWorld(), ConvoBaseWidgetClass);
-    ConvoContainer = Cast<UPanelWidget>(ConvoWidget->WidgetTree->FindWidget(TEXT("DialogueScrollBox")));
+    ConvoContainer = Cast<UScrollBox>(ConvoWidget->WidgetTree->FindWidget(TEXT("DialogueScrollBox")));
     ParseConversationScript(Script);
     if (ScriptJsonObject)
     {
@@ -236,12 +236,13 @@ void UConversationStarter::ParseDialogue(TSharedPtr<FJsonObject> DialogueObject)
             {
                 DialogueWidget = Cast<UTextDisplayWidget>(ConvoWidget->WidgetTree->ConstructWidget(DialogueWidgetClass_Other));
             }
+
             UE_LOG(LogTemp, Warning, TEXT("ParseDialogue; looking at lines"));
             const TArray<TSharedPtr<FJsonValue>>& LinesArray = (*DialogueObject)->GetArrayField(KEY_ARRAY_LINES);
             FString LinesAggregate;
             for (auto Line : LinesArray)
             {
-                LinesAggregate.Append(Line->AsString());
+                LinesAggregate.Append(FString(TEXT(" ")).Append(Line->AsString()));
             }
             // todo: create a thoughts dialogue widget template in editor with a cheeky thought baloon border or something and italic text and load the thought text into that widget rather than cramming everything into the dialogue widget.
             UE_LOG(LogTemp, Warning, TEXT("ParseDialogue; looking at thoughts"));
@@ -251,7 +252,7 @@ void UConversationStarter::ParseDialogue(TSharedPtr<FJsonObject> DialogueObject)
 
                 for (auto Thought : *ThoughtsArray)
                 {
-                    LinesAggregate.Append(Thought->AsString());
+                    LinesAggregate.Append(FString(TEXT(" ")).Append(Thought->AsString()));
                 }
             }
             UE_LOG(LogTemp, Warning, TEXT("ParseDialogue; setting text"));
@@ -271,7 +272,8 @@ void UConversationStarter::ParseDialogue(TSharedPtr<FJsonObject> DialogueObject)
                 auto* ChoicesList = Cast<UScrollBox>(ChoicesWidget->WidgetTree->FindWidget(TEXT("ScrollBox_Choices")));
                 UE_LOG(LogTemp, Error, TEXT("ParseConvoScript; choiceslist says %p"), ChoicesList);
                 
-                // todo: remove choiceswidget after a choice is made?
+                // todo: remove choiceswidget after a choice is made? Maybe it would also be good to propagate the choice set minus already chosen items down the dialogue subtrees so we can always have the latest choice set appear at the current conversation point? Idk that sounds like a lot of frontend work... I'm pretty good with the caveman approach of either removing the choices once one is made (and forcing the player to start the convo from scratch multiple times to explore all options) OR preferably just leave the choice lists be and simply scroll the container to the bottom after each choice is made so the user is taken automatically to the new content and can always scroll back up to explore other choices. That's essentially what I did in Adventures of Mooty Wort and it was ugly but functional.
+
                 // populate choiceswidget with buttons hosting the choices array text
                 for (auto Choice : *ChoicesArray)
                 {
@@ -291,7 +293,10 @@ void UConversationStarter::ParseDialogue(TSharedPtr<FJsonObject> DialogueObject)
                         // install subdialogue elements to OnClick lambda event   
                         ChoiceButton->LambdaEvent.BindLambda([this, ChoiceJsonObject]() 
                         {
+                            float ScrollOffset = ConvoContainer->GetScrollOffsetOfEnd() + SubtreeOffset;
                             ParseDialogue(ChoiceJsonObject);
+                            UE_LOG(LogTemp, Warning, TEXT("ParseDialogue; subtreeoffset says %f and total scrolloffset says %f"), SubtreeOffset, ScrollOffset);
+                            ConvoContainer->SetScrollOffset(ScrollOffset);
                         });
 						
                         // todo: oops, some crossed wires here -- the choice object itself does not have jump and deadend leafnodes; these currently live on the dialogue object itself. Since those should never be processed until the player has the chance to read the rest of the dialogue subtree, it might make sense to move these into the choice object. However, there are some cases where there isn't actually a `choice` per se e.g. Yvyteph throws the player out of the conversation, so it could be confusing to script it that way. Plus it might be nice to have a click-to-continue mechanism between dialogue elements anyway, at least maybe at some transition points (which leaf nodes could be an example of). So yeah I kinda like the notion of moving these leaf node processings out into the dialogue element as part of a collection of transition attributes that need user interaction; choices itself could be one, jump and deadend could be ones, and maybe something that just says 'wait' or something to indicate a button with 'continue...' should be rendered. Maybe this transition should be its own object, maybe with a type value so we don't have to lean on unintuitively mutex if chains? 

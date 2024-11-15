@@ -6,7 +6,7 @@
 #include "UObject/NoExportTypes.h"
 #include "Blueprint/UserWidget.h"
 #include "RyddelmystGameState.h"
-#include "Components/PanelWidget.h"
+#include "Components/ScrollBox.h"
 #include "ConversationStarter.generated.h"
 
 /**
@@ -69,7 +69,14 @@ private:
 	UUserWidget* ConvoWidget;
 	
 	UPROPERTY(EditAnywhere, Category = "Dialogue")
-	UPanelWidget* ConvoContainer;
+	UScrollBox* ConvoContainer;
+
+	/**
+	 * @brief the scroll offset to apply beyond the old bottom point of the scrollbox when we jump to a new dialogue subtree; this will normally be the height of a DialogueWidgetClass_Player UUserWidget since conversation forks currently only come from the player asking questions. 
+	 * todo: unfortunately the Slate API has foiled my several attempts to stat the dimensions of a UUserWidget accurately at runtime; DesignTimeSize gives me a wrong value and MinimumDesiredSize() gives me 0 and that is two attempts more than I have patience with re: UI. So fudge factor it shall be!
+	 */
+	UPROPERTY(EditAnywhere, Category = "Dialogue")
+	float SubtreeOffset = 400.f;
 
 	TSharedPtr<FJsonObject> ScriptJsonObject{nullptr};
 
