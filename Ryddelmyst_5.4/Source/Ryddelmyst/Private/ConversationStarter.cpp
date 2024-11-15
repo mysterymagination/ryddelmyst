@@ -194,9 +194,7 @@ UUserWidget* UConversationStarter::GenerateConversationUI(const FString& Script)
     ParseConversationScript(Script);
     if (ScriptJsonObject)
     {
-        auto DialogueElementsArray = ScriptJsonObject->GetArrayField(KEY_ARRAY_DIALOGUE);
-        UE_LOG(LogTemp, Warning, TEXT("ParseConvoScript; dialogue array has %d elements"), DialogueElementsArray.Num());
-        ParseDialogue(ConvoWidget, ConvoContainer, DialogueElementsArray);
+        ParseDialogue(ScriptJsonObject);
     }
     else 
     {
@@ -219,9 +217,9 @@ void UConversationStarter::ParseConversationScript(const FString& Script)
     }
 }
 
-void UConversationStarter::ParseDialogue(UUserWidget* ConvoWidgetDontUse, UPanelWidget* ContainerDontUse, const TArray<TSharedPtr<FJsonValue>>& DialogueElementsArray)
+void UConversationStarter::ParseDialogue(TSharedPtr<FJsonObject> DialogueObject)
 {
-    for (auto DialogueElement : DialogueElementsArray)
+    for (auto DialogueElement : DialogueObject->GetArrayField(KEY_ARRAY_DIALOGUE))
     {
         UE_LOG(LogTemp, Warning, TEXT("ParseDialogue; got dialogue element in dialogues array"));
         const TSharedPtr<FJsonObject>* DialogueObject;
@@ -282,23 +280,22 @@ void UConversationStarter::ParseDialogue(UUserWidget* ConvoWidgetDontUse, UPanel
                     const TSharedPtr<FJsonObject>* ChoiceObject;
                     if (Choice->TryGetObject(ChoiceObject))
                     {
+                        auto ChoiceJsonObject = *ChoiceObject;
                         auto* ChoiceButton = ChoicesWidget->WidgetTree->ConstructWidget<ULambdaButton>();
                         ChoicesList->AddChild(ChoiceButton);
                         auto* ChoiceTextWidget = ChoicesWidget->WidgetTree->ConstructWidget<UTextBlock>();
-                        FString ChoiceText = (*ChoiceObject)->GetStringField(KEY_STRING_TEXT);
+                        FString ChoiceText = ChoiceJsonObject->GetStringField(KEY_STRING_TEXT);
                         ChoiceTextWidget->SetText(FText::FromString(ChoiceText));
                         ChoiceTextWidget->SetColorAndOpacity(FSlateColor(FLinearColor(0.f, 0.f, 0.f, 1.f)));
                         ChoiceButton->AddChild(ChoiceTextWidget);
-                        const TArray<TSharedPtr<FJsonValue>>* SubDialogueElements;
                         const TSharedPtr<FJsonObject>* LeafNode;
-						if (Choice->AsObject()->TryGetArrayField(KEY_ARRAY_DIALOGUE, SubDialogueElements))
-						{
-							// install subdialogue elements to OnClick lambda event   
-							ChoiceButton->LambdaEvent.BindLambda([&]() 
-							{
-								ParseDialogue(ConvoWidget, ConvoContainer, *SubDialogueElements);
-							});
-						}
+						
+                        // install subdialogue elements to OnClick lambda event   
+                        ChoiceButton->LambdaEvent.BindLambda([this, ChoiceJsonObject]() 
+                        {
+                            ParseDialogue(ChoiceJsonObject);
+                        });
+						
                         // todo: oops, some crossed wires here -- the choice object itself does not have jump and deadend leafnodes; these currently live on the dialogue object itself. Since those should never be processed until the player has the chance to read the rest of the dialogue subtree, it might make sense to move these into the choice object. However, there are some cases where there isn't actually a `choice` per se e.g. Yvyteph throws the player out of the conversation, so it could be confusing to script it that way. Plus it might be nice to have a click-to-continue mechanism between dialogue elements anyway, at least maybe at some transition points (which leaf nodes could be an example of). So yeah I kinda like the notion of moving these leaf node processings out into the dialogue element as part of a collection of transition attributes that need user interaction; choices itself could be one, jump and deadend could be ones, and maybe something that just says 'wait' or something to indicate a button with 'continue...' should be rendered. Maybe this transition should be its own object, maybe with a type value so we don't have to lean on unintuitively mutex if chains? 
                         /*
                         else if (Choice->AsObject()->TryGetObjectField(KEY_OBJECT_JUMP, LeafNode))

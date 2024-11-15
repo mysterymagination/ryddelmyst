@@ -126,10 +126,8 @@ public:
 
 	/**
 	 * @brief parses the input convo JSON object and appends generated content to the given UWidget.
-	 * @param ConvoWidget - the top level UUserWidget whose WidgetTree all our generated UWidgets belong to.
-	 * @param Container - the UPanelWidget that should host the UWidgets we generate from the convo JSON.
-	 * @param DialogueElementsArray - the current convo dialogue as a JSON array.
+	 * @param DialogueObject - wrapper JsonObject hosting the current dialogue array.
 	 */
-	void ParseDialogue(UUserWidget* ConvoWidget, UPanelWidget* Container, const TArray<TSharedPtr<FJsonValue>>& DialogueElementsArray);
+	void ParseDialogue(TSharedPtr<FJsonObject> DialogueObject);
 	
 };
