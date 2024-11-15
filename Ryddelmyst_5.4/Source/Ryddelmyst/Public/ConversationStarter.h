@@ -72,8 +72,6 @@ private:
 	UPanelWidget* ConvoContainer;
 
 	TSharedPtr<FJsonObject> ScriptJsonObject{nullptr};
-	///TSharedPtr<FJsonObject> CurrentScriptJsonObject{nullptr};
-	///TSharedPtr<FJsonObject> CurrentDialogueJsonObject{nullptr};
 
 public:
 	static const FString KEY_ARRAY_DIALOGUE;
