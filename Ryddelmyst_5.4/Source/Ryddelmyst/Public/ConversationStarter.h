@@ -54,6 +54,9 @@ private:
 	TSubclassOf<UUserWidget> ChoicesWidgetClass;
 
 	UPROPERTY(EditAnywhere, Category = "Dialogue")
+	TSubclassOf<UUserWidget> DividerWidgetClass;
+
+	UPROPERTY(EditAnywhere, Category = "Dialogue")
 	ARyddelmystGameState* GameState;
 
 	UPROPERTY(EditAnywhere, Category = "Dialogue")
@@ -76,7 +79,7 @@ private:
 	 * todo: unfortunately the Slate API has foiled my several attempts to stat the dimensions of a UUserWidget accurately at runtime; DesignTimeSize gives me a wrong value and MinimumDesiredSize() gives me 0 and that is two attempts more than I have patience with re: UI. So fudge factor it shall be!
 	 */
 	UPROPERTY(EditAnywhere, Category = "Dialogue")
-	float SubtreeOffset = 400.f;
+	float SubtreeOffset = 500.f;
 
 	TSharedPtr<FJsonObject> ScriptJsonObject{nullptr};
 

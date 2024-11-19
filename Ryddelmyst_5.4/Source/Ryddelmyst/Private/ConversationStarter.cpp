@@ -48,6 +48,9 @@ UConversationStarter::UConversationStarter()
 
     static ConstructorHelpers::FClassFinder<UUserWidget> ChoicesWidgetObj(TEXT("/Game/Ryddelmyst_Assets/UI/BP_Choices"));
 	ChoicesWidgetClass = ChoicesWidgetObj.Class;
+
+    static ConstructorHelpers::FClassFinder<UUserWidget> DividerWidgetObj(TEXT("/Game/Ryddelmyst_Assets/UI/BP_TextDivide"));
+	DividerWidgetClass = DividerWidgetObj.Class;
 }
 
 void UConversationStarter::Init(const FString& _ConvoTx, const FString& _ConvoRx, FName _ClosestBone, ARyddelmystGameState* _GameState)
@@ -293,6 +296,8 @@ void UConversationStarter::ParseDialogue(TSharedPtr<FJsonObject> DialogueObject)
                         // install subdialogue elements to OnClick lambda event   
                         ChoiceButton->LambdaEvent.BindLambda([this, ChoiceJsonObject]() 
                         {
+                            UUserWidget* DividerWidget = ConvoWidget->WidgetTree->ConstructWidget(DividerWidgetClass);
+                            ConvoContainer->AddChild(DividerWidget);
                             float ScrollOffset = ConvoContainer->GetScrollOffsetOfEnd() + SubtreeOffset;
                             ParseDialogue(ChoiceJsonObject);
                             UE_LOG(LogTemp, Warning, TEXT("ParseDialogue; subtreeoffset says %f and total scrolloffset says %f"), SubtreeOffset, ScrollOffset);
