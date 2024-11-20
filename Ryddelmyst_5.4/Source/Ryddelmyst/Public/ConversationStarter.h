@@ -34,11 +34,11 @@ private:
 
 	/**
 	 * @brief Uses character and game state to figure out which specific script we need to load.
-	 * @param Character - the character's name such as MATCHER_YVYTEPH_MASTERMIND.
+	 * @param CharacterName - the character's name such as MATCHER_YVYTEPH_MASTERMIND.
 	 * @return best fit script name or empty string if none could be found. 
 	 */
 	UFUNCTION()
-	FString CalculateScriptName(const FString& Character, ARyddelmystGameState* GameState);
+	FString CalculateScriptName(const FString& CharacterName);
 
 private:
 	UPROPERTY(EditAnywhere, Category = "Dialogue")

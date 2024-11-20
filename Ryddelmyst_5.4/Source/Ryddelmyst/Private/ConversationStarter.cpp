@@ -92,7 +92,7 @@ FString UConversationStarter::GetScript()
 
 	if (ConvoScriptFiles.Num() > 0)
 	{
-		FString ScriptName = CalculateScriptName(CharacterName, GameState);
+		FString ScriptName = CalculateScriptName(CharacterName);
 		ConvoPath.Append(ScriptName);
 		if (!FFileHelper::LoadFileToString(ConvoJSON, *ConvoPath.Append(ChosenScript)))
 		{
@@ -108,7 +108,7 @@ FString UConversationStarter::GetScript()
 	return  ConvoJSON;
 }
 
-FString UConversationStarter::CalculateScriptName(const FString& CharacterName, ARyddelmystGameState* GameState)
+FString UConversationStarter::CalculateScriptName(const FString& CharacterName)
 {
 	FString ConvoScriptName;
 	if (CharacterName.Equals(MATCHER_YVYTEPH_MASTERMIND))
@@ -223,11 +223,11 @@ void UConversationStarter::ParseDialogue(TSharedPtr<FJsonObject> DialogueObject)
     for (auto DialogueElement : DialogueObject->GetArrayField(KEY_ARRAY_DIALOGUE))
     {
         UE_LOG(LogTemp, Warning, TEXT("ParseDialogue; got dialogue element in dialogues array"));
-        const TSharedPtr<FJsonObject>* DialogueObject;
-        if (DialogueElement->TryGetObject(DialogueObject))
+        const TSharedPtr<FJsonObject>* DialogueElementObject;
+        if (DialogueElement->TryGetObject(DialogueElementObject))
         {
             UE_LOG(LogTemp, Warning, TEXT("ParseDialogue; got dialogue object"));
-            FString PortraitName = (*DialogueObject)->GetStringField(KEY_STRING_IMAGE);
+            FString PortraitName = (*DialogueElementObject)->GetStringField(KEY_STRING_IMAGE);
             UTextDisplayWidget* DialogueWidget{nullptr};
             
             UE_LOG(LogTemp, Warning, TEXT("ParseDialogue; portrait matching"));
@@ -241,7 +241,7 @@ void UConversationStarter::ParseDialogue(TSharedPtr<FJsonObject> DialogueObject)
             }
 
             UE_LOG(LogTemp, Warning, TEXT("ParseDialogue; looking at lines"));
-            const TArray<TSharedPtr<FJsonValue>>& LinesArray = (*DialogueObject)->GetArrayField(KEY_ARRAY_LINES);
+            const TArray<TSharedPtr<FJsonValue>>& LinesArray = (*DialogueElementObject)->GetArrayField(KEY_ARRAY_LINES);
             FString LinesAggregate;
             for (auto Line : LinesArray)
             {
@@ -250,7 +250,7 @@ void UConversationStarter::ParseDialogue(TSharedPtr<FJsonObject> DialogueObject)
             // todo: create a thoughts dialogue widget template in editor with a cheeky thought baloon border or something and italic text and load the thought text into that widget rather than cramming everything into the dialogue widget.
             UE_LOG(LogTemp, Warning, TEXT("ParseDialogue; looking at thoughts"));
             const TArray<TSharedPtr<FJsonValue>>* ThoughtsArray;
-            if ((*DialogueObject)->TryGetArrayField(KEY_ARRAY_THOUGHTS, ThoughtsArray))
+            if ((*DialogueElementObject)->TryGetArrayField(KEY_ARRAY_THOUGHTS, ThoughtsArray))
             {
 
                 for (auto Thought : *ThoughtsArray)
@@ -268,14 +268,12 @@ void UConversationStarter::ParseDialogue(TSharedPtr<FJsonObject> DialogueObject)
             
             UE_LOG(LogTemp, Warning, TEXT("ParseDialogue; choicing it up"));
             const TArray<TSharedPtr<FJsonValue>>* ChoicesArray;
-            if ((*DialogueObject)->TryGetArrayField(KEY_ARRAY_CHOICES, ChoicesArray))
+            if ((*DialogueElementObject)->TryGetArrayField(KEY_ARRAY_CHOICES, ChoicesArray))
             {
                 UUserWidget* ChoicesWidget = ConvoWidget->WidgetTree->ConstructWidget(ChoicesWidgetClass);
                 ConvoContainer->AddChild(ChoicesWidget);
                 auto* ChoicesList = Cast<UScrollBox>(ChoicesWidget->WidgetTree->FindWidget(TEXT("ScrollBox_Choices")));
                 UE_LOG(LogTemp, Error, TEXT("ParseConvoScript; choiceslist says %p"), ChoicesList);
-                
-                // todo: remove choiceswidget after a choice is made? Maybe it would also be good to propagate the choice set minus already chosen items down the dialogue subtrees so we can always have the latest choice set appear at the current conversation point? Idk that sounds like a lot of frontend work... I'm pretty good with the caveman approach of either removing the choices once one is made (and forcing the player to start the convo from scratch multiple times to explore all options) OR preferably just leave the choice lists be and simply scroll the container to the bottom after each choice is made so the user is taken automatically to the new content and can always scroll back up to explore other choices. That's essentially what I did in Adventures of Mooty Wort and it was ugly but functional.
 
                 // populate choiceswidget with buttons hosting the choices array text
                 for (auto Choice : *ChoicesArray)
@@ -291,7 +289,7 @@ void UConversationStarter::ParseDialogue(TSharedPtr<FJsonObject> DialogueObject)
                         ChoiceTextWidget->SetText(FText::FromString(ChoiceText));
                         ChoiceTextWidget->SetColorAndOpacity(FSlateColor(FLinearColor(0.f, 0.f, 0.f, 1.f)));
                         ChoiceButton->AddChild(ChoiceTextWidget);
-                        const TSharedPtr<FJsonObject>* LeafNode;
+                        //const TSharedPtr<FJsonObject>* LeafNode;
 						
                         // install subdialogue elements to OnClick lambda event   
                         ChoiceButton->LambdaEvent.BindLambda([this, ChoiceJsonObject]() 
@@ -304,7 +302,7 @@ void UConversationStarter::ParseDialogue(TSharedPtr<FJsonObject> DialogueObject)
                             ConvoContainer->SetScrollOffset(ScrollOffset);
                         });
 						
-                        // todo: oops, some crossed wires here -- the choice object itself does not have jump and deadend leafnodes; these currently live on the dialogue object itself. Since those should never be processed until the player has the chance to read the rest of the dialogue subtree, it might make sense to move these into the choice object. However, there are some cases where there isn't actually a `choice` per se e.g. Yvyteph throws the player out of the conversation, so it could be confusing to script it that way. Plus it might be nice to have a click-to-continue mechanism between dialogue elements anyway, at least maybe at some transition points (which leaf nodes could be an example of). So yeah I kinda like the notion of moving these leaf node processings out into the dialogue element as part of a collection of transition attributes that need user interaction; choices itself could be one, jump and deadend could be ones, and maybe something that just says 'wait' or something to indicate a button with 'continue...' should be rendered. Maybe this transition should be its own object, maybe with a type value so we don't have to lean on unintuitively mutex if chains? 
+                        // todo: oops, some crossed wires here -- the choice object itself does not have jump and deadend leafnodes; these currently live on the dialogue element object itself. Since those should never be processed until the player has the chance to read the rest of the dialogue subtree, it might make sense to move these into the choice object. However, there are some cases where there isn't actually a `choice` per se e.g. Yvyteph throws the player out of the conversation, so it could be confusing to script it that way. Plus it might be nice to have a click-to-continue mechanism between dialogue elements anyway, at least maybe at some transition points (which leaf nodes could be an example of). So yeah I kinda like the notion of moving these leaf node processings out into the dialogue element as part of a collection of transition attributes that need user interaction; choices itself could be one, jump and deadend could be ones, and maybe something that just says 'wait' or something to indicate a button with 'continue...' should be rendered. Maybe this transition should be its own object, maybe with a type value so we don't have to lean on unintuitively mutex if chains? 
                         /*
                         else if (Choice->AsObject()->TryGetObjectField(KEY_OBJECT_JUMP, LeafNode))
                         {
