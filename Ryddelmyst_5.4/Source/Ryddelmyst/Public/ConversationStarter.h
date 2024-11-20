@@ -51,6 +51,12 @@ private:
 	TSubclassOf<UUserWidget> DialogueWidgetClass_Other;
 
 	UPROPERTY(EditAnywhere, Category = "Dialogue")
+	TSubclassOf<UUserWidget> ThoughtsWidgetClass_Player;
+
+	UPROPERTY(EditAnywhere, Category = "Dialogue")
+	TSubclassOf<UUserWidget> ThoughtsWidgetClass_Other;
+
+	UPROPERTY(EditAnywhere, Category = "Dialogue")
 	TSubclassOf<UUserWidget> ChoicesWidgetClass;
 
 	UPROPERTY(EditAnywhere, Category = "Dialogue")

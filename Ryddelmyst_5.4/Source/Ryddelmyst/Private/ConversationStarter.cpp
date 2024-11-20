@@ -47,6 +47,12 @@ UConversationStarter::UConversationStarter()
     static ConstructorHelpers::FClassFinder<UUserWidget> OtherDialogueWidgetObj(TEXT("/Game/Ryddelmyst_Assets/UI/BP_Convo_Dialogue_Other"));
 	DialogueWidgetClass_Other = OtherDialogueWidgetObj.Class;
 
+    static ConstructorHelpers::FClassFinder<UUserWidget> PlayerThoughtsWidgetObj(TEXT("/Game/Ryddelmyst_Assets/UI/BP_Convo_Dialogue_Thoughts_Player"));
+	ThoughtsWidgetClass_Player = PlayerThoughtsWidgetObj.Class;
+
+    static ConstructorHelpers::FClassFinder<UUserWidget> OtherThoughtsWidgetObj(TEXT("/Game/Ryddelmyst_Assets/UI/BP_Convo_Dialogue_Thoughts_Other"));
+	ThoughtsWidgetClass_Other = OtherThoughtsWidgetObj.Class;
+
     static ConstructorHelpers::FClassFinder<UUserWidget> ChoicesWidgetObj(TEXT("/Game/Ryddelmyst_Assets/UI/BP_Choices"));
 	ChoicesWidgetClass = ChoicesWidgetObj.Class;
 
@@ -147,54 +153,55 @@ FString UConversationStarter::CalculateScriptName(const FString& CharacterName)
 
 FString UConversationStarter::MatchCharacter(const FString& ActorName)
 {
+    FString CharacterName = TEXT("");
 	// sequence matters because some forms have subforms like gloryform -> gloryformrage, so we want to make sure
 	// we search from the bottom up so to speak in terms of branch terminals to avoid partial matches. Some sort of 
 	// more robust naming scheme or parsing logic to account for this possibility might be a better solution,
 	// but I couldn't be arsed. 
 	if (ActorName.Contains(MATCHER_YVYTEPH_FONTOFFERTILITY, ESearchCase::IgnoreCase, ESearchDir::FromStart))
 	{
-		return MATCHER_YVYTEPH_FONTOFFERTILITY;
+		CharacterName = MATCHER_YVYTEPH_FONTOFFERTILITY;
 	}
 	else if (ActorName.Contains(MATCHER_YVYTEPH_GLORYFORM, ESearchCase::IgnoreCase, ESearchDir::FromStart))
 	{
-		return MATCHER_YVYTEPH_GLORYFORM;
+		CharacterName = MATCHER_YVYTEPH_GLORYFORM;
 	}
 	else if (ActorName.Contains(MATCHER_YVYTEPH_WILDFORMSHARP, ESearchCase::IgnoreCase, ESearchDir::FromStart))
 	{
-		return MATCHER_YVYTEPH_WILDFORMSHARP;
+		CharacterName = MATCHER_YVYTEPH_WILDFORMSHARP;
 	}
 	else if (ActorName.Contains(MATCHER_YVYTEPH_WILDFORM, ESearchCase::IgnoreCase, ESearchDir::FromStart))
 	{
-		return MATCHER_YVYTEPH_WILDFORM;
+		CharacterName = MATCHER_YVYTEPH_WILDFORM;
 	}
 	else if (ActorName.Contains(MATCHER_YVYTEPH_MASTERMIND, ESearchCase::IgnoreCase, ESearchDir::FromStart))
 	{
-		return MATCHER_YVYTEPH_MASTERMIND;
+		CharacterName = MATCHER_YVYTEPH_MASTERMIND;
 	}
 	else if (ActorName.Contains(MATCHER_QYVNILY_WILDFLOWER, ESearchCase::IgnoreCase, ESearchDir::FromStart))
 	{
-		return MATCHER_QYVNILY_WILDFLOWER;
+		CharacterName = MATCHER_QYVNILY_WILDFLOWER;
 	}
 	else if (ActorName.Contains(MATCHER_QYVNILY_WILDFORM, ESearchCase::IgnoreCase, ESearchDir::FromStart))
 	{
-		return MATCHER_QYVNILY_WILDFORM;
+		CharacterName = MATCHER_QYVNILY_WILDFORM;
 	}
 	else if (ActorName.Contains(MATCHER_QYVNILY_GLORYFORMRAGE, ESearchCase::IgnoreCase, ESearchDir::FromStart))
 	{
-		return MATCHER_QYVNILY_GLORYFORMRAGE;
+		CharacterName = MATCHER_QYVNILY_GLORYFORMRAGE;
 	}
 	else if (ActorName.Contains(MATCHER_QYVNILY_GLORYFORM, ESearchCase::IgnoreCase, ESearchDir::FromStart))
 	{
-		return MATCHER_QYVNILY_GLORYFORM;
+		CharacterName = MATCHER_QYVNILY_GLORYFORM;
 	}
 	
     // override with test script if actor name suggests it
     if (ActorName.Contains(MATCHER_TEST, ESearchCase::IgnoreCase, ESearchDir::FromStart))
 	{
-		return MATCHER_TEST;
+		CharacterName = MATCHER_TEST;
 	}
 
-    return TEXT("");
+    return CharacterName;
 }
 
 UUserWidget* UConversationStarter::GenerateConversationUI(const FString& Script)
@@ -237,6 +244,9 @@ void UConversationStarter::ParseDialogue(TSharedPtr<FJsonObject> DialogueObject)
         {
             UE_LOG(LogTemp, Warning, TEXT("ParseDialogue; got dialogue object"));
             FString PortraitName = (*DialogueElementObject)->GetStringField(KEY_STRING_IMAGE);
+            FString PortraitPath = FString::Printf(TEXT("/Game/Ryddelmyst_Assets/Sprites/%s_Portrait_Sprite.%s_Portrait_Sprite"), *PortraitName, *PortraitName);
+            UE_LOG(LogTemp, Warning, TEXT("ParseConvoScript; portraitpath is %s"), *PortraitPath);
+            UPaperSprite* Portrait = LoadObject<UPaperSprite>(nullptr, *PortraitPath);
             UTextDisplayWidget* DialogueWidget{nullptr};
             
             UE_LOG(LogTemp, Warning, TEXT("ParseDialogue; portrait matching"));
@@ -249,31 +259,41 @@ void UConversationStarter::ParseDialogue(TSharedPtr<FJsonObject> DialogueObject)
                 DialogueWidget = Cast<UTextDisplayWidget>(ConvoWidget->WidgetTree->ConstructWidget(DialogueWidgetClass_Other));
             }
 
-            UE_LOG(LogTemp, Warning, TEXT("ParseDialogue; looking at lines"));
+            // lines field is presently required
             const TArray<TSharedPtr<FJsonValue>>& LinesArray = (*DialogueElementObject)->GetArrayField(KEY_ARRAY_LINES);
             FString LinesAggregate;
             for (auto Line : LinesArray)
             {
                 LinesAggregate.Append(FString(TEXT(" ")).Append(Line->AsString()));
             }
+            DialogueWidget->SetText(FText::FromString(LinesAggregate));
+            DialogueWidget->SetPortrait(Portrait);
+            ConvoContainer->AddChild(DialogueWidget);
+
             // todo: create a thoughts dialogue widget template in editor with a cheeky thought baloon border or something and italic text and load the thought text into that widget rather than cramming everything into the dialogue widget.
             UE_LOG(LogTemp, Warning, TEXT("ParseDialogue; looking at thoughts"));
             const TArray<TSharedPtr<FJsonValue>>* ThoughtsArray;
             if ((*DialogueElementObject)->TryGetArrayField(KEY_ARRAY_THOUGHTS, ThoughtsArray))
             {
-
+                FString ThoughtsAggregate;
+                UTextDisplayWidget* ThoughtsWidget{nullptr};
+                // inflate thought bubbles here since those are optional and less common than spoken lines
+                if (PortraitName.Contains(TEXT("maya"), ESearchCase::IgnoreCase, ESearchDir::FromStart))
+                {
+                    ThoughtsWidget = Cast<UTextDisplayWidget>(ConvoWidget->WidgetTree->ConstructWidget(ThoughtsWidgetClass_Player));
+                }
+                else 
+                {
+                    ThoughtsWidget = Cast<UTextDisplayWidget>(ConvoWidget->WidgetTree->ConstructWidget(ThoughtsWidgetClass_Other));
+                }
                 for (auto Thought : *ThoughtsArray)
                 {
-                    LinesAggregate.Append(FString(TEXT(" ")).Append(Thought->AsString()));
+                    ThoughtsAggregate.Append(FString(TEXT(" ")).Append(Thought->AsString()));
                 }
+                ThoughtsWidget->SetText(FText::FromString(ThoughtsAggregate));
+                ThoughtsWidget->SetPortrait(Portrait);
+                ConvoContainer->AddChild(ThoughtsWidget);
             }
-            UE_LOG(LogTemp, Warning, TEXT("ParseDialogue; setting text"));
-            DialogueWidget->SetText(FText::FromString(LinesAggregate));
-            FString PortraitPath = FString::Printf(TEXT("/Game/Ryddelmyst_Assets/Sprites/%s_Portrait_Sprite.%s_Portrait_Sprite"), *PortraitName, *PortraitName);
-            UE_LOG(LogTemp, Warning, TEXT("ParseConvoScript; portraitpath is %s"), *PortraitPath);
-            UPaperSprite* Portrait = LoadObject<UPaperSprite>(nullptr, *PortraitPath);
-            DialogueWidget->SetPortrait(Portrait);
-            ConvoContainer->AddChild(DialogueWidget);
             
             UE_LOG(LogTemp, Warning, TEXT("ParseDialogue; choicing it up"));
             const TArray<TSharedPtr<FJsonValue>>* ChoicesArray;
