@@ -105,6 +105,7 @@ public:
 	static const FString MATCHER_QYVNILY_WILDFORM;
 	static const FString MATCHER_QYVNILY_GLORYFORM;
 	static const FString MATCHER_QYVNILY_GLORYFORMRAGE;
+	static const FString MATCHER_TEST;
 
 public:
 	/**

@@ -5,7 +5,7 @@
             "image": "Qyvnily_WildFlower",
             "lines": [
                 "Howie doin'?"
-            ] 
+            ]
         },
         {
             "name": "Test 2",
@@ -39,7 +39,11 @@
                             ],
                             "thoughts": [
                                 "Sweet crumpets"
-                            ]    
+                            ],
+                            "transition": {
+                                "type": "jump",
+                                "clue": "test_answer_1_clue"
+                            }     
                         }
                     ]
                 },
@@ -58,7 +62,11 @@
                             "image": "Qyvnily_WildFlower",
                             "lines": [
                                 "You know the answer is test answer 2."
-                            ]
+                            ],
+                            "transition": {
+                                "type": "deadend",
+                                "clue": "test_answer_2_clue"
+                            }
                         }
                     ]
                 }

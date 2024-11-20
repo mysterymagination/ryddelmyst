@@ -34,6 +34,7 @@ const FString UConversationStarter::MATCHER_QYVNILY_WILDFLOWER{TEXT("qyvnily_wil
 const FString UConversationStarter::MATCHER_QYVNILY_WILDFORM{TEXT("qyvnily_wildform")};
 const FString UConversationStarter::MATCHER_QYVNILY_GLORYFORM{TEXT("qyvnily_gloryform")};
 const FString UConversationStarter::MATCHER_QYVNILY_GLORYFORMRAGE{TEXT("qyvnily_gloryformrage")};
+const FString UConversationStarter::MATCHER_TEST{TEXT("test")};
 
 UConversationStarter::UConversationStarter()
 {
@@ -136,6 +137,10 @@ FString UConversationStarter::CalculateScriptName(const FString& CharacterName)
 	{
 		ConvoScriptName = TEXT("Intro_Qyvnily_WildFlower.json");
 	}
+    else if (CharacterName.Equals(MATCHER_TEST))
+	{
+		ConvoScriptName = TEXT("TestJSON.json");
+	}
 	// todo: other characters
 	return ConvoScriptName;
 }
@@ -182,10 +187,14 @@ FString UConversationStarter::MatchCharacter(const FString& ActorName)
 	{
 		return MATCHER_QYVNILY_GLORYFORM;
 	}
-	else 
+	
+    // override with test script if actor name suggests it
+    if (ActorName.Contains(MATCHER_TEST, ESearchCase::IgnoreCase, ESearchDir::FromStart))
 	{
-		return TEXT("");
+		return MATCHER_TEST;
 	}
+
+    return TEXT("");
 }
 
 UUserWidget* UConversationStarter::GenerateConversationUI(const FString& Script)
