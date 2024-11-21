@@ -101,6 +101,11 @@ public:
 	static const FString KEY_OBJECT_JUMP;
 	static const FString KEY_STRING_CLUE;
 	static const FString KEY_STRING_INPUT;
+	static const FString KEY_OBJECT_TRANSITION;
+	static const FString KEY_STRING_TYPE;
+
+	static const FString VALUE_TRANSITION_TYPE_JUMP;
+	static const FString VALUE_TRANSITION_TYPE_DEADEND;
 
 	static const FString MATCHER_YVYTEPH_FONTOFFERTILITY;
 	static const FString MATCHER_YVYTEPH_GLORYFORM;

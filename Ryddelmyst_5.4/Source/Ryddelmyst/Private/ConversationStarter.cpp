@@ -24,6 +24,11 @@ const FString UConversationStarter::KEY_OBJECT_DEADEND{TEXT("deadend")};
 const FString UConversationStarter::KEY_OBJECT_JUMP{TEXT("jump")};
 const FString UConversationStarter::KEY_STRING_CLUE{TEXT("clue")};
 const FString UConversationStarter::KEY_STRING_INPUT{TEXT("input")};
+const FString UConversationStarter::KEY_OBJECT_TRANSITION{TEXT("transition")};
+const FString UConversationStarter::KEY_STRING_TYPE{TEXT("type")};
+
+const FString UConversationStarter::VALUE_TRANSITION_TYPE_JUMP{TEXT("jump")};
+const FString UConversationStarter::VALUE_TRANSITION_TYPE_DEADEND{TEXT("deadend")};
 
 const FString UConversationStarter::MATCHER_YVYTEPH_FONTOFFERTILITY{TEXT("yvyteph_fontoffertility")};
 const FString UConversationStarter::MATCHER_YVYTEPH_GLORYFORM{TEXT("yvyteph_gloryform")};
@@ -318,62 +323,25 @@ void UConversationStarter::ParseDialogue(TSharedPtr<FJsonObject> DialogueObject)
                         ChoiceTextWidget->SetText(FText::FromString(ChoiceText));
                         ChoiceTextWidget->SetColorAndOpacity(FSlateColor(FLinearColor(0.f, 0.f, 0.f, 1.f)));
                         ChoiceButton->AddChild(ChoiceTextWidget);
-                        //const TSharedPtr<FJsonObject>* LeafNode;
 						
-                        // install subdialogue elements to OnClick lambda event   
-                        ChoiceButton->LambdaEvent.BindLambda([this, ChoiceJsonObject]() 
+                        if (ChoiceJsonObject->HasField(KEY_ARRAY_DIALOGUE))
                         {
-                            UUserWidget* DividerWidget = ConvoWidget->WidgetTree->ConstructWidget(DividerWidgetClass);
-                            ConvoContainer->AddChild(DividerWidget);
-                            float ScrollOffset = ConvoContainer->GetScrollOffsetOfEnd() + SubtreeOffset;
-                            ParseDialogue(ChoiceJsonObject);
-                            UE_LOG(LogTemp, Warning, TEXT("ParseDialogue; subtreeoffset says %f and total scrolloffset says %f"), SubtreeOffset, ScrollOffset);
-                            ConvoContainer->SetScrollOffset(ScrollOffset);
-                        });
-						
-                        // todo: oops, some crossed wires here -- the choice object itself does not have jump and deadend leafnodes; these currently live on the dialogue element object itself. Since those should never be processed until the player has the chance to read the rest of the dialogue subtree, it might make sense to move these into the choice object. However, there are some cases where there isn't actually a `choice` per se e.g. Yvyteph throws the player out of the conversation, so it could be confusing to script it that way. Plus it might be nice to have a click-to-continue mechanism between dialogue elements anyway, at least maybe at some transition points (which leaf nodes could be an example of). So yeah I kinda like the notion of moving these leaf node processings out into the dialogue element as part of a collection of transition attributes that need user interaction; choices itself could be one, jump and deadend could be ones, and maybe something that just says 'wait' or something to indicate a button with 'continue...' should be rendered. Maybe this transition should be its own object, maybe with a type value so we don't have to lean on unintuitively mutex if chains? 
-                        /*
-                        else if (Choice->AsObject()->TryGetObjectField(KEY_OBJECT_JUMP, LeafNode))
-                        {
-                            FString Clue;
-                            if ((*LeafNode)->TryGetStringField(KEY_STRING_CLUE, Clue))
+                            // install subdialogue elements to OnClick lambda event   
+                            ChoiceButton->LambdaEvent.BindLambda([this, ChoiceJsonObject]() 
                             {
-                                ChoiceButton->LambdaEvent.BindLambda([&]() 
-                                {
-                                    GameState->ClueState = Clue;
-                                    // re-run script selection logic  
-                                    ParseConversationScript(GetScript());
-                                    if (CurrentScriptJsonObject)
-                                    {
-                                        auto SubDialogueElementsArray = CurrentScriptJsonObject->GetArrayField(KEY_ARRAY_DIALOGUE);
-                                        UE_LOG(LogTemp, Warning, TEXT("ParseDialogue; subdialogue array has %d elements"), SubDialogueElementsArray.Num());
-                                        ParseDialogue(ConvoWidget, Container, SubDialogueElementsArray);
-                                    }
-                                    else
-                                    {
-                                        UE_LOG(LogTemp, Error, TEXT("ParseDialogue; current script object is null"));
-                                    }
-                                });
-                            }
-                            else
-                            {
-                                UE_LOG(LogTemp, Error, TEXT("ParseDialogue; we do not have a clue for jump in dialogue element %s"), *(*DialogueObject)->GetStringField(KEY_STRING_NAME));
-                            }
+                                UUserWidget* DividerWidget = ConvoWidget->WidgetTree->ConstructWidget(DividerWidgetClass);
+                                ConvoContainer->AddChild(DividerWidget);
+                                float ScrollOffset = ConvoContainer->GetScrollOffsetOfEnd() + SubtreeOffset;
+                                ParseDialogue(ChoiceJsonObject);
+                                UE_LOG(LogTemp, Warning, TEXT("ParseDialogue; subtreeoffset says %f and total scrolloffset says %f"), SubtreeOffset, ScrollOffset);
+                                ConvoContainer->SetScrollOffset(ScrollOffset);
+                            });
                         }
-                        else if (Choice->AsObject()->TryGetObjectField(KEY_OBJECT_DEADEND, LeafNode))
+                        else
                         {
-                            FString Clue;
-                            if ((*LeafNode)->TryGetStringField(KEY_STRING_CLUE, Clue))
-                            {
-                                GameState->ClueState = Clue;
-                                // todo: exit conversation
-                            }
-                            else
-                            {
-                                UE_LOG(LogTemp, Error, TEXT("ParseDialogue; we do not have a clue for deadend in dialogue element %s"), *(*DialogueObject)->GetStringField(KEY_STRING_NAME));
-                            }
+                            UE_LOG(LogTemp, Warning, TEXT("ParseDialogue; no subdialogue in choice: %s"), *ChoiceText);
                         }
-                        */
+
                         // install OnClicked behavior, instructing it to simply exec the lambda
 						ChoiceButton->OnClicked.AddDynamic(ChoiceButton, &ULambdaButton::ExecLambda);
 						// todo: install onclick based on presence of nested dialogue trees, jumps, deadends etc.
@@ -392,6 +360,43 @@ void UConversationStarter::ParseDialogue(TSharedPtr<FJsonObject> DialogueObject)
             {
                 UE_LOG(LogTemp, Warning, TEXT("ParseConvoScript; no choices found"));
             }
+
+            // todo: transition processing
+            const TSharedPtr<FJsonObject>* TransitionObjectPtr;
+            if ((*DialogueElementObject)->TryGetObjectField(KEY_OBJECT_TRANSITION, TransitionObjectPtr))
+            {
+                FString Clue = (*TransitionObjectPtr)->GetStringField(KEY_STRING_CLUE);
+                FString Type = (*TransitionObjectPtr)->GetStringField(KEY_STRING_TYPE);
+                // todo: get appropriate dialogue object
+                // todo: create a transition button
+                if (Type.Equals(VALUE_TRANSITION_TYPE_JUMP))
+                {
+                    TransitionButton->LambdaEvent.BindLambda([this]() 
+                    {
+                        GameState->ClueState = Clue;
+                        // re-run script selection logic  
+                        ParseConversationScript(GetScript());
+                        if (CurrentScriptJsonObject)
+                        {
+                            ParseDialogue(DialogueObject);
+                        }
+                        else
+                        {
+                            UE_LOG(LogTemp, Error, TEXT("ParseDialogue; current script object is null"));
+                        }
+                    });
+                            
+                }
+                else if (Type.Equals(VALUE_TRANSITION_TYPE_DEADEND))
+                {
+                    TransitionButton->LambdaEvent.BindLambda([=]() 
+                    {
+                        GameState->ClueState = Clue;
+                        // todo: exit conversation
+                    });
+                }
+            }
+                        
             // todo: text input prompt processing
         }
     }
