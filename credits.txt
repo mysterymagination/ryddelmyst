@@ -140,6 +140,10 @@ Textures:
     18.1 Source: https://opengameart.org/content/cloud-pack
     18.2 Authors: https://opengameart.org/users/monotone
     18.3 License: CC0
+ 19. Ryddelmyst/Content/Ryddelmyst_Assets/Textures/vinediv.png
+    19.1 Source: https://opengameart.org/content/elemental-badges-from-the-savage-swordsman
+    19.2 Authors: https://opengameart.org/users/mndvecb
+    19.3 License: CC0, https://creativecommons.org/licenses/by/4.0/, http://www.gnu.org/licenses/gpl-3.0.html, http://opengameart.org/content/oga-by-30-faq
 
 Fonts:
   1. Ryddelmyst/Content/Ryddelmyst_Assets/Fonts/alagard_by_pix3m-d6awiwp.ttf
