@@ -432,33 +432,39 @@ void ARyddelmystCharacter::Interact()
 							UE_LOG(LogTemp, Warning, TEXT("Interact; player cannot pick up %s for story reasons"), *Actor->GetName());
 						}
 					}
-					else if (cap == InteractCapability::TALKABLE && ClosestBone.ToString().Contains(TEXT("face"), ESearchCase::IgnoreCase))
+					else if (cap == InteractCapability::TALKABLE && ClosestBone.ToString().Contains(TEXT("face"), ESearchCase::IgnoreCase) || cap == InteractCapability::DESCRIBABLE)
 					{
-						UConversationalComponent* Convo = Actor->FindComponentByClass<UConversationalComponent>();
-						if (Convo && Convo->GetClass()->ImplementsInterface(UTalkable::StaticClass()))
+						// todo: eesh, ugly hack to make talking and describing mutex so we don't get an empty description dialogue bubble after/before a conversation; better solution would be to turn the interact cap array into an assoc map so we can control the prioritization behavior here and in the data.
+						if (capArray.Contains(InteractCapability::TALKABLE) && ClosestBone.ToString().Contains(TEXT("face"), ESearchCase::IgnoreCase))
 						{
-							UUserWidget* ConvoWidget = ITalkable::Execute_StartConversation(Convo, GetActorNameOrLabel(), Actor->GetActorNameOrLabel(), ClosestBone, GetWorld()->GetGameState<ARyddelmystGameState>(), TEXT(""));
-							HUD->ShowConversation(ConvoWidget);
+							UConversationalComponent* Convo = Actor->FindComponentByClass<UConversationalComponent>();
+							if (Convo && Convo->GetClass()->ImplementsInterface(UTalkable::StaticClass()))
+							{
+								UUserWidget* ConvoWidget = ITalkable::Execute_StartConversation(Convo, GetActorNameOrLabel(), Actor->GetActorNameOrLabel(), ClosestBone, GetWorld()->GetGameState<ARyddelmystGameState>(), TEXT(""));
+								HUD->ShowConversation(ConvoWidget);
+								UE_LOG(LogTemp, Warning, TEXT("interact; conversing"));
+								break;
+							}
 						}
-						// todo: moops, this chain is not mutex since we iterate over the caps and we can hit both talkable and describable for convo actors.
-					}
-					else if (cap == InteractCapability::DESCRIBABLE)
-					{
-						if (Actor->GetClass()->ImplementsInterface(UDescribable::StaticClass()))
+						else 
 						{
-							FDescriptor Desc = IDescribable::Execute_GenerateDescription(Actor, ClosestBone);
-							UPaperSprite* ReactionPortrait;
-							if (PortraitMap.Contains(Desc.Reaction))
+							UE_LOG(LogTemp, Warning, TEXT("interact; describing"));
+							if (Actor->GetClass()->ImplementsInterface(UDescribable::StaticClass()))
 							{
-								ReactionPortrait = PortraitMap[Desc.Reaction];
+								FDescriptor Desc = IDescribable::Execute_GenerateDescription(Actor, ClosestBone);
+								UPaperSprite* ReactionPortrait;
+								if (PortraitMap.Contains(Desc.Reaction))
+								{
+									ReactionPortrait = PortraitMap[Desc.Reaction];
+								}
+								else
+								{
+									// Maya defaults to a happy outlook!  That's the way to be.
+									ReactionPortrait = PortraitMap[InteractReactions::HAPPY];
+								}
+								
+								HUD->ShowDialogue(ReactionPortrait, Desc.LocalizedDescription);
 							}
-							else
-							{
-								// Maya defaults to a happy outlook!  That's the way to be.
-								ReactionPortrait = PortraitMap[InteractReactions::HAPPY];
-							}
-							
-							HUD->ShowDialogue(ReactionPortrait, Desc.LocalizedDescription);
 						}
 					}
 					else if (cap == InteractCapability::LOREABLE)
