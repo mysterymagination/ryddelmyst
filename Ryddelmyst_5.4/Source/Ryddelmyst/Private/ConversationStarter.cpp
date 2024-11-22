@@ -11,7 +11,8 @@
 #include "Components/ScrollBox.h"
 #include "Components/VerticalBox.h"
 #include "TextDisplayWidget.h"
-
+#include "Kismet/GameplayStatics.h"
+#include "RyddelmystHUD.h"
 
 const FString UConversationStarter::KEY_ARRAY_DIALOGUE{TEXT("dialogue")};
 const FString UConversationStarter::KEY_STRING_NAME{TEXT("name")};
@@ -241,6 +242,16 @@ void UConversationStarter::ParseConversationScript(const FString& Script)
 
 void UConversationStarter::ParseDialogue(TSharedPtr<FJsonObject> DialogueObject)
 {
+    // find the exit convo button and install default exit convo behavior
+    auto* HUD = UGameplayStatics::GetPlayerController(GetWorld(), 0)->GetHUD<ARyddelmystHUD>();
+    auto* ExitButton = Cast<ULambdaButton>(ConvoWidget->WidgetTree->FindWidget(TEXT("ExitButton")));
+    ExitButton->LambdaEvent.BindLambda([=]() 
+    {
+        // exit conversation normally
+        HUD->ExitConversation(ConvoWidget);
+    });
+    ExitButton->OnClicked.AddDynamic(ExitButton, &ULambdaButton::ExecLambda);
+
     for (auto DialogueElement : DialogueObject->GetArrayField(KEY_ARRAY_DIALOGUE))
     {
         UE_LOG(LogTemp, Warning, TEXT("ParseDialogue; got dialogue element in dialogues array"));
@@ -367,37 +378,49 @@ void UConversationStarter::ParseDialogue(TSharedPtr<FJsonObject> DialogueObject)
             {
                 FString Clue = (*TransitionObjectPtr)->GetStringField(KEY_STRING_CLUE);
                 FString Type = (*TransitionObjectPtr)->GetStringField(KEY_STRING_TYPE);
-                // todo: get appropriate dialogue object
-                // todo: create a transition button
+                FString Prompt = (*TransitionObjectPtr)->GetStringField(KEY_STRING_TEXT);
                 if (Type.Equals(VALUE_TRANSITION_TYPE_JUMP))
                 {
-                    TransitionButton->LambdaEvent.BindLambda([this]() 
+                    // create a transition button
+                    auto* TransitionButton = ConvoWidget->WidgetTree->ConstructWidget<ULambdaButton>();
+                    auto* TransitionTextWidget = ConvoWidget->WidgetTree->ConstructWidget<UTextBlock>();   
+                    TransitionTextWidget->SetText(FText::FromString(Prompt));
+                    TransitionTextWidget->SetColorAndOpacity(FSlateColor(FLinearColor(0.f, 0.f, 0.f, 1.f)));
+                    TransitionButton->AddChild(TransitionTextWidget);
+                    TransitionButton->LambdaEvent.BindLambda([this, Clue]() 
                     {
                         GameState->ClueState = Clue;
                         // re-run script selection logic  
                         ParseConversationScript(GetScript());
-                        if (CurrentScriptJsonObject)
+                        if (ScriptJsonObject)
                         {
-                            ParseDialogue(DialogueObject);
+                            ParseDialogue(ScriptJsonObject);
                         }
                         else
                         {
                             UE_LOG(LogTemp, Error, TEXT("ParseDialogue; current script object is null"));
                         }
                     });
-                            
+                    TransitionButton->OnClicked.AddDynamic(TransitionButton, &ULambdaButton::ExecLambda);
+                    ConvoContainer->AddChild(TransitionButton);         
                 }
                 else if (Type.Equals(VALUE_TRANSITION_TYPE_DEADEND))
                 {
-                    TransitionButton->LambdaEvent.BindLambda([=]() 
+                    // the editor will not let me change the name for some reason to correct the letter case *sigh*
+                    auto* ExitText = Cast<UTextBlock>(ConvoWidget->WidgetTree->FindWidget(TEXT("ExitTExt")));
+                    ExitText->SetText(FText::FromString(Prompt));
+                    ExitButton->LambdaEvent.BindLambda([=]() 
                     {
                         GameState->ClueState = Clue;
-                        // todo: exit conversation
+                        // todo: install clue derived behavior
+                        // exit conversation
+                        HUD->ExitConversation(ConvoWidget);
                     });
                 }
             }
                         
             // todo: text input prompt processing
+            
         }
     }
 }

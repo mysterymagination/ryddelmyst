@@ -440,6 +440,7 @@ void ARyddelmystCharacter::Interact()
 							UUserWidget* ConvoWidget = ITalkable::Execute_StartConversation(Convo, GetActorNameOrLabel(), Actor->GetActorNameOrLabel(), ClosestBone, GetWorld()->GetGameState<ARyddelmystGameState>(), TEXT(""));
 							HUD->ShowConversation(ConvoWidget);
 						}
+						// todo: moops, this chain is not mutex since we iterate over the caps and we can hit both talkable and describable for convo actors.
 					}
 					else if (cap == InteractCapability::DESCRIBABLE)
 					{
