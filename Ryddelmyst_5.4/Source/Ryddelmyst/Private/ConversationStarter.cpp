@@ -14,6 +14,7 @@
 #include "Kismet/GameplayStatics.h"
 #include "RyddelmystHUD.h"
 #include "RyddelmystGameInstance.h"
+#include "Components/EditableText.h"
 
 const FString UConversationStarter::KEY_ARRAY_DIALOGUE{TEXT("dialogue")};
 const FString UConversationStarter::KEY_STRING_NAME{TEXT("name")};
@@ -362,11 +363,6 @@ void UConversationStarter::ParseDialogue(TSharedPtr<FJsonObject> DialogueObject)
 
                         // install OnClicked behavior, instructing it to simply exec the lambda
 						ChoiceButton->OnClicked.AddDynamic(ChoiceButton, &ULambdaButton::ExecLambda);
-						// todo: install onclick based on presence of nested dialogue trees, jumps, deadends etc.
-                        //  There's essentially three cases we need to process:
-                        //  1. dialogue: for this key, we'll want to call ParseDialogue() 'recursively' (won't technically be recursive since there's a button press UI event in the way) and pass in the dialogue JSON array for parsing.
-                        //  2. jump: when we see this key we should call out to the script selection logic anew, where the GameState clue value will inform what script should be selected. Clue state should be cleared after this?
-                        //  3. deadend: similar to jump behavior, except instead of going into script selection we want to exit the conversation and do something in the world determined by the GameState clue value. TBD how best to do that from here since it implies hitting up the HUD convo exit fn... I guess we could always get cheeky and FindWidget() the convo exit button in the ConvoWidget and press it, then have the convo exit fn check GameState for a lingering clue? A FSM with states for convo and gameplay etc. could be handy, with a transition from convo -> game doing a check of clue for this purpose would be ideal. Dunno if this one case is enough to warrant a whole FSM, but I'm gonna leave this here anyway. Clue state should be cleared after this?
                     }
                     else
                     {

@@ -32,7 +32,9 @@
                                 "I guess I would..."
                             ],
                             "input": "How might one exploit the lure of love?",
-                            "jump": {
+                            "transition": {
+                                "text": "BOOM mic drop answer!",
+                                "type": "jump",
                                 "clue": "Input_Cruelty_Query"
                             }
                         }
