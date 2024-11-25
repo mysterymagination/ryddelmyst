@@ -40,6 +40,13 @@ private:
 	UFUNCTION()
 	FString CalculateScriptName(const FString& CharacterName);
 
+	/**
+	 * @brief Derives convo deadend behavior from the input clue e.g. yvyteph mastermind banishing Maya back to the starter table.
+	 * @param Clue - a context clue string suggesting game behavior.
+	 */
+	UFUNCTION()
+	void DeriveDeadend(const FString& Clue);
+
 private:
 	UPROPERTY(EditAnywhere, Category = "Dialogue")
 	TSubclassOf<UUserWidget> ConvoBaseWidgetClass;

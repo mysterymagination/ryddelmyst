@@ -51,4 +51,7 @@ public:
 	 */
 	UPROPERTY()
 	int CurrentMonsterCount = 0;
+
+	UPROPERTY(EditAnywhere, Category = "Locations")
+	FVector PlayerStartPosition{0.f, 0.f, 0.f};
 };

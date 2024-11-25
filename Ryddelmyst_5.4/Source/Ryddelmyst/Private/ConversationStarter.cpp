@@ -13,6 +13,7 @@
 #include "TextDisplayWidget.h"
 #include "Kismet/GameplayStatics.h"
 #include "RyddelmystHUD.h"
+#include "RyddelmystGameInstance.h"
 
 const FString UConversationStarter::KEY_ARRAY_DIALOGUE{TEXT("dialogue")};
 const FString UConversationStarter::KEY_STRING_NAME{TEXT("name")};
@@ -119,6 +120,13 @@ FString UConversationStarter::GetScript()
 	}
 
 	return  ConvoJSON;
+}
+
+void UConversationStarter::DeriveDeadend(const FString& Clue)
+{
+    // todo: parse apart/switch over clue text to choose game behavior
+    FVector StartPos = Cast<URyddelmystGameInstance>(UGameplayStatics::GetGameInstance(GetWorld()))->PlayerStartPosition;
+    UGameplayStatics::GetPlayerCharacter(GetWorld(), 0)->SetActorLocation(StartPos);
 }
 
 FString UConversationStarter::CalculateScriptName(const FString& CharacterName)
@@ -412,7 +420,7 @@ void UConversationStarter::ParseDialogue(TSharedPtr<FJsonObject> DialogueObject)
                     {
                         GameState->ClueState = Clue;
                         // todo: install clue derived behavior e.g. teleport player back to starting table.
-                        CalculateDeadend(Clue);
+                        DeriveDeadend(Clue);
                         // exit conversation
                         HUD->ExitConversation(ConvoWidget);
                     });
