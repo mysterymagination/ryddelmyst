@@ -53,5 +53,5 @@ public:
 	int CurrentMonsterCount = 0;
 
 	UPROPERTY(EditAnywhere, Category = "Locations")
-	FVector PlayerStartPosition{0.f, 0.f, 0.f};
+	FVector PlayerStartPosition{-740.f, -509.f, 348.f};
 };
