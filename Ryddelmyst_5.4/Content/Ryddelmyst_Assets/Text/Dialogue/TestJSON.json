@@ -44,6 +44,7 @@
                                 "Sweet crumpets"
                             ],
                             "transition": {
+                                "text": "I haven't had enough of this chat yet; lets go round again",
                                 "type": "jump",
                                 "clue": "test_answer_1_clue"
                             }     
@@ -67,6 +68,7 @@
                                 "You know the answer is test answer 2."
                             ],
                             "transition": {
+                                "text": "And with Answer 2, we are doomed!",
                                 "type": "deadend",
                                 "clue": "test_answer_2_clue"
                             }

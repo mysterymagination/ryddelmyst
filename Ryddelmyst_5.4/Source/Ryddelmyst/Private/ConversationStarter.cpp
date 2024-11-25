@@ -245,7 +245,7 @@ void UConversationStarter::ParseDialogue(TSharedPtr<FJsonObject> DialogueObject)
     // find the exit convo button and install default exit convo behavior
     auto* HUD = UGameplayStatics::GetPlayerController(GetWorld(), 0)->GetHUD<ARyddelmystHUD>();
     auto* ExitButton = Cast<ULambdaButton>(ConvoWidget->WidgetTree->FindWidget(TEXT("ExitButton")));
-    ExitButton->LambdaEvent.BindLambda([=]() 
+    ExitButton->LambdaEvent.BindLambda([this, HUD]() 
     {
         // exit conversation normally
         HUD->ExitConversation(ConvoWidget);
@@ -286,7 +286,6 @@ void UConversationStarter::ParseDialogue(TSharedPtr<FJsonObject> DialogueObject)
             DialogueWidget->SetPortrait(Portrait);
             ConvoContainer->AddChild(DialogueWidget);
 
-            // todo: create a thoughts dialogue widget template in editor with a cheeky thought baloon border or something and italic text and load the thought text into that widget rather than cramming everything into the dialogue widget.
             UE_LOG(LogTemp, Warning, TEXT("ParseDialogue; looking at thoughts"));
             const TArray<TSharedPtr<FJsonValue>>* ThoughtsArray;
             if ((*DialogueElementObject)->TryGetArrayField(KEY_ARRAY_THOUGHTS, ThoughtsArray))
@@ -372,7 +371,7 @@ void UConversationStarter::ParseDialogue(TSharedPtr<FJsonObject> DialogueObject)
                 UE_LOG(LogTemp, Warning, TEXT("ParseConvoScript; no choices found"));
             }
 
-            // todo: transition processing
+            // transition processing
             const TSharedPtr<FJsonObject>* TransitionObjectPtr;
             if ((*DialogueElementObject)->TryGetObjectField(KEY_OBJECT_TRANSITION, TransitionObjectPtr))
             {
@@ -409,10 +408,11 @@ void UConversationStarter::ParseDialogue(TSharedPtr<FJsonObject> DialogueObject)
                     // the editor will not let me change the name for some reason to correct the letter case *sigh*
                     auto* ExitText = Cast<UTextBlock>(ConvoWidget->WidgetTree->FindWidget(TEXT("ExitTExt")));
                     ExitText->SetText(FText::FromString(Prompt));
-                    ExitButton->LambdaEvent.BindLambda([=]() 
+                    ExitButton->LambdaEvent.BindLambda([this, HUD, Clue]() 
                     {
                         GameState->ClueState = Clue;
-                        // todo: install clue derived behavior
+                        // todo: install clue derived behavior e.g. teleport player back to starting table.
+                        CalculateDeadend(Clue);
                         // exit conversation
                         HUD->ExitConversation(ConvoWidget);
                     });
