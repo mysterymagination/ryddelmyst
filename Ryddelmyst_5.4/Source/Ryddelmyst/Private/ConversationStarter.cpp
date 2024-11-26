@@ -398,11 +398,12 @@ void UConversationStarter::ParseDialogue(TSharedPtr<FJsonObject> DialogueObject)
                 if (Type.Equals(VALUE_TRANSITION_TYPE_JUMP))
                 {
                     // create a transition button
-                    auto* TransitionButton = ConvoWidget->WidgetTree->ConstructWidget<ULambdaButton>();
-                    auto* TransitionTextWidget = ConvoWidget->WidgetTree->ConstructWidget<UTextBlock>();   
-                    TransitionTextWidget->SetText(FText::FromString(Prompt));
-                    TransitionTextWidget->SetColorAndOpacity(FSlateColor(FLinearColor(0.f, 0.f, 0.f, 1.f)));
-                    TransitionButton->AddChild(TransitionTextWidget);
+                    auto* TransitionButtonWidget = ConvoWidget->WidgetTree->ConstructWidget(ButtonWidgetClass);
+                    auto* TransitionButton = Cast<ULambdaButton>(TransitionButtonWidget->WidgetTree->FindWidget(TEXT("Button")));
+                    auto* TransitionText = Cast<UTextBlock>(TransitionButtonWidget->WidgetTree->FindWidget(TEXT("ButtonText")));   
+                    TransitionText->SetText(FText::FromString(Prompt));
+                    TransitionText->SetColorAndOpacity(FSlateColor(FLinearColor(0.f, 0.f, 0.f, 1.f)));
+                    TransitionButton->AddChild(TransitionText);
                     TransitionButton->LambdaEvent.BindLambda([this, Clue]() 
                     {
                         GameState->ClueState = Clue;
@@ -420,7 +421,7 @@ void UConversationStarter::ParseDialogue(TSharedPtr<FJsonObject> DialogueObject)
                         }
                     });
                     TransitionButton->OnClicked.AddDynamic(TransitionButton, &ULambdaButton::ExecLambda);
-                    ConvoContainer->AddChild(TransitionButton);         
+                    ConvoContainer->AddChild(TransitionButtonWidget);         
                 }
                 else if (Type.Equals(VALUE_TRANSITION_TYPE_DEADEND))
                 {
