@@ -47,6 +47,20 @@ private:
 	UFUNCTION()
 	void DeriveDeadend(const FString& Clue);
 
+	/**
+	 * @brief Inserts a divider graphic into the conversation container scrollbox.
+	 */
+	UFUNCTION()
+	void AddDivider();
+
+	/**
+	 * @brief Scrolls to just below the end of current scrollbox plus a fudge factor derived by the height of the player dialogue that usually starts each convo segment.
+	 * todo: why didn't any of the actual measured height params on UUserWidget work? 
+	 * todo: use height of whatever actual first element of next segment will be?
+	 */
+	UFUNCTION()
+	void PageDown();
+
 private:
 	UPROPERTY(EditAnywhere, Category = "Dialogue")
 	TSubclassOf<UUserWidget> ConvoBaseWidgetClass;
@@ -62,6 +76,12 @@ private:
 
 	UPROPERTY(EditAnywhere, Category = "Dialogue")
 	TSubclassOf<UUserWidget> ThoughtsWidgetClass_Other;
+
+	UPROPERTY(EditAnywhere, Category = "Dialogue")
+	TSubclassOf<UUserWidget> ButtonWidgetClass;
+
+	UPROPERTY(EditAnywhere, Category = "Dialogue")
+	TSubclassOf<UUserWidget> TextInputWidgetClass;
 
 	UPROPERTY(EditAnywhere, Category = "Dialogue")
 	TSubclassOf<UUserWidget> ChoicesWidgetClass;

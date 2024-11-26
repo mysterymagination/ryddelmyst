@@ -66,6 +66,12 @@ UConversationStarter::UConversationStarter()
 
     static ConstructorHelpers::FClassFinder<UUserWidget> DividerWidgetObj(TEXT("/Game/Ryddelmyst_Assets/UI/BP_TextDivide"));
 	DividerWidgetClass = DividerWidgetObj.Class;
+
+    static ConstructorHelpers::FClassFinder<UUserWidget> ButtonWidgetObj(TEXT("/Game/Ryddelmyst_Assets/UI/BP_Button"));
+	ButtonWidgetClass = ButtonWidgetObj.Class;
+
+    static ConstructorHelpers::FClassFinder<UUserWidget> TextInputWidgetObj(TEXT("/Game/Ryddelmyst_Assets/UI/BP_TextInput"));
+	TextInputWidgetClass = TextInputWidgetObj.Class;
 }
 
 void UConversationStarter::Init(const FString& _ConvoTx, const FString& _ConvoRx, FName _ClosestBone, ARyddelmystGameState* _GameState)
@@ -348,12 +354,9 @@ void UConversationStarter::ParseDialogue(TSharedPtr<FJsonObject> DialogueObject)
                             // install subdialogue elements to OnClick lambda event   
                             ChoiceButton->LambdaEvent.BindLambda([this, ChoiceJsonObject]() 
                             {
-                                UUserWidget* DividerWidget = ConvoWidget->WidgetTree->ConstructWidget(DividerWidgetClass);
-                                ConvoContainer->AddChild(DividerWidget);
-                                float ScrollOffset = ConvoContainer->GetScrollOffsetOfEnd() + SubtreeOffset;
+                                AddDivider();
                                 ParseDialogue(ChoiceJsonObject);
-                                UE_LOG(LogTemp, Warning, TEXT("ParseDialogue; subtreeoffset says %f and total scrolloffset says %f"), SubtreeOffset, ScrollOffset);
-                                ConvoContainer->SetScrollOffset(ScrollOffset);
+                                PageDown();
                             });
                         }
                         else
@@ -380,13 +383,14 @@ void UConversationStarter::ParseDialogue(TSharedPtr<FJsonObject> DialogueObject)
             if ((*DialogueElementObject)->TryGetObjectField(KEY_OBJECT_TRANSITION, TransitionObjectPtr))
             {
                 // text input prompt processing
-                FString InputHint;
-                if ((*TransitionObjectPtr)->TryGetStringField(KEY_STRING_INPUT, InputHint))
+                FString TextInputHint;
+                if ((*TransitionObjectPtr)->TryGetStringField(KEY_STRING_INPUT, TextInputHint))
                 {
-                    UE_LOG(LogTemp, Warning, TEXT("ParseDialogue; adding input UI with hint %s"), *InputHint);
-                    auto* Input = ConvoWidget->WidgetTree->ConstructWidget<UEditableText>();
-                    Input->SetHintText(FText::FromString(InputHint));
-                    ConvoContainer->AddChild(Input);
+                    UE_LOG(LogTemp, Warning, TEXT("ParseDialogue; adding input UI with hint %s"), *TextInputHint);
+                    auto* TextInputWidget = ConvoWidget->WidgetTree->ConstructWidget(TextInputWidgetClass);
+                    auto* TextInput = Cast<UEditableText>(TextInputWidget->WidgetTree->FindWidget(TEXT("TextInput")));
+                    TextInput->SetHintText(FText::FromString(TextInputHint));
+                    ConvoContainer->AddChild(TextInputWidget);
                 }
                 FString Clue = (*TransitionObjectPtr)->GetStringField(KEY_STRING_CLUE);
                 FString Type = (*TransitionObjectPtr)->GetStringField(KEY_STRING_TYPE);
@@ -406,7 +410,9 @@ void UConversationStarter::ParseDialogue(TSharedPtr<FJsonObject> DialogueObject)
                         ParseConversationScript(GetScript());
                         if (ScriptJsonObject)
                         {
+                            AddDivider();
                             ParseDialogue(ScriptJsonObject);
+                            PageDown();
                         }
                         else
                         {
@@ -433,4 +439,16 @@ void UConversationStarter::ParseDialogue(TSharedPtr<FJsonObject> DialogueObject)
             }
         }
     }
+}
+
+void UConversationStarter::AddDivider()
+{
+    UUserWidget* DividerWidget = ConvoWidget->WidgetTree->ConstructWidget(DividerWidgetClass);
+    ConvoContainer->AddChild(DividerWidget);
+}
+
+void UConversationStarter::PageDown()
+{
+    float ScrollOffset = ConvoContainer->GetScrollOffsetOfEnd() + SubtreeOffset;
+    ConvoContainer->SetScrollOffset(ScrollOffset);
 }
