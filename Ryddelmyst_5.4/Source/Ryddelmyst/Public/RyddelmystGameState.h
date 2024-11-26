@@ -44,6 +44,7 @@ public:
 		{TEXT("Qyvnily_Forms_Visited"), 0}
 	};
 	static const FString STATE_CLUE_INPUT_CRUELTY_QUERY;
+	static const FString STATE_CLUE_INPUT_TEST_ANSWER1;
 	static const FString VALUE_INPUT_EGG_TOKEN;
 	static const FString VALUE_INPUT_LAVA_TOKEN;
 };

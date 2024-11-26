@@ -166,9 +166,31 @@ FString UConversationStarter::CalculateScriptName(const FString& CharacterName)
 	}
     else if (CharacterName.Equals(MATCHER_TEST))
 	{
-		ConvoScriptName = TEXT("TestJSON.json");
+        if (GameState->ClueState == ARyddelmystGameState::STATE_CLUE_INPUT_TEST_ANSWER1)
+		{
+			if (
+				GameState->UserInputValue.Contains(ARyddelmystGameState::VALUE_INPUT_EGG_TOKEN) && 
+				GameState->UserInputValue.Contains(ARyddelmystGameState::VALUE_INPUT_LAVA_TOKEN)
+			)
+            {
+                ConvoScriptName = TEXT("TestJSON_InputMatch.json");
+            }
+            else
+            {
+                ConvoScriptName = TEXT("TestJSON_InputMismatch.json");
+            }
+
+            // input value consumed
+            GameState->UserInputValue = TEXT("");
+        }
+        else
+        {
+		    ConvoScriptName = TEXT("TestJSON.json");
+        }
 	}
-	// todo: other characters
+	
+    // clue state consumed
+    GameState->ClueState = TEXT("");
 	return ConvoScriptName;
 }
 
@@ -384,11 +406,12 @@ void UConversationStarter::ParseDialogue(TSharedPtr<FJsonObject> DialogueObject)
             {
                 // text input prompt processing
                 FString TextInputHint;
+                UEditableText* TextInput = nullptr;
                 if ((*TransitionObjectPtr)->TryGetStringField(KEY_STRING_INPUT, TextInputHint))
                 {
                     UE_LOG(LogTemp, Warning, TEXT("ParseDialogue; adding input UI with hint %s"), *TextInputHint);
                     auto* TextInputWidget = ConvoWidget->WidgetTree->ConstructWidget(TextInputWidgetClass);
-                    auto* TextInput = Cast<UEditableText>(TextInputWidget->WidgetTree->FindWidget(TEXT("TextInput")));
+                    TextInput = Cast<UEditableText>(TextInputWidget->WidgetTree->FindWidget(TEXT("TextInput")));
                     TextInput->SetHintText(FText::FromString(TextInputHint));
                     ConvoContainer->AddChild(TextInputWidget);
                 }
@@ -404,9 +427,13 @@ void UConversationStarter::ParseDialogue(TSharedPtr<FJsonObject> DialogueObject)
                     TransitionText->SetText(FText::FromString(Prompt));
                     TransitionText->SetColorAndOpacity(FSlateColor(FLinearColor(0.f, 0.f, 0.f, 1.f)));
                     TransitionButton->AddChild(TransitionText);
-                    TransitionButton->LambdaEvent.BindLambda([this, Clue]() 
+                    TransitionButton->LambdaEvent.BindLambda([this, Clue, TextInput]() 
                     {
                         GameState->ClueState = Clue;
+                        if (TextInput) 
+                        {
+                            GameState->UserInputValue = TextInput->GetText().ToString();
+                        }
                         // re-run script selection logic  
                         ParseConversationScript(GetScript());
                         if (ScriptJsonObject)
