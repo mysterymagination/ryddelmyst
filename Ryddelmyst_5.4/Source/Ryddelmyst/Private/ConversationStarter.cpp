@@ -379,6 +379,15 @@ void UConversationStarter::ParseDialogue(TSharedPtr<FJsonObject> DialogueObject)
             const TSharedPtr<FJsonObject>* TransitionObjectPtr;
             if ((*DialogueElementObject)->TryGetObjectField(KEY_OBJECT_TRANSITION, TransitionObjectPtr))
             {
+                // text input prompt processing
+                FString InputHint;
+                if ((*TransitionObjectPtr)->TryGetStringField(KEY_STRING_INPUT, InputHint))
+                {
+                    UE_LOG(LogTemp, Warning, TEXT("ParseDialogue; adding input UI with hint %s"), *InputHint);
+                    auto* Input = ConvoWidget->WidgetTree->ConstructWidget<UEditableText>();
+                    Input->SetHintText(FText::FromString(InputHint));
+                    ConvoContainer->AddChild(Input);
+                }
                 FString Clue = (*TransitionObjectPtr)->GetStringField(KEY_STRING_CLUE);
                 FString Type = (*TransitionObjectPtr)->GetStringField(KEY_STRING_TYPE);
                 FString Prompt = (*TransitionObjectPtr)->GetStringField(KEY_STRING_TEXT);
@@ -422,9 +431,6 @@ void UConversationStarter::ParseDialogue(TSharedPtr<FJsonObject> DialogueObject)
                     });
                 }
             }
-                        
-            // todo: text input prompt processing
-            
         }
     }
 }

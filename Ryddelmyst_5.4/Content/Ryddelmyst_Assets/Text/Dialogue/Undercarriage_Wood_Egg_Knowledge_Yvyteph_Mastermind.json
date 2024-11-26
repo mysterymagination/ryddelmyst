@@ -31,11 +31,11 @@
                             "lines": [
                                 "I guess I would..."
                             ],
-                            "input": "How might one exploit the lure of love?",
                             "transition": {
                                 "text": "BOOM mic drop answer!",
                                 "type": "jump",
-                                "clue": "Input_Cruelty_Query"
+                                "clue": "Input_Cruelty_Query",
+                                "input": "How might one exploit the lure of love?"
                             }
                         }
                     ]
