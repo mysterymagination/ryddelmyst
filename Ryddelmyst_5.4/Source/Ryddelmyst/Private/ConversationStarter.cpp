@@ -15,6 +15,7 @@
 #include "RyddelmystHUD.h"
 #include "RyddelmystGameInstance.h"
 #include "Components/EditableText.h"
+#include "RyddelmystCharacter.h"
 
 const FString UConversationStarter::KEY_ARRAY_DIALOGUE{TEXT("dialogue")};
 const FString UConversationStarter::KEY_STRING_NAME{TEXT("name")};
@@ -162,7 +163,24 @@ FString UConversationStarter::CalculateScriptName(const FString& CharacterName)
 	}
 	else if (CharacterName.Equals(MATCHER_QYVNILY_WILDFLOWER))
 	{
-		ConvoScriptName = TEXT("Intro_Qyvnily_WildFlower.json");
+        ConvoScriptName = TEXT("Intro_Qyvnily_WildFlower.json");
+        if (GameState->ClueState == ARyddelmystGameState::STATE_CLUE_INPUT_QYVNILY_DANCE)
+		{
+            for (auto Token : GameState->MatingDanceTokens)
+            {
+                if (GameState->UserInputValue.Contains(Token, ESearchCase::CaseSensitive, ESearchDir::FromStart))
+                {
+                    ConvoScriptName = TEXT("Qyvnily_WildFlower_Bonding.json");
+                    auto* Player = Cast<ARyddelmystCharacter>(UGameplayStatics::GetPlayerCharacter(GetWorld(), 0));
+                    Player->FullHeal();
+                }
+            }
+
+            if (ConvoScriptName != TEXT("Qyvnily_WildFlower_Bonding.json"))
+            {
+                ConvoScriptName = TEXT("Qyvnily_WildFlower_Attempted_Bonding.json");
+            }
+        }
 	}
     else if (CharacterName.Equals(MATCHER_TEST))
 	{

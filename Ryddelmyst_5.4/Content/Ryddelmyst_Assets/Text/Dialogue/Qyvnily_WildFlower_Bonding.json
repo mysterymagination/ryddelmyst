@@ -1,0 +1,66 @@
+{
+    "dialogue": [
+        {
+            "name": "Qyvnily Flustering",
+            "image": "Qyvnily_WildFlower",
+            "lines": [
+                "Mighty girlfish, you think I'm pretty?! I think you're pretty!"
+            ],
+            "thoughts": [
+                "Ooooh we like each other! But what is the next step with a human?"
+            ] 
+        },
+        {
+            "name": "Qyvnily Bumbling",
+            "image": "Qyvnily_WildFlower",
+            "lines": [
+                "Wanna mate with me?"
+            ],
+            "thoughts": [
+                "*eep-yeep* I said that aloud?!"
+            ] 
+        },
+        {
+            "name": "Maya Taken Aback",
+            "image": "Maya_Confused",
+            "lines": [
+                "Ah uh. Well. We sort of just met. Let's maybe hold hands and sit together for a bit and see where that takes us.",
+                "I've had a rough time of it here, though, and I could definitely use a good hug!"
+            ],
+            "thoughts": [
+                "*heep-eep* Sweet sheep, the answer to that question is 'yes'."
+            ]
+        },
+        {
+            "name": "Qyvnily Wonder",
+            "image": "Qyvnily_WildFlower",
+            "lines": [
+                "*tackles Maya with affection*"
+            ],
+            "thoughts": [
+                "I wonder what a hug is? Her mind calls for a sort of pleasant gentle grappling? Humans have strange ways, but this is quite enjoyable!",
+                "There is so much to learn! *excited rustling and squeaks*"
+            ] 
+        },
+        {
+            "name": "Maya's Bond",
+            "image": "Maya_Flirty",
+            "lines": [
+                "Wow, watta hug! I love your enthusiasm."
+            ],
+            "thoughts": [
+                "hoo-woof she knocked the breath out of me and then... into me? I feel good. Like, really good. Hmmm. I gotta remember to climb this tree more often!"
+            ]
+        },
+        {
+            "name": "Qyvnily Pleased With Herself",
+            "image": "Qyvnily_WildFlower",
+            "lines": [
+                "I'm glad! *glowy nuzzle-kiss*"
+            ],
+            "thoughts": [
+                "Was that mating? Wow, it was even more fun than Mum implied!"
+            ] 
+        }
+    ]
+}

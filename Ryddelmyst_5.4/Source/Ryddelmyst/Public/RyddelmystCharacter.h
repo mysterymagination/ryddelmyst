@@ -163,6 +163,8 @@ private:
 
 public:
 	ARyddelmystCharacter();
+	UFUNCTION(BlueprintCallable, Category = "Health")
+	void FullHeal();
 	UBattleStats* GetStats_Implementation() { return CharacterStats; }
 	void HandleStatModification_Implementation(const FString& StatName) 
 	{ 

@@ -43,8 +43,18 @@ public:
 		{TEXT("Molly_Glances"), 0},
 		{TEXT("Qyvnily_Forms_Visited"), 0}
 	};
+	// todo: would be nice to have a mapping of input tokens to direct dialogue scripts or just text replies that can be wrapped in a UI
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Game State")
+	TArray<FString> MatingDanceTokens = {
+		TEXT("pretty"),
+		TEXT("beautiful"),
+		TEXT("gorgeous"),
+		TEXT("love"),
+		TEXT("dance")
+	};
 	static const FString STATE_CLUE_INPUT_CRUELTY_QUERY;
 	static const FString STATE_CLUE_INPUT_TEST_ANSWER1;
+	static const FString STATE_CLUE_INPUT_QYVNILY_DANCE;
 	static const FString VALUE_INPUT_EGG_TOKEN;
 	static const FString VALUE_INPUT_LAVA_TOKEN;
 };

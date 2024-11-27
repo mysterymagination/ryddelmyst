@@ -980,6 +980,12 @@ float ARyddelmystCharacter::GetMaxMagic()
 	return CharacterStats->StatsData.StatsMap["MaxMP"];
 }
 
+void ARyddelmystCharacter::FullHeal()
+{
+	UpdateHealth(GetMaxHealth());
+	UpdateMagic(GetMaxMagic());
+}
+
 FText ARyddelmystCharacter::GetHealthText()
 {
 	int32 HP = FMath::RoundHalfFromZero(CharacterStats->StatsData.StatsMap["HP"]);

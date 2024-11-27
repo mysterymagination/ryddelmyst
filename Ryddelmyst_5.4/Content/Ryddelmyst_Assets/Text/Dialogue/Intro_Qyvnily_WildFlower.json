@@ -46,6 +46,22 @@
                 "When we learned of her from you, we studied every inch of her inside and out, and her spirit is a perfect vessel for me. She and I will be one body with two minds, and we shall see what she makes of playing hostess to a goddess.",
                 "So you may wish to take this exercise seriously, if only for her sake."
             ] 
+        },
+        {
+            "name": "Maya's Reposte",
+            "image": "Maya_Confused",
+            "lines": [
+                "k, gotcha."
+            ],
+            "thoughts": [
+                "What should I say now? It would be kinda awkward to just peace out after things got all serious and scary."
+            ],
+            "transition": {
+                "text": "Let's try this?",
+                "type": "jump",
+                "clue": "qyvnily_dancing",
+                "input": "What should I say to her?"
+            } 
         }
     ]
 }
