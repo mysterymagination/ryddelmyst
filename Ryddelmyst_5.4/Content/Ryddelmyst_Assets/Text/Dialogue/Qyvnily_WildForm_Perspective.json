@@ -1,0 +1,22 @@
+{
+    "dialogue": [
+        {
+            "name": "Maya's Curiosity",
+            "image": "Maya_Eldritch",
+            "lines": [
+                "So what do you think about this whole trial business? Does it really help your incarnation?"
+            ]
+        },
+        {
+            "name": "Qyvnily Enthusiasm",
+            "image": "Qyvnily_WildForm",
+            "lines": [
+                "Oh yes! We learn SO much from feeling your feelings, and the trials heighten them quite nicely.",
+                "*heavy breathing, just a bit of drool*"
+            ],
+            "thoughts": [
+                "*singing* the FEEEEELS~"
+            ]
+        }
+    ]
+}

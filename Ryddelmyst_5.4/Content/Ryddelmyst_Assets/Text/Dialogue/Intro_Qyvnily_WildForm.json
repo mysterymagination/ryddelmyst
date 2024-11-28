@@ -1,0 +1,102 @@
+{
+    "dialogue": [
+        {
+            "name": "Qyvnily Intro Root",
+            "image": "Qyvnily_WildForm",
+            "lines": [
+                "It's the human girl-o-pus! Hello hello!"
+            ] 
+        },
+        {
+            "name": "Maya's Confusion",
+            "image": "Maya_Confused",
+            "lines": [
+                "Hiya! I'm Maya. What's your name?"
+            ]
+        },
+        {
+            "name": "Qyvnily Indignation",
+            "image": "Qyvnily_WildForm",
+            "lines": [
+                "How rude! There is much power in a name; one must never request such a thing lightly. You'd fare better asking we creatures of Power to bare our nudity to you first.",
+                "But anyway, call me Qyvnily. Her wildness, to be precise. WOuld you like to see me naked?"
+            ],
+            "thoughts": [
+                "sayyessayyessayyes... *manic staring*"
+            ],
+            "choices": [
+                {
+                    "text": "Yep",
+                    "dialogue": [
+                        {
+                            "name": "Maya's hopefulness",
+                            "image": "Maya_Flirty",
+                            "lines": [
+                                "Yes. Very yes, please!"
+                            ]
+                        },
+                        {
+                            "name": "Qyvnily Sass",
+                            "image": "Qyvnily_WildForm",
+                            "lines": [
+                                "Too bad, ha! Maybe in time you will earn such a privilege."
+                            ],
+                            "thoughts": [
+                                "counter offer, c'mon bargain... *manic staring and heaving breathing*"
+                            ]
+                        },
+                        {
+                            "name": "Maya's disappointment",
+                            "image": "Maya_Sad",
+                            "lines": [
+                                "Aw"
+                            ]
+                        },
+                        {
+                            "name": "Qyvnily Disappointment",
+                            "image": "Qyvnily_WildForm",
+                            "lines": [
+                                "*conspicuous lack of blinking*"
+                            ],
+                            "thoughts": [
+                                "aw"
+                            ],
+                            "transition": {
+                                "text": "But anyway...",
+                                "type": "jump",
+                                "clue": "wild_perspective"
+                            } 
+                        }
+                    ]
+                },
+                {
+                    "text": "Nah",
+                    "dialogue": [
+                        {
+                            "name": "Maya's hopefulness",
+                            "image": "Maya_Flirty",
+                            "lines": [
+                                "Oh er um, hm. I'm good, thanks anyway."
+                            ]
+                        },
+                        {
+                            "name": "Qyvnily Disappointment",
+                            "image": "Qyvnily_WildForm",
+                            "lines": [
+                                "*conspicuous lack of blinking*"
+                            ],
+                            "thoughts": [
+                                "aw"
+                            ],
+                            "transition": {
+                                "text": "But anyway...",
+                                "type": "jump",
+                                "clue": "wild_perspective"
+                            }
+                        }
+                    ]
+                }
+            ] 
+        }
+    ]
+}

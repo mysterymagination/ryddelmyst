@@ -161,6 +161,14 @@ FString UConversationStarter::CalculateScriptName(const FString& CharacterName)
 	{
 		ConvoScriptName = TEXT("Intro_Yvyteph_FontOfFertility.json");
 	}
+    else if (CharacterName.Equals(MATCHER_QYVNILY_WILDFORM))
+	{
+		ConvoScriptName = TEXT("Intro_Qyvnily_WildForm.json");
+        if (GameState->ClueState == ARyddelmystGameState::STATE_CLUE_QYVNILY_WILD_PERSPECTIVE)
+        {
+            ConvoScriptName = TEXT("Qyvnily_WildForm_Perspective.json");
+        }
+	}
 	else if (CharacterName.Equals(MATCHER_QYVNILY_WILDFLOWER))
 	{
         ConvoScriptName = TEXT("Intro_Qyvnily_WildFlower.json");
