@@ -1,0 +1,31 @@
+{
+    "dialogue": [
+        {
+            "name": "Qyvnily Glorying",
+            "image": "Qyvnily_GloryForm",
+            "lines": [
+                "The trials are crucial for my eduction; what I learn about humans from you will impact how I interface with Molly during Incarnation.",
+                "Mother and I also wish to know you specifically. You may have a place on the board, so to speak, hopefully at our side.",
+                "She designed this trial to force you into atavistic decision making, stripped of complexity. Her methods are more heavy-handed than I would prefer, but she knows best."
+            ],
+            "thoughts": [
+                "I think. Probably."
+            ]
+        },
+        {
+            "name": "Qyvnily's Glorious Clues",
+            "image": "Qyvnily_GloryForm",
+            "lines": [
+                "Look to the magic of this demiplane for power, and seek out a Forbidding, a place that even the terrifying would fear.",
+                "Wreathe yourself in artifacts and you will find glory:",
+                "Slippers to pad like a tigress in the night wear a ring of hedges 'neath towering observatory /",
+                "Worship my mother and follow where her right hand points to the end of the world to find a Diadem; it will flare fire to melt all the hells /",
+                "Verdancy spirals in upon a Violet Vial to wear nestled upon your bountiful chest; its power will spread the chaos of your storms far and wide /",
+                "An Iron Sword yearns for the sky, locked away at a nexus of stone in sight of a stone garden but far from the Violet Vial's spiral."
+            ],
+            "thoughts": [
+                "Did any of that makes sense? I really should have written something down instead of coming up with it on the spot."
+            ]
+        }
+    ]
+}

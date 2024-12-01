@@ -158,11 +158,13 @@ public:
 
 	/**
 	 * Uses the conversing character identities and game state set in Init() to determine the correct conversation script.
+	 * @return the raw JSON string content of the most appropriate conversation script.
 	 */
 	FString GetScript();
 
 	/**
 	 * Parses the input script raw JSON string and generates a conversation UI for display. 
+	 * @param Script - the raw JSON string of the convo script.
 	 * @return a populated BP_ConvoBase widget for display in the HUD.
 	 */
 	UUserWidget* GenerateConversationUI(const FString& Script);
@@ -178,5 +180,13 @@ public:
 	 * @param DialogueObject - wrapper JsonObject hosting the current dialogue array.
 	 */
 	void ParseDialogue(TSharedPtr<FJsonObject> DialogueObject);
+
+	/**
+	 * @brief Steps through the ConvoWidget's widgettree and writes out conversation JSON capturing all the actual words spoken i.e. after choices were made or input was provided;
+	 * essentially this produces a 'pre-rendered' conversation containing only the portraits, lines, and thoughts from the dialogue array elements. The format will match the interactive conversation
+	 * scripts such that ParseConversationScript() can be used to load the pre-rendered conversations for review in the quest log.
+	 * @param ConvoName - a unique name for this conversation instance, e.g. Qyvnily_WildForm_20241201T003000
+	 */
+	void SaveConversation(const FString& ConvoName);
 	
 };

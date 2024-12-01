@@ -83,6 +83,18 @@ void UConversationStarter::Init(const FString& _ConvoTx, const FString& _ConvoRx
     GameState = _GameState;
 }
 
+void UConversationStarter::SaveConversation(const FString& ConvoName)
+{
+    FString ConvoOutputPath = FPaths::ProjectUserDir().Append(TEXT("SavedConversations/"));
+    UE_LOG(LogTemp, Warning, TEXT("SaveConvo; project user dir for saved conversations is %s"), *ConvoOutputPath);
+    // make subdir for pre-rendered convos
+    IFileManager& FileManager = IFileManager::Get();
+    FileManager.MakeDirectory(*ConvoOutputPath);
+    // todo: create script file with ConvoName on disk. FFileHelper::SaveStringToFile()? Unclear if this fn also creates the file if it doesn't exist.
+    // todo: step through the ConvoWidget widgettree and write equivalent JSON for each dialogue UI element, 
+    //  to be loaded from quest log at any time using PaseConversationScript(). Would it be best to write the JSON as raw strings or actually make a JsonObject?
+}
+
 FString UConversationStarter::GetScript()
 {
     FString ConvoPath = FPaths::ProjectContentDir().Append(TEXT("Ryddelmyst_Assets/Text/Dialogue/"));
