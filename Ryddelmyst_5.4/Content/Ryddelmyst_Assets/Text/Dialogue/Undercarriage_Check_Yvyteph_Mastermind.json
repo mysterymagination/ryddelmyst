@@ -11,10 +11,12 @@
             "name": "Maya's Curious Indignation",
             "image": "Maya_portraits_Sprite_Angry",
             "lines": [
-                "Hang on now just a moment. I have more than a few questions..."
+                "Hang on now just a moment. I have questions!"
             ],
-            "jump": {
-                "clue": "Undercarriage_Questions_Root"
+            "transition": {
+                "text": "Waaaack!",
+                "type": "deadend",
+                "clue": "wanting_found_wanting"
             }
         }
     ]

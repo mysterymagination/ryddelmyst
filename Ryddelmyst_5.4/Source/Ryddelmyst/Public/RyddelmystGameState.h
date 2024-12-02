@@ -56,6 +56,8 @@ public:
 	static const FString STATE_CLUE_INPUT_TEST_ANSWER1;
 	static const FString STATE_CLUE_INPUT_QYVNILY_DANCE;
 	static const FString STATE_CLUE_QYVNILY_WILD_PERSPECTIVE;
+	static const FString STATE_CLUE_QYVNILY_GLORY_PERSPECTIVE;
+	static const FString STATE_CLUE_YVYTEPH_UNDERCARRIAGE_CHECK_FAIL;
 	static const FString VALUE_INPUT_EGG_TOKEN;
 	static const FString VALUE_INPUT_LAVA_TOKEN;
 };

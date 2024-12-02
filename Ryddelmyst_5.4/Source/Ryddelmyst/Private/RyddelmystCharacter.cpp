@@ -369,6 +369,8 @@ void ARyddelmystCharacter::Interact()
 							if (!StoryBlock)
 							{
 								Cast<URyddelmystGameInstance>(GetWorld()->GetGameInstance())->GetEventManager()->WoodEggDangerEvent.Broadcast(true);
+								// now that Maya has felt the wiggly warmness, she can fully comment on the wood egg with yvyteph mastermind
+								GetWorld()->GetGameState<ARyddelmystGameState>()->WoodEggBeholden = true;
 								HUD->ShowDialogue(PortraitMap[InteractReactions::HAPPY], FText::FromString("Eh, I got 'im! Feels kinda warm. And wiggly. Hm."));
 								Eggsclamation = LoadObject<USoundBase>(nullptr, TEXT("/Game/Ryddelmyst_Assets/Audio/VO/Maya/gotcha.gotcha"), nullptr, LOAD_None, nullptr);
 							}

@@ -2,7 +2,7 @@
     "dialogue": [
         {
             "name": "Maya's Curious Egg",
-            "image": "Maya_portraits_Sprite_Eldritch",
+            "image": "Maya_Eldritch",
             "lines": [],
             "choices": [
                 {
@@ -10,7 +10,7 @@
                     "dialogue": [
                         {
                             "name": "Maya is Curiosity",
-                            "image": "Maya_portraits_Sprite_Eldritch",
+                            "image": "Maya_Eldritch",
                             "lines": [
                                 "So I managed to pick up the wooden orb thing, and a Francis Ford Coupla things happened:",
                                 "Firstly, the tree guy went nuts. I didn't like that.",
@@ -27,7 +27,7 @@
                         },
                         {
                             "name": "Maya Takes a Guess",
-                            "image": "Maya_portraits_Sprite_Confused",
+                            "image": "Maya_Confused",
                             "lines": [
                                 "I guess I would..."
                             ],

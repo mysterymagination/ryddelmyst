@@ -168,6 +168,14 @@ FString UConversationStarter::CalculateScriptName(const FString& CharacterName)
 				ConvoScriptName = TEXT("Undercarriage_Rejected_Angel_Yvyteph_Mastermind.json");
 			}
 		}
+        else if (GameState->WoodEggBeholden)
+        {
+            ConvoScriptName = TEXT("Undercarriage_Wood_Egg_Knowledge_Yvyteph_Mastermind.json");
+        }
+        else
+        {
+            ConvoScriptName = TEXT("Undercarriage_Check_Yvyteph_Mastermind.json");
+        }
 	}
 	else if (CharacterName.Equals(MATCHER_YVYTEPH_FONTOFFERTILITY))
 	{
@@ -180,6 +188,18 @@ FString UConversationStarter::CalculateScriptName(const FString& CharacterName)
         {
             ConvoScriptName = TEXT("Qyvnily_WildForm_Perspective.json");
         }
+	}
+    else if (CharacterName.Equals(MATCHER_QYVNILY_GLORYFORM))
+	{
+		ConvoScriptName = TEXT("Intro_Qyvnily_GloryForm.json");
+        if (GameState->ClueState == ARyddelmystGameState::STATE_CLUE_QYVNILY_GLORY_PERSPECTIVE)
+        {
+            ConvoScriptName = TEXT("Qyvnily_GloryForm_Perspective.json");
+        }
+	}
+    else if (CharacterName.Equals(MATCHER_QYVNILY_GLORYFORMRAGE))
+	{
+		ConvoScriptName = TEXT("Intro_Qyvnily_GloryFormRage.json");
 	}
 	else if (CharacterName.Equals(MATCHER_QYVNILY_WILDFLOWER))
 	{
