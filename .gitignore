@@ -81,3 +81,6 @@ Build/*/**
 
 # OS metadata
 **/.DS_Store
+
+# generated game files
+**/SavedConversations/*
