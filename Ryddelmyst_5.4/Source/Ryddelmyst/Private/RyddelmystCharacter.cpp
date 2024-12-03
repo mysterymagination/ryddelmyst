@@ -241,12 +241,18 @@ UBodyCapsuleComponent* ARyddelmystCharacter::GetBody_Implementation()
 
 void ARyddelmystCharacter::PauseGame()
 {
-	UE_LOG(LogTemp, Warning, TEXT("PauseGame"));
-	UGameplayStatics::GetPlayerController(GetWorld(), 0)->SetPause(true);
-	HUD->ShowPauseMenu();
-	APlayerController* PlayerController = UGameplayStatics::GetPlayerController(GetWorld(), 0);
-	PlayerController->SetShowMouseCursor(true);
-	UWidgetBlueprintLibrary::SetInputMode_UIOnlyEx(PlayerController);
+	if (!GamePaused)
+	{
+		Cast<URyddelmystGameInstance>(GetWorld()->GetGameInstance())->Pause();
+		HUD->ShowPauseMenu();
+		GamePaused = true;
+	}
+	else 
+	{
+		Cast<URyddelmystGameInstance>(GetWorld()->GetGameInstance())->Unpause();
+		HUD->ExitPauseMenu();
+		GamePaused = false;
+	}
 }
 
 void ARyddelmystCharacter::Interact()
@@ -442,6 +448,7 @@ void ARyddelmystCharacter::Interact()
 							UConversationalComponent* Convo = Actor->FindComponentByClass<UConversationalComponent>();
 							if (Convo && Convo->GetClass()->ImplementsInterface(UTalkable::StaticClass()))
 							{
+								Cast<URyddelmystGameInstance>(GetWorld()->GetGameInstance())->Pause();
 								UUserWidget* ConvoWidget = ITalkable::Execute_StartConversation(Convo, GetActorNameOrLabel(), Actor->GetActorNameOrLabel(), ClosestBone, GetWorld()->GetGameState<ARyddelmystGameState>(), TEXT(""));
 								HUD->ShowConversation(ConvoWidget);
 								UE_LOG(LogTemp, Warning, TEXT("interact; conversing"));

@@ -196,6 +196,9 @@ public:
 	void ShowPauseMenu();
 
 	UFUNCTION(BlueprintCallable, Category = "GameState")
+	void ExitPauseMenu();
+
+	UFUNCTION(BlueprintCallable, Category = "GameState")
 	void ShowGameOverMenu();
 
 	/**

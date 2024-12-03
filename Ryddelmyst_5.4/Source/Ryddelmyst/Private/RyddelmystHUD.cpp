@@ -502,6 +502,21 @@ void ARyddelmystHUD::ShowPauseMenu()
 	}
 }
 
+void ARyddelmystHUD::ExitPauseMenu()
+{
+	if (PauseMenuWidget)
+	{
+		if (PauseMenuWidget->IsInViewport())
+		{
+			PauseMenuWidget->RemoveFromParent();
+		}
+	}
+	else
+	{
+		UE_LOG(LogTemp, Error, TEXT("ExitPauseMenu; pause menu widget not created"));
+	}
+}
+
 void ARyddelmystHUD::ShowGameOverMenu()
 {
 	if (GameOverMenuWidget)

@@ -124,6 +124,8 @@ class ARyddelmystCharacter : public ACharacter, public IBattleStatsBearer, publi
 
 private:
 	UPROPERTY()
+	bool GamePaused = false;
+	UPROPERTY()
 	bool FirstPersonCameraMode = true;
 	UPROPERTY()
 	bool IsRunning = false;

@@ -5,6 +5,7 @@
 #include "Sound/AmbientSound.h"
 #include "Kismet/GameplayStatics.h"
 #include "Components/AudioComponent.h"
+#include "Blueprint/WidgetBlueprintLibrary.h"
 
 URyddelmystGameInstance::URyddelmystGameInstance() : UGameInstance()
 {
@@ -25,6 +26,22 @@ void URyddelmystGameInstance::AdjustAmbientSounds(float ScaleFactor)
 bool URyddelmystGameInstance::CanSpawnMonster(TSubclassOf<AMonster> MonsterType)
 {
 	return CurrentMonsterCount < MaxMonsterCount;
+}
+
+void URyddelmystGameInstance::Pause()
+{
+	UGameplayStatics::GetPlayerController(GetWorld(), 0)->SetPause(true);
+	APlayerController* PlayerController = UGameplayStatics::GetPlayerController(GetWorld(), 0);
+	PlayerController->SetShowMouseCursor(true);
+	UWidgetBlueprintLibrary::SetInputMode_UIOnlyEx(PlayerController);
+}
+
+void URyddelmystGameInstance::Unpause()
+{
+	UGameplayStatics::GetPlayerController(GetWorld(), 0)->SetPause(false);
+	APlayerController* PlayerController = UGameplayStatics::GetPlayerController(GetWorld(), 0);
+	PlayerController->SetShowMouseCursor(false);
+	UWidgetBlueprintLibrary::SetInputMode_GameOnly(PlayerController);
 }
 
 

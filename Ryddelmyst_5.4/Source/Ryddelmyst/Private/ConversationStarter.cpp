@@ -352,6 +352,7 @@ void UConversationStarter::ParseDialogue(TSharedPtr<FJsonObject> DialogueObject)
     {
         // exit conversation normally
         HUD->ExitConversation(ConvoWidget);
+        Cast<URyddelmystGameInstance>(UGameplayStatics::GetGameInstance(GetWorld()))->Unpause();
     });
     ExitButton->OnClicked.AddDynamic(ExitButton, &ULambdaButton::ExecLambda);
 
@@ -528,6 +529,7 @@ void UConversationStarter::ParseDialogue(TSharedPtr<FJsonObject> DialogueObject)
                         DeriveDeadend(Clue);
                         // exit conversation
                         HUD->ExitConversation(ConvoWidget);
+                        Cast<URyddelmystGameInstance>(UGameplayStatics::GetGameInstance(GetWorld()))->Unpause();
                     });
                 }
             }

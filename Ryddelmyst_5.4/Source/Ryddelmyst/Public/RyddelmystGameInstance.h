@@ -29,6 +29,10 @@ public:
 	 */
 	UFUNCTION(BlueprintCallable, Category = "LevelDesign")
 	bool CanSpawnMonster(TSubclassOf<AMonster> MonsterType);
+	UFUNCTION(BlueprintCallable, Category = "GameState")
+	void Pause();
+	UFUNCTION(BlueprintCallable, Category = "GameState")
+	void Unpause();
 private:
 	UPROPERTY()
 	URyddelmystEventManager* EventManager;
