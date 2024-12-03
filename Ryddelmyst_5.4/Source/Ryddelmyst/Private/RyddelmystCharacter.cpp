@@ -241,18 +241,9 @@ UBodyCapsuleComponent* ARyddelmystCharacter::GetBody_Implementation()
 
 void ARyddelmystCharacter::PauseGame()
 {
-	if (!GamePaused)
-	{
-		Cast<URyddelmystGameInstance>(GetWorld()->GetGameInstance())->Pause();
-		HUD->ShowPauseMenu();
-		GamePaused = true;
-	}
-	else 
-	{
-		Cast<URyddelmystGameInstance>(GetWorld()->GetGameInstance())->Unpause();
-		HUD->ExitPauseMenu();
-		GamePaused = false;
-	}
+	Cast<URyddelmystGameInstance>(GetWorld()->GetGameInstance())->Pause();
+	HUD->ShowPauseMenu();
+	GamePaused = true;
 }
 
 void ARyddelmystCharacter::Interact()

@@ -123,8 +123,10 @@ class ARyddelmystCharacter : public ACharacter, public IBattleStatsBearer, publi
 	class ARyddelmystHUD* HUD;
 
 private:
+	/* todo: I wanted to do a nice same button toggle for pause/unpause but having the input processing for pausing live exclusively in the player character seems to mean that when I switch input mode to UI only, the player character input processing no longer occurs. Needa abstraction layer for input proc regardless of (but aware of) input mode; that's a bit of a pain to deal with, so murp.
 	UPROPERTY()
 	bool GamePaused = false;
+	*/
 	UPROPERTY()
 	bool FirstPersonCameraMode = true;
 	UPROPERTY()
