@@ -1,0 +1,98 @@
+{
+    "dialogue": [
+        {
+            "name": "Yvyteph Wild Intro Root",
+            "image": "Yvyteph_WildForm",
+            "lines": [
+                "Why hello, Miss Maya. I am Yvyteph's Wildness; I'm sure you've found our other aspects quite tame. How are the trials coming along?"
+            ] 
+        },
+        {
+            "name": "Maya Is Confusion",
+            "image": "Maya_Confused",
+            "lines": [
+                "Hi! Yep, I'm Maya, like you already... said. Glad to meet you!",
+                "The trials are comin' along, I think? Not really sure what's expected of me."
+            ],
+            "choices": [
+                {
+                    "text": "What do you want from me?",
+                    "dialogue": [
+                        {
+                            "name": "Maya Weariness",
+                            "image": "Maya_Weary",
+                            "lines": [
+                                "What do you goddessy folks want from me? What's my goal in these trials?"
+                            ]
+                        },
+                        {
+                            "name": "Yvyteph Coy",
+                            "image": "Yvyteph_WildForm",
+                            "lines": [
+                                "We already have most of what we want from you; your desire and your conception of this mortal goddess of yours named Molly.",
+                                "The trials are more of a bonus -- we wish to see how you handle yourself in a survival situation where desire meets upon a battlefield where the stakes are life and death."
+                            ],
+                            "thoughts": [
+                                "Or death and more death *cackle*"
+                            ]
+                        },
+                        {
+                            "name": "Yvyteph Wild Advice",
+                            "image": "Yvyteph_WildForm",
+                            "lines": [
+                                "Simply analyze your foe and learn what he desires, and then use it to control him. It is the blueprint of every conflict."
+                            ],
+                            "thoughts": [
+                                "Isn't it?"
+                            ]
+                        },
+                        {
+                            "name": "Maya Stranger Danger",
+                            "image": "Maya_Happy",
+                            "lines": [
+                                "I don't like the sound of that. I prefer to focus on happy desires and kindness to grow a garden of love in my sphere of influence.",
+                                "At least when no one's trying to kill me."
+                            ],
+                            "thoughts": [
+                                "This lady really needs to chill a bit. The fire makes that seem unlikely."
+                            ]    
+                        },
+                        {
+                            "name": "Yvyteph Wild Slyness",
+                            "image": "Yvyteph_WildForm",
+                            "lines": [
+                                "But someone is trying to kill you. A whole world, in fact. So let's see what you do in a context of wanton brutality!",
+                                "You've noticed that you can pick up some objects and throw them, yes? Perhaps you should consider how that might relate to your foe's desires..."
+                            ],
+                            "thoughts": [
+                                "She is going to be flattened by my pet. Ah well, at least it will be an entertaining chase."
+                            ]
+                        }
+                    ]
+                },
+                {
+                    "text": "What's with the fire?",
+                    "dialogue": [
+                        {
+                            "name": "Maya Curious",
+                            "image": "Maya_Eldritch",
+                            "lines": [
+                                "How come you're on fire? I thought you were a naturey forest spirit of some sort. Forests usually don't get along with fire."
+                            ]
+                        },
+                        {
+                            "name": "Yvyteph Wild Fire",
+                            "image": "Yvyteph_WildForm",
+                            "lines": [
+                                "Fire is a part of nature, for forests as much as anything else. My longing burns away what is stale and forgotten, and my passion calls new life into being!"
+                            ],
+                            "thoughts": [
+                                "I wonder if she knows how hot I am?"
+                            ]
+                        }
+                    ]
+                }
+            ]
+        }
+    ]
+}

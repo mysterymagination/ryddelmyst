@@ -181,6 +181,14 @@ FString UConversationStarter::CalculateScriptName(const FString& CharacterName)
 	{
 		ConvoScriptName = TEXT("Intro_Yvyteph_FontOfFertility.json");
 	}
+    else if (CharacterName.Equals(MATCHER_YVYTEPH_WILDFORM))
+	{
+		ConvoScriptName = TEXT("Intro_Yvyteph_WildForm.json");
+	}
+    else if (CharacterName.Equals(MATCHER_YVYTEPH_WILDFORMSHARP))
+	{
+		ConvoScriptName = TEXT("Intro_Yvyteph_WildFormSharp.json");
+	}
     else if (CharacterName.Equals(MATCHER_QYVNILY_WILDFORM))
 	{
 		ConvoScriptName = TEXT("Intro_Qyvnily_WildForm.json");
