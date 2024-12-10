@@ -243,7 +243,6 @@ void ARyddelmystCharacter::PauseGame()
 {
 	Cast<URyddelmystGameInstance>(GetWorld()->GetGameInstance())->Pause();
 	HUD->ShowPauseMenu();
-	GamePaused = true;
 }
 
 void ARyddelmystCharacter::Interact()

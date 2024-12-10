@@ -146,6 +146,7 @@ public:
 	static const FString MATCHER_TEST;
 
 public:
+	static FString PrettyTimestamp();
 	/**
 	 * @brief Returns the JSON string content of the conversation script that should be used.
 	 * @param ConvoTx - the name of the Actor who instigated the conversation.

@@ -16,6 +16,7 @@
 #include "RyddelmystGameInstance.h"
 #include "Components/EditableText.h"
 #include "RyddelmystCharacter.h"
+#include "GenericPlatform/GenericPlatformTime.h"
 
 const FString UConversationStarter::KEY_ARRAY_DIALOGUE{TEXT("dialogue")};
 const FString UConversationStarter::KEY_STRING_NAME{TEXT("name")};
@@ -86,7 +87,7 @@ void UConversationStarter::Init(const FString& _ConvoTx, const FString& _ConvoRx
 void UConversationStarter::SaveConversation(const FString& ConvoName)
 {
     FString ConvoOutputPath = FPaths::ProjectUserDir().Append(TEXT("SavedConversations/"));
-    UE_LOG(LogTemp, Warning, TEXT("SaveConvo; project user dir for saved conversations is %s"), *ConvoOutputPath);
+    UE_LOG(LogTemp, Warning, TEXT("SaveConvo; project user dir for saved conversations is %s and convo name is %s"), *ConvoOutputPath, *ConvoName);
     // make subdir for pre-rendered convos
     IFileManager& FileManager = IFileManager::Get();
     FileManager.MakeDirectory(*ConvoOutputPath);
@@ -174,7 +175,7 @@ FString UConversationStarter::CalculateScriptName(const FString& CharacterName)
         }
         else
         {
-            ConvoScriptName = TEXT("Undercarriage_Check_Yvyteph_Mastermind.json");
+            ConvoScriptName = TEXT("Undercarriage_Ejector_Yvyteph_Mastermind.json");
         }
 	}
 	else if (CharacterName.Equals(MATCHER_YVYTEPH_FONTOFFERTILITY))
@@ -345,12 +346,14 @@ void UConversationStarter::ParseConversationScript(const FString& Script)
 
 void UConversationStarter::ParseDialogue(TSharedPtr<FJsonObject> DialogueObject)
 {
+    FString ConvoTrace = ConvoTx.Append(TEXT("_To_")).Append(ConvoRx).Append(TEXT("-")).Append(PrettyTimestamp());
     // find the exit convo button and install default exit convo behavior
     auto* HUD = UGameplayStatics::GetPlayerController(GetWorld(), 0)->GetHUD<ARyddelmystHUD>();
     auto* ExitButton = Cast<ULambdaButton>(ConvoWidget->WidgetTree->FindWidget(TEXT("ExitButton")));
-    ExitButton->LambdaEvent.BindLambda([this, HUD]() 
+    ExitButton->LambdaEvent.BindLambda([this, HUD, ConvoTrace]() 
     {
         // exit conversation normally
+        SaveConversation(ConvoTrace);
         HUD->ExitConversation(ConvoWidget);
         Cast<URyddelmystGameInstance>(UGameplayStatics::GetGameInstance(GetWorld()))->Unpause();
     });
@@ -522,12 +525,13 @@ void UConversationStarter::ParseDialogue(TSharedPtr<FJsonObject> DialogueObject)
                     // the editor will not let me change the name for some reason to correct the letter case *sigh*
                     auto* ExitText = Cast<UTextBlock>(ConvoWidget->WidgetTree->FindWidget(TEXT("ExitTExt")));
                     ExitText->SetText(FText::FromString(Prompt));
-                    ExitButton->LambdaEvent.BindLambda([this, HUD, Clue]() 
+                    ExitButton->LambdaEvent.BindLambda([this, HUD, Clue, ConvoTrace]() 
                     {
                         GameState->ClueState = Clue;
                         // todo: install clue derived behavior e.g. teleport player back to starting table.
                         DeriveDeadend(Clue);
                         // exit conversation
+                        SaveConversation(ConvoTrace);
                         HUD->ExitConversation(ConvoWidget);
                         Cast<URyddelmystGameInstance>(UGameplayStatics::GetGameInstance(GetWorld()))->Unpause();
                     });
@@ -547,4 +551,12 @@ void UConversationStarter::PageDown()
 {
     float ScrollOffset = ConvoContainer->GetScrollOffsetOfEnd() + SubtreeOffset;
     ConvoContainer->SetScrollOffset(ScrollOffset);
+}
+
+FString UConversationStarter::PrettyTimestamp()
+{
+    int32 Year, Month, DayOfWeek, Day, Hour, Min, Sec, MSec;
+    FGenericPlatformTime::SystemTime(Year, Month, DayOfWeek, Day, Hour, Min, Sec, MSec);
+    FString Timestamp = FString::FromInt(Year).Append(TEXT("-")).Append(FString::FromInt(Month)).Append(TEXT("-")).Append(FString::FromInt(Day)).Append(TEXT("-")).Append(FString::FromInt(Hour)).Append(TEXT("-")).Append(FString::FromInt(Min));
+    return Timestamp;
 }
