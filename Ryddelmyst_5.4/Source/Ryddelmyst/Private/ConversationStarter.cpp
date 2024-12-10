@@ -4,6 +4,7 @@
 #include "ConversationStarter.h"
 #include "Dom/JsonObject.h"
 #include "Dom/JsonValue.h"
+#include "Serialization/JsonWriter.h"
 #include "Blueprint/WidgetTree.h"
 #include "Components/TextBlock.h"
 #include "LambdaButton.h"
@@ -91,9 +92,20 @@ void UConversationStarter::SaveConversation(const FString& ConvoName)
     // make subdir for pre-rendered convos
     IFileManager& FileManager = IFileManager::Get();
     FileManager.MakeDirectory(*ConvoOutputPath);
-    // todo: create script file with ConvoName on disk. FFileHelper::SaveStringToFile()? Unclear if this fn also creates the file if it doesn't exist.
+    
     // todo: step through the ConvoWidget widgettree and write equivalent JSON for each dialogue UI element, 
-    //  to be loaded from quest log at any time using PaseConversationScript(). Would it be best to write the JSON as raw strings or actually make a JsonObject?
+    //  to be loaded from quest log at any time using PaseConversationScript(). Skip wrapper parts of convowidget like exit button?
+    TSharedPtr<FJsonObject> ConvoJsonObject = MakeShareable(new FJsonObject());
+    ConvoWidget->WidgetTree->ForEachWidget([&ConvoJsonObject](UWidget* Widget) {
+        // todo: look at widget type and/or name to figure out:
+        //  1. Should it be included in the logged convo? e.g. dialogue text and portrait but not choices buttons.
+        //  2. What JSON subobject should be written to ConvoJsonObject, and what should its contents be? e.g. dialouge element with text and portrait.
+    });
+
+    FString OutputString;
+    TSharedRef<TJsonWriter<>> Writer = TJsonWriterFactory<>::Create(&OutputString);
+    FJsonSerializer::Serialize(ConvoJsonObject.ToSharedRef(), Writer);
+    FFileHelper::SaveStringToFile(OutputString, *ConvoOutputPath.Append(ConvoName), FFileHelper::EEncodingOptions::AutoDetect, &FileManager, 0);
 }
 
 FString UConversationStarter::GetScript()
