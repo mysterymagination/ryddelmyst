@@ -96,10 +96,25 @@ void UConversationStarter::SaveConversation(const FString& ConvoName)
     // todo: step through the ConvoWidget widgettree and write equivalent JSON for each dialogue UI element, 
     //  to be loaded from quest log at any time using PaseConversationScript(). Skip wrapper parts of convowidget like exit button?
     TSharedPtr<FJsonObject> ConvoJsonObject = MakeShareable(new FJsonObject());
-    ConvoWidget->WidgetTree->ForEachWidget([&ConvoJsonObject](UWidget* Widget) {
+    ConvoWidget->WidgetTree->ForEachWidget([this, ConvoJsonObject](UWidget* Widget) {
         // todo: look at widget type and/or name to figure out:
         //  1. Should it be included in the logged convo? e.g. dialogue text and portrait but not choices buttons.
         //  2. What JSON subobject should be written to ConvoJsonObject, and what should its contents be? e.g. dialouge element with text and portrait.
+        if (Widget->IsA(DialogueWidgetClass_Player))
+        {
+            // todo: write player dialogue widget element out to json
+        }
+        else 
+        {
+            if (Widget->IsA(DialogueWidgetClass_Other))
+            {
+                // todo: write NPC dialogue widget element out to json
+            }
+            else
+            {
+                UE_LOG(LogTemp, Warning, TEXT("SaveConvo; ignoring widget %s"), *Widget->GetClass()->GetName());
+            }
+        }
     });
 
     FString OutputString;
