@@ -96,13 +96,27 @@ void UConversationStarter::SaveConversation(const FString& ConvoName)
     // todo: step through the ConvoWidget widgettree and write equivalent JSON for each dialogue UI element, 
     //  to be loaded from quest log at any time using PaseConversationScript(). Skip wrapper parts of convowidget like exit button?
     TSharedPtr<FJsonObject> ConvoJsonObject = MakeShareable(new FJsonObject());
+    TArray<TSharedPtr<FJsonValue>> DialogueElements;
     ConvoWidget->WidgetTree->ForEachWidget([this, ConvoJsonObject](UWidget* Widget) {
         // todo: look at widget type and/or name to figure out:
         //  1. Should it be included in the logged convo? e.g. dialogue text and portrait but not choices buttons.
         //  2. What JSON subobject should be written to ConvoJsonObject, and what should its contents be? e.g. dialouge element with text and portrait.
         if (Widget->IsA(DialogueWidgetClass_Player))
         {
-            // todo: write player dialogue widget element out to json
+            // write player dialogue widget element out to json
+            auto* PlayerDialogue = Cast<UTextDisplayWidget>(Widget);
+            // create a jsonvalueobject to be the dialogue element
+            TSharedPtr<FJsonObject> DialogueJsonObject = MakeShareable(new FJsonObject());
+            // we drop the array structure when we write the text to the widget, so just go ahead and store the entire text as a single array element.
+            // I only used an array of lines to make the json easier to read and debug.
+            TSharedPtr<FJsonValue> FullText = MakeShareable(new FJsonValueString(PlayerDialogue->GetText()));    
+            TArray<TSharedPtr<FJsonValue>> LinesArray;
+            LinesArray.Add(FullText); 
+            DialogueJsonObject->SetArrayField(KEY_ARRAY_LINES, LinesArray);
+            // extract portrait name code
+            DialogueJsonObject->SetStringField(KEY_STRING_IMAGE, PlayerDialogue->GetPortraitName());
+            TSharedPtr<FJsonValue> DialogueElement = MakeShareable(new FJsonValueObject(DialogueJsonObject));    
+            DialogueElements.Add(DialogueElement);
         }
         else 
         {
@@ -418,6 +432,7 @@ void UConversationStarter::ParseDialogue(TSharedPtr<FJsonObject> DialogueObject)
             }
             DialogueWidget->SetText(FText::FromString(LinesAggregate));
             DialogueWidget->SetPortrait(Portrait);
+            DialogueWidget->SetPortraitName(PortraitName);
             ConvoContainer->AddChild(DialogueWidget);
 
             UE_LOG(LogTemp, Warning, TEXT("ParseDialogue; looking at thoughts"));
@@ -441,6 +456,7 @@ void UConversationStarter::ParseDialogue(TSharedPtr<FJsonObject> DialogueObject)
                 }
                 ThoughtsWidget->SetText(FText::FromString(ThoughtsAggregate));
                 ThoughtsWidget->SetPortrait(Portrait);
+                ThoughtsWidget->SetPortraitName(PortraitName);
                 ConvoContainer->AddChild(ThoughtsWidget);
             }
             
