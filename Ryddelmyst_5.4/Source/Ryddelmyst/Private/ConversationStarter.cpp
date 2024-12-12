@@ -129,6 +129,8 @@ void UConversationStarter::SaveConversation(const FString& ConvoName)
                 UE_LOG(LogTemp, Warning, TEXT("SaveConvo; ignoring widget %s"), *Widget->GetClass()->GetName());
             }
         }
+
+        // todo: thoughts textdisplaywidgets? We made things difficult to reverse by having thoughts and lines arrays live in the same dialogue element, but they'll of course be discrete UI elements... maybe do a lookahead for thoughts since we know thoughts immediately follow lines for a given dialogue element?
     });
 
     FString OutputString;
