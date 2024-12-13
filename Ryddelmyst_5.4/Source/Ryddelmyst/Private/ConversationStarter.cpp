@@ -93,45 +93,47 @@ void UConversationStarter::SaveConversation(const FString& ConvoName)
     IFileManager& FileManager = IFileManager::Get();
     FileManager.MakeDirectory(*ConvoOutputPath);
     
-    // todo: step through the ConvoWidget widgettree and write equivalent JSON for each dialogue UI element, 
+    // step through the ConvoWidget widgettree and write equivalent JSON for each dialogue UI element, 
     //  to be loaded from quest log at any time using PaseConversationScript(). Skip wrapper parts of convowidget like exit button?
     TSharedPtr<FJsonObject> ConvoJsonObject = MakeShareable(new FJsonObject());
     TArray<TSharedPtr<FJsonValue>> DialogueElements;
-    ConvoWidget->WidgetTree->ForEachWidget([this, ConvoJsonObject](UWidget* Widget) {
-        // todo: look at widget type and/or name to figure out:
+    ConvoWidget->WidgetTree->ForEachWidget([&](UWidget* Widget) {
+        // look at widget type and/or name to figure out:
         //  1. Should it be included in the logged convo? e.g. dialogue text and portrait but not choices buttons.
         //  2. What JSON subobject should be written to ConvoJsonObject, and what should its contents be? e.g. dialouge element with text and portrait.
-        if (Widget->IsA(DialogueWidgetClass_Player))
+        // write player dialogue widget element out to json
+        auto* DialogueWidget = Cast<UTextDisplayWidget>(Widget);
+        if (DialogueWidget)
         {
-            // write player dialogue widget element out to json
-            auto* PlayerDialogue = Cast<UTextDisplayWidget>(Widget);
-            // create a jsonvalueobject to be the dialogue element
-            TSharedPtr<FJsonObject> DialogueJsonObject = MakeShareable(new FJsonObject());
-            // we drop the array structure when we write the text to the widget, so just go ahead and store the entire text as a single array element.
-            // I only used an array of lines to make the json easier to read and debug.
-            TSharedPtr<FJsonValue> FullText = MakeShareable(new FJsonValueString(PlayerDialogue->GetText()));    
-            TArray<TSharedPtr<FJsonValue>> LinesArray;
-            LinesArray.Add(FullText); 
-            DialogueJsonObject->SetArrayField(KEY_ARRAY_LINES, LinesArray);
-            // extract portrait name code
-            DialogueJsonObject->SetStringField(KEY_STRING_IMAGE, PlayerDialogue->GetPortraitName());
-            TSharedPtr<FJsonValue> DialogueElement = MakeShareable(new FJsonValueObject(DialogueJsonObject));    
-            DialogueElements.Add(DialogueElement);
-        }
-        else 
-        {
-            if (Widget->IsA(DialogueWidgetClass_Other))
+            // lookbehind for thoughts and operate on the tail of DialogueElements array, sticking a thoughts array onto 'im if relevant.
+            if (DialogueWidget->IsA(ThoughtsWidgetClass_Player) || DialogueWidget->IsA(ThoughtsWidgetClass_Other))
             {
-                // todo: write NPC dialogue widget element out to json
+                TSharedPtr<FJsonValue> ThoughtText = MakeShareable(new FJsonValueString(DialogueWidget->GetText().ToString()));   
+                TArray<TSharedPtr<FJsonValue>> ThoughtsArray;
+                ThoughtsArray.Add(ThoughtText); 
+                auto DialogueElementTail = DialogueElements.Last()->AsObject();
+                DialogueElementTail->SetArrayField(KEY_ARRAY_THOUGHTS, ThoughtsArray);
             }
             else
             {
-                UE_LOG(LogTemp, Warning, TEXT("SaveConvo; ignoring widget %s"), *Widget->GetClass()->GetName());
+                // create a jsonvalueobject to be the dialogue element
+                TSharedPtr<FJsonObject> DialogueJsonObject = MakeShareable(new FJsonObject());
+                // extract portrait name code
+                DialogueJsonObject->SetStringField(KEY_STRING_IMAGE, DialogueWidget->GetPortraitName());
+                TSharedPtr<FJsonValue> DialogueElement = MakeShareable(new FJsonValueObject(DialogueJsonObject));    
+                DialogueElements.Add(DialogueElement);
+                // we drop the array structure when we write the text to the widget, so just go ahead and store the entire text as a single array element.
+                // I only used an array of lines to make the json easier to read and debug.
+                TSharedPtr<FJsonValue> FullText = MakeShareable(new FJsonValueString(DialogueWidget->GetText().ToString()));   
+                TArray<TSharedPtr<FJsonValue>> LinesArray;
+                LinesArray.Add(FullText); 
+                DialogueJsonObject->SetArrayField(KEY_ARRAY_LINES, LinesArray);
             }
         }
-
-        // todo: thoughts textdisplaywidgets? We made things difficult to reverse by having thoughts and lines arrays live in the same dialogue element, but they'll of course be discrete UI elements... maybe do a lookahead for thoughts since we know thoughts immediately follow lines for a given dialogue element?
     });
+
+    // populate the dialogue array with the generated dialogue elements
+    ConvoJsonObject->SetArrayField(KEY_ARRAY_DIALOGUE, DialogueElements);
 
     FString OutputString;
     TSharedRef<TJsonWriter<>> Writer = TJsonWriterFactory<>::Create(&OutputString);
