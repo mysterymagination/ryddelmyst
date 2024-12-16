@@ -391,13 +391,14 @@ void UConversationStarter::ParseConversationScript(const FString& Script)
 
 void UConversationStarter::ParseDialogue(TSharedPtr<FJsonObject> DialogueObject)
 {
-    FString ConvoTrace = ConvoTx.Append(TEXT("_To_")).Append(ConvoRx).Append(TEXT("-")).Append(PrettyTimestamp());
     // find the exit convo button and install default exit convo behavior
     auto* HUD = UGameplayStatics::GetPlayerController(GetWorld(), 0)->GetHUD<ARyddelmystHUD>();
     auto* ExitButton = Cast<ULambdaButton>(ConvoWidget->WidgetTree->FindWidget(TEXT("ExitButton")));
-    ExitButton->LambdaEvent.BindLambda([this, HUD, ConvoTrace]() 
+    ExitButton->BindUniqueLambda([this, HUD]() 
     {
+        UE_LOG(LogTemp, Warning, TEXT("ParseDialogue; exit saveconvo"));
         // exit conversation normally
+        FString ConvoTrace = ConvoTx.Append(TEXT("_To_")).Append(ConvoRx).Append(TEXT("-")).Append(PrettyTimestamp()).Append(TEXT(".txt"));
         SaveConversation(ConvoTrace);
         HUD->ExitConversation(ConvoWidget);
         Cast<URyddelmystGameInstance>(UGameplayStatics::GetGameInstance(GetWorld()))->Unpause();
@@ -572,12 +573,14 @@ void UConversationStarter::ParseDialogue(TSharedPtr<FJsonObject> DialogueObject)
                     // the editor will not let me change the name for some reason to correct the letter case *sigh*
                     auto* ExitText = Cast<UTextBlock>(ConvoWidget->WidgetTree->FindWidget(TEXT("ExitTExt")));
                     ExitText->SetText(FText::FromString(Prompt));
-                    ExitButton->LambdaEvent.BindLambda([this, HUD, Clue, ConvoTrace]() 
+                    ExitButton->BindUniqueLambda([this, HUD, Clue]() 
                     {
+                        UE_LOG(LogTemp, Warning, TEXT("ParseDialogue; deadend saveconvo"));
                         GameState->ClueState = Clue;
                         // todo: install clue derived behavior e.g. teleport player back to starting table.
                         DeriveDeadend(Clue);
                         // exit conversation
+                        FString ConvoTrace = ConvoTx.Append(TEXT("_To_")).Append(ConvoRx).Append(TEXT("-")).Append(PrettyTimestamp()).Append(TEXT(".txt"));
                         SaveConversation(ConvoTrace);
                         HUD->ExitConversation(ConvoWidget);
                         Cast<URyddelmystGameInstance>(UGameplayStatics::GetGameInstance(GetWorld()))->Unpause();
