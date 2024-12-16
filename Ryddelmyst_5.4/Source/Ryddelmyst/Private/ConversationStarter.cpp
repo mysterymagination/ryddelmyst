@@ -13,10 +13,10 @@
 #include "Components/VerticalBox.h"
 #include "TextDisplayWidget.h"
 #include "Kismet/GameplayStatics.h"
-#include "RyddelmystHUD.h"
 #include "RyddelmystGameInstance.h"
 #include "Components/EditableText.h"
 #include "RyddelmystCharacter.h"
+#include "RyddelmystHUD.h"
 #include "GenericPlatform/GenericPlatformTime.h"
 
 const FString UConversationStarter::KEY_ARRAY_DIALOGUE{TEXT("dialogue")};
@@ -359,10 +359,36 @@ FString UConversationStarter::MatchCharacter(const FString& ActorName)
     return CharacterName;
 }
 
+void UConversationStarter::ExecuteDefaultExitBehavior()
+{
+    auto* HUD = UGameplayStatics::GetPlayerController(GetWorld(), 0)->GetHUD<ARyddelmystHUD>();
+    FString ConvoTrace = ConvoTx.Append(TEXT("_To_")).Append(ConvoRx).Append(TEXT("-")).Append(PrettyTimestamp()).Append(TEXT(".txt"));
+    SaveConversation(ConvoTrace);
+    HUD->ExitConversation(ConvoWidget);
+    Cast<URyddelmystGameInstance>(UGameplayStatics::GetGameInstance(GetWorld()))->Unpause();
+}
+
+void UConversationStarter::InstallDefaultExitBehavior()
+{
+    // find the exit convo button and install default exit convo behavior
+    auto* ExitButton = Cast<ULambdaButton>(ConvoWidget->WidgetTree->FindWidget(TEXT("ExitButton")));
+    ExitButton->LambdaEvent.BindLambda([this]() 
+    {
+        UE_LOG(LogTemp, Warning, TEXT("InstallDefaultExitBehavior; exit saveconvo"));
+        // exit conversation normally
+        ExecuteDefaultExitBehavior();
+    });
+    ExitButton->OnClicked.AddDynamic(ExitButton, &ULambdaButton::ExecLambda);
+}
+
 UUserWidget* UConversationStarter::GenerateConversationUI(const FString& Script)
 {
+    /// UI setup ///
     ConvoWidget = CreateWidget<UUserWidget>(GetWorld(), ConvoBaseWidgetClass);
     ConvoContainer = Cast<UScrollBox>(ConvoWidget->WidgetTree->FindWidget(TEXT("DialogueScrollBox")));
+    InstallDefaultExitBehavior();
+
+    /// script parsing ///
     ParseConversationScript(Script);
     if (ScriptJsonObject)
     {
@@ -391,20 +417,6 @@ void UConversationStarter::ParseConversationScript(const FString& Script)
 
 void UConversationStarter::ParseDialogue(TSharedPtr<FJsonObject> DialogueObject)
 {
-    // find the exit convo button and install default exit convo behavior
-    auto* HUD = UGameplayStatics::GetPlayerController(GetWorld(), 0)->GetHUD<ARyddelmystHUD>();
-    auto* ExitButton = Cast<ULambdaButton>(ConvoWidget->WidgetTree->FindWidget(TEXT("ExitButton")));
-    ExitButton->BindUniqueLambda([this, HUD]() 
-    {
-        UE_LOG(LogTemp, Warning, TEXT("ParseDialogue; exit saveconvo"));
-        // exit conversation normally
-        FString ConvoTrace = ConvoTx.Append(TEXT("_To_")).Append(ConvoRx).Append(TEXT("-")).Append(PrettyTimestamp()).Append(TEXT(".txt"));
-        SaveConversation(ConvoTrace);
-        HUD->ExitConversation(ConvoWidget);
-        Cast<URyddelmystGameInstance>(UGameplayStatics::GetGameInstance(GetWorld()))->Unpause();
-    });
-    ExitButton->OnClicked.AddDynamic(ExitButton, &ULambdaButton::ExecLambda);
-
     for (auto DialogueElement : DialogueObject->GetArrayField(KEY_ARRAY_DIALOGUE))
     {
         UE_LOG(LogTemp, Warning, TEXT("ParseDialogue; got dialogue element in dialogues array"));
@@ -573,17 +585,14 @@ void UConversationStarter::ParseDialogue(TSharedPtr<FJsonObject> DialogueObject)
                     // the editor will not let me change the name for some reason to correct the letter case *sigh*
                     auto* ExitText = Cast<UTextBlock>(ConvoWidget->WidgetTree->FindWidget(TEXT("ExitTExt")));
                     ExitText->SetText(FText::FromString(Prompt));
-                    ExitButton->BindUniqueLambda([this, HUD, Clue]() 
+                    auto* ExitButton = Cast<ULambdaButton>(ConvoWidget->WidgetTree->FindWidget(TEXT("ExitButton")));
+                    ExitButton->LambdaEvent.BindLambda([this, Clue]() 
                     {
                         UE_LOG(LogTemp, Warning, TEXT("ParseDialogue; deadend saveconvo"));
                         GameState->ClueState = Clue;
-                        // todo: install clue derived behavior e.g. teleport player back to starting table.
+                        // install clue derived behavior e.g. teleport player back to starting table.
                         DeriveDeadend(Clue);
-                        // exit conversation
-                        FString ConvoTrace = ConvoTx.Append(TEXT("_To_")).Append(ConvoRx).Append(TEXT("-")).Append(PrettyTimestamp()).Append(TEXT(".txt"));
-                        SaveConversation(ConvoTrace);
-                        HUD->ExitConversation(ConvoWidget);
-                        Cast<URyddelmystGameInstance>(UGameplayStatics::GetGameInstance(GetWorld()))->Unpause();
+                        ExecuteDefaultExitBehavior();
                     });
                 }
             }

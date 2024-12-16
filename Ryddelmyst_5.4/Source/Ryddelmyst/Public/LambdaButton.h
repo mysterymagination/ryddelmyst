@@ -4,7 +4,6 @@
 
 #include "CoreMinimal.h"
 #include "Components/Button.h"
-#include "Lang/Common/Containers/Function.h"
 #include "LambdaButton.generated.h"
 
 DECLARE_DELEGATE(FLambdaEvent);
@@ -21,10 +20,6 @@ public:
 	FLambdaEvent LambdaEvent;
 
 public:
-	/**
-	 * Ensures that if a lambda is already bound we unbind first so that there is only ever one functor to execute at most.
-	 */
-	void BindUniqueLambda(TFunctionRef<void ()> Lambda);
 	
 	/**
 	 * Executes the lambda iff one is bound.

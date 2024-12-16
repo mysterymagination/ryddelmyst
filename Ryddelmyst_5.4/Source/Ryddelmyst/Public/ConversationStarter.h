@@ -61,6 +61,18 @@ private:
 	UFUNCTION()
 	void PageDown();
 
+	/**
+	 * Installs the default exit conversation button behavior, e.g. closing out the conversation UI.
+	 */
+	UFUNCTION()
+	void InstallDefaultExitBehavior();
+
+	/**
+	 * Runs the default exit conversation button behavior, e.g. closing out the conversation UI.
+	 */
+	UFUNCTION()
+	void ExecuteDefaultExitBehavior();
+
 private:
 	UPROPERTY(EditAnywhere, Category = "Dialogue")
 	TSubclassOf<UUserWidget> ConvoBaseWidgetClass;
