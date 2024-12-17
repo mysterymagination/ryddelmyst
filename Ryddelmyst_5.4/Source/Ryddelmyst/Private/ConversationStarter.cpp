@@ -18,6 +18,8 @@
 #include "RyddelmystCharacter.h"
 #include "RyddelmystHUD.h"
 #include "GenericPlatform/GenericPlatformTime.h"
+#include "LibraryBookWidget.h"
+#include "LibraryWidget.h"
 
 const FString UConversationStarter::KEY_ARRAY_DIALOGUE{TEXT("dialogue")};
 const FString UConversationStarter::KEY_STRING_NAME{TEXT("name")};
@@ -135,10 +137,14 @@ void UConversationStarter::SaveConversation(const FString& ConvoName)
     // populate the dialogue array with the generated dialogue elements
     ConvoJsonObject->SetArrayField(KEY_ARRAY_DIALOGUE, DialogueElements);
 
+    // write the generated JSON as a convo script in an FLibraryBookData.ConversationScript, followed by ULibraryWidget::AddLore(bookdata). That way we'll have the convo script added to Library.BookBank, which is the first step in having the library widget display it.
     FString OutputString;
     TSharedRef<TJsonWriter<>> Writer = TJsonWriterFactory<>::Create(&OutputString);
     FJsonSerializer::Serialize(ConvoJsonObject.ToSharedRef(), Writer);
-    FFileHelper::SaveStringToFile(OutputString, *ConvoOutputPath.Append(ConvoName), FFileHelper::EEncodingOptions::AutoDetect, &FileManager, 0);
+    FLibraryBookData Data;
+    Data.ConversationScript = OutputString;
+    auto* HUD = UGameplayStatics::GetPlayerController(GetWorld(), 0)->GetHUD<ARyddelmystHUD>();
+    HUD->AddLore(Data);
 }
 
 FString UConversationStarter::GetScript()

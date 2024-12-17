@@ -16,7 +16,7 @@
  * have been rendered. Basically a modified version of the original conversation script with prefab chosen dialogue options instead of the directives to
  * offer choice button UI.
  */
-UCLASS()
+UCLASS(BlueprintType, Blueprintable)
 class RYDDELMYST_API UConversationStarter : public UObject
 {
 	GENERATED_BODY()

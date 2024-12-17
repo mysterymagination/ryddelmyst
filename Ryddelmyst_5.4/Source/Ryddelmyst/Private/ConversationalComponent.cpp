@@ -34,8 +34,7 @@ void UConversationalComponent::TickComponent(float DeltaTime, ELevelTick TickTyp
 
 UUserWidget* UConversationalComponent::StartConversation_Implementation(const FString& ConvoTx, const FString& ConvoRx, FName ClosestBone, ARyddelmystGameState* GameState, const FString& ConvoJSON)
 {
-	// todo: use conversationstarter to render and process convo UI, then return it.
-	//  This should include an exit convo button or something at the bottom that removes the whole UI tree from the HUD.
+	// use conversationstarter to render and process convo UI, then return it.
 	ConversationStarter->Init(ConvoTx, ConvoRx, ClosestBone, GameState);
 	FString Script = ConvoJSON;
 	if (Script.IsEmpty())

@@ -67,33 +67,14 @@ void ULibraryWidget::PopulateUnshelved()
     if (BookBank.Contains(ELibraryCat::Observation))
     {
         UnshelvedObservations = BookBank[ELibraryCat::Observation].Books;
-        /*
-        for (auto Book : UnshelvedObservations)
-        {
-            BookDoctor(Book);
-        }
-        */
     }
     if (BookBank.Contains(ELibraryCat::Conversation))
     {
         UnshelvedConversations = BookBank[ELibraryCat::Conversation].Books;
-        /*
-        for (auto Book : UnshelvedConversations)
-        {
-            BookDoctor(Book);
-        }
-        */
     }
     if (BookBank.Contains(ELibraryCat::Diary))
     {
         UnshelvedDiaries = BookBank[ELibraryCat::Diary].Books;
-        /* moving the book doctoring to the last minute, right before we determine what text to show for a given book, in cover art onclick event in BP;
-           that way we can ensure up-to-date string sub within a given quest log browsing session.
-        for (FLibraryBookData& Book : UnshelvedDiaries)
-        {
-            BookDoctor(Book);
-        }
-        */
     }
 }
 
