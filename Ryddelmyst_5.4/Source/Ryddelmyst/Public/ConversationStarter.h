@@ -7,6 +7,7 @@
 #include "Blueprint/UserWidget.h"
 #include "RyddelmystGameState.h"
 #include "Components/ScrollBox.h"
+#include "LambdaButton.h"
 #include "ConversationStarter.generated.h"
 
 /**
@@ -66,6 +67,16 @@ private:
 	 */
 	UFUNCTION()
 	void ExecuteDefaultExitBehavior();
+
+	/**
+	 * Installs transition behavior in the choice context where we already have supporting UI.
+	 */
+	void ProcessChoiceTransition(TSharedPtr<FJsonObject> ChoiceObject, ULambdaButton* ChoiceButton);
+
+	/**
+	 * Installs transition behavior in the dialogue context where we need new bespoke UI elements.
+	 */
+	void ProcessDialogueTransition(TSharedPtr<FJsonObject> DialogueObject);
 
 private:
 	UPROPERTY(EditAnywhere, Category = "Dialogue")

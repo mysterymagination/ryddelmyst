@@ -360,7 +360,7 @@ void ARyddelmystCharacter::Interact()
 										 NeckSlotItem && NeckSlotItem->GetName().Contains(TEXT("CracklingVioletVial")) &&
 										 HandsSlotItem && HandsSlotItem->GetName().Contains(TEXT("IronSwordCloudConquest")) &&
 										 FeetSlotItem && FeetSlotItem->GetName().Contains(TEXT("SlippersOfLongWintersNap"));
-							StoryBlock = !AllQuestItems;
+							StoryBlock = false;//!AllQuestItems;
 							USoundBase* Eggsclamation = nullptr;
 							if (!StoryBlock)
 							{
@@ -399,26 +399,11 @@ void ARyddelmystCharacter::Interact()
 							{
 								UE_LOG(LogTemp, Log, TEXT("Interact; turning off physkiss for %s"), *Prim->GetName());
 								Prim->SetSimulatePhysics(false);
-								//Prim->SetNotifyRigidBodyCollision(false);
-								//Prim->SetCollisionEnabled(ECollisionEnabled::NoCollision);
-								//Prim->SetCollisionProfileName("NoCollision");
-								//Prim->SetEnableGravity(false);
 							}
 							GrabbedActor->SetActorEnableCollision(false);
 							GrabbedActor->AttachToActor(this, FAttachmentTransformRules::KeepWorldTransform);
 							GrabbedActor->SetActorRelativeLocation(FVector(CarryDistance, 0.f, 0.f));
 							
-							/*
-							for (auto Prim : OutPrims)
-							{
-								Prim->SetSimulatePhysics(false);
-							}
-							
-							// todo: if we teleport the object into its carry location relative to the player and that location is inside another collision object, the player and grabbed object get rocketed away.  Funny, but not useful.  
-							GrabbedActor->SetActorEnableCollision(false);
-							GrabbedActor->AttachToActor(this, FAttachmentTransformRules::KeepWorldTransform);
-							GrabbedActor->SetActorRelativeLocation(FVector(CarryDistance, 0.f, 0.f));
-							*/
 							/* Forward Vector version; it's just a unit vector on X accounting for all your rotations e.g. vector [1,0,0] rotated by all your character's rotations.  
 							GrabbedActor->SetActorLocation(GetActorLocation() + (GetActorForwardVector() * CarryDistance));
 							*/

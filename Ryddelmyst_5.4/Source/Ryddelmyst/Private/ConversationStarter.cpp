@@ -7,7 +7,6 @@
 #include "Serialization/JsonWriter.h"
 #include "Blueprint/WidgetTree.h"
 #include "Components/TextBlock.h"
-#include "LambdaButton.h"
 #include "Components/PanelWidget.h"
 #include "Components/ScrollBox.h"
 #include "Components/VerticalBox.h"
@@ -575,7 +574,7 @@ void UConversationStarter::ParseDialogue(TSharedPtr<FJsonObject> DialogueObject)
             }
 
             // install behavior for any transition the dialogue object might define
-            ProcessTransition(*DialogueElementObject);
+            ProcessDialogueTransition(*DialogueElementObject);
         }
     }
 }
