@@ -194,9 +194,19 @@ FString UConversationStarter::GetScript()
 
 void UConversationStarter::DeriveDeadend(const FString& Clue)
 {
-    // todo: parse apart/switch over clue text to choose game behavior
-    FVector StartPos = Cast<URyddelmystGameInstance>(UGameplayStatics::GetGameInstance(GetWorld()))->PlayerStartPosition;
-    UGameplayStatics::GetPlayerCharacter(GetWorld(), 0)->SetActorLocation(StartPos);
+    // parse apart/switch over clue text to choose game behavior
+    if (Clue == ARyddelmystGameState::STATE_CLUE_YVYTEPH_MASTERMIND_REJECTED_ANGEL)
+    {
+        // todo: find actor BP_Yvyteph_Mastermind_ConvoActor
+        // todo: set player position a bit -Y relative to mastermind actor
+        FVector DownstairsPosition{-250.0f, -370.0, -470.0};
+        UGameplayStatics::GetPlayerCharacter(GetWorld(), 0)->SetActorLocation(DownstairsPos);
+    }
+    else
+    {
+        FVector StartPos = Cast<URyddelmystGameInstance>(UGameplayStatics::GetGameInstance(GetWorld()))->PlayerStartPosition;
+        UGameplayStatics::GetPlayerCharacter(GetWorld(), 0)->SetActorLocation(StartPos);
+    }
 }
 
 FString UConversationStarter::CalculateScriptName(const FString& CharacterName)

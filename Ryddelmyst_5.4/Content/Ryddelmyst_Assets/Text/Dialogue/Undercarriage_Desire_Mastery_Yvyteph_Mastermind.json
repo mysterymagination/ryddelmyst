@@ -21,7 +21,9 @@
                             "lines": [
                                 "Looking forward to it! My pursuer shall burn with Desire. *wink*"
                             ],
-                            "jump": {
+                            "transition": {
+                                "text": "Let the hunt begin!",
+                                "type": "deadend",
                                 "clue": "Maya_Evil_Determination"
                             }
                         }
@@ -95,7 +97,9 @@
                                             "lines": [
                                                 "Very well, mortal girl. You shall always be girlfish to me. Do not cross my path again, for I will not be able to hold back my Desire. I shall not even try."
                                             ],
-                                            "jump": {
+                                            "transition": {
+                                                "text": "Weeeeeee~",
+                                                "type": "jump",
                                                 "clue": "Maya_Good_Determination_Homeward_Bound"
                                             }
                                         }
@@ -110,7 +114,9 @@
                                             "lines": [
                                                 "All righty-roo, make me a demigoddess or whatever! I have a feeling Molly is going to need me on the squad with you guys."
                                             ],
-                                            "jump": {
+                                            "transition": {
+                                                "text": "Embrace your Desire!",
+                                                "type": "jump",
                                                 "clue": "Maya_Good_Determination_Heavenward"
                                             }
                                         }

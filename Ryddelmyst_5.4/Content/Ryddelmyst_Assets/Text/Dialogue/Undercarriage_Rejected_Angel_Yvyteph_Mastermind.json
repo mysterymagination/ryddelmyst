@@ -13,8 +13,10 @@
             "lines": [
                 "Hey, wai-...!"
             ],
-            "deadend": {
-                "clue": "Return_To_Maze"
+            "transition": {
+                "text": "Eep-yeep!",
+                "type": "deadend",
+                "clue": "rejected_angel"
             }
         }
     ]
