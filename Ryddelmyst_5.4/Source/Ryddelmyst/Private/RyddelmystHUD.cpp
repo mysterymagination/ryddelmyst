@@ -14,9 +14,7 @@
 #include "Components/Image.h"
 #include "Components/ScrollBox.h"
 #include "TextDisplayWidget.h"
-#include "GameFramework/PlayerController.h"
 #include "Kismet/GameplayStatics.h"
-#include "Blueprint/WidgetBlueprintLibrary.h"
 #include "LibraryBookWidget.h"
 #include "Describable.h"
 #include "RyddelmystGameState.h"
@@ -413,9 +411,6 @@ bool ARyddelmystHUD::ShowConversation(UUserWidget* ConvoContent)
 	if (!ConvoContent->IsInViewport())
 	{
 		ConvoContent->AddToViewport();
-		APlayerController* PlayerController = UGameplayStatics::GetPlayerController(GetWorld(), 0);
-		PlayerController->SetShowMouseCursor(true);
-		UWidgetBlueprintLibrary::SetInputMode_UIOnlyEx(PlayerController);
 		return true;
 	}
 	else 
@@ -430,9 +425,6 @@ bool ARyddelmystHUD::ExitConversation(UUserWidget* ConvoContent)
 	if (ConvoContent->IsInViewport())
 	{
 		ConvoContent->RemoveFromParent();
-		APlayerController* PlayerController = UGameplayStatics::GetPlayerController(GetWorld(), 0);
-		PlayerController->SetShowMouseCursor(false);
-		UWidgetBlueprintLibrary::SetInputMode_GameOnly(PlayerController);
 		return true;
 	}
 	else 

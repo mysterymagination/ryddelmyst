@@ -440,6 +440,9 @@ void ARyddelmystCharacter::Interact()
 							{
 								Cast<URyddelmystGameInstance>(GetWorld()->GetGameInstance())->Pause();
 								UUserWidget* ConvoWidget = ITalkable::Execute_StartConversation(Convo, GetActorNameOrLabel(), Actor->GetActorNameOrLabel(), ClosestBone, GetWorld()->GetGameState<ARyddelmystGameState>(), TEXT(""));
+								APlayerController* PlayerController = UGameplayStatics::GetPlayerController(GetWorld(), 0);
+								PlayerController->SetShowMouseCursor(true);
+								UWidgetBlueprintLibrary::SetInputMode_UIOnlyEx(PlayerController);
 								HUD->ShowConversation(ConvoWidget);
 								UE_LOG(LogTemp, Warning, TEXT("interact; conversing"));
 								break;

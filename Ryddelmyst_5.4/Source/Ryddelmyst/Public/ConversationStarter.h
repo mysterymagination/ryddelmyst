@@ -62,12 +62,6 @@ private:
 	void PageDown();
 
 	/**
-	 * Installs the default exit conversation button behavior, e.g. closing out the conversation UI.
-	 */
-	UFUNCTION()
-	void InstallDefaultExitBehavior();
-
-	/**
 	 * Runs the default exit conversation button behavior, e.g. closing out the conversation UI.
 	 */
 	UFUNCTION()
@@ -155,6 +149,7 @@ public:
 	static const FString MATCHER_QYVNILY_WILDFORM;
 	static const FString MATCHER_QYVNILY_GLORYFORM;
 	static const FString MATCHER_QYVNILY_GLORYFORMRAGE;
+	static const FString MATCHER_PLAYER_MAYA;
 	static const FString MATCHER_TEST;
 
 public:
@@ -180,6 +175,7 @@ public:
 	 * @param Script - the raw JSON string of the convo script.
 	 * @return a populated BP_ConvoBase widget for display in the HUD.
 	 */
+	UFUNCTION(BlueprintCallable, Category = "Dialogue")
 	UUserWidget* GenerateConversationUI(const FString& Script);
 
 	/**
@@ -201,5 +197,17 @@ public:
 	 * @param ConvoName - a unique name for this conversation instance, e.g. Qyvnily_WildForm_20241201T003000
 	 */
 	void SaveConversation(const FString& ConvoName);
+
+	/**
+	 * Installs the default exit conversation button behavior, e.g. closing out the conversation UI, unpausing the game, and saving the convo to quest log.
+	 */
+	UFUNCTION(BlueprintCallable, Category = "Dialogue")
+	void InstallDefaultExitBehavior();
+
+	/**
+	 * Installs the quest log exit conversation button behavior, e.g. closing out the conversation UI only.
+	 */
+	UFUNCTION(BlueprintCallable, Category = "Dialogue")
+	void InstallQuestLogExitBehavior();
 	
 };

@@ -20,6 +20,8 @@
 #include "GenericPlatform/GenericPlatformTime.h"
 #include "LibraryBookWidget.h"
 #include "LibraryWidget.h"
+#include "GameFramework/PlayerController.h"
+#include "Blueprint/WidgetBlueprintLibrary.h"
 
 const FString UConversationStarter::KEY_ARRAY_DIALOGUE{TEXT("dialogue")};
 const FString UConversationStarter::KEY_STRING_NAME{TEXT("name")};
@@ -47,6 +49,7 @@ const FString UConversationStarter::MATCHER_QYVNILY_WILDFLOWER{TEXT("qyvnily_wil
 const FString UConversationStarter::MATCHER_QYVNILY_WILDFORM{TEXT("qyvnily_wildform")};
 const FString UConversationStarter::MATCHER_QYVNILY_GLORYFORM{TEXT("qyvnily_gloryform")};
 const FString UConversationStarter::MATCHER_QYVNILY_GLORYFORMRAGE{TEXT("qyvnily_gloryformrage")};
+const FString UConversationStarter::MATCHER_PLAYER_MAYA{TEXT("maya")};
 const FString UConversationStarter::MATCHER_TEST{TEXT("test")};
 
 UConversationStarter::UConversationStarter()
@@ -89,12 +92,6 @@ void UConversationStarter::Init(const FString& _ConvoTx, const FString& _ConvoRx
 
 void UConversationStarter::SaveConversation(const FString& ConvoName)
 {
-    FString ConvoOutputPath = FPaths::ProjectUserDir().Append(TEXT("SavedConversations/"));
-    UE_LOG(LogTemp, Warning, TEXT("SaveConvo; project user dir for saved conversations is %s and convo name is %s"), *ConvoOutputPath, *ConvoName);
-    // make subdir for pre-rendered convos
-    IFileManager& FileManager = IFileManager::Get();
-    FileManager.MakeDirectory(*ConvoOutputPath);
-    
     // step through the ConvoWidget widgettree and write equivalent JSON for each dialogue UI element, 
     //  to be loaded from quest log at any time using PaseConversationScript(). Skip wrapper parts of convowidget like exit button?
     TSharedPtr<FJsonObject> ConvoJsonObject = MakeShareable(new FJsonObject());
@@ -142,6 +139,7 @@ void UConversationStarter::SaveConversation(const FString& ConvoName)
     TSharedRef<TJsonWriter<>> Writer = TJsonWriterFactory<>::Create(&OutputString);
     FJsonSerializer::Serialize(ConvoJsonObject.ToSharedRef(), Writer);
     FLibraryBookData Data;
+    Data.LocalizedTitle = FText::FromString(ConvoName);
     Data.ConversationScript = OutputString;
     auto* HUD = UGameplayStatics::GetPlayerController(GetWorld(), 0)->GetHUD<ARyddelmystHUD>();
     HUD->AddLore(Data);
@@ -355,6 +353,10 @@ FString UConversationStarter::MatchCharacter(const FString& ActorName)
 	{
 		CharacterName = MATCHER_QYVNILY_GLORYFORM;
 	}
+    else if (ActorName.Contains(MATCHER_PLAYER_MAYA, ESearchCase::IgnoreCase, ESearchDir::FromStart))
+	{
+		CharacterName = MATCHER_PLAYER_MAYA;
+	}
 	
     // override with test script if actor name suggests it
     if (ActorName.Contains(MATCHER_TEST, ESearchCase::IgnoreCase, ESearchDir::FromStart))
@@ -368,9 +370,12 @@ FString UConversationStarter::MatchCharacter(const FString& ActorName)
 void UConversationStarter::ExecuteDefaultExitBehavior()
 {
     auto* HUD = UGameplayStatics::GetPlayerController(GetWorld(), 0)->GetHUD<ARyddelmystHUD>();
-    FString ConvoTrace = ConvoTx.Append(TEXT("_To_")).Append(ConvoRx).Append(TEXT("-")).Append(PrettyTimestamp()).Append(TEXT(".txt"));
+    FString ConvoTrace = MatchCharacter(ConvoTx).Append(TEXT(" to ")).Append(MatchCharacter(ConvoRx)).Append(TEXT(" ")).Append(PrettyTimestamp()).Append(TEXT(".txt"));
     SaveConversation(ConvoTrace);
     HUD->ExitConversation(ConvoWidget);
+    APlayerController* PlayerController = UGameplayStatics::GetPlayerController(GetWorld(), 0);
+	PlayerController->SetShowMouseCursor(false);
+	UWidgetBlueprintLibrary::SetInputMode_GameOnly(PlayerController);
     Cast<URyddelmystGameInstance>(UGameplayStatics::GetGameInstance(GetWorld()))->Unpause();
 }
 
@@ -383,6 +388,19 @@ void UConversationStarter::InstallDefaultExitBehavior()
         UE_LOG(LogTemp, Warning, TEXT("InstallDefaultExitBehavior; exit saveconvo"));
         // exit conversation normally
         ExecuteDefaultExitBehavior();
+    });
+    ExitButton->OnClicked.AddDynamic(ExitButton, &ULambdaButton::ExecLambda);
+}
+
+void UConversationStarter::InstallQuestLogExitBehavior()
+{
+     auto* ExitButton = Cast<ULambdaButton>(ConvoWidget->WidgetTree->FindWidget(TEXT("ExitButton")));
+    ExitButton->LambdaEvent.BindLambda([this]() 
+    {
+        UE_LOG(LogTemp, Warning, TEXT("InstallQuestLogExitBehavior; exit saveconvo"));
+        // exit conversation UI only
+        auto* HUD = UGameplayStatics::GetPlayerController(GetWorld(), 0)->GetHUD<ARyddelmystHUD>();
+        HUD->ExitConversation(ConvoWidget);
     });
     ExitButton->OnClicked.AddDynamic(ExitButton, &ULambdaButton::ExecLambda);
 }
@@ -622,6 +640,6 @@ FString UConversationStarter::PrettyTimestamp()
 {
     int32 Year, Month, DayOfWeek, Day, Hour, Min, Sec, MSec;
     FGenericPlatformTime::SystemTime(Year, Month, DayOfWeek, Day, Hour, Min, Sec, MSec);
-    FString Timestamp = FString::FromInt(Year).Append(TEXT("-")).Append(FString::FromInt(Month)).Append(TEXT("-")).Append(FString::FromInt(Day)).Append(TEXT("-")).Append(FString::FromInt(Hour)).Append(TEXT("-")).Append(FString::FromInt(Min));
+    FString Timestamp = FString::FromInt(Year).Append(TEXT("-")).Append(FString::FromInt(Month)).Append(TEXT("-")).Append(FString::FromInt(Day)).Append(TEXT("-")).Append(FString::FromInt(Hour)).Append(TEXT("-")).Append(FString::FromInt(Min)).Append(TEXT("-")).Append(FString::FromInt(Sec));
     return Timestamp;
 }
