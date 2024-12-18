@@ -9,7 +9,7 @@
         },
         {
             "name": "Maya Determination",
-            "image": "Maya_portraits_Sprite_Confused",
+            "image": "Maya_Confused",
             "lines": [],
             "choices": [
                 {
@@ -17,7 +17,7 @@
                     "dialogue": [
                         {
                             "name": "Maya's Evil Determination",
-                            "image": "Maya_portraits_Sprite_Eldritch",
+                            "image": "Maya_Eldritch",
                             "lines": [
                                 "Looking forward to it! My pursuer shall burn with Desire. *wink*"
                             ],
@@ -32,7 +32,7 @@
                     "dialogue": [
                         {
                             "name": "Maya Good Determination",
-                            "image": "Maya_portraits_Sprite_Angry",
+                            "image": "Maya_Angry",
                             "lines": [
                                 "No more games! You want me to toss a treeman's egg into lava so that he'll jump in and burn to death in a desperate bid to save it, right?",
                                 "Well nuts to that. I will not harm an innocent, even to save my own life. So you better think of something else for me to do or let me go or kill me, because I'm not doing that."
@@ -54,10 +54,10 @@
                         },
                         {
                             "name": "Maya Good Determination",
-                            "image": "Maya_portraits_Sprite_Happy",
+                            "image": "Maya_Happy",
                             "lines": [
                                 "We call it 'compassion'. It's got 'passion' baked right into the loaf! It's the passion people have to care about other people's wellbeing and feelings, for kindness and love.",
-                                "Not only does it help support a society of people and our interrelations, but it also allows us to thrill in actions that affect others more than ourselves; if these actions are good and constructive, we can have both a healthy society and exponentiate our communal passions by expanding our network of social influence.",
+                                "Not only does it help support a society of people and our interrelations, but it also allows us to thrill in actions that affect others more than ourselves; if these actions are good and constructive, we can have both a healthy society and exponentiate our communal passions by expanding our network of social influence. Some call this magical kindess power 'friendship', and it really is the best 'ship!",
                                 "Compassion is a key facet of passion to humans, at least as far as I'm concerned, and it's pretty rad. Perhaps you should learn about it."
                             ]
                         },
@@ -81,7 +81,7 @@
                         },
                         {
                             "name": "Maya Final Decision",
-                            "image": "Maya_portraits_Sprite_Confused",
+                            "image": "Maya_Confused",
                             "lines": [
                                 "*meep*"
                             ],
@@ -106,7 +106,7 @@
                                     "dialogue": [
                                         {
                                             "name": "Maya Amorous Angel",
-                                            "image": "Maya_portraits_Sprite_Eldritch",
+                                            "image": "Maya_Eldritch",
                                             "lines": [
                                                 "All righty-roo, make me a demigoddess or whatever! I have a feeling Molly is going to need me on the squad with you guys."
                                             ],

@@ -1,12 +1,21 @@
 {
     "dialogue": [
         {
+            "name": "Yvyteph Anticipation",
+            "image": "Yvyteph_FontOfFertility",
+            "lines": [
+                "*lip bitingly intrigued* You have felt it, yes? I can tell by your proud bearing, hips strongly squared despite their infinite curvature and bountiful chest thrust forth. *flirty lips lick only slightly spoiled by a tricksy escaping drool strand* You know what you must do!"
+            ]
+        },
+        {
             "name": "Maya's Curious Egg",
-            "image": "Maya_Eldritch",
-            "lines": [],
+            "image": "Maya_Confused",
+            "lines": [
+                "'Know' is a strong word. I suspect things. Puzzlesome things I'd like to chat about."
+            ],
             "choices": [
                 {
-                    "text": "Wood egg?...",
+                    "text": "What's up with the wood egg?",
                     "dialogue": [
                         {
                             "name": "Maya is Curiosity",
