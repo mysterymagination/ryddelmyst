@@ -199,7 +199,7 @@ void UConversationStarter::DeriveDeadend(const FString& Clue)
     {
         // todo: find actor BP_Yvyteph_Mastermind_ConvoActor
         // todo: set player position a bit -Y relative to mastermind actor
-        FVector DownstairsPosition{-250.0f, -370.0, -470.0};
+        FVector DownstairsPos{-250.0f, -370.0, -470.0};
         UGameplayStatics::GetPlayerCharacter(GetWorld(), 0)->SetActorLocation(DownstairsPos);
     }
     else
@@ -228,6 +228,14 @@ FString UConversationStarter::CalculateScriptName(const FString& CharacterName)
 				ConvoScriptName = TEXT("Undercarriage_Rejected_Angel_Yvyteph_Mastermind.json");
 			}
 		}
+        else if (GameState->ClueState == ARyddelmystGameState::STATE_CLUE_MAYA_EVIL_DETERMINATION)
+        {
+            ConvoScriptName = TEXT("Undercarriage_Urgent_Desire_Yvyteph_Mastermind.json");
+        }
+        else if (GameState->ClueState == ARyddelmystGameState::STATE_CLUE_MAYA_GOOD_DETERMINATION)
+        {
+            ConvoScriptName = TEXT("Maya_Friendly_Mastery.json");
+        }
         else if (GameState->WoodEggBeholden)
         {
             ConvoScriptName = TEXT("Undercarriage_Wood_Egg_Knowledge_Yvyteph_Mastermind.json");
@@ -548,6 +556,8 @@ void UConversationStarter::ParseDialogue(TSharedPtr<FJsonObject> DialogueObject)
                         else
                         {
                             UE_LOG(LogTemp, Warning, TEXT("ParseDialogue; no subdialogue in choice: %s"), *ChoiceText);
+                            // install behavior for any transition this choice might define
+                            ProcessChoiceTransition(ChoiceJsonObject, ChoiceButton);
                         }
 
                         // install OnClicked behavior, instructing it to simply exec the lambda
@@ -564,72 +574,120 @@ void UConversationStarter::ParseDialogue(TSharedPtr<FJsonObject> DialogueObject)
                 UE_LOG(LogTemp, Warning, TEXT("ParseConvoScript; no choices found"));
             }
 
-            // transition processing
-            const TSharedPtr<FJsonObject>* TransitionObjectPtr;
-            if ((*DialogueElementObject)->TryGetObjectField(KEY_OBJECT_TRANSITION, TransitionObjectPtr))
+            // install behavior for any transition the dialogue object might define
+            ProcessTransition(*DialogueElementObject);
+        }
+    }
+}
+
+void UConversationStarter::ProcessChoiceTransition(TSharedPtr<FJsonObject> ChoiceObject, ULambdaButton* ChoiceButton)
+{
+    // transition processing
+    const TSharedPtr<FJsonObject>* TransitionObjectPtr;
+    if (ChoiceObject->TryGetObjectField(KEY_OBJECT_TRANSITION, TransitionObjectPtr))
+    {
+        FString Clue = (*TransitionObjectPtr)->GetStringField(KEY_STRING_CLUE);
+        FString Type = (*TransitionObjectPtr)->GetStringField(KEY_STRING_TYPE);
+        if (Type.Equals(VALUE_TRANSITION_TYPE_JUMP))
+        {
+            ChoiceButton->LambdaEvent.BindLambda([this, Clue]() 
             {
-                // text input prompt processing
-                FString TextInputHint;
-                UEditableText* TextInput = nullptr;
-                if ((*TransitionObjectPtr)->TryGetStringField(KEY_STRING_INPUT, TextInputHint))
+                GameState->ClueState = Clue;
+                
+                // re-run script selection logic  
+                ParseConversationScript(GetScript());
+                if (ScriptJsonObject)
                 {
-                    UE_LOG(LogTemp, Warning, TEXT("ParseDialogue; adding input UI with hint %s"), *TextInputHint);
-                    auto* TextInputWidget = ConvoWidget->WidgetTree->ConstructWidget(TextInputWidgetClass);
-                    TextInput = Cast<UEditableText>(TextInputWidget->WidgetTree->FindWidget(TEXT("TextInput")));
-                    TextInput->SetHintText(FText::FromString(TextInputHint));
-                    ConvoContainer->AddChild(TextInputWidget);
+                    AddDivider();
+                    ParseDialogue(ScriptJsonObject);
+                    PageDown();
                 }
-                FString Clue = (*TransitionObjectPtr)->GetStringField(KEY_STRING_CLUE);
-                FString Type = (*TransitionObjectPtr)->GetStringField(KEY_STRING_TYPE);
-                FString Prompt = (*TransitionObjectPtr)->GetStringField(KEY_STRING_TEXT);
-                if (Type.Equals(VALUE_TRANSITION_TYPE_JUMP))
+                else
                 {
-                    // create a transition button
-                    auto* TransitionButtonWidget = ConvoWidget->WidgetTree->ConstructWidget(ButtonWidgetClass);
-                    auto* TransitionButton = Cast<ULambdaButton>(TransitionButtonWidget->WidgetTree->FindWidget(TEXT("Button")));
-                    auto* TransitionText = Cast<UTextBlock>(TransitionButtonWidget->WidgetTree->FindWidget(TEXT("ButtonText")));   
-                    TransitionText->SetText(FText::FromString(Prompt));
-                    TransitionText->SetColorAndOpacity(FSlateColor(FLinearColor(0.f, 0.f, 0.f, 1.f)));
-                    TransitionButton->AddChild(TransitionText);
-                    TransitionButton->LambdaEvent.BindLambda([this, Clue, TextInput]() 
-                    {
-                        GameState->ClueState = Clue;
-                        if (TextInput) 
-                        {
-                            GameState->UserInputValue = TextInput->GetText().ToString();
-                        }
-                        // re-run script selection logic  
-                        ParseConversationScript(GetScript());
-                        if (ScriptJsonObject)
-                        {
-                            AddDivider();
-                            ParseDialogue(ScriptJsonObject);
-                            PageDown();
-                        }
-                        else
-                        {
-                            UE_LOG(LogTemp, Error, TEXT("ParseDialogue; current script object is null"));
-                        }
-                    });
-                    TransitionButton->OnClicked.AddDynamic(TransitionButton, &ULambdaButton::ExecLambda);
-                    ConvoContainer->AddChild(TransitionButtonWidget);         
+                    UE_LOG(LogTemp, Error, TEXT("ProcessChoiceTransition; current script object is null"));
                 }
-                else if (Type.Equals(VALUE_TRANSITION_TYPE_DEADEND))
+            });        
+        }
+        else if (Type.Equals(VALUE_TRANSITION_TYPE_DEADEND))
+        {
+            ChoiceButton->LambdaEvent.BindLambda([this, Clue]() 
+            {
+                UE_LOG(LogTemp, Warning, TEXT("ProcessChoiceTransition; deadend saveconvo"));
+                GameState->ClueState = Clue;
+                // install clue derived behavior e.g. teleport player back to starting table.
+                DeriveDeadend(Clue);
+                ExecuteDefaultExitBehavior();
+            });
+        }
+    }
+}
+
+void UConversationStarter::ProcessDialogueTransition(TSharedPtr<FJsonObject> DialogueObject)
+{
+    // transition processing
+    const TSharedPtr<FJsonObject>* TransitionObjectPtr;
+    if (DialogueObject->TryGetObjectField(KEY_OBJECT_TRANSITION, TransitionObjectPtr))
+    {
+        // text input prompt processing
+        FString TextInputHint;
+        UEditableText* TextInput = nullptr;
+        if ((*TransitionObjectPtr)->TryGetStringField(KEY_STRING_INPUT, TextInputHint))
+        {
+            UE_LOG(LogTemp, Warning, TEXT("ProcessTransition; adding input UI with hint %s"), *TextInputHint);
+            auto* TextInputWidget = ConvoWidget->WidgetTree->ConstructWidget(TextInputWidgetClass);
+            TextInput = Cast<UEditableText>(TextInputWidget->WidgetTree->FindWidget(TEXT("TextInput")));
+            TextInput->SetHintText(FText::FromString(TextInputHint));
+            ConvoContainer->AddChild(TextInputWidget);
+        }
+        FString Clue = (*TransitionObjectPtr)->GetStringField(KEY_STRING_CLUE);
+        FString Type = (*TransitionObjectPtr)->GetStringField(KEY_STRING_TYPE);
+        FString Prompt = (*TransitionObjectPtr)->GetStringField(KEY_STRING_TEXT);
+        if (Type.Equals(VALUE_TRANSITION_TYPE_JUMP))
+        {
+            // create a transition button
+            auto* TransitionButtonWidget = ConvoWidget->WidgetTree->ConstructWidget(ButtonWidgetClass);
+            auto* TransitionButton = Cast<ULambdaButton>(TransitionButtonWidget->WidgetTree->FindWidget(TEXT("Button")));
+            auto* TransitionText = Cast<UTextBlock>(TransitionButtonWidget->WidgetTree->FindWidget(TEXT("ButtonText")));   
+            TransitionText->SetText(FText::FromString(Prompt));
+            TransitionText->SetColorAndOpacity(FSlateColor(FLinearColor(0.f, 0.f, 0.f, 1.f)));
+            TransitionButton->AddChild(TransitionText);
+            TransitionButton->LambdaEvent.BindLambda([this, Clue, TextInput]() 
+            {
+                GameState->ClueState = Clue;
+                if (TextInput) 
                 {
-                    // the editor will not let me change the name for some reason to correct the letter case *sigh*
-                    auto* ExitText = Cast<UTextBlock>(ConvoWidget->WidgetTree->FindWidget(TEXT("ExitTExt")));
-                    ExitText->SetText(FText::FromString(Prompt));
-                    auto* ExitButton = Cast<ULambdaButton>(ConvoWidget->WidgetTree->FindWidget(TEXT("ExitButton")));
-                    ExitButton->LambdaEvent.BindLambda([this, Clue]() 
-                    {
-                        UE_LOG(LogTemp, Warning, TEXT("ParseDialogue; deadend saveconvo"));
-                        GameState->ClueState = Clue;
-                        // install clue derived behavior e.g. teleport player back to starting table.
-                        DeriveDeadend(Clue);
-                        ExecuteDefaultExitBehavior();
-                    });
+                    GameState->UserInputValue = TextInput->GetText().ToString();
                 }
-            }
+                // re-run script selection logic  
+                ParseConversationScript(GetScript());
+                if (ScriptJsonObject)
+                {
+                    AddDivider();
+                    ParseDialogue(ScriptJsonObject);
+                    PageDown();
+                }
+                else
+                {
+                    UE_LOG(LogTemp, Error, TEXT("ParseDialogue; current script object is null"));
+                }
+            });
+            TransitionButton->OnClicked.AddDynamic(TransitionButton, &ULambdaButton::ExecLambda);
+            ConvoContainer->AddChild(TransitionButtonWidget);         
+        }
+        else if (Type.Equals(VALUE_TRANSITION_TYPE_DEADEND))
+        {
+            // the editor will not let me change the name for some reason to correct the letter case *sigh*
+            auto* ExitText = Cast<UTextBlock>(ConvoWidget->WidgetTree->FindWidget(TEXT("ExitTExt")));
+            ExitText->SetText(FText::FromString(Prompt));
+            auto* ExitButton = Cast<ULambdaButton>(ConvoWidget->WidgetTree->FindWidget(TEXT("ExitButton")));
+            ExitButton->LambdaEvent.BindLambda([this, Clue]() 
+            {
+                UE_LOG(LogTemp, Warning, TEXT("ParseDialogue; deadend saveconvo"));
+                GameState->ClueState = Clue;
+                // install clue derived behavior e.g. teleport player back to starting table.
+                DeriveDeadend(Clue);
+                ExecuteDefaultExitBehavior();
+            });
         }
     }
 }

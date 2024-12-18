@@ -11,5 +11,6 @@ const FString ARyddelmystGameState::STATE_CLUE_QYVNILY_GLORY_PERSPECTIVE{TEXT("g
 const FString ARyddelmystGameState::STATE_CLUE_YVYTEPH_UNDERCARRIAGE_CHECK_FAIL{TEXT("wanting_found_wanting")};
 const FString ARyddelmystGameState::STATE_CLUE_YVYTEPH_MASTERMIND_REJECTED_ANGEL{TEXT("rejected_angel")};
 const FString ARyddelmystGameState::STATE_CLUE_MAYA_EVIL_DETERMINATION{TEXT("Maya_Evil_Determination")};
+const FString ARyddelmystGameState::STATE_CLUE_MAYA_GOOD_DETERMINATION{TEXT("Maya_Good_Determination")};
 const FString ARyddelmystGameState::VALUE_INPUT_EGG_TOKEN{TEXT("egg")};
 const FString ARyddelmystGameState::VALUE_INPUT_LAVA_TOKEN{TEXT("lava")};
