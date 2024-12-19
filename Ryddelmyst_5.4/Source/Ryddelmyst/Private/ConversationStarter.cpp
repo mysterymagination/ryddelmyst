@@ -204,9 +204,15 @@ void UConversationStarter::DeriveDeadend(const FString& Clue)
     }
     else if (Clue == ARyddelmystGameState::STATE_CLUE_ENDING_PRACTICAL_PAWN)
     {
-        UE_LOG(LogTemp, Warning, TEXT("DeriveDeadend; %s bad ending!"), Clue);
-        // todo: lower conversation UI
-        // todo: bring up diary entry UI with entry about new sandbox world suspicions
+        UE_LOG(LogTemp, Warning, TEXT("DeriveDeadend; %s bad ending!"), *Clue);
+        // lower conversation UI
+        auto* HUD = UGameplayStatics::GetPlayerController(GetWorld(), 0)->GetHUD<ARyddelmystHUD>();
+        HUD->ExitConversation(ConvoWidget);
+        // bring up diary entry UI with entry about new sandbox world suspicions
+        FString PracticalPawnEpilogue;
+        FString EpiloguePath = FPaths::ProjectContentDir().Append(TEXT("Ryddelmyst_Assets/Text/PracticalPawnEpilogue.txt"));
+        FFileHelper::LoadFileToString(PracticalPawnEpilogue, *EpiloguePath);
+        HUD->ShowText(FText::FromString(TEXT("placeholder")));
         // todo: after player dismisses the diary entry UI, roll credits
     }
     else if (
@@ -216,8 +222,10 @@ void UConversationStarter::DeriveDeadend(const FString& Clue)
         Clue == ARyddelmystGameState::STATE_CLUE_ENDING_GOOD_DETERMINATION_HEAVENWARD 
     )
     {
-        UE_LOG(LogTemp, Warning, TEXT("DeriveDeadend; %s good or 'good' ending!"), Clue);
-        // todo: lower conversation UI; maybe run default exit behavior? Depends if we need the game unpaused to animate the credits roll. If so, then we'll want to take the player to an empty map so the game can be unpaused with nothing happening.
+        UE_LOG(LogTemp, Warning, TEXT("DeriveDeadend; %s good or 'good' ending!"), *Clue);
+        // lower conversation UI; maybe run default exit behavior? Depends if we need the game unpaused to animate the credits roll. If so, then we'll want to take the player to an empty map so the game can be unpaused with nothing happening.
+        auto* HUD = UGameplayStatics::GetPlayerController(GetWorld(), 0)->GetHUD<ARyddelmystHUD>();
+        HUD->ExitConversation(ConvoWidget);
         // todo: roll credits
     }
     else

@@ -56,6 +56,6 @@ public:
 	UPROPERTY()
 	int CurrentMonsterCount = 0;
 
-	UPROPERTY(EditAnywhere, Category = "Locations")
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Locations")
 	FVector PlayerStartPosition{-740.f, -509.f, 348.f};
 };
