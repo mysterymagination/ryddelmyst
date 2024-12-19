@@ -200,11 +200,13 @@ void UConversationStarter::DeriveDeadend(const FString& Clue)
         // todo: set player position a bit -Y relative to mastermind actor
         FVector DownstairsPos{-250.0f, -370.0, -470.0};
         UGameplayStatics::GetPlayerCharacter(GetWorld(), 0)->SetActorLocation(DownstairsPos);
+        ExecuteDefaultExitBehavior();
     }
     else
     {
         FVector StartPos = Cast<URyddelmystGameInstance>(UGameplayStatics::GetGameInstance(GetWorld()))->PlayerStartPosition;
         UGameplayStatics::GetPlayerCharacter(GetWorld(), 0)->SetActorLocation(StartPos);
+        ExecuteDefaultExitBehavior();
     }
 }
 
@@ -411,7 +413,7 @@ void UConversationStarter::InstallDefaultExitBehavior()
 
 void UConversationStarter::InstallQuestLogExitBehavior()
 {
-     auto* ExitButton = Cast<ULambdaButton>(ConvoWidget->WidgetTree->FindWidget(TEXT("ExitButton")));
+    auto* ExitButton = Cast<ULambdaButton>(ConvoWidget->WidgetTree->FindWidget(TEXT("ExitButton")));
     ExitButton->LambdaEvent.BindLambda([this]() 
     {
         UE_LOG(LogTemp, Warning, TEXT("InstallQuestLogExitBehavior; exit saveconvo"));
@@ -685,7 +687,6 @@ void UConversationStarter::ProcessDialogueTransition(TSharedPtr<FJsonObject> Dia
                 GameState->ClueState = Clue;
                 // install clue derived behavior e.g. teleport player back to starting table.
                 DeriveDeadend(Clue);
-                ExecuteDefaultExitBehavior();
             });
         }
     }

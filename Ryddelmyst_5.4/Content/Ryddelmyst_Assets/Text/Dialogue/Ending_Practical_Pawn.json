@@ -1,0 +1,43 @@
+{
+    "dialogue": [
+        {
+            "name": "Yvyteph Disappointment",
+            "image": "Yvyteph_WildForm_Sharp",
+            "lines": [
+                "Ah, here we are at the end together at last. How unfortunate that you were unable to bathe in passion as we directed you.",
+                "I don't know how our instructions could have been any clearer. Oh well, so it goes."
+            ] 
+        },
+        {
+            "name": "Maya's Confusion",
+            "image": "Maya_Confused",
+            "lines": [
+                "But I... what? The big fella's dead; isn't that what I was up to?"
+            ]
+        },
+        {
+            "name": "Qyvnily Rebuke",
+            "image": "Qyvnily_WildForm",
+            "lines": [
+                "Why would we want you to slay a monster for us? If we simply wanted him dead we would have done for him ourselves."
+            ],
+            "thoughts": [
+                "I never wanted to slay anything. But killing comes upon us, I suppose, inevitable as the cold light of dawn."
+            ]
+        },
+        {
+            "name": "Yvyteph Dismissal",
+            "image": "Yvyteph_WildForm",
+            "lines": [
+                "Nevermind the 'why' of your failure; all that matters now is that you have failed.",
+                "We are not without mercy, however, and we have learned a thing or two from our time with you; I will return you to Meigantu.",
+                "My priestesses there will decide what is to become of you, but I will instruct them to be kind. Relatively. A little."
+            ],
+            "transition": {
+                "text": "I don't like the sound of tha-!!!",
+                "type": "deadend",
+                "clue": "practical_pawn"
+            } 
+        }   
+    ]
+}

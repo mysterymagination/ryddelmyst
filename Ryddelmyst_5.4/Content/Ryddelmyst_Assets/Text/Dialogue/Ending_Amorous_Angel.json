@@ -59,7 +59,7 @@
                             ],
                             "transition": {
                                 "text": "Weeeeeee~",
-                                "type": "jump",
+                                "type": "deadend",
                                 "clue": "Maya_Good_Determination_Homeward_Bound"
                             }
                         }
@@ -76,7 +76,7 @@
                             ],
                             "transition": {
                                 "text": "Embrace your Desire!",
-                                "type": "jump",
+                                "type": "deadend",
                                 "clue": "Maya_Good_Determination_Heavenward"
                             }
                         }
