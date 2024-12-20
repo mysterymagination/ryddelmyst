@@ -224,8 +224,7 @@ void UConversationStarter::DeriveDeadend(const FString& Clue)
     {
         UE_LOG(LogTemp, Warning, TEXT("DeriveDeadend; %s good or 'good' ending!"), *Clue);
         // lower conversation UI; maybe run default exit behavior? Depends if we need the game unpaused to animate the credits roll. If so, then we'll want to take the player to an empty map so the game can be unpaused with nothing happening.
-        auto* HUD = UGameplayStatics::GetPlayerController(GetWorld(), 0)->GetHUD<ARyddelmystHUD>();
-        HUD->ExitConversation(ConvoWidget);
+        ExecuteDefaultExitBehavior();
         // todo: roll credits
     }
     else
@@ -261,7 +260,7 @@ FString UConversationStarter::CalculateScriptName(const FString& CharacterName)
         }
         else if (GameState->ClueState == ARyddelmystGameState::STATE_CLUE_MAYA_GOOD_DETERMINATION)
         {
-            ConvoScriptName = TEXT("Maya_Friendly_Mastery.json");
+            ConvoScriptName = TEXT("Ending_Amorous_Angel.json");
         }
         else if (GameState->WoodEggBeholden)
         {

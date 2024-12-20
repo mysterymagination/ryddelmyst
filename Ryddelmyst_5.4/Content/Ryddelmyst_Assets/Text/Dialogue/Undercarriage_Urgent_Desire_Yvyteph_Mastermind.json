@@ -33,6 +33,7 @@
                                 "I can't argue morals witha primordial goddess, I know that, although I kinda wanna, but anyway I can refuse to participate in this mess myself. So I do. Refuse, I mean. To do a murder."
                             ],
                             "transition": {
+                                "text": "So, um...",
                                 "type": "jump",
                                 "clue": "Maya_Good_Determination"
                             }
