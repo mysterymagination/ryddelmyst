@@ -594,3 +594,11 @@ bool ARyddelmystHUD::HideLibrary()
 	}
 	return false;
 }
+
+void ARyddelmystHUD::RollCredits()
+{
+	FString Credits;
+	FString CreditsPath = FPaths::ProjectContentDir().Append(TEXT("Ryddelmyst_Assets/Text/PrettyCredits.txt"));
+	FFileHelper::LoadFileToString(Credits, *CreditsPath);
+	// todo: inflate a BP_CreditsRoll blueprint widget and feed the Credits text content to it.
+}
