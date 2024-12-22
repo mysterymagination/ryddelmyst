@@ -220,3 +220,7 @@ Audio:
    17.1 Source: https://opengameart.org/content/202-more-sound-effects
    17.2 Authors: https://opengameart.org/users/owlishmedia
    17.3 License: CC0
+  18. Ryddelmyst/Content/Ryddelmyst_Assets/Audio/SpaceHeroes.ogg
+   18.1 Source: https://opengameart.org/content/space-shooter-music
+   18.2 Authors: https://opengameart.org/users/oblidivm
+   18.3 License: http://creativecommons.org/licenses/by/3.0/

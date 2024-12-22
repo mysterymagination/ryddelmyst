@@ -68,7 +68,7 @@ Hooray gamification!
 
 Jeff Creswell, https://github.com/mysterymagination
 
-Audio
+Audio/Muzak
 Thanks so much to the following OpenGameArt.org users for helping us give a voice to the world of Ryddelmyst!
 
 request
@@ -87,6 +87,7 @@ celestialghost8
 wobbleboxx, wobbleboxx.com
 vinrax, Vladislav Krotov, http://vinraxarts.ru
 owlishmedia
+oblidivm
 
 and an extra special thanks to the voice of Maya herself!
 
