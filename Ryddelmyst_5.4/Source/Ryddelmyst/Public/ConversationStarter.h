@@ -133,6 +133,8 @@ private:
 
 	TSharedPtr<FJsonObject> ScriptJsonObject{nullptr};
 
+	uint16_t ConvoTicker = 0.f;
+
 public:
 	static const FString KEY_ARRAY_DIALOGUE;
 	static const FString KEY_STRING_NAME;
@@ -164,7 +166,10 @@ public:
 	static const FString MATCHER_TEST;
 
 public:
+// generic platform time my left foot... `if platform has bsd time`, c'mon now Epic
+#if PLATFORM_HAS_BSD_TIME 
 	static FString PrettyTimestamp();
+#endif // PLATFORM_HAS_BSD_TIME 
 	/**
 	 * @brief Returns the JSON string content of the conversation script that should be used.
 	 * @param ConvoTx - the name of the Actor who instigated the conversation.

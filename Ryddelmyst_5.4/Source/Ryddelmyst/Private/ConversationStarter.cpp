@@ -106,6 +106,7 @@ void UConversationStarter::SaveConversation(const FString& ConvoName)
             // lookbehind for thoughts and operate on the tail of DialogueElements array, sticking a thoughts array onto 'im if relevant.
             if (DialogueWidget->IsA(ThoughtsWidgetClass_Player) || DialogueWidget->IsA(ThoughtsWidgetClass_Other))
             {
+                UE_LOG(LogTemp, Warning, TEXT("SaveConvo; found thought dialogue object with text %s"), *DialogueWidget->GetText().ToString());
                 TSharedPtr<FJsonValue> ThoughtText = MakeShareable(new FJsonValueString(DialogueWidget->GetText().ToString()));   
                 TArray<TSharedPtr<FJsonValue>> ThoughtsArray;
                 ThoughtsArray.Add(ThoughtText); 
@@ -114,6 +115,7 @@ void UConversationStarter::SaveConversation(const FString& ConvoName)
             }
             else
             {
+                UE_LOG(LogTemp, Warning, TEXT("SaveConvo; found spoken dialogue object with text %s"), *DialogueWidget->GetText().ToString());
                 // create a jsonvalueobject to be the dialogue element
                 TSharedPtr<FJsonObject> DialogueJsonObject = MakeShareable(new FJsonObject());
                 // extract portrait name code
@@ -140,6 +142,7 @@ void UConversationStarter::SaveConversation(const FString& ConvoName)
     FLibraryBookData Data;
     Data.LocalizedTitle = FText::FromString(ConvoName);
     Data.ConversationScript = OutputString;
+    UE_LOG(LogTemp, Warning, TEXT("SaveConvo; script string says: %s"), *OutputString);
     auto* HUD = UGameplayStatics::GetPlayerController(GetWorld(), 0)->GetHUD<ARyddelmystHUD>();
     HUD->AddLore(Data);
 }
@@ -345,7 +348,7 @@ FString UConversationStarter::CalculateScriptName(const FString& CharacterName)
         }
         else
         {
-		    ConvoScriptName = TEXT("TestJSON.json");
+		    ConvoScriptName = TEXT("TestJSONChoiceGhosts.json");
         }
 	}
 	
@@ -414,7 +417,7 @@ FString UConversationStarter::MatchCharacter(const FString& ActorName)
 void UConversationStarter::ExecuteDefaultExitBehavior()
 {
     auto* HUD = UGameplayStatics::GetPlayerController(GetWorld(), 0)->GetHUD<ARyddelmystHUD>();
-    FString ConvoTrace = MatchCharacter(ConvoTx).Append(TEXT(" to ")).Append(MatchCharacter(ConvoRx)).Append(TEXT(" ")).Append(PrettyTimestamp()).Append(TEXT(".txt"));
+    FString ConvoTrace = MatchCharacter(ConvoTx).Append(TEXT(" to ")).Append(MatchCharacter(ConvoRx)).Append(TEXT(" ")).Append(FString::FromInt(ConvoTicker)).Append(TEXT(".txt"));
     SaveConversation(ConvoTrace);
     HUD->ExitConversation(ConvoWidget);
     APlayerController* PlayerController = UGameplayStatics::GetPlayerController(GetWorld(), 0);
@@ -571,6 +574,21 @@ void UConversationStarter::ParseDialogue(TSharedPtr<FJsonObject> DialogueObject)
 						
                         if (ChoiceJsonObject->HasField(KEY_ARRAY_DIALOGUE))
                         {
+                            for (auto ChoiceDialogueElement : ChoiceJsonObject->GetArrayField(KEY_ARRAY_DIALOGUE))
+                            {
+                                UE_LOG(LogTemp, Warning, TEXT("ParseDialogue; got dialogue element in dialogues array under choice object"));
+                                const TSharedPtr<FJsonObject>* ChoiceDialogueElementObject;
+                                if (ChoiceDialogueElement->TryGetObject(ChoiceDialogueElementObject))
+                                {
+                                    for (auto ChoiceDialogueLine : (*ChoiceDialogueElementObject)->GetArrayField(KEY_ARRAY_LINES))
+                                    {
+                               
+                                
+                                        UE_LOG(LogTemp, Warning, TEXT("ParseDialogue; got dialogue line under choice with text value: %s"), *ChoiceDialogueLine->AsString());
+                                    }
+                                }
+                            }
+
                             // install subdialogue elements to OnClick lambda event   
                             ChoiceButton->LambdaEvent.BindLambda([this, ChoiceJsonObject]() 
                             {
@@ -729,6 +747,7 @@ void UConversationStarter::PageDown()
     ConvoContainer->SetScrollOffset(ScrollOffset);
 }
 
+#if PLATFORM_HAS_BSD_TIME 
 FString UConversationStarter::PrettyTimestamp()
 {
     int32 Year, Month, DayOfWeek, Day, Hour, Min, Sec, MSec;
@@ -736,3 +755,4 @@ FString UConversationStarter::PrettyTimestamp()
     FString Timestamp = FString::FromInt(Year).Append(TEXT("-")).Append(FString::FromInt(Month)).Append(TEXT("-")).Append(FString::FromInt(Day)).Append(TEXT("-")).Append(FString::FromInt(Hour)).Append(TEXT("-")).Append(FString::FromInt(Min)).Append(TEXT("-")).Append(FString::FromInt(Sec));
     return Timestamp;
 }
+#endif // PLATFORM_HAS_BSD_TIME 

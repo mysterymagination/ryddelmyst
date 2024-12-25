@@ -215,6 +215,9 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "Lore")
 	FLibraryBookData PullUnshelved(ELibraryCat Category);
 
+	UFUNCTION(BlueprintCallable, Category = "Lore")
+	void RollCredits();
+
 private:
 	/** Crosshair asset pointer */
 	UPROPERTY()
