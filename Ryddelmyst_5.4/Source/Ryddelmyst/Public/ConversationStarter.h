@@ -135,6 +135,13 @@ private:
 
 	uint16_t ConvoTicker = 0.f;
 
+	/**
+	 * Steps through and prints the contents of a dialogue array child of the given host object.
+	 * @param Tag - string indicating where the heck we're coming from.
+	 * @param HostObject - the JSON object parent of the dialogue array.
+	 */
+	void PrintDialogueChild(FString Tag, TSharedPtr<FJsonObject> HostObject);
+
 public:
 	static const FString KEY_ARRAY_DIALOGUE;
 	static const FString KEY_STRING_NAME;

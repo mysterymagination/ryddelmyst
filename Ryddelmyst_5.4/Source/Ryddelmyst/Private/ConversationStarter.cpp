@@ -91,14 +91,9 @@ void UConversationStarter::Init(const FString& _ConvoTx, const FString& _ConvoRx
 
 void UConversationStarter::SaveConversation(const FString& ConvoName)
 {
-    // step through the ConvoWidget widgettree and write equivalent JSON for each dialogue UI element, 
-    //  to be loaded from quest log at any time using PaseConversationScript(). Skip wrapper parts of convowidget like exit button?
     TSharedPtr<FJsonObject> ConvoJsonObject = MakeShareable(new FJsonObject());
     TArray<TSharedPtr<FJsonValue>> DialogueElements;
     ConvoWidget->WidgetTree->ForEachWidget([&](UWidget* Widget) {
-        // look at widget type and/or name to figure out:
-        //  1. Should it be included in the logged convo? e.g. dialogue text and portrait but not choices buttons.
-        //  2. What JSON subobject should be written to ConvoJsonObject, and what should its contents be? e.g. dialouge element with text and portrait.
         // write player dialogue widget element out to json
         auto* DialogueWidget = Cast<UTextDisplayWidget>(Widget);
         if (DialogueWidget)
@@ -113,7 +108,7 @@ void UConversationStarter::SaveConversation(const FString& ConvoName)
                 auto DialogueElementTail = DialogueElements.Last()->AsObject();
                 DialogueElementTail->SetArrayField(KEY_ARRAY_THOUGHTS, ThoughtsArray);
             }
-            else
+            else if (DialogueWidget->IsA(DialogueWidgetClass_Player) || DialogueWidget->IsA(DialogueWidgetClass_Other))
             {
                 UE_LOG(LogTemp, Warning, TEXT("SaveConvo; found spoken dialogue object with text %s"), *DialogueWidget->GetText().ToString());
                 // create a jsonvalueobject to be the dialogue element
@@ -128,6 +123,10 @@ void UConversationStarter::SaveConversation(const FString& ConvoName)
                 TArray<TSharedPtr<FJsonValue>> LinesArray;
                 LinesArray.Add(FullText); 
                 DialogueJsonObject->SetArrayField(KEY_ARRAY_LINES, LinesArray);
+            }
+            else 
+            {
+                UE_LOG(LogTemp, Error, TEXT("SaveConvo; unexpected widget match to textdisplaywidget with class %s"), *Widget->GetClass()->GetName());
             }
         }
     });
@@ -486,8 +485,38 @@ void UConversationStarter::ParseConversationScript(const FString& Script)
     }
 }
 
+void UConversationStarter::PrintDialogueChild(FString Tag, TSharedPtr<FJsonObject> HostObject)
+{
+    for (auto DialogueElement : HostObject->GetArrayField(KEY_ARRAY_DIALOGUE))
+    {
+        UE_LOG(LogTemp, Warning, TEXT("PrintDialogueChild %s; got dialogue element in dialogues array"), *Tag);
+        const TSharedPtr<FJsonObject>* DialogueElementObject;
+        if (DialogueElement->TryGetObject(DialogueElementObject))
+        {
+            if ((*DialogueElementObject)->HasField(KEY_STRING_NAME))
+            {
+                UE_LOG(LogTemp, Warning, TEXT("PrintDialogueChild %s; got name: %s"), *Tag, *(*DialogueElementObject)->GetStringField(KEY_STRING_NAME));
+            }
+
+            UE_LOG(LogTemp, Warning, TEXT("PrintDialogueChild %s; got image: %s"), *Tag, *(*DialogueElementObject)->GetStringField(KEY_STRING_IMAGE));
+
+            bool LinesFound = false;
+            for (auto DialogueLine : (*DialogueElementObject)->GetArrayField(KEY_ARRAY_LINES))
+            {
+                UE_LOG(LogTemp, Warning, TEXT("PrintDialogueChild %s; got dialogue line under choice with text value: %s"), *Tag, *DialogueLine->AsString());
+                LinesFound = true;
+            }
+            if (!LinesFound)
+            {
+                UE_LOG(LogTemp, Warning, TEXT("PrintDialogueChild %s; no dialogue lines found"), *Tag);
+            }
+        }
+    }
+}
+
 void UConversationStarter::ParseDialogue(TSharedPtr<FJsonObject> DialogueObject)
 {
+    PrintDialogueChild(TEXT("Top of ParseDialogue()"), DialogueObject);
     for (auto DialogueElement : DialogueObject->GetArrayField(KEY_ARRAY_DIALOGUE))
     {
         UE_LOG(LogTemp, Warning, TEXT("ParseDialogue; got dialogue element in dialogues array"));
@@ -574,20 +603,7 @@ void UConversationStarter::ParseDialogue(TSharedPtr<FJsonObject> DialogueObject)
 						
                         if (ChoiceJsonObject->HasField(KEY_ARRAY_DIALOGUE))
                         {
-                            for (auto ChoiceDialogueElement : ChoiceJsonObject->GetArrayField(KEY_ARRAY_DIALOGUE))
-                            {
-                                UE_LOG(LogTemp, Warning, TEXT("ParseDialogue; got dialogue element in dialogues array under choice object"));
-                                const TSharedPtr<FJsonObject>* ChoiceDialogueElementObject;
-                                if (ChoiceDialogueElement->TryGetObject(ChoiceDialogueElementObject))
-                                {
-                                    for (auto ChoiceDialogueLine : (*ChoiceDialogueElementObject)->GetArrayField(KEY_ARRAY_LINES))
-                                    {
-                               
-                                
-                                        UE_LOG(LogTemp, Warning, TEXT("ParseDialogue; got dialogue line under choice with text value: %s"), *ChoiceDialogueLine->AsString());
-                                    }
-                                }
-                            }
+                            PrintDialogueChild(TEXT("Choice Behavior Installation"), ChoiceJsonObject);
 
                             // install subdialogue elements to OnClick lambda event   
                             ChoiceButton->LambdaEvent.BindLambda([this, ChoiceJsonObject]() 
