@@ -144,6 +144,8 @@ void UConversationStarter::SaveConversation(const FString& ConvoName)
     UE_LOG(LogTemp, Warning, TEXT("SaveConvo; script string says: %s"), *OutputString);
     auto* HUD = UGameplayStatics::GetPlayerController(GetWorld(), 0)->GetHUD<ARyddelmystHUD>();
     HUD->AddLore(Data);
+
+    ConvoTicker++;
 }
 
 FString UConversationStarter::GetScript()
@@ -428,19 +430,34 @@ void UConversationStarter::ExecuteDefaultExitBehavior()
 void UConversationStarter::InstallDefaultExitBehavior()
 {
     // find the exit convo button and install default exit convo behavior
-    auto* ExitButton = Cast<ULambdaButton>(ConvoWidget->WidgetTree->FindWidget(TEXT("ExitButton")));
+    auto* ExitButton = GetExitButton();
+    ExitButton->LambdaEvent.Unbind();
     ExitButton->LambdaEvent.BindLambda([this]() 
     {
         UE_LOG(LogTemp, Warning, TEXT("InstallDefaultExitBehavior; exit saveconvo"));
         // exit conversation normally
         ExecuteDefaultExitBehavior();
     });
-    ExitButton->OnClicked.AddDynamic(ExitButton, &ULambdaButton::ExecLambda);
+}
+
+ULambdaButton* UConversationStarter::GetExitButton()
+{
+    auto* ExitButton = Cast<ULambdaButton>(ConvoWidget->WidgetTree->FindWidget(TEXT("ExitButton")));
+    if (ExitButton)
+    {
+        return ExitButton;
+    }
+    else
+    {
+        UE_LOG(LogTemp, Error, TEXT("GetExitButton; exit button not found in convo widget"));
+        return nullptr;
+    }
 }
 
 void UConversationStarter::InstallQuestLogExitBehavior()
 {
-    auto* ExitButton = Cast<ULambdaButton>(ConvoWidget->WidgetTree->FindWidget(TEXT("ExitButton")));
+    auto* ExitButton = GetExitButton();
+    ExitButton->LambdaEvent.Unbind();
     ExitButton->LambdaEvent.BindLambda([this]() 
     {
         UE_LOG(LogTemp, Warning, TEXT("InstallQuestLogExitBehavior; exit saveconvo"));
@@ -448,7 +465,6 @@ void UConversationStarter::InstallQuestLogExitBehavior()
         auto* HUD = UGameplayStatics::GetPlayerController(GetWorld(), 0)->GetHUD<ARyddelmystHUD>();
         HUD->ExitConversation(ConvoWidget);
     });
-    ExitButton->OnClicked.AddDynamic(ExitButton, &ULambdaButton::ExecLambda);
 }
 
 UUserWidget* UConversationStarter::GenerateConversationUI(const FString& Script)
@@ -456,6 +472,9 @@ UUserWidget* UConversationStarter::GenerateConversationUI(const FString& Script)
     /// UI setup ///
     ConvoWidget = CreateWidget<UUserWidget>(GetWorld(), ConvoBaseWidgetClass);
     ConvoContainer = Cast<UScrollBox>(ConvoWidget->WidgetTree->FindWidget(TEXT("DialogueScrollBox")));
+
+    auto* ExitButton = GetExitButton();
+    ExitButton->OnClicked.AddDynamic(ExitButton, &ULambdaButton::ExecLambda);
     InstallDefaultExitBehavior();
 
     /// script parsing ///
