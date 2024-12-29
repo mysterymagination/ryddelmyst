@@ -220,7 +220,35 @@ Audio:
    17.1 Source: https://opengameart.org/content/202-more-sound-effects
    17.2 Authors: https://opengameart.org/users/owlishmedia
    17.3 License: CC0
-  18. Ryddelmyst/Content/Ryddelmyst_Assets/Audio/SpaceHeroes.ogg
-   18.1 Source: https://opengameart.org/content/space-shooter-music
+  18. Ryddelmyst/Content/Ryddelmyst_Assets/Audio/ending_themes/amorousangel/ascension.ogg and laserrain.ogg
+   18.1 Source: https://opengameart.org/content/space-shooter-music (Space Heroes.ogg and Rain of Lasers.ogg)
    18.2 Authors: https://opengameart.org/users/oblidivm
    18.3 License: http://creativecommons.org/licenses/by/3.0/
+  19. Ryddelmyst/Content/Ryddelmyst_Assets/Audio/ending_themes/practicalpawn/peasantsrejoice.wav
+   19.1 Source: https://opengameart.org/content/victory-2
+   19.2 Authors: https://opengameart.org/users/jkfite01, Composed by: Jon K. Fite
+   19.3 License: http://creativecommons.org/licenses/by/3.0/
+  20. Ryddelmyst/Content/Ryddelmyst_Assets/Audio/ending_themes/practicalpawn/unsettlement.wav
+   20.1 Source: https://opengameart.org/content/horror-unsettling-victory-loop
+   20.2 Authors: https://opengameart.org/users/clement-panchout-composer, Credits : Clement Panchout http://www.clementpanchout.com/
+   20.3 License: https://creativecommons.org/licenses/by/4.0/
+  21. Ryddelmyst/Content/Ryddelmyst_Assets/Audio/ending_themes/cravingqueen/longwayhome.wav
+   21.1 Source: https://opengameart.org/content/long-away-home-8bit
+   21.2 Authors: https://opengameart.org/users/nene
+   21.3 License: CC0
+  22. Ryddelmyst/Content/Ryddelmyst_Assets/Audio/ending_themes/cravingqueen/wrongwayround.wav
+   22.1 Source: https://opengameart.org/content/boss-battle-3-alternate-8-bit
+   22.2 Authors: https://opengameart.org/users/nene
+   22.3 License: CC0
+  23. Ryddelmyst/Content/Ryddelmyst_Assets/Audio/SFX/avalanche.flac
+   23.1 Source: https://opengameart.org/content/rockbreaking
+   23.2 Authors: http://apricot.blender.org/, submitted by https://opengameart.org/users/lamoot
+   23.3 License: http://creativecommons.org/licenses/by/3.0/
+  24. Ryddelmyst/Content/Ryddelmyst_Assets/Audio/SFX/eightbitbomb.wav
+   24.1 Source: https://opengameart.org/content/bombexplosion8bit
+   24.2 Authors: https://opengameart.org/users/lukerustltd, http://www.rustltd.com/
+   24.3 License: CC0
+  25. Ryddelmyst/Content/Ryddelmyst_Assets/Audio/SFX/lava.flac
+   25.1 Source: https://opengameart.org/content/lava-splash
+   25.2 Authors: Michel Baradari http://apollo-music.de/, submitted by https://opengameart.org/users/qubodup
+   25.3 License: CC0
