@@ -230,6 +230,9 @@ private:
 	class UTextDisplayWidget* StatusWidget;
 
 	UPROPERTY(EditAnywhere, Category = "GameState")
+	TSubclassOf<class UUserWidget> CreditsWidgetClass;
+	
+	UPROPERTY(EditAnywhere, Category = "GameState")
 	TSubclassOf<class UUserWidget> PauseMenuWidgetClass;
 
 	UPROPERTY(EditAnywhere, Category = "GameState")

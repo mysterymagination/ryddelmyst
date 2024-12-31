@@ -18,6 +18,7 @@
 #include "LibraryBookWidget.h"
 #include "Describable.h"
 #include "RyddelmystGameState.h"
+#include "Components/TextBlock.h"
 
 ARyddelmystHUD::ARyddelmystHUD()
 {
@@ -48,6 +49,9 @@ ARyddelmystHUD::ARyddelmystHUD()
 
 	static ConstructorHelpers::FClassFinder<UUserWidget> BookTextWidgetObj(TEXT("/Game/Ryddelmyst_Assets/UI/BP_BookTextDisplay"));
 	BookTextWidgetClass = BookTextWidgetObj.Class;
+
+	static ConstructorHelpers::FClassFinder<UUserWidget> CreditsWidgetObj(TEXT("/Game/Ryddelmyst_Assets/UI/BP_CreditsRoll"));
+	CreditsWidgetClass = CreditsWidgetObj.Class;
 }
 
 
@@ -600,5 +604,8 @@ void ARyddelmystHUD::RollCredits()
 	FString Credits;
 	FString CreditsPath = FPaths::ProjectContentDir().Append(TEXT("Ryddelmyst_Assets/Text/PrettyCredits.txt"));
 	FFileHelper::LoadFileToString(Credits, *CreditsPath);
-	// todo: inflate a BP_CreditsRoll blueprint widget and feed the Credits text content to it.
+	auto* CreditsWidget = CreateWidget<UUserWidget>(GetWorld(), CreditsWidgetClass);
+	auto* CreditsText = CreditsWidget->WidgetTree->FindWidget<UTextBlock>(FName("CreditsTextBlock"));
+	CreditsText->SetText(FText::FromString(Credits));
+	CreditsWidget->AddToViewport();
 }

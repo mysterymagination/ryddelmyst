@@ -61,7 +61,7 @@
                             "transition": {
                                 "text": "Weeeeeee~",
                                 "type": "deadend",
-                                "clue": "Maya_Wild_Determination_Homeward"
+                                "clue": "craving_queen_homeward"
                             }
                         }
                     ]
@@ -78,7 +78,7 @@
                             "transition": {
                                 "text": "Embrace your Desire!",
                                 "type": "deadend",
-                                "clue": "Maya_Wild_Determination_Heavenward"
+                                "clue": "craving_queen_heavenward"
                             }
                         }
                     ]

@@ -60,7 +60,7 @@
                             "transition": {
                                 "text": "Weeeeeee~",
                                 "type": "deadend",
-                                "clue": "Maya_Good_Determination_Homeward"
+                                "clue": "amorous_angel_homeward"
                             }
                         }
                     ]
@@ -77,7 +77,7 @@
                             "transition": {
                                 "text": "Embrace your Desire!",
                                 "type": "deadend",
-                                "clue": "Maya_Good_Determination_Heavenward"
+                                "clue": "amorous_angel_heavenward"
                             }
                         }
                     ]

@@ -24,7 +24,7 @@
                             "transition": {
                                 "text": "Let the hunt begin!",
                                 "type": "deadend",
-                                "clue": "Maya_Evil_Determination"
+                                "clue": "maya_evil_determination"
                             }
                         }
                     ]
@@ -42,7 +42,7 @@
                             "transition": {
                                 "text": "You tell her!",
                                 "type": "jump",
-                                "clue": "Maya_Good_Determination"
+                                "clue": "maya_good_determination"
                             }
                         }
                     ]

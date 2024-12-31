@@ -43,7 +43,7 @@
                             "transition": {
                                 "text": "BOOM mic drop answer!",
                                 "type": "jump",
-                                "clue": "Input_Cruelty_Query",
+                                "clue": "input_cruelty_query",
                                 "input": "How might one exploit the lure of love?"
                             }
                         }
