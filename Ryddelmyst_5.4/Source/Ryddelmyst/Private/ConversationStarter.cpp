@@ -220,10 +220,10 @@ void UConversationStarter::DeriveDeadend(const FString& Clue)
         // todo: after player dismisses the diary entry UI, roll credits
     }
     else if (
-        Clue == ARyddelmystGameState::STATE_CLUE_ENDING_WILD_DETERMINATION_HOMEWARD || 
-        Clue == ARyddelmystGameState::STATE_CLUE_ENDING_WILD_DETERMINATION_HEAVENWARD ||
-        Clue == ARyddelmystGameState::STATE_CLUE_ENDING_GOOD_DETERMINATION_HOMEWARD ||
-        Clue == ARyddelmystGameState::STATE_CLUE_ENDING_GOOD_DETERMINATION_HEAVENWARD 
+        Clue == ARyddelmystGameState::STATE_CLUE_ENDING_CRAVING_QUEEN_HOMEWARD || 
+        Clue == ARyddelmystGameState::STATE_CLUE_ENDING_CRAVING_QUEEN_HEAVENWARD ||
+        Clue == ARyddelmystGameState::STATE_CLUE_ENDING_AMOROUS_ANGEL_HOMEWARD ||
+        Clue == ARyddelmystGameState::STATE_CLUE_ENDING_AMOROUS_ANGEL_HEAVENWARD 
     )
     {
         UE_LOG(LogTemp, Warning, TEXT("DeriveDeadend; %s good or 'good' ending!"), *Clue);

@@ -12,8 +12,10 @@ const FString ARyddelmystGameState::STATE_CLUE_YVYTEPH_UNDERCARRIAGE_CHECK_FAIL{
 const FString ARyddelmystGameState::STATE_CLUE_YVYTEPH_MASTERMIND_REJECTED_ANGEL{TEXT("rejected_angel")};
 const FString ARyddelmystGameState::STATE_CLUE_MAYA_EVIL_DETERMINATION{TEXT("maya_evil_determination")};
 const FString ARyddelmystGameState::STATE_CLUE_MAYA_GOOD_DETERMINATION{TEXT("maya_good_determination")};
+const FString ARyddelmystGameState::STATE_CLUE_ENDING_AMOROUS_ANGEL{TEXT("amorous_angel")};
 const FString ARyddelmystGameState::STATE_CLUE_ENDING_AMOROUS_ANGEL_HOMEWARD{TEXT("amorous_angel_homeward")};
 const FString ARyddelmystGameState::STATE_CLUE_ENDING_AMOROUS_ANGEL_HEAVENWARD{TEXT("amorous_angel_heavenward")};
+const FString ARyddelmystGameState::STATE_CLUE_ENDING_CRAVING_QUEEN{TEXT("craving_queen")};
 const FString ARyddelmystGameState::STATE_CLUE_ENDING_CRAVING_QUEEN_HOMEWARD{TEXT("craving_queen_homeward")};
 const FString ARyddelmystGameState::STATE_CLUE_ENDING_CRAVING_QUEEN_HEAVENWARD{TEXT("craving_queen_heavenward")};
 const FString ARyddelmystGameState::STATE_CLUE_ENDING_PRACTICAL_PAWN{TEXT("practical_pawn")};
