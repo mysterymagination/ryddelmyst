@@ -599,13 +599,34 @@ bool ARyddelmystHUD::HideLibrary()
 	return false;
 }
 
-void ARyddelmystHUD::RollCredits()
+void ARyddelmystHUD::RollCredits(const FString& EndingContext)
 {
+	FString Ending;
+	if (EndingContext == ARyddelmystGameState::STATE_CLUE_ENDING_PRACTICAL_PAWN)
+	{
+		Ending = "Ending 1 of 5: Practical Pawn";
+	}
+	else if (EndingContext == ARyddelmystGameState::STATE_CLUE_ENDING_CRAVING_QUEEN_HOMEWARD)
+	{
+		Ending = "Ending 2 of 5: Craving Queen, Homeward";
+	}
+	else if (EndingContext == ARyddelmystGameState::STATE_CLUE_ENDING_CRAVING_QUEEN_HEAVENWARD)
+	{
+		Ending = "Ending 3 of 5: Craving Queen, Ascension";
+	}
+	else if (EndingContext == ARyddelmystGameState::STATE_CLUE_ENDING_AMOROUS_ANGEL_HOMEWARD)
+	{
+		Ending = "Ending 4 of 5: Amorous Angel, Homeward";
+	}
+	else if (EndingContext == ARyddelmystGameState::STATE_CLUE_ENDING_AMOROUS_ANGEL_HEAVENWARD)
+	{
+		Ending = "Ending 5 of 5: Amorous Angel, Ascension";
+	}
 	FString Credits;
 	FString CreditsPath = FPaths::ProjectContentDir().Append(TEXT("Ryddelmyst_Assets/Text/PrettyCredits.txt"));
 	FFileHelper::LoadFileToString(Credits, *CreditsPath);
 	auto* CreditsWidget = CreateWidget<UUserWidget>(GetWorld(), CreditsWidgetClass);
 	auto* CreditsText = CreditsWidget->WidgetTree->FindWidget<UTextBlock>(FName("CreditsTextBlock"));
-	CreditsText->SetText(FText::FromString(Credits));
+	CreditsText->SetText(FText::FromString(Credits + TEXT("\n") + Ending));
 	CreditsWidget->AddToViewport();
 }

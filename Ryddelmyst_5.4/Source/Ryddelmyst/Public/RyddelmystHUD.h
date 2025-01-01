@@ -47,6 +47,12 @@ public:
 	void ScrollTextDown();
 
 	/**
+	 * Gives access to the TextWidget so we can search for the exit button and install variant behavior e.g. for the Practical Pawn ending.
+	 */
+	UFUNCTION()
+	class UTextDisplayWidget* GetTextWidget() { return TextWidget; };
+
+	/**
 	 * @return true if the dialogue box is displayed in the status widget, false otherwise
 	 */
 	UFUNCTION()
@@ -215,8 +221,12 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "Lore")
 	FLibraryBookData PullUnshelved(ELibraryCat Category);
 
+	/**
+	 * Raises the credits UI widget and begins its animation.
+	 * @param EndingContext - the ending clue string identifying the ending reached by the player; this will be prettified and displayed after the credits.
+	 */
 	UFUNCTION(BlueprintCallable, Category = "Lore")
-	void RollCredits();
+	void RollCredits(const FString& EndingContext);
 
 private:
 	/** Crosshair asset pointer */

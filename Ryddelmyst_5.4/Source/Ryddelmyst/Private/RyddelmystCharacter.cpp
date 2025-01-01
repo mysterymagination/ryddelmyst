@@ -164,6 +164,10 @@ void ARyddelmystCharacter::BeginPlay()
 	{
 		UE_LOG(LogTemp, Warning, TEXT("BeginPlay; character stats undefined"));
 	}
+
+	FScriptDelegate QuestCompletionDelegate;
+	OverlapBeginDelegate.BindUFunction(this, FName("OnQuestComplete"));
+	Cast<URyddelmystGameInstance>(GetWorld()->GetGameInstance())->GetEventManager()->QuestCompletionEvent.Add(QuestCompletionDelegate);
 }
 
 void ARyddelmystCharacter::Tick(float DeltaTime)
@@ -1100,6 +1104,25 @@ void ARyddelmystCharacter::OnOverlapBegin(class UPrimitiveComponent* OverlappedC
 	{
 		AddInventoryItemFromActor(ItemActor);
 	}
+}
+
+void ARyddelmystCharacter::OnQuestComplete(const FString& QuestCompleteContext)
+{
+	// set gamestate clue to quest completion context
+	auto* GameState = GetWorld()->GetGameState<ARyddelmystGameState>();
+	GameState->ClueState = QuestCompleteContext;
+
+	// todo: move this pause game for UI business into a utility someplace
+	Cast<URyddelmystGameInstance>(GetWorld()->GetGameInstance())->Pause();
+	APlayerController* PlayerController = UGameplayStatics::GetPlayerController(GetWorld(), 0);
+	PlayerController->SetShowMouseCursor(true);
+	UWidgetBlueprintLibrary::SetInputMode_UIOnlyEx(PlayerController);
+
+	// load up a conversationstarter, it selects the appropriate end script from gamestate clue
+	auto* ConversationStarter = NewObject<UConversationStarter>(this);
+	ConversationStarter->Init(TEXT(""), TEXT(""), FName(TEXT("")), GameState);
+	auto* ConversationUI = ConversationStarter->GenerateConversationUI(ConversationStarter->GetScript());
+	HUD->ShowConversation(ConversationUI);
 }
 
 bool ARyddelmystCharacter::AddInventoryItemFromActor(AItemActor* ItemActor)

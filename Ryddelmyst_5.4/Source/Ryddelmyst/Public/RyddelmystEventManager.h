@@ -11,7 +11,7 @@ DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FWoodEggDangerEvent, bool, InDanger)
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FWoodEggDeathEvent, FVector, DeathLocation);
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FSplineGuideCompletionEvent, USplineGuideComponent*, InCompletedSplineGuideComponent);
 DECLARE_DYNAMIC_MULTICAST_DELEGATE(FPlayerDeathEvent);
-DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FQuestCompletionEvent, FString, ContextClue);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FQuestCompletionEvent, const FString&, QuestCompleteContext);
 
 /**
  * Home to Ryddelmyst game events that any Actor can register for and indirectly signal.
@@ -45,8 +45,8 @@ public:
 
 	/**
 	 * Broadcasts when the player has satisfied an endgame condition e.g. slaying the Reaper Treant.
-	 * @param ContextClue - a string explaining the manner in which endgame was reached e.g. craving_queen
+	 * @param QuestCompleteContext - a string explaining the manner in which endgame was reached e.g. craving_queen
 	 */
-	UPROPERTY(BlueprintAssignable)
+	UPROPERTY(BlueprintAssignable, BlueprintCallable, BlueprintReadOnly)
 	FQuestCompletionEvent QuestCompletionEvent;
 };

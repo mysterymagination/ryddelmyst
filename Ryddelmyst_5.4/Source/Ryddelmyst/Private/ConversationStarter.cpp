@@ -216,8 +216,22 @@ void UConversationStarter::DeriveDeadend(const FString& Clue)
         FString PracticalPawnEpilogue;
         FString EpiloguePath = FPaths::ProjectContentDir().Append(TEXT("Ryddelmyst_Assets/Text/PracticalPawnEpilogue.txt"));
         FFileHelper::LoadFileToString(PracticalPawnEpilogue, *EpiloguePath);
-        HUD->ShowText(FText::FromString(TEXT("placeholder")));
-        // todo: after player dismisses the diary entry UI, roll credits
+        // install behavior to the text back button such that after player dismisses the diary entry UI, we roll credits. Also should change the button text to something like 'thx ily bye'
+        auto* TextWidget = HUD->GetTextWidget();
+        auto* TextExitText = Cast<UTextBlock>(TextWidget->WidgetTree->FindWidget(TEXT("ExitText")));
+        TextExitText->SetText(FText::FromString(TEXT("love ya, mean it!")));
+        auto* TextExitButton = Cast<ULambdaButton>(TextWidget->WidgetTree->FindWidget(TEXT("ExitButton")));
+        TextExitButton->LambdaEvent.BindLambda([&]() 
+        {
+            // exit conversation UI 
+            auto* HUD = UGameplayStatics::GetPlayerController(GetWorld(), 0)->GetHUD<ARyddelmystHUD>();
+            HUD->ExitConversation(ConvoWidget);
+            // roll credits
+            HUD->RollCredits(Clue);
+        });
+        TextExitButton->OnClicked.AddDynamic(TextExitButton, &ULambdaButton::ExecLambda);
+
+        HUD->ShowText(FText::FromString(PracticalPawnEpilogue));
     }
     else if (
         Clue == ARyddelmystGameState::STATE_CLUE_ENDING_CRAVING_QUEEN_HOMEWARD || 
@@ -227,9 +241,11 @@ void UConversationStarter::DeriveDeadend(const FString& Clue)
     )
     {
         UE_LOG(LogTemp, Warning, TEXT("DeriveDeadend; %s good or 'good' ending!"), *Clue);
-        // lower conversation UI; maybe run default exit behavior? Depends if we need the game unpaused to animate the credits roll. If so, then we'll want to take the player to an empty map so the game can be unpaused with nothing happening.
-        ExecuteDefaultExitBehavior();
-        // todo: roll credits
+        // exit conversation UI 
+        auto* HUD = UGameplayStatics::GetPlayerController(GetWorld(), 0)->GetHUD<ARyddelmystHUD>();
+        HUD->ExitConversation(ConvoWidget);
+        // roll credits
+        HUD->RollCredits(Clue);
     }
     else
     {
@@ -264,6 +280,13 @@ FString UConversationStarter::CalculateScriptName(const FString& CharacterName)
         }
         else if (GameState->ClueState == ARyddelmystGameState::STATE_CLUE_MAYA_GOOD_DETERMINATION)
         {
+            // need to remove exit button behavior and change to cheeky block text; I don't like the side effect, but placing this in ParseConvoScript() would require checking for the exact amorousangel script name and have a side effect there... 
+            auto* ExitButton = GetExitButton();
+            ExitButton->LambdaEvent.Unbind();
+            auto* ExitText = Cast<UTextBlock>(ConvoWidget->WidgetTree->FindWidget(TEXT("ExitTExt")));
+            ExitText->SetText(FText::FromString(TEXT("Can't turn back now!")));
+
+            // now we can set the good endings script
             ConvoScriptName = TEXT("Ending_Amorous_Angel.json");
         }
         else if (GameState->WoodEggBeholden)
@@ -475,7 +498,19 @@ UUserWidget* UConversationStarter::GenerateConversationUI(const FString& Script)
 
     auto* ExitButton = GetExitButton();
     ExitButton->OnClicked.AddDynamic(ExitButton, &ULambdaButton::ExecLambda);
-    InstallDefaultExitBehavior();
+    // check to see if gamestate clue is an endgame; in that case we want to skip installing default convo exit behavior and change exit text to something cheeky
+    if (GameState->ClueState == ARyddelmystGameState::STATE_CLUE_ENDING_CRAVING_QUEEN || 
+        GameState->ClueState == ARyddelmystGameState::STATE_CLUE_ENDING_AMOROUS_ANGEL ||
+        GameState->ClueState == ARyddelmystGameState::STATE_CLUE_ENDING_PRACTICAL_PAWN
+    )
+    {
+        auto* ExitText = Cast<UTextBlock>(ConvoWidget->WidgetTree->FindWidget(TEXT("ExitTExt")));
+        ExitText->SetText(FText::FromString(TEXT("Can't turn back now!")));
+    }
+    else
+    {
+        InstallDefaultExitBehavior();
+    }
 
     /// script parsing ///
     ParseConversationScript(Script);
