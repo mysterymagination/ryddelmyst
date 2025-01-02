@@ -36,7 +36,7 @@
             "transition": {
                 "text": "I don't like the sound of tha-!!!",
                 "type": "deadend",
-                "clue": "practical_pawn"
+                "clue": "ending_practical_pawn"
             } 
         }   
     ]

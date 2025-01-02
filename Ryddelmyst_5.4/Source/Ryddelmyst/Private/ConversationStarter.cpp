@@ -278,7 +278,7 @@ FString UConversationStarter::CalculateScriptName(const FString& CharacterName)
         {
             ConvoScriptName = TEXT("Undercarriage_Urgent_Desire_Yvyteph_Mastermind.json");
         }
-        else if (GameState->ClueState == ARyddelmystGameState::STATE_CLUE_MAYA_GOOD_DETERMINATION)
+        else if (GameState->ClueState.Contains(TEXT("ending"), ESearchCase::IgnoreCase, ESearchDir::FromStart))
         {
             // need to remove exit button behavior and change to cheeky block text; I don't like the side effect, but placing this in ParseConvoScript() would require checking for the exact amorousangel script name and have a side effect there... 
             auto* ExitButton = GetExitButton();
@@ -286,8 +286,18 @@ FString UConversationStarter::CalculateScriptName(const FString& CharacterName)
             auto* ExitText = Cast<UTextBlock>(ConvoWidget->WidgetTree->FindWidget(TEXT("ExitTExt")));
             ExitText->SetText(FText::FromString(TEXT("Can't turn back now!")));
 
-            // now we can set the good endings script
-            ConvoScriptName = TEXT("Ending_Amorous_Angel.json");
+            if (GameState->ClueState == ARyddelmystGameState::STATE_CLUE_ENDING_PRACTICAL_PAWN)
+            {
+                ConvoScriptName = TEXT("Ending_Practical_Pawn.json");
+            }
+            else if (GameState->ClueState == ARyddelmystGameState::STATE_CLUE_ENDING_AMOROUS_ANGEL)
+            {
+                ConvoScriptName = TEXT("Ending_Amorous_Angel.json");
+            } 
+            else if (GameState->ClueState == ARyddelmystGameState::STATE_CLUE_ENDING_CRAVING_QUEEN)
+            {
+                ConvoScriptName = TEXT("Ending_Craving_Queen.json");
+            }
         }
         else if (GameState->WoodEggBeholden)
         {
@@ -428,6 +438,11 @@ FString UConversationStarter::MatchCharacter(const FString& ActorName)
 	{
 		CharacterName = MATCHER_PLAYER_MAYA;
 	}
+    else
+    {
+        // the ending dialogues come automatically from yvyteph and I have the clue matchers under mastermind, so here she is.
+        CharacterName = MATCHER_YVYTEPH_MASTERMIND;
+    }
 	
     // override with test script if actor name suggests it
     if (ActorName.Contains(MATCHER_TEST, ESearchCase::IgnoreCase, ESearchDir::FromStart))

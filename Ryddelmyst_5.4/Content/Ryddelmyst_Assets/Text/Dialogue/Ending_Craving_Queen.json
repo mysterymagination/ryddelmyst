@@ -61,7 +61,7 @@
                             "transition": {
                                 "text": "Weeeeeee~",
                                 "type": "deadend",
-                                "clue": "craving_queen_homeward"
+                                "clue": "ending_craving_queen_homeward"
                             }
                         }
                     ]
@@ -78,7 +78,7 @@
                             "transition": {
                                 "text": "Embrace your Desire!",
                                 "type": "deadend",
-                                "clue": "craving_queen_heavenward"
+                                "clue": "ending_craving_queen_heavenward"
                             }
                         }
                     ]

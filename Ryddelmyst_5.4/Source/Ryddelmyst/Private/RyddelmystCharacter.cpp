@@ -166,7 +166,7 @@ void ARyddelmystCharacter::BeginPlay()
 	}
 
 	FScriptDelegate QuestCompletionDelegate;
-	OverlapBeginDelegate.BindUFunction(this, FName("OnQuestComplete"));
+	QuestCompletionDelegate.BindUFunction(this, FName("OnQuestComplete"));
 	Cast<URyddelmystGameInstance>(GetWorld()->GetGameInstance())->GetEventManager()->QuestCompletionEvent.Add(QuestCompletionDelegate);
 }
 
@@ -1108,6 +1108,7 @@ void ARyddelmystCharacter::OnOverlapBegin(class UPrimitiveComponent* OverlappedC
 
 void ARyddelmystCharacter::OnQuestComplete(const FString& QuestCompleteContext)
 {
+	UE_LOG(LogTemp, Warning, TEXT("OnQuestComplete; context says %s"), *QuestCompleteContext);
 	// set gamestate clue to quest completion context
 	auto* GameState = GetWorld()->GetGameState<ARyddelmystGameState>();
 	GameState->ClueState = QuestCompleteContext;
