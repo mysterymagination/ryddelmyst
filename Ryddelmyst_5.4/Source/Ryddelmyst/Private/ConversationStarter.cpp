@@ -87,6 +87,10 @@ void UConversationStarter::Init(const FString& _ConvoTx, const FString& _ConvoRx
     ConvoRx = _ConvoRx;
     ClosestBone = _ClosestBone;
     GameState = _GameState;
+
+    /// UI setup ///
+    ConvoWidget = CreateWidget<UUserWidget>(GetWorld(), ConvoBaseWidgetClass);
+    ConvoContainer = Cast<UScrollBox>(ConvoWidget->WidgetTree->FindWidget(TEXT("DialogueScrollBox")));
 }
 
 void UConversationStarter::SaveConversation(const FString& ConvoName)
@@ -507,10 +511,6 @@ void UConversationStarter::InstallQuestLogExitBehavior()
 
 UUserWidget* UConversationStarter::GenerateConversationUI(const FString& Script)
 {
-    /// UI setup ///
-    ConvoWidget = CreateWidget<UUserWidget>(GetWorld(), ConvoBaseWidgetClass);
-    ConvoContainer = Cast<UScrollBox>(ConvoWidget->WidgetTree->FindWidget(TEXT("DialogueScrollBox")));
-
     auto* ExitButton = GetExitButton();
     ExitButton->OnClicked.AddDynamic(ExitButton, &ULambdaButton::ExecLambda);
     // check to see if gamestate clue is an endgame; in that case we want to skip installing default convo exit behavior and change exit text to something cheeky

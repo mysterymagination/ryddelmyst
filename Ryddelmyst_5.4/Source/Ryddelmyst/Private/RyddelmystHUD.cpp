@@ -601,6 +601,7 @@ bool ARyddelmystHUD::HideLibrary()
 
 void ARyddelmystHUD::RollCredits(const FString& EndingContext)
 {
+	UE_LOG(LogTemp, Warning, TEXT("RollCredits"));
 	FString Ending;
 	if (EndingContext == ARyddelmystGameState::STATE_CLUE_ENDING_PRACTICAL_PAWN)
 	{
@@ -622,11 +623,14 @@ void ARyddelmystHUD::RollCredits(const FString& EndingContext)
 	{
 		Ending = "Ending 5 of 5: Amorous Angel, Ascension";
 	}
+	UE_LOG(LogTemp, Warning, TEXT("RollCredits; ending is %s"), *Ending);
 	FString Credits;
 	FString CreditsPath = FPaths::ProjectContentDir().Append(TEXT("Ryddelmyst_Assets/Text/PrettyCredits.txt"));
 	FFileHelper::LoadFileToString(Credits, *CreditsPath);
+	UE_LOG(LogTemp, Warning, TEXT("RollCredits; credits says %s"), *Credits);
 	auto* CreditsWidget = CreateWidget<UUserWidget>(GetWorld(), CreditsWidgetClass);
 	auto* CreditsText = CreditsWidget->WidgetTree->FindWidget<UTextBlock>(FName("CreditsTextBlock"));
+	UE_LOG(LogTemp, Warning, TEXT("RollCredits; creditswidget says %p and creditstext says %p"), CreditsWidget, CreditsText);
 	CreditsText->SetText(FText::FromString(Credits + TEXT("\n") + Ending));
 	CreditsWidget->AddToViewport();
 }
