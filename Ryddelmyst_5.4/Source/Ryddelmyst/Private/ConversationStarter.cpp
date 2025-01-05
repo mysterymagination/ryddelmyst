@@ -234,7 +234,16 @@ void UConversationStarter::DeriveDeadend(const FString& Clue)
             HUD->RollCredits(Clue);
         });
         TextExitButton->OnClicked.AddDynamic(TextExitButton, &ULambdaButton::ExecLambda);
-
+        UGameplayStatics::PlaySound2D(
+            GetWorld(),
+            LoadObject<USoundBase>(nullptr, TEXT("/Game/Ryddelmyst_Assets/Audio/ending_themes/practical_pawn/peasantsrejoice.peasantsrejoice"), nullptr, LOAD_None, nullptr),
+            Cast<URyddelmystGameInstance>(UGameplayStatics::GetGameInstance(GetWorld()))->MusicVolumeScale,
+            1.f,
+            0.f,
+            nullptr,
+            nullptr,
+            true
+        );
         HUD->ShowText(FText::FromString(PracticalPawnEpilogue));
     }
     else if (
@@ -247,6 +256,7 @@ void UConversationStarter::DeriveDeadend(const FString& Clue)
         UE_LOG(LogTemp, Warning, TEXT("DeriveDeadend; %s good or 'good' ending!"), *Clue);
         // exit conversation UI 
         auto* HUD = UGameplayStatics::GetPlayerController(GetWorld(), 0)->GetHUD<ARyddelmystHUD>();
+        //UE_LOG(LogTemp, Warning, TEXT("DeriveDeadend; %s good or 'good' ending, hud says %p and convowidget says %p!"), *Clue, HUD, ConvoWidget);
         HUD->ExitConversation(ConvoWidget);
         // roll credits
         HUD->RollCredits(Clue);

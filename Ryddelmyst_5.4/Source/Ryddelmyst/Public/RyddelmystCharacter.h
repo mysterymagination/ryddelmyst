@@ -34,6 +34,7 @@
 #include "Components/TextBlock.h"
 #include "Components/Button.h"
 #include "Components/PanelWidget.h"
+#include "ConversationStarter.h"
 
 #include "RyddelmystCharacter.generated.h"
 
@@ -164,6 +165,11 @@ private:
 	/** The maximum length of the telescoping 3PP camera arm */
 	UPROPERTY()
 	float CamArmLengthMax = 750.f;
+	/**
+	 * ConversationStarter used to handle quest complete ending conversations that auto pop up.
+	 */
+	UPROPERTY()
+	UConversationStarter* ConversationStarter;
 
 public:
 	ARyddelmystCharacter();

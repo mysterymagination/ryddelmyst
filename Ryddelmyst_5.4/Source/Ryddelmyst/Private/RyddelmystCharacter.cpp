@@ -1120,7 +1120,7 @@ void ARyddelmystCharacter::OnQuestComplete(const FString& QuestCompleteContext)
 	UWidgetBlueprintLibrary::SetInputMode_UIOnlyEx(PlayerController);
 
 	// load up a conversationstarter, it selects the appropriate end script from gamestate clue
-	auto* ConversationStarter = NewObject<UConversationStarter>(this);
+	ConversationStarter = NewObject<UConversationStarter>(this);
 	ConversationStarter->Init(TEXT(""), TEXT(""), FName(TEXT("")), GameState);
 	auto* ConversationUI = ConversationStarter->GenerateConversationUI(ConversationStarter->GetScript());
 	HUD->ShowConversation(ConversationUI);
