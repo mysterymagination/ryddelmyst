@@ -1122,7 +1122,16 @@ void ARyddelmystCharacter::OnQuestComplete(const FString& QuestCompleteContext)
 	// load up a conversationstarter, it selects the appropriate end script from gamestate clue
 	ConversationStarter = NewObject<UConversationStarter>(this);
 	ConversationStarter->Init(TEXT(""), TEXT(""), FName(TEXT("")), GameState);
-	auto* ConversationUI = ConversationStarter->GenerateConversationUI(ConversationStarter->GetScript());
+	FString ScriptContent;
+	if (CharacterStats->StatsData.StatsMap["HP"] == 0.0f)
+	{
+		ScriptContent = TEXT("Ending_Dead.json");
+	}
+	else
+	{
+		ScriptContent = ConversationStarter->GetScript();
+	}
+	auto* ConversationUI = ConversationStarter->GenerateConversationUI(ScriptContent);
 	HUD->ShowConversation(ConversationUI);
 }
 

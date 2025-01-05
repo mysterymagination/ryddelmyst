@@ -1,0 +1,18 @@
+{
+    "dialogue": [
+        {
+            "name": "Yvyteph Enthusiasm",
+            "image": "Yvyteph_FontOfFertility",
+            "lines": [
+                "*mad enthusiasm* Hooray, well don- Oh. She's dead. Well, we had fun anyway."
+            ]
+        },
+        {
+            "name": "Qyvnily Lament",
+            "image": "Qyvnily_WildFlower",
+            "lines": [
+                "Aw, I liked her. I think I have a pretty good idea of how to girl now, so I may be an asset to Molly. Anyway. Time for incarnation!"
+            ]
+        }
+    ]
+}

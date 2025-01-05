@@ -5,6 +5,8 @@
 #include "CoreMinimal.h"
 #include "UObject/NoExportTypes.h"
 #include "SplineGuideComponent.h"
+#include "GenericPlatform/GenericPlatformProcess.h"
+#include "TimerManager.h"
 #include "RyddelmystEventManager.generated.h"
 
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FWoodEggDangerEvent, bool, InDanger);
@@ -49,4 +51,18 @@ public:
 	 */
 	UPROPERTY(BlueprintAssignable, BlueprintCallable, BlueprintReadOnly)
 	FQuestCompletionEvent QuestCompletionEvent;
+
+private:
+	UPROPERTY()
+	FTimerHandle ScheduledEventTimerHandle;
+
+public:
+	/**
+ 	 * Schedule quest complete event broadcast to run at the given delay
+	 * @param ActorInWorld - AActor from whom we'll derive the the FTimerManager for the world. UFUNCTION doesn't like FTimerManager for some reason.
+	 * @param DelaySeconds - timer delay in seconds.
+	 * @param CompletionContext - FString explaining how/why the quest was completed.
+ 	 */
+	UFUNCTION(BlueprintCallable)
+	void ScheduleQuestCompletionEvent(AActor* ActorInWorld, float DelaySeconds, const FString& CompletionContext);
 };
