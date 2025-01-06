@@ -168,6 +168,12 @@ void ARyddelmystCharacter::BeginPlay()
 	FScriptDelegate QuestCompletionDelegate;
 	QuestCompletionDelegate.BindUFunction(this, FName("OnQuestComplete"));
 	Cast<URyddelmystGameInstance>(GetWorld()->GetGameInstance())->GetEventManager()->QuestCompletionEvent.Add(QuestCompletionDelegate);
+
+	FString Test = TEXT("test");
+	GetWorldTimerManager().SetTimer(TestQuestTimerHandle, [&]() {
+        UE_LOG(LogTemp, Warning, TEXT("test quest completion broadcast"));
+        Cast<URyddelmystGameInstance>(GetWorld()->GetGameInstance())->GetEventManager()->QuestCompletionEvent.Broadcast(Test);
+    }, 5.f, false);
 }
 
 void ARyddelmystCharacter::Tick(float DeltaTime)

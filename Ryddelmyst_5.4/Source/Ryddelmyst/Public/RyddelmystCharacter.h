@@ -141,6 +141,8 @@ private:
 	UPROPERTY()
 	float TimelineValue;
 	UPROPERTY()
+	FTimerHandle TestQuestTimerHandle;
+	UPROPERTY()
 	FTimerHandle MagicTimerHandle;
 	UPROPERTY()
 	FTimerHandle InvincibilityTimerHandle;
