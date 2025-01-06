@@ -165,14 +165,16 @@ void ARyddelmystCharacter::BeginPlay()
 		UE_LOG(LogTemp, Warning, TEXT("BeginPlay; character stats undefined"));
 	}
 
+	/*
 	FScriptDelegate QuestCompletionDelegate;
 	QuestCompletionDelegate.BindUFunction(this, FName("OnQuestComplete"));
 	Cast<URyddelmystGameInstance>(GetWorld()->GetGameInstance())->GetEventManager()->QuestCompletionEvent.Add(QuestCompletionDelegate);
+	*/
 
 	FString Test = TEXT("test");
-	GetWorldTimerManager().SetTimer(TestQuestTimerHandle, [&]() {
+	GetWorldTimerManager().SetTimer(TestQuestTimerHandle, [this, Test]() {
         UE_LOG(LogTemp, Warning, TEXT("test quest completion broadcast"));
-        Cast<URyddelmystGameInstance>(GetWorld()->GetGameInstance())->GetEventManager()->QuestCompletionEvent.Broadcast(Test);
+        Cast<URyddelmystGameInstance>(this->GetWorld()->GetGameInstance())->GetEventManager()->QuestCompletionEvent.Broadcast(Test);
     }, 5.f, false);
 }
 
