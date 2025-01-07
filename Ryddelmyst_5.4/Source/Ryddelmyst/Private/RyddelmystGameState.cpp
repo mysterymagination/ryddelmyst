@@ -18,5 +18,6 @@ const FString ARyddelmystGameState::STATE_CLUE_ENDING_CRAVING_QUEEN{TEXT("ending
 const FString ARyddelmystGameState::STATE_CLUE_ENDING_CRAVING_QUEEN_HOMEWARD{TEXT("ending_craving_queen_homeward")};
 const FString ARyddelmystGameState::STATE_CLUE_ENDING_CRAVING_QUEEN_HEAVENWARD{TEXT("ending_craving_queen_heavenward")};
 const FString ARyddelmystGameState::STATE_CLUE_ENDING_PRACTICAL_PAWN{TEXT("ending_practical_pawn")};
+const FString ARyddelmystGameState::STATE_CLUE_ENDING_DEAD{TEXT("ending_dead")};
 const FString ARyddelmystGameState::VALUE_INPUT_EGG_TOKEN{TEXT("egg")};
 const FString ARyddelmystGameState::VALUE_INPUT_LAVA_TOKEN{TEXT("lava")};

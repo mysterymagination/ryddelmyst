@@ -236,7 +236,7 @@ void UConversationStarter::DeriveDeadend(const FString& Clue)
         TextExitButton->OnClicked.AddDynamic(TextExitButton, &ULambdaButton::ExecLambda);
         UGameplayStatics::PlaySound2D(
             GetWorld(),
-            LoadObject<USoundBase>(nullptr, TEXT("/Game/Ryddelmyst_Assets/Audio/ending_themes/practical_pawn/peasantsrejoice.peasantsrejoice"), nullptr, LOAD_None, nullptr),
+            LoadObject<USoundBase>(nullptr, TEXT("/Game/Ryddelmyst_Assets/Audio/ending_themes/practicalpawn/peasantsrejoice.peasantsrejoice"), nullptr, LOAD_None, nullptr),
             Cast<URyddelmystGameInstance>(UGameplayStatics::GetGameInstance(GetWorld()))->MusicVolumeScale,
             1.f,
             0.f,
@@ -250,7 +250,8 @@ void UConversationStarter::DeriveDeadend(const FString& Clue)
         Clue == ARyddelmystGameState::STATE_CLUE_ENDING_CRAVING_QUEEN_HOMEWARD || 
         Clue == ARyddelmystGameState::STATE_CLUE_ENDING_CRAVING_QUEEN_HEAVENWARD ||
         Clue == ARyddelmystGameState::STATE_CLUE_ENDING_AMOROUS_ANGEL_HOMEWARD ||
-        Clue == ARyddelmystGameState::STATE_CLUE_ENDING_AMOROUS_ANGEL_HEAVENWARD 
+        Clue == ARyddelmystGameState::STATE_CLUE_ENDING_AMOROUS_ANGEL_HEAVENWARD ||
+        Clue == ARyddelmystGameState::STATE_CLUE_ENDING_DEAD
     )
     {
         UE_LOG(LogTemp, Warning, TEXT("DeriveDeadend; %s good or 'good' ending!"), *Clue);

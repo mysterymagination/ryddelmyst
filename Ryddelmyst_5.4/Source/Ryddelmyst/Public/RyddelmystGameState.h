@@ -67,6 +67,7 @@ public:
 	static const FString STATE_CLUE_ENDING_AMOROUS_ANGEL;
 	static const FString STATE_CLUE_ENDING_CRAVING_QUEEN;
 	static const FString STATE_CLUE_ENDING_PRACTICAL_PAWN;
+	static const FString STATE_CLUE_ENDING_DEAD;
 	static const FString VALUE_INPUT_EGG_TOKEN;
 	static const FString VALUE_INPUT_LAVA_TOKEN;
 };

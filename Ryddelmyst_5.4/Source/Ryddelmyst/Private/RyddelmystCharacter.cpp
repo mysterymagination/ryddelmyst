@@ -165,17 +165,9 @@ void ARyddelmystCharacter::BeginPlay()
 		UE_LOG(LogTemp, Warning, TEXT("BeginPlay; character stats undefined"));
 	}
 
-	/*
 	FScriptDelegate QuestCompletionDelegate;
 	QuestCompletionDelegate.BindUFunction(this, FName("OnQuestComplete"));
 	Cast<URyddelmystGameInstance>(GetWorld()->GetGameInstance())->GetEventManager()->QuestCompletionEvent.Add(QuestCompletionDelegate);
-	*/
-
-	FString Test = TEXT("test");
-	GetWorldTimerManager().SetTimer(TestQuestTimerHandle, [this, Test]() {
-        UE_LOG(LogTemp, Warning, TEXT("test quest completion broadcast"));
-        Cast<URyddelmystGameInstance>(this->GetWorld()->GetGameInstance())->GetEventManager()->QuestCompletionEvent.Broadcast(Test);
-    }, 5.f, false);
 }
 
 void ARyddelmystCharacter::Tick(float DeltaTime)
@@ -1133,7 +1125,13 @@ void ARyddelmystCharacter::OnQuestComplete(const FString& QuestCompleteContext)
 	FString ScriptContent;
 	if (CharacterStats->StatsData.StatsMap["HP"] == 0.0f)
 	{
-		ScriptContent = TEXT("Ending_Dead.json");
+		UE_LOG(LogTemp, Warning, TEXT("OnQuestComplete; context is %s but we're dead so loading ending_dead"), *QuestCompleteContext);
+		FString ConvoPath = FPaths::ProjectContentDir().Append(TEXT("Ryddelmyst_Assets/Text/Dialogue/"));
+		if (!FFileHelper::LoadFileToString(ScriptContent, *ConvoPath.Append(TEXT("Ending_Dead.json"))))
+		{
+			UE_LOG(LogTemp, Error, TEXT("OnQuestComplete; failed loading ending_dead, so going ahead with whatever GetScript() gives us why not."));
+			ScriptContent = ConversationStarter->GetScript();
+		}
 	}
 	else
 	{

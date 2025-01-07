@@ -2,11 +2,30 @@
 
 
 #include "RyddelmystEventManager.h"
+#include "TimerManager.h"
+#include "RyddelmystGameInstance.h"
+#include "Engine/GameInstance.h"
 
-void URyddelmystEventManager::ScheduleQuestCompletionEvent(AActor* ActorInWorld, float DelaySeconds, const FString& CompletionContext)
+void URyddelmystEventManager::ScheduleQuestCompletionEvent(UGameInstance* GameInstance, float DelaySeconds, FString CompletionContext)
 {
-    ActorInWorld->GetWorldTimerManager().SetTimer(ScheduledEventTimerHandle, [&]() {
-        UE_LOG(LogTemp, Warning, TEXT("scheduled quest completion broadcast"));
-        QuestCompletionEvent.Broadcast(CompletionContext);
-    }, DelaySeconds, false);
+	GameInstance->GetTimerManager().SetTimer(ScheduledEventTimerHandle, [GameInstance, CompletionContext]() {
+        UE_LOG(LogTemp, Warning, TEXT("test quest completion broadcast with test string %s"), *CompletionContext);
+		auto* RyddelmystGameInstance = Cast<URyddelmystGameInstance>(GameInstance);
+		UE_LOG(LogTemp, Warning, TEXT("test quest completion broadcast; gameinstance says %p"), RyddelmystGameInstance);
+        auto* EventManager = RyddelmystGameInstance->GetEventManager();
+		UE_LOG(LogTemp, Warning, TEXT("test quest completion broadcast; eventmanager says %p"), EventManager);
+		UE_LOG(LogTemp, Warning, TEXT("test quest completion broadcast; questcompletionevent address says %p"), &EventManager->QuestCompletionEvent);
+		EventManager->QuestCompletionEvent.Broadcast(CompletionContext);
+    }, 5.f, false);
+
+    /* this appears to work fine
+    FTimerDelegate TimerDelegate;
+	TimerDelegate.BindUFunction(this, FName("BroadcastQuestCompletionEvent"), CompletionContext);
+	ActorInWorld->GetWorldTimerManager().SetTimer(ScheduledEventTimerHandle, TimerDelegate, DelaySeconds, false);
+    */
+}
+
+void URyddelmystEventManager::BroadcastQuestCompletionEvent(FString CompletionContext)
+{
+    QuestCompletionEvent.Broadcast(CompletionContext);
 }

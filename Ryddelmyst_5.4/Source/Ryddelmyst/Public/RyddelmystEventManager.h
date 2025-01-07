@@ -6,14 +6,14 @@
 #include "UObject/NoExportTypes.h"
 #include "SplineGuideComponent.h"
 #include "GenericPlatform/GenericPlatformProcess.h"
-#include "TimerManager.h"
+#include "Engine/World.h"
 #include "RyddelmystEventManager.generated.h"
 
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FWoodEggDangerEvent, bool, InDanger);
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FWoodEggDeathEvent, FVector, DeathLocation);
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FSplineGuideCompletionEvent, USplineGuideComponent*, InCompletedSplineGuideComponent);
 DECLARE_DYNAMIC_MULTICAST_DELEGATE(FPlayerDeathEvent);
-DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FQuestCompletionEvent, const FString&, QuestCompleteContext);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FQuestCompletionEvent, FString, QuestCompleteContext);
 
 /**
  * Home to Ryddelmyst game events that any Actor can register for and indirectly signal.
@@ -37,7 +37,7 @@ public:
 	/**
 	 * Broadcasts whenever a player dies.
 	 */
-	UPROPERTY(BlueprintAssignable)
+	UPROPERTY(BlueprintAssignable, BlueprintCallable, BlueprintReadOnly)
 	FPlayerDeathEvent PlayerDeathEvent;
 	/**
 	 * Broadcasts whenever a USplineGuideComponent completes, passing a pointer to the relevant USplineGuideComponent instance.
@@ -58,11 +58,20 @@ private:
 
 public:
 	/**
- 	 * Schedule quest complete event broadcast to run at the given delay
-	 * @param ActorInWorld - AActor from whom we'll derive the the FTimerManager for the world. UFUNCTION doesn't like FTimerManager for some reason.
+ 	 * Schedule quest complete event broadcast to run at the given delay.
+	 * Used specific function because doing a ScheduleEvent w/ overloads for each event type gives me junk like "Error: Type 'FQuestCompletionEvent' is not supported by blueprint. Function:  ScheduleEvent Parameter _QuestCompletionEvent" for some reason and I want BP access to the schedule call. 
+	 * @param GameInstance - GameInstance from whom we'll source our FTimerManager for the world. UFUNCTION doesn't like FTimerManager for some reason.
 	 * @param DelaySeconds - timer delay in seconds.
 	 * @param CompletionContext - FString explaining how/why the quest was completed.
  	 */
 	UFUNCTION(BlueprintCallable)
-	void ScheduleQuestCompletionEvent(AActor* ActorInWorld, float DelaySeconds, const FString& CompletionContext);
+	void ScheduleQuestCompletionEvent(UGameInstance* GameInstance, float DelaySeconds, FString CompletionContext);
+
+private:
+	/**
+ 	 * This shoulda beena lambda... for some reason the SetTimer() lambda overload explodes with a segfault when it runs the lambda and tries to look up GetWorld() from an AActor too fast after level load or if it tries to access the QuestCompletionEvent field of this class at all for some reason. 
+	 * You all know the protocol, import f***it.js and just do the stupid thing that works.
+ 	 */
+	UFUNCTION()
+	void BroadcastQuestCompletionEvent(FString CompletionContext);
 };

@@ -4,7 +4,7 @@
             "name": "Yvyteph Enthusiasm",
             "image": "Yvyteph_FontOfFertility",
             "lines": [
-                "*mad enthusiasm* Hooray, well don- Oh. She's dead. Well, we had fun anyway. I'll hoover up her soul; I'm sure she'll be a fun ghost."
+                "*mad enthusiasm* ooh ooh did she do it?! Oh. She's dead. Well, *we* had fun anyway. I'll hoover her soul on up; I'm sure she'll be a fun ghost."
             ]
         },
         {
@@ -12,7 +12,12 @@
             "image": "Qyvnily_WildFlower",
             "lines": [
                 "Aw, I liked her. I think I have a pretty good idea of how to girl now, so I may be an asset to Molly. Anyway. Time for incarnation!"
-            ]
+            ],
+            "transition": {
+                "text": "And so it goes.",
+                "type": "deadend",
+                "clue": "ending_dead"
+            }
         }
     ]
 }
