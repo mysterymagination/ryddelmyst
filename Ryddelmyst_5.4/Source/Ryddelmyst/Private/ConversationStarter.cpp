@@ -164,6 +164,8 @@ FString UConversationStarter::GetScript()
 	// filter list by convo tx and rx, particularly rx goddess form
 	// at the moment, we only ever have Maya as the tx and we only care to search for the form name in the rx
 	UE_LOG(LogTemp, Log, TEXT("GetConversationScript; convorx says %s"), *ConvoRx);
+    // in the case of the ending contexts, we autofill yvyteph mastermind as character and get her scripts in the filter here, then check the clue in CalculateScriptName() and use the appropriate ending one if the clue directs us to do so. Bit jank, but this system was super designed around player driven conversation interactions.
+    // todo: adjust logic so that we can a) provide the direct script we want to load and b) proceed to CalculateScriptName() with an empty character and ideally c) allow for role of convorx and tx to be reversed e.g. an NPC initiates convo with player.
 	FString CharacterName = MatchCharacter(ConvoRx);
 	if (!CharacterName.IsEmpty())
 	{
@@ -298,9 +300,6 @@ FString UConversationStarter::CalculateScriptName(const FString& CharacterName)
             // need to remove exit button behavior and change to cheeky block text; I don't like the side effect, but placing this in ParseConvoScript() would require checking for the exact amorousangel script name and have a side effect there... 
             auto* ExitButton = GetExitButton();
             ExitButton->LambdaEvent.Unbind();
-            auto* ExitText = Cast<UTextBlock>(ConvoWidget->WidgetTree->FindWidget(TEXT("ExitTExt")));
-            ExitText->SetText(FText::FromString(TEXT("Can't turn back now!")));
-
             if (GameState->ClueState == ARyddelmystGameState::STATE_CLUE_ENDING_PRACTICAL_PAWN)
             {
                 ConvoScriptName = TEXT("Ending_Practical_Pawn.json");
@@ -312,6 +311,10 @@ FString UConversationStarter::CalculateScriptName(const FString& CharacterName)
             else if (GameState->ClueState == ARyddelmystGameState::STATE_CLUE_ENDING_CRAVING_QUEEN)
             {
                 ConvoScriptName = TEXT("Ending_Craving_Queen.json");
+            }
+            else if (GameState->ClueState == ARyddelmystGameState::STATE_CLUE_ENDING_DEAD)
+            {
+                ConvoScriptName = TEXT("Ending_Dead.json");
             }
         }
         else if (GameState->WoodEggBeholden)
@@ -401,8 +404,6 @@ FString UConversationStarter::CalculateScriptName(const FString& CharacterName)
         }
 	}
 	
-    // clue state consumed
-    GameState->ClueState = TEXT("");
 	return ConvoScriptName;
 }
 
@@ -455,7 +456,7 @@ FString UConversationStarter::MatchCharacter(const FString& ActorName)
 	}
     else
     {
-        // the ending dialogues come automatically from yvyteph and I have the clue matchers under mastermind, so here she is.
+        // the ending dialogues come automatically from yvyteph and I have the clue matchers under mastermind in CalculateScriptName(), so here she is.
         CharacterName = MATCHER_YVYTEPH_MASTERMIND;
     }
 	
@@ -525,10 +526,7 @@ UUserWidget* UConversationStarter::GenerateConversationUI(const FString& Script)
     auto* ExitButton = GetExitButton();
     ExitButton->OnClicked.AddDynamic(ExitButton, &ULambdaButton::ExecLambda);
     // check to see if gamestate clue is an endgame; in that case we want to skip installing default convo exit behavior and change exit text to something cheeky
-    if (GameState->ClueState == ARyddelmystGameState::STATE_CLUE_ENDING_CRAVING_QUEEN || 
-        GameState->ClueState == ARyddelmystGameState::STATE_CLUE_ENDING_AMOROUS_ANGEL ||
-        GameState->ClueState == ARyddelmystGameState::STATE_CLUE_ENDING_PRACTICAL_PAWN
-    )
+    if (GameState->ClueState.Contains(TEXT("ending"), ESearchCase::IgnoreCase, ESearchDir::FromStart))
     {
         auto* ExitText = Cast<UTextBlock>(ConvoWidget->WidgetTree->FindWidget(TEXT("ExitTExt")));
         ExitText->SetText(FText::FromString(TEXT("Can't turn back now!")));

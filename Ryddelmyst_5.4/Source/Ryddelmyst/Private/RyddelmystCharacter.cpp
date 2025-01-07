@@ -1111,7 +1111,15 @@ void ARyddelmystCharacter::OnQuestComplete(const FString& QuestCompleteContext)
 	UE_LOG(LogTemp, Warning, TEXT("OnQuestComplete; context says %s"), *QuestCompleteContext);
 	// set gamestate clue to quest completion context
 	auto* GameState = GetWorld()->GetGameState<ARyddelmystGameState>();
-	GameState->ClueState = QuestCompleteContext;
+	if (CharacterStats->StatsData.StatsMap["HP"] == 0.0f)
+	{
+		UE_LOG(LogTemp, Warning, TEXT("OnQuestComplete; context is %s but we're dead so loading ending_dead"), *QuestCompleteContext);
+		GameState->ClueState = ARyddelmystGameState::STATE_CLUE_ENDING_DEAD;
+	}
+	else
+	{
+		GameState->ClueState = QuestCompleteContext;
+	}
 
 	// todo: move this pause game for UI business into a utility someplace
 	Cast<URyddelmystGameInstance>(GetWorld()->GetGameInstance())->Pause();
@@ -1121,23 +1129,9 @@ void ARyddelmystCharacter::OnQuestComplete(const FString& QuestCompleteContext)
 
 	// load up a conversationstarter, it selects the appropriate end script from gamestate clue
 	ConversationStarter = NewObject<UConversationStarter>(this);
+	// nevermind the convo character args and bone name here; we autofill yvyteph mastermind for the ending character
 	ConversationStarter->Init(TEXT(""), TEXT(""), FName(TEXT("")), GameState);
-	FString ScriptContent;
-	if (CharacterStats->StatsData.StatsMap["HP"] == 0.0f)
-	{
-		UE_LOG(LogTemp, Warning, TEXT("OnQuestComplete; context is %s but we're dead so loading ending_dead"), *QuestCompleteContext);
-		FString ConvoPath = FPaths::ProjectContentDir().Append(TEXT("Ryddelmyst_Assets/Text/Dialogue/"));
-		if (!FFileHelper::LoadFileToString(ScriptContent, *ConvoPath.Append(TEXT("Ending_Dead.json"))))
-		{
-			UE_LOG(LogTemp, Error, TEXT("OnQuestComplete; failed loading ending_dead, so going ahead with whatever GetScript() gives us why not."));
-			ScriptContent = ConversationStarter->GetScript();
-		}
-	}
-	else
-	{
-		ScriptContent = ConversationStarter->GetScript();
-	}
-	auto* ConversationUI = ConversationStarter->GenerateConversationUI(ScriptContent);
+	auto* ConversationUI = ConversationStarter->GenerateConversationUI(ConversationStarter->GetScript());
 	HUD->ShowConversation(ConversationUI);
 }
 

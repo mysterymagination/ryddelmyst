@@ -623,7 +623,15 @@ void ARyddelmystHUD::RollCredits(const FString& EndingContext)
 	{
 		Ending = "Ending 5 of 5: Amorous Angel, Ascension";
 	}
-	UE_LOG(LogTemp, Warning, TEXT("RollCredits; ending is %s"), *Ending);
+	else if (EndingContext == ARyddelmystGameState::STATE_CLUE_ENDING_DEAD)
+	{
+		Ending = "Ending -1 of 5: Death";
+	}
+	else
+	{
+		Ending = "Ending ? of 5: Wtf";
+	}
+	UE_LOG(LogTemp, Warning, TEXT("RollCredits; ending is %s from context %s"), *Ending, *EndingContext);
 	FString Credits;
 	FString CreditsPath = FPaths::ProjectContentDir().Append(TEXT("Ryddelmyst_Assets/Text/PrettyCredits.txt"));
 	FFileHelper::LoadFileToString(Credits, *CreditsPath);

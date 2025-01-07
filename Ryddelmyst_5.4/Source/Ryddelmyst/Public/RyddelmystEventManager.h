@@ -66,12 +66,4 @@ public:
  	 */
 	UFUNCTION(BlueprintCallable)
 	void ScheduleQuestCompletionEvent(UGameInstance* GameInstance, float DelaySeconds, FString CompletionContext);
-
-private:
-	/**
- 	 * This shoulda beena lambda... for some reason the SetTimer() lambda overload explodes with a segfault when it runs the lambda and tries to look up GetWorld() from an AActor too fast after level load or if it tries to access the QuestCompletionEvent field of this class at all for some reason. 
-	 * You all know the protocol, import f***it.js and just do the stupid thing that works.
- 	 */
-	UFUNCTION()
-	void BroadcastQuestCompletionEvent(FString CompletionContext);
 };
