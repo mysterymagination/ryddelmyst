@@ -9,7 +9,6 @@
 #include "Blueprint/UserWidget.h"
 #include "Blueprint/WidgetTree.h"
 #include "Components/HorizontalBox.h"
-#include "Components/GridPanel.h"
 #include "Components/GridSlot.h"
 #include "Components/Image.h"
 #include "Components/ScrollBox.h"
@@ -19,6 +18,8 @@
 #include "Describable.h"
 #include "RyddelmystGameState.h"
 #include "Components/TextBlock.h"
+#include "Layout/Margin.h"
+#include "Components/HorizontalBoxSlot.h"
 
 ARyddelmystHUD::ARyddelmystHUD()
 {
@@ -94,7 +95,7 @@ void ARyddelmystHUD::BeginPlay()
 				UWidget* InventoryPanelWidget = StatusWidget->WidgetTree->FindWidget(FName("InventoryPanel"));
 				InventoryPanel = Cast<UHorizontalBox>(InventoryPanelWidget);
 				UWidget* InventorySelectionOverlayWidget = StatusWidget->WidgetTree->FindWidget(FName("InventorySelectionOverlay"));
-				InventorySelectionOverlay = Cast<UGridPanel>(InventorySelectionOverlayWidget);
+				InventorySelectionOverlay = Cast<UHorizontalBox>(InventorySelectionOverlayWidget);
 
 				if (InventorySelectionTexture)
 				{
@@ -177,15 +178,16 @@ void ARyddelmystHUD::AddEquipIcon(class UTexture2D* tex)
 {
 	UImage* IconWidget = StatusWidget->WidgetTree->ConstructWidget<UImage>();
 	IconWidget->SetBrushFromTexture(tex, false);
-	IconWidget->SetDesiredSizeOverride(FVector2D(96, 96));
+	IconWidget->SetDesiredSizeOverride(FVector2D(128, 128));
 	EquipmentPanel->AddChildToHorizontalBox(IconWidget);
 }
 
 void ARyddelmystHUD::AddItemIcon(class UTexture2D* tex)
 {
 	UImage* IconWidget = StatusWidget->WidgetTree->ConstructWidget<UImage>();
+	IconWidget->SetDesiredSizeOverride(FVector2D(128, 128)); // doesn't work, but recommend approach smdh
+	// IconWidget->SetBrushSize(FVector2D(128, 128)); // compiler complains about deprecation and as of 5.4 it doesn't work anymore.
 	IconWidget->SetBrushFromTexture(tex, false);
-	IconWidget->SetDesiredSizeOverride(FVector2D(128, 128));
 	InventoryPanel->AddChildToHorizontalBox(IconWidget);
 }
 
@@ -202,10 +204,8 @@ void ARyddelmystHUD::SelectItem(uint8 idx)
 	if (InventorySelectionIcon)
 	{
 		UE_LOG(LogTemp, Warning, TEXT("SelectItem; idx is %u"), idx);
-		// todo: htf do you properly use this fella as a grid?!  Adding children to successive indices just lands us in what I would expect to be column 0 and there's no way to set the column and row dimensions, nor number of columns and rows.  GridSlots let you mess with col and row stuff, but that would suggest I need to populate the grid with empty cells before I can work with it as, y'know, a grid?
-		UGridSlot* slot = InventorySelectionOverlay->AddChildToGrid(InventorySelectionIcon, 0, 0);
-		// todo: look up the image width programmatically
-		slot->SetNudge(FVector2D(idx*128, 0.f));
+		auto* slot = InventorySelectionOverlay->AddChildToHorizontalBox(InventorySelectionIcon);
+		slot->SetPadding(FMargin(idx*32,0,0,0));
 		slot->SynchronizeProperties();
 	}
 }

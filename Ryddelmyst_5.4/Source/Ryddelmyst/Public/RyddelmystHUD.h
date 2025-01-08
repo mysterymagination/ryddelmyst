@@ -282,7 +282,7 @@ private:
 
 	/** Handle to the InventorySelectionOverlay UI widget in the HUD */
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Inventory", meta = (AllowPrivateAccess = "true"))
-	class UGridPanel* InventorySelectionOverlay;
+	class UHorizontalBox* InventorySelectionOverlay;
 
 	/** Icon used to indicate selection in the InventorySelectionOverlay UI widget in the HUD */
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Inventory", meta = (AllowPrivateAccess = "true"))
