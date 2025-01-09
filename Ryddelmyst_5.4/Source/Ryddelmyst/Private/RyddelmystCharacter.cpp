@@ -262,6 +262,8 @@ void ARyddelmystCharacter::Interact()
 	if (GrabbedActor)
 	{
 		GrabbedActor->DetachFromActor(FDetachmentTransformRules::KeepWorldTransform);
+		
+		/*
 		GrabbedActor->SetActorEnableCollision(true);
 		
 		// loop over actor components for primitivecomponents and turn on physics sim for them
@@ -271,12 +273,9 @@ void ARyddelmystCharacter::Interact()
 		{
 			UE_LOG(LogTemp, Log, TEXT("Interact; turning on physkiss for %s"), *Prim->GetName());
 			Prim->SetSimulatePhysics(true);
-			//Prim->SetNotifyRigidBodyCollision(true);
-			//Prim->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
-			//Prim->SetCollisionProfileName("WorldDynamic");
-			//Prim->SetEnableGravity(true);
 			Prim->AddImpulse(FirstPersonCameraComponent->GetForwardVector() * 1500.f, NAME_None, true);
 		}
+		*/
 		
 		// alert the treant that his offspring is now safe again... maybe
 		if (GrabbedActor->ActorHasTag(FName(TEXT("WoodEgg"))))
@@ -396,6 +395,11 @@ void ARyddelmystCharacter::Interact()
 						{
 							GrabbedActor = Actor;
 							UE_LOG(LogTemp, Warning, TEXT("Interact; grabbed actor prior to player attach and teleport are world coords %s"), *GrabbedActor->GetActorLocation().ToString());
+							
+							GrabbedActor->AttachToActor(this, FAttachmentTransformRules::KeepWorldTransform);
+							GrabbedActor->SetActorRelativeLocation(FVector(CarryDistance, 0.f, 0.f));
+							
+							/*
 							// physics on during grab causes the object to not follow us for some reason despite attachment, even with gravity off
 							TArray<UPrimitiveComponent*> OutPrims;
 							GrabbedActor->GetComponents<UPrimitiveComponent>(OutPrims, true);
@@ -405,13 +409,14 @@ void ARyddelmystCharacter::Interact()
 								Prim->SetSimulatePhysics(false);
 							}
 							GrabbedActor->SetActorEnableCollision(false);
-							GrabbedActor->AttachToActor(this, FAttachmentTransformRules::KeepWorldTransform);
-							GrabbedActor->SetActorRelativeLocation(FVector(CarryDistance, 0.f, 0.f));
+							*/
+							
+							
 							
 							/* Forward Vector version; it's just a unit vector on X accounting for all your rotations e.g. vector [1,0,0] rotated by all your character's rotations.  
 							GrabbedActor->SetActorLocation(GetActorLocation() + (GetActorForwardVector() * CarryDistance));
 							*/
-							UE_LOG(LogTemp, Warning, TEXT("Interact; carry vector rotated by player rotation is %s"), *GetActorRotation().RotateVector(FVector(CarryDistance, 0.f, 0.f)).ToString());
+							// UE_LOG(LogTemp, Warning, TEXT("Interact; carry vector rotated by player rotation is %s"), *GetActorRotation().RotateVector(FVector(CarryDistance, 0.f, 0.f)).ToString());
 							UE_LOG(LogTemp, Warning, TEXT("Interact; player forward vector is %s.  placing grabbed actor at %s relative to player.  Its world coords are %s and world coords of player are %s"), *GetActorForwardVector().ToString(), *GrabbedActor->GetRootComponent()->GetRelativeLocation().ToString(), *GrabbedActor->GetActorLocation().ToString(), *GetActorLocation().ToString());
 						}
 						else 
