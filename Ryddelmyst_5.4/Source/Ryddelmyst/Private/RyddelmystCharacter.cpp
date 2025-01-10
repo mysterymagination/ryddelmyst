@@ -267,21 +267,6 @@ void ARyddelmystCharacter::Interact()
 		GrabbedActor->FindComponentByClass<UStaticMeshComponent>()->SetSimulatePhysics(true);
 		GrabbedActor->FindComponentByClass<UStaticMeshComponent>()->AddImpulse(FirstPersonCameraComponent->GetForwardVector() * 1500.f, NAME_None, true);
 
-		
-		/*
-		GrabbedActor->SetActorEnableCollision(true);
-		
-		// loop over actor components for primitivecomponents and turn on physics sim for them
-		TArray<UPrimitiveComponent*> OutPrims;
-		GrabbedActor->GetComponents<UPrimitiveComponent>(OutPrims, true);
-		for (auto Prim : OutPrims)
-		{
-			UE_LOG(LogTemp, Log, TEXT("Interact; turning on physkiss for %s"), *Prim->GetName());
-			Prim->SetSimulatePhysics(true);
-			Prim->AddImpulse(FirstPersonCameraComponent->GetForwardVector() * 1500.f, NAME_None, true);
-		}
-		*/
-		
 		// alert the treant that his offspring is now safe again... maybe
 		if (GrabbedActor->ActorHasTag(FName(TEXT("WoodEgg"))))
 		{
@@ -400,34 +385,12 @@ void ARyddelmystCharacter::Interact()
 						{
 							GrabbedActor = Actor;
 							UE_LOG(LogTemp, Warning, TEXT("Interact; grabbed actor prior to player attach and teleport are world coords %s"), *GrabbedActor->GetActorLocation().ToString());
-							
-
 							GrabbedActor->FindComponentByClass<UStaticMeshComponent>()->SetSimulatePhysics(false);
-							
 							GrabbedActor->AttachToActor(this, FAttachmentTransformRules::KeepWorldTransform, FName(TEXT("Spine-1")));
-							// GrabbedActor->FindComponentByClass<UStaticMeshComponent>()->SetEnableGravity(false);
-							
+							GrabbedActor->SetActorRelativeLocation(FVector(CarryDistance, 0.f, 0.f));
 
-							// doesn't work for physicsactor for some reason?
-							// GrabbedActor->SetActorRelativeLocation(FVector(CarryDistance, 0.f, 0.f));
-							
-							/*
-							// physics on during grab causes the object to not follow us for some reason despite attachment, even with gravity off
-							TArray<UPrimitiveComponent*> OutPrims;
-							GrabbedActor->GetComponents<UPrimitiveComponent>(OutPrims, true);
-							for (auto Prim : OutPrims)
-							{
-								UE_LOG(LogTemp, Log, TEXT("Interact; turning off physkiss for %s"), *Prim->GetName());
-								Prim->SetSimulatePhysics(false);
-							}
-							GrabbedActor->SetActorEnableCollision(false);
-							*/
-							
-							
-							
 							// Forward Vector version; it's just a unit vector on X accounting for all your rotations e.g. vector [1,0,0] rotated by all your character's rotations.  
-							GrabbedActor->SetActorLocation(GetActorLocation() + (GetActorForwardVector() * CarryDistance));
-							
+							//GrabbedActor->SetActorLocation(GetActorLocation() + (GetActorForwardVector() * CarryDistance));
 							// UE_LOG(LogTemp, Warning, TEXT("Interact; carry vector rotated by player rotation is %s"), *GetActorRotation().RotateVector(FVector(CarryDistance, 0.f, 0.f)).ToString());
 							UE_LOG(LogTemp, Warning, TEXT("Interact; player forward vector is %s.  placing grabbed actor at %s relative to player.  Its world coords are %s and world coords of player are %s"), *GetActorForwardVector().ToString(), *GrabbedActor->GetRootComponent()->GetRelativeLocation().ToString(), *GrabbedActor->GetActorLocation().ToString(), *GetActorLocation().ToString());
 						}
@@ -540,6 +503,8 @@ FHitResult ARyddelmystCharacter::FireInteractRay()
 	UE_LOG(LogTemp, Warning, TEXT("Interact; FPP camera forward vec is %s and rotation.vector is %s and capsule radius is %f"), *FirstPersonCameraComponent->GetForwardVector().ToString(), *direction.ToString(), GetCapsuleComponent()->GetScaledCapsuleRadius());
 	const FVector end_trace = start_trace + (direction * MaxInteractDistance);
 	UE_LOG(LogTemp, Warning, TEXT("Interact; ray start says %s, direction says %s, and ray end says %s"), *start_trace.ToString(), *direction.ToString(), *end_trace.ToString());
+	const FName TraceTag("InteractRay");
+	/*
 	DrawDebugLine(
 		GetWorld(),
 		start_trace,
@@ -550,8 +515,8 @@ FHitResult ARyddelmystCharacter::FireInteractRay()
 		1,
 		12.f
 	);
-	const FName TraceTag("InteractRay");
 	GetWorld()->DebugDrawTraceTag = TraceTag;
+	*/
 	FCollisionQueryParams TraceParams(FName(TEXT("InteractTrace")), true, nullptr);
 	TraceParams.bReturnPhysicalMaterial = false;
 	TraceParams.bTraceComplex = true;
