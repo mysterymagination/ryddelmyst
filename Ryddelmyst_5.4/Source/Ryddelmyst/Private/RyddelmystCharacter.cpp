@@ -32,6 +32,7 @@
 #include "RyddelmystGameState.h"
 #include "Blueprint/UserWidget.h"
 #include "ConversationalComponent.h"
+#include "Components/StaticMeshComponent.h"
 
 DEFINE_LOG_CATEGORY_STATIC(LogFPChar, Warning, All);
 
@@ -262,6 +263,10 @@ void ARyddelmystCharacter::Interact()
 	if (GrabbedActor)
 	{
 		GrabbedActor->DetachFromActor(FDetachmentTransformRules::KeepWorldTransform);
+
+		GrabbedActor->FindComponentByClass<UStaticMeshComponent>()->SetSimulatePhysics(true);
+		GrabbedActor->FindComponentByClass<UStaticMeshComponent>()->AddImpulse(FirstPersonCameraComponent->GetForwardVector() * 1500.f, NAME_None, true);
+
 		
 		/*
 		GrabbedActor->SetActorEnableCollision(true);
@@ -396,8 +401,15 @@ void ARyddelmystCharacter::Interact()
 							GrabbedActor = Actor;
 							UE_LOG(LogTemp, Warning, TEXT("Interact; grabbed actor prior to player attach and teleport are world coords %s"), *GrabbedActor->GetActorLocation().ToString());
 							
-							GrabbedActor->AttachToActor(this, FAttachmentTransformRules::KeepWorldTransform);
-							GrabbedActor->SetActorRelativeLocation(FVector(CarryDistance, 0.f, 0.f));
+
+							GrabbedActor->FindComponentByClass<UStaticMeshComponent>()->SetSimulatePhysics(false);
+							
+							GrabbedActor->AttachToActor(this, FAttachmentTransformRules::KeepWorldTransform, FName(TEXT("Spine-1")));
+							// GrabbedActor->FindComponentByClass<UStaticMeshComponent>()->SetEnableGravity(false);
+							
+
+							// doesn't work for physicsactor for some reason?
+							// GrabbedActor->SetActorRelativeLocation(FVector(CarryDistance, 0.f, 0.f));
 							
 							/*
 							// physics on during grab causes the object to not follow us for some reason despite attachment, even with gravity off
@@ -413,9 +425,9 @@ void ARyddelmystCharacter::Interact()
 							
 							
 							
-							/* Forward Vector version; it's just a unit vector on X accounting for all your rotations e.g. vector [1,0,0] rotated by all your character's rotations.  
+							// Forward Vector version; it's just a unit vector on X accounting for all your rotations e.g. vector [1,0,0] rotated by all your character's rotations.  
 							GrabbedActor->SetActorLocation(GetActorLocation() + (GetActorForwardVector() * CarryDistance));
-							*/
+							
 							// UE_LOG(LogTemp, Warning, TEXT("Interact; carry vector rotated by player rotation is %s"), *GetActorRotation().RotateVector(FVector(CarryDistance, 0.f, 0.f)).ToString());
 							UE_LOG(LogTemp, Warning, TEXT("Interact; player forward vector is %s.  placing grabbed actor at %s relative to player.  Its world coords are %s and world coords of player are %s"), *GetActorForwardVector().ToString(), *GrabbedActor->GetRootComponent()->GetRelativeLocation().ToString(), *GrabbedActor->GetActorLocation().ToString(), *GetActorLocation().ToString());
 						}
