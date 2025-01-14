@@ -21,6 +21,18 @@
 #include "RyddelmystGameInstance.h"
 #include "Components/LightComponent.h"
 #include <stdexcept>
+#include "Components/SkeletalMeshComponent.h"
+#include "Engine/SkeletalMeshSocket.h"
+#include "Engine/SkeletalMesh.h"
+#include "Animation/Skeleton.h"
+#include <limits>
+#include "ITalkable.h"
+#include "AssetUtils.h"
+#include "Engine/EngineTypes.h"
+#include "RyddelmystGameState.h"
+#include "Blueprint/UserWidget.h"
+#include "ConversationalComponent.h"
+#include "Components/StaticMeshComponent.h"
 
 DEFINE_LOG_CATEGORY_STATIC(LogFPChar, Warning, All);
 
@@ -79,25 +91,27 @@ ARyddelmystCharacter::ARyddelmystCharacter()
     
 	PortraitMap = 
 	{
-		{"happy", ConstructorHelpers::FObjectFinder<UPaperSprite>
- (TEXT("/Game/Ryddelmyst_Assets/Textures/maya_portraits_Sprite_Happy.maya_portraits_Sprite_Happy")).Object},
-		{"sad", ConstructorHelpers::FObjectFinder<UPaperSprite>
- (TEXT("/Game/Ryddelmyst_Assets/Textures/maya_portraits_Sprite_Sad.maya_portraits_Sprite_Sad")).Object},
-		{"weary", ConstructorHelpers::FObjectFinder<UPaperSprite>
- (TEXT("/Game/Ryddelmyst_Assets/Textures/maya_portraits_Sprite_Weary.maya_portraits_Sprite_Weary")).Object},
-		{"eldritch", ConstructorHelpers::FObjectFinder<UPaperSprite>
- (TEXT("/Game/Ryddelmyst_Assets/Textures/maya_portraits_Sprite_Eldritch.maya_portraits_Sprite_Eldritch")).Object},
-		{"flirty", ConstructorHelpers::FObjectFinder<UPaperSprite>
- (TEXT("/Game/Ryddelmyst_Assets/Textures/maya_portraits_Sprite_Flirty.maya_portraits_Sprite_Flirty")).Object},
-		{"angry", ConstructorHelpers::FObjectFinder<UPaperSprite>
- (TEXT("/Game/Ryddelmyst_Assets/Textures/maya_portraits_Sprite_Angry.maya_portraits_Sprite_Angry")).Object},
-		{"embarrassed", ConstructorHelpers::FObjectFinder<UPaperSprite>
- (TEXT("/Game/Ryddelmyst_Assets/Textures/maya_portraits_Sprite_Embarrassed.maya_portraits_Sprite_Embarrassed")).Object},
-		{"confused", ConstructorHelpers::FObjectFinder<UPaperSprite>
- (TEXT("/Game/Ryddelmyst_Assets/Textures/maya_portraits_Sprite_Confused.maya_portraits_Sprite_Confused")).Object}
+		{InteractReactions::HAPPY, ConstructorHelpers::FObjectFinder<UPaperSprite>
+ (TEXT("/Game/Ryddelmyst_Assets/Sprites/Maya_Happy_Portrait_Sprite.Maya_Happy_Portrait_Sprite")).Object},
+ 		{InteractReactions::NEUTRAL, ConstructorHelpers::FObjectFinder<UPaperSprite>
+ (TEXT("/Game/Ryddelmyst_Assets/Sprites/Maya_Happy_Portrait_Sprite.Maya_Happy_Portrait_Sprite")).Object},
+		{InteractReactions::SAD, ConstructorHelpers::FObjectFinder<UPaperSprite>
+ (TEXT("/Game/Ryddelmyst_Assets/Sprites/Maya_Sad_Portrait_Sprite.Maya_Sad_Portrait_Sprite")).Object},
+		{InteractReactions::WEARY, ConstructorHelpers::FObjectFinder<UPaperSprite>
+ (TEXT("/Game/Ryddelmyst_Assets/Sprites/Maya_Weary_Portrait_Sprite.Maya_Weary_Portrait_Sprite")).Object},
+		{InteractReactions::ELDRITCH, ConstructorHelpers::FObjectFinder<UPaperSprite>
+ (TEXT("/Game/Ryddelmyst_Assets/Sprites/Maya_Eldritch_Portrait_Sprite.Maya_Eldritch_Portrait_Sprite")).Object},
+		{InteractReactions::FLIRTY, ConstructorHelpers::FObjectFinder<UPaperSprite>
+ (TEXT("/Game/Ryddelmyst_Assets/Sprites/Maya_Flirty_Portrait_Sprite.Maya_Flirty_Portrait_Sprite")).Object},
+		{InteractReactions::ANGRY, ConstructorHelpers::FObjectFinder<UPaperSprite>
+ (TEXT("/Game/Ryddelmyst_Assets/Sprites/Maya_Angry_Portrait_Sprite.Maya_Angry_Portrait_Sprite")).Object},
+		{InteractReactions::EMBARRASSED, ConstructorHelpers::FObjectFinder<UPaperSprite>
+ (TEXT("/Game/Ryddelmyst_Assets/Sprites/Maya_Embarrassed_Portrait_Sprite.Maya_Embarrassed_Portrait_Sprite")).Object},
+		{InteractReactions::CONFUSED, ConstructorHelpers::FObjectFinder<UPaperSprite>
+ (TEXT("/Game/Ryddelmyst_Assets/Sprites/Maya_Confused_Portrait_Sprite.Maya_Confused_Portrait_Sprite")).Object}
 	};
 
-	UE_LOG(LogTemp, Warning, TEXT("ryddelcharacter ctor; portraitmap at happy says %p"), PortraitMap["happy"]);
+	UE_LOG(LogTemp, Warning, TEXT("ryddelcharacter ctor; portraitmap at happy says %p"), PortraitMap[InteractReactions::HAPPY]);
 }
 
 void ARyddelmystCharacter::BeginPlay()
@@ -151,6 +165,10 @@ void ARyddelmystCharacter::BeginPlay()
 	{
 		UE_LOG(LogTemp, Warning, TEXT("BeginPlay; character stats undefined"));
 	}
+
+	FScriptDelegate QuestCompletionDelegate;
+	QuestCompletionDelegate.BindUFunction(this, FName("OnQuestComplete"));
+	Cast<URyddelmystGameInstance>(GetWorld()->GetGameInstance())->GetEventManager()->QuestCompletionEvent.Add(QuestCompletionDelegate);
 }
 
 void ARyddelmystCharacter::Tick(float DeltaTime)
@@ -228,18 +246,15 @@ UBodyCapsuleComponent* ARyddelmystCharacter::GetBody_Implementation()
 
 void ARyddelmystCharacter::PauseGame()
 {
-	UE_LOG(LogTemp, Warning, TEXT("PauseGame"));
-	UGameplayStatics::GetPlayerController(GetWorld(), 0)->SetPause(true);
+	Cast<URyddelmystGameInstance>(GetWorld()->GetGameInstance())->Pause();
 	HUD->ShowPauseMenu();
-	APlayerController* PlayerController = UGameplayStatics::GetPlayerController(GetWorld(), 0);
-	PlayerController->SetShowMouseCursor(true);
-	UWidgetBlueprintLibrary::SetInputMode_UIOnlyEx(PlayerController);
 }
 
 void ARyddelmystCharacter::Interact()
 {
+	UE_LOG(LogTemp, Log, TEXT("interact; gamestate says %p"), GetWorld()->GetGameState());
 	// hide dialogue if showing, and return early so we don't potentially trigger a new dialogue
-	if(HUD->HideDialogue())
+	if(HUD->HideDialogue() || HUD->HideText())
 	{
 		return;
 	}
@@ -248,22 +263,10 @@ void ARyddelmystCharacter::Interact()
 	if (GrabbedActor)
 	{
 		GrabbedActor->DetachFromActor(FDetachmentTransformRules::KeepWorldTransform);
-		
-		GrabbedActor->SetActorEnableCollision(true);
-		
-		// loop over actor components for primitivecomponents and turn on physics sim for them
-		TArray<UPrimitiveComponent*> OutPrims;
-		GrabbedActor->GetComponents<UPrimitiveComponent>(OutPrims, true);
-		for (auto Prim : OutPrims)
-		{
-			Prim->SetSimulatePhysics(true);
-			Prim->SetNotifyRigidBodyCollision(true);
-			Prim->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
-			Prim->SetCollisionProfileName("WorldDynamic");
-			Prim->SetEnableGravity(true);
-			Prim->AddImpulse(FirstPersonCameraComponent->GetForwardVector() * 1500.f, NAME_None, true);
-		}
-		
+
+		GrabbedActor->FindComponentByClass<UStaticMeshComponent>()->SetSimulatePhysics(true);
+		GrabbedActor->FindComponentByClass<UStaticMeshComponent>()->AddImpulse(FirstPersonCameraComponent->GetForwardVector() * 1500.f, NAME_None, true);
+
 		// alert the treant that his offspring is now safe again... maybe
 		if (GrabbedActor->ActorHasTag(FName(TEXT("WoodEgg"))))
 		{
@@ -274,12 +277,35 @@ void ARyddelmystCharacter::Interact()
 	else
 	{
 		FHitResult Hit = FireInteractRay();
-
 		// process any hit actor looking for interactability
 		AActor* Actor = Hit.GetActor();
 		if (Actor)
 		{
-			UE_LOG(LogTemp, Warning, TEXT("Interact; found something in range called %s"), *Actor->GetName());
+			UE_LOG(LogTemp, Warning, TEXT("Interact; found something in range called %s."), *Actor->GetName());
+			USceneComponent* Skele = Actor->FindComponentByClass<USceneComponent>();
+			FName ClosestBone;
+			// Need to make sure the gaze was actually pretty nearby the closest bone
+			float MinimumRelevantDistance = 100.f;
+			if (Skele)
+			{
+				UE_LOG(LogTemp, Warning, TEXT("Interact; sifting through bones, respectfully..."));
+				float LeastDistance = std::numeric_limits<float>::max();
+				for (auto BoneName : Skele->GetAllSocketNames())
+				{
+					FVector BoneLocation = Skele->GetSocketLocation(BoneName);
+					FVector Diff = BoneLocation - Hit.Location;
+					float DiffMag = Diff.Length();
+					if (DiffMag < LeastDistance && DiffMag <= MinimumRelevantDistance) 
+					{
+						LeastDistance = DiffMag;
+						ClosestBone = BoneName;
+					}
+				}
+				UE_LOG(LogTemp, Warning, TEXT("Interact; found something in range called %s. Nearest bone to hit location is %s"), 
+					*Actor->GetName(), 
+					*ClosestBone.ToString()
+				);
+			}
 			if (Actor->GetClass()->ImplementsInterface(UInteract::StaticClass()))
 			{
 				UE_LOG(LogTemp, Warning, TEXT("Interact; actor is interactable!"));
@@ -290,13 +316,6 @@ void ARyddelmystCharacter::Interact()
 				{
 					UE_LOG(LogTemp, Warning, TEXT("Interact; cap array index is %d, and ordinal says %u"), idx, (uint8)cap);
 					idx++;
-					UEnum* MyEnum = FindObject<UEnum>(ANY_PACKAGE, TEXT("InteractCapability"));
-					UE_LOG(LogTemp, Warning, TEXT("Interact; myenum ptr is %p"), MyEnum);
-					if (MyEnum)
-					{
-						FString DisplayString = MyEnum->GetNameStringByValue((uint8)cap);
-						UE_LOG(LogTemp, Warning, TEXT("Interact; cap array of interactable says %s"), *DisplayString);
-					}
 
 					if (cap == InteractCapability::GRABBABLE)
 					{
@@ -335,33 +354,44 @@ void ARyddelmystCharacter::Interact()
 										 HandsSlotItem && HandsSlotItem->GetName().Contains(TEXT("IronSwordCloudConquest")) &&
 										 FeetSlotItem && FeetSlotItem->GetName().Contains(TEXT("SlippersOfLongWintersNap"));
 							StoryBlock = !AllQuestItems;
+							USoundBase* Eggsclamation = nullptr;
 							if (!StoryBlock)
 							{
 								Cast<URyddelmystGameInstance>(GetWorld()->GetGameInstance())->GetEventManager()->WoodEggDangerEvent.Broadcast(true);
+								// now that Maya has felt the wiggly warmness, she can fully comment on the wood egg with yvyteph mastermind
+								GetWorld()->GetGameState<ARyddelmystGameState>()->WoodEggBeholden = true;
+								HUD->ShowDialogue(PortraitMap[InteractReactions::HAPPY], FText::FromString("Eh, I got 'im! Feels kinda warm. And wiggly. Hm."));
+								Eggsclamation = LoadObject<USoundBase>(nullptr, TEXT("/Game/Ryddelmyst_Assets/Audio/VO/Maya/gotcha.gotcha"), nullptr, LOAD_None, nullptr);
 							}
 							else 
 							{
-								HUD->ShowDialogue(PortraitMap["weary"], FText::FromString("Some crazy monsterpus force is holding it down! I sense artifacts of power nearby; perhaps I can use one or more of them to pry it loose?"));
+								HUD->ShowDialogue(PortraitMap[InteractReactions::WEARY], FText::FromString("OOOH GODS ALL AROUND US, MY BACK! Some crazy monsterpus force is holding it down. I sense artifacts of power nearby; perhaps I can use one or more of them to pry it loose?"));
+								Eggsclamation = LoadObject<USoundBase>(nullptr, *AssetUtils::ChooseRandomLadyExclamationAsset(), nullptr, LOAD_None, nullptr);
 							}
+							UGameplayStatics::PlaySoundAtLocation(
+								GetWorld(),
+								Eggsclamation,
+								GetActorLocation(),
+								GetActorRotation(),
+								Cast<URyddelmystGameInstance>(GetWorld()->GetGameInstance())->SFXVolumeScale,
+								1.f,
+								0.f,
+								nullptr,
+								nullptr,
+								nullptr
+							);
 						}
 						if (!StoryBlock)
 						{
 							GrabbedActor = Actor;
-							// physics on during grab causes the object to not follow us for some reason despite attachment, even with gravity off
-							TArray<UPrimitiveComponent*> OutPrims;
-							GrabbedActor->GetComponents<UPrimitiveComponent>(OutPrims, true);
-							for (auto Prim : OutPrims)
-							{
-								Prim->SetSimulatePhysics(false);
-							}
-							
-							// todo: if we teleport the object into its carry location relative to the player and that location is inside another collision object, the player and grabbed object get rocketed away.  Funny, but not useful.  
-							GrabbedActor->SetActorEnableCollision(false);
-							GrabbedActor->AttachToActor(this, FAttachmentTransformRules::KeepWorldTransform);
+							UE_LOG(LogTemp, Warning, TEXT("Interact; grabbed actor prior to player attach and teleport are world coords %s"), *GrabbedActor->GetActorLocation().ToString());
+							GrabbedActor->FindComponentByClass<UStaticMeshComponent>()->SetSimulatePhysics(false);
+							GrabbedActor->AttachToActor(this, FAttachmentTransformRules::KeepWorldTransform, FName(TEXT("Spine-1")));
 							GrabbedActor->SetActorRelativeLocation(FVector(CarryDistance, 0.f, 0.f));
-							/* Forward Vector version; it's just a unit vector on X accounting for all your rotations e.g. vector [1,0,0] rotated by all your character's rotations.  
-							GrabbedActor->SetActorLocation(GetActorLocation() + (GetActorForwardVector() * CarryDistance));
-							*/
+
+							// Forward Vector version; it's just a unit vector on X accounting for all your rotations e.g. vector [1,0,0] rotated by all your character's rotations.  
+							//GrabbedActor->SetActorLocation(GetActorLocation() + (GetActorForwardVector() * CarryDistance));
+							// UE_LOG(LogTemp, Warning, TEXT("Interact; carry vector rotated by player rotation is %s"), *GetActorRotation().RotateVector(FVector(CarryDistance, 0.f, 0.f)).ToString());
 							UE_LOG(LogTemp, Warning, TEXT("Interact; player forward vector is %s.  placing grabbed actor at %s relative to player.  Its world coords are %s and world coords of player are %s"), *GetActorForwardVector().ToString(), *GrabbedActor->GetRootComponent()->GetRelativeLocation().ToString(), *GrabbedActor->GetActorLocation().ToString(), *GetActorLocation().ToString());
 						}
 						else 
@@ -369,48 +399,64 @@ void ARyddelmystCharacter::Interact()
 							UE_LOG(LogTemp, Warning, TEXT("Interact; player cannot pick up %s for story reasons"), *Actor->GetName());
 						}
 					}
-					else if (cap == InteractCapability::DESCRIBABLE)
+					else if (cap == InteractCapability::TALKABLE && ClosestBone.ToString().Contains(TEXT("face"), ESearchCase::IgnoreCase) || cap == InteractCapability::DESCRIBABLE)
+					{
+						// todo: eesh, ugly hack to make talking and describing mutex so we don't get an empty description dialogue bubble after/before a conversation; better solution would be to turn the interact cap array into an assoc map so we can control the prioritization behavior here and in the data.
+						if (capArray.Contains(InteractCapability::TALKABLE) && ClosestBone.ToString().Contains(TEXT("face"), ESearchCase::IgnoreCase))
+						{
+							UConversationalComponent* Convo = Actor->FindComponentByClass<UConversationalComponent>();
+							if (Convo && Convo->GetClass()->ImplementsInterface(UTalkable::StaticClass()))
+							{
+								Cast<URyddelmystGameInstance>(GetWorld()->GetGameInstance())->Pause();
+								UUserWidget* ConvoWidget = ITalkable::Execute_StartConversation(Convo, GetActorNameOrLabel(), Actor->GetActorNameOrLabel(), ClosestBone, GetWorld()->GetGameState<ARyddelmystGameState>(), TEXT(""));
+								APlayerController* PlayerController = UGameplayStatics::GetPlayerController(GetWorld(), 0);
+								PlayerController->SetShowMouseCursor(true);
+								UWidgetBlueprintLibrary::SetInputMode_UIOnlyEx(PlayerController);
+								HUD->ShowConversation(ConvoWidget);
+								UE_LOG(LogTemp, Warning, TEXT("interact; conversing"));
+								break;
+							}
+						}
+						else 
+						{
+							UE_LOG(LogTemp, Warning, TEXT("interact; describing"));
+							if (Actor->GetClass()->ImplementsInterface(UDescribable::StaticClass()))
+							{
+								FDescriptor Desc = IDescribable::Execute_GenerateDescription(Actor, ClosestBone);
+								UPaperSprite* ReactionPortrait;
+								if (PortraitMap.Contains(Desc.Reaction))
+								{
+									ReactionPortrait = PortraitMap[Desc.Reaction];
+								}
+								else
+								{
+									// Maya defaults to a happy outlook!  That's the way to be.
+									ReactionPortrait = PortraitMap[InteractReactions::HAPPY];
+								}
+								
+								HUD->ShowDialogue(ReactionPortrait, Desc.LocalizedDescription);
+							}
+						}
+					}
+					else if (cap == InteractCapability::LOREABLE)
 					{
 						if (Actor->GetClass()->ImplementsInterface(UDescribable::StaticClass()))
 						{
-							FDescriptor Desc = IDescribable::Execute_GenerateDescription(Actor);
-							UPaperSprite* ReactionPortrait = nullptr;
-							switch(Desc.Reaction)
+							FDescriptor Desc = IDescribable::Execute_GenerateDescription(Actor, ClosestBone);
+							UPaperSprite* ReactionPortrait;
+							if (PortraitMap.Contains(Desc.Reaction))
+							{
+								ReactionPortrait = PortraitMap[Desc.Reaction];
+							}
+							else
 							{
 								// Maya defaults to a happy outlook!  That's the way to be.
-								case InteractReactions::HAPPY:
-								case InteractReactions::NEUTRAL:
-									ReactionPortrait = PortraitMap["happy"];
-									break;
-								case InteractReactions::SAD:
-									ReactionPortrait = PortraitMap["sad"];
-									break;
-								case InteractReactions::FLIRTY:
-									ReactionPortrait = PortraitMap["flirty"];
-									break;
-								case InteractReactions::CONFUSED:
-									ReactionPortrait = PortraitMap["confused"];
-									break;
-								case InteractReactions::ANGRY:
-									ReactionPortrait = PortraitMap["angry"];
-									break;
-								case InteractReactions::EMBARRASSED:
-									ReactionPortrait = PortraitMap["embarrassed"];
-									break;
-								case InteractReactions::WEARY:
-									ReactionPortrait = PortraitMap["weary"];
-									break;
-								case InteractReactions::ELDRITCH:
-									ReactionPortrait = PortraitMap["eldritch"];
-									break;
-								default:
-									ReactionPortrait = PortraitMap["happy"];
-									break;
-
+								ReactionPortrait = PortraitMap[InteractReactions::HAPPY];
 							}
+							
 							HUD->ShowDialogue(ReactionPortrait, Desc.LocalizedDescription);
-							const UEnum* ReactionEnum = FindObject<UEnum>(ANY_PACKAGE, TEXT("InteractReactions"));
-							UE_LOG(LogTemp, Warning, TEXT("Interact; describing %s as %s and reaction %s.  Portrait map at confused says %p"), *Actor->GetName(), *Desc.LocalizedDescription.ToString(), *ReactionEnum->GetNameStringByIndex(static_cast<int32>(Desc.Reaction)), PortraitMap["confused"]);
+							UE_LOG(LogTemp, Warning, TEXT("Interact; loreable desc says title %s and lore %s"), *Desc.Lore.LocalizedTitle.ToString(), *Desc.Lore.LocalizedLore.ToString());
+							HUD->AddLore(Desc.Lore);
 						}
 					}
 					else if (cap == InteractCapability::POCKETABLE)
@@ -436,6 +482,11 @@ void ARyddelmystCharacter::Interact()
 						}
 					}
 
+					if (cap == InteractCapability::CONSUMABLE)
+					{
+						Actor->Destroy();
+					}
+
 					// todo: extend player collision bounds to encompass the grabbable object; I guess toss a cubeoid around it?  Alternative would be to lean on the existing collision of the object and somehow get a message sent to the player iff the player is holding it that it has collided with something.
 				}
 			}
@@ -452,6 +503,8 @@ FHitResult ARyddelmystCharacter::FireInteractRay()
 	UE_LOG(LogTemp, Warning, TEXT("Interact; FPP camera forward vec is %s and rotation.vector is %s and capsule radius is %f"), *FirstPersonCameraComponent->GetForwardVector().ToString(), *direction.ToString(), GetCapsuleComponent()->GetScaledCapsuleRadius());
 	const FVector end_trace = start_trace + (direction * MaxInteractDistance);
 	UE_LOG(LogTemp, Warning, TEXT("Interact; ray start says %s, direction says %s, and ray end says %s"), *start_trace.ToString(), *direction.ToString(), *end_trace.ToString());
+	const FName TraceTag("InteractRay");
+	/*
 	DrawDebugLine(
 		GetWorld(),
 		start_trace,
@@ -462,8 +515,8 @@ FHitResult ARyddelmystCharacter::FireInteractRay()
 		1,
 		12.f
 	);
-	const FName TraceTag("InteractRay");
 	GetWorld()->DebugDrawTraceTag = TraceTag;
+	*/
 	FCollisionQueryParams TraceParams(FName(TEXT("InteractTrace")), true, nullptr);
 	TraceParams.bReturnPhysicalMaterial = false;
 	TraceParams.bTraceComplex = true;
@@ -598,6 +651,10 @@ void ARyddelmystCharacter::ScrollUp()
 	{
 		HUD->ScrollDialogueUp();
 	}
+	else if (HUD->IsTextActive())
+	{
+		HUD->ScrollTextUp();
+	}
 	else if (!FirstPersonCameraMode)
 	{
 		Zoom3PPCam(-1.f);
@@ -613,6 +670,10 @@ void ARyddelmystCharacter::ScrollDown()
 	if (HUD->IsDialogueActive())
 	{
 		HUD->ScrollDialogueDown();
+	}
+	else if (HUD->IsTextActive())
+	{
+		HUD->ScrollTextDown();
 	}
 	else if (!FirstPersonCameraMode)
 	{
@@ -852,6 +913,20 @@ void ARyddelmystCharacter::Fire()
 						}
 					}
 				}
+				
+				UGameplayStatics::PlaySoundAtLocation(
+					GetWorld(),
+					LoadObject<USoundBase>(nullptr, TEXT("/Game/Ryddelmyst_Assets/Audio/SFX/bfxr_sounds/Laser2.Laser2"), nullptr, LOAD_None, nullptr),
+					GetActorLocation(),
+					GetActorRotation(),
+					Cast<URyddelmystGameInstance>(UGameplayStatics::GetGameInstance(GetWorld()))->SFXVolumeScale,
+					1.f,
+					0.f,
+					nullptr,
+					nullptr,
+					nullptr
+				);
+
 				// last, we incur the cost of casting the spell
 				CDOSnowballAttack->ProcessCosts(this);
 			}
@@ -876,6 +951,12 @@ float ARyddelmystCharacter::GetMagic()
 float ARyddelmystCharacter::GetMaxMagic()
 {
 	return CharacterStats->StatsData.StatsMap["MaxMP"];
+}
+
+void ARyddelmystCharacter::FullHeal()
+{
+	UpdateHealth(GetMaxHealth());
+	UpdateMagic(GetMaxMagic());
 }
 
 FText ARyddelmystCharacter::GetHealthText()
@@ -929,6 +1010,28 @@ void ARyddelmystCharacter::HandleDamage(
 )
 {
 	UE_LOG(LogTemp, Warning, TEXT("HandleDamage; ouch for %f to %s"), Damage, *DamagedActor->GetName());
+	// load up a different successful hit sound, lady exclaiming sort of thing
+	FString ImpactLadyNoises = AssetUtils::ChooseRandomLadyExclamationAsset();
+    USoundBase* Exclamation = LoadObject<USoundBase>(nullptr, *ImpactLadyNoises, nullptr, LOAD_None, nullptr);
+	if (Exclamation)
+	{
+		UGameplayStatics::PlaySoundAtLocation(
+			GetWorld(),
+			Exclamation,
+			GetActorLocation(),
+			GetActorRotation(),
+			Cast<URyddelmystGameInstance>(UGameplayStatics::GetGameInstance(GetWorld()))->SFXVolumeScale,
+			1.f,
+			0.f,
+			nullptr,
+			nullptr,
+			nullptr
+		);
+	}
+	else 
+	{
+		UE_LOG(LogTemp, Error, TEXT("HandleDamage; exclamation sound from file %s came up null"), *ImpactLadyNoises);
+	}
 	UpdateHealth(-Damage);
 	bool CustomKnockback = false;
 	if (DamageCauser)
@@ -985,6 +1088,35 @@ void ARyddelmystCharacter::OnOverlapBegin(class UPrimitiveComponent* OverlappedC
 	}
 }
 
+void ARyddelmystCharacter::OnQuestComplete(const FString& QuestCompleteContext)
+{
+	UE_LOG(LogTemp, Warning, TEXT("OnQuestComplete; context says %s"), *QuestCompleteContext);
+	// set gamestate clue to quest completion context
+	auto* GameState = GetWorld()->GetGameState<ARyddelmystGameState>();
+	if (CharacterStats->StatsData.StatsMap["HP"] == 0.0f)
+	{
+		UE_LOG(LogTemp, Warning, TEXT("OnQuestComplete; context is %s but we're dead so loading ending_dead"), *QuestCompleteContext);
+		GameState->ClueState = ARyddelmystGameState::STATE_CLUE_ENDING_DEAD;
+	}
+	else
+	{
+		GameState->ClueState = QuestCompleteContext;
+	}
+
+	// todo: move this pause game for UI business into a utility someplace
+	Cast<URyddelmystGameInstance>(GetWorld()->GetGameInstance())->Pause();
+	APlayerController* PlayerController = UGameplayStatics::GetPlayerController(GetWorld(), 0);
+	PlayerController->SetShowMouseCursor(true);
+	UWidgetBlueprintLibrary::SetInputMode_UIOnlyEx(PlayerController);
+
+	// load up a conversationstarter, it selects the appropriate end script from gamestate clue
+	ConversationStarter = NewObject<UConversationStarter>(this);
+	// nevermind the convo character args and bone name here; we autofill yvyteph mastermind for the ending character
+	ConversationStarter->Init(TEXT(""), TEXT(""), FName(TEXT("")), GameState);
+	auto* ConversationUI = ConversationStarter->GenerateConversationUI(ConversationStarter->GetScript());
+	HUD->ShowConversation(ConversationUI);
+}
+
 bool ARyddelmystCharacter::AddInventoryItemFromActor(AItemActor* ItemActor)
 {
 	TSubclassOf<UObject> ItemClass = ItemActor->GetItemType();
@@ -1023,6 +1155,16 @@ bool ARyddelmystCharacter::AddInventoryItem(UObject* ItemObj)
 	{
 		if (ItemObj->GetClass()->ImplementsInterface(UItem::StaticClass()))
 		{
+			UGameplayStatics::PlaySound2D(
+				GetWorld(),
+				LoadObject<USoundBase>(nullptr, TEXT("/Game/Ryddelmyst_Assets/Audio/SFX/bfxr_sounds/Pickup_Coin.Pickup_Coin"), nullptr, LOAD_None, nullptr),
+				Cast<URyddelmystGameInstance>(UGameplayStatics::GetGameInstance(GetWorld()))->SFXVolumeScale,
+				1.f,
+				0.f,
+				nullptr,
+				nullptr,
+				true
+			);
 			HUD->AddItemIcon(IItem::Execute_GetDisplayIcon(ItemObj));
 			IItem::Execute_OnPickup(ItemObj, this);
 			Inventory.Add(ItemObj);
@@ -1042,7 +1184,7 @@ bool ARyddelmystCharacter::AddInventoryItem(UObject* ItemObj)
 	}
 	else
 	{
-		HUD->ShowDialogue(PortraitMap["weary"], NSLOCTEXT("NSFeedback", "KeyInvFull", "My inventory is full!  Insert overflowing junk in my trunk joke here."));
+		HUD->ShowDialogue(PortraitMap[InteractReactions::WEARY], NSLOCTEXT("NSFeedback", "KeyInvFull", "My inventory is full!  Insert overflowing junk in my trunk joke here."));
 		UE_LOG(LogTemp, Warning, TEXT("AddInventoryItem; inventory is full"));
 		return false;
 	}
@@ -1054,6 +1196,26 @@ void ARyddelmystCharacter::AddEquippedItem(UObject* ItemObj)
 	{
 		if (IItem::Execute_IsEquippable(ItemObj))
 		{
+			UGameplayStatics::PlaySound2D(
+				GetWorld(),
+				LoadObject<USoundBase>(nullptr, TEXT("/Game/Ryddelmyst_Assets/Audio/SFX/Rise07.Rise07"), nullptr, LOAD_None, nullptr),
+				Cast<URyddelmystGameInstance>(UGameplayStatics::GetGameInstance(GetWorld()))->SFXVolumeScale,
+				1.f,
+				0.f,
+				nullptr,
+				nullptr,
+				true
+			);
+			UGameplayStatics::PlaySound2D(
+				GetWorld(),
+				LoadObject<USoundBase>(nullptr, TEXT("/Game/Ryddelmyst_Assets/Audio/SFX/wardrobe_malfunction.wardrobe_malfunction"), nullptr, LOAD_None, nullptr),
+				Cast<URyddelmystGameInstance>(UGameplayStatics::GetGameInstance(GetWorld()))->SFXVolumeScale,
+				1.f,
+				0.f,
+				nullptr,
+				nullptr,
+				true
+			);
 			HUD->AddEquipIcon(IItem::Execute_GetDisplayIcon(ItemObj));
 			IItem::Execute_OnEquip(ItemObj, this);
 			Equipment.Add(IItem::Execute_GetEquipSlot(ItemObj), ItemObj);

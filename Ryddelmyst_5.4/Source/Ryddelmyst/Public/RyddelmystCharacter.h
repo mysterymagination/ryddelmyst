@@ -27,6 +27,15 @@
 #include "HitBoxerComponent.h"
 #include "BodyCapsuleComponent.h"
 #include "RyddelmystGameMode.h"
+#include "Interact.h"
+
+#include "Blueprint/UserWidget.h"
+#include "Blueprint/WidgetTree.h"
+#include "Components/TextBlock.h"
+#include "Components/Button.h"
+#include "Components/PanelWidget.h"
+#include "ConversationStarter.h"
+
 #include "RyddelmystCharacter.generated.h"
 
 class UInputComponent;
@@ -115,6 +124,10 @@ class ARyddelmystCharacter : public ACharacter, public IBattleStatsBearer, publi
 	class ARyddelmystHUD* HUD;
 
 private:
+	/* todo: I wanted to do a nice same button toggle for pause/unpause but having the input processing for pausing live exclusively in the player character seems to mean that when I switch input mode to UI only, the player character input processing no longer occurs. Needa abstraction layer for input proc regardless of (but aware of) input mode; that's a bit of a pain to deal with, so murp.
+	UPROPERTY()
+	bool GamePaused = false;
+	*/
 	UPROPERTY()
 	bool FirstPersonCameraMode = true;
 	UPROPERTY()
@@ -127,6 +140,8 @@ private:
 	float CurveFloatValue;
 	UPROPERTY()
 	float TimelineValue;
+	UPROPERTY()
+	FTimerHandle TestQuestTimerHandle;
 	UPROPERTY()
 	FTimerHandle MagicTimerHandle;
 	UPROPERTY()
@@ -142,7 +157,7 @@ private:
 	UPROPERTY()
 	UBattleStats* CharacterStats;
     UPROPERTY()
-	TMap<FString, UPaperSprite*> PortraitMap;
+	TMap<InteractReactions, UPaperSprite*> PortraitMap;
 	/** The number of map units we move the 3PP cam along its offset vector direction towards or away from the character */
 	UPROPERTY()
 	float ZoomRate = 50.f;
@@ -152,9 +167,16 @@ private:
 	/** The maximum length of the telescoping 3PP camera arm */
 	UPROPERTY()
 	float CamArmLengthMax = 750.f;
+	/**
+	 * ConversationStarter used to handle quest complete ending conversations that auto pop up.
+	 */
+	UPROPERTY()
+	UConversationStarter* ConversationStarter;
 
 public:
 	ARyddelmystCharacter();
+	UFUNCTION(BlueprintCallable, Category = "Health")
+	void FullHeal();
 	UBattleStats* GetStats_Implementation() { return CharacterStats; }
 	void HandleStatModification_Implementation(const FString& StatName) 
 	{ 
@@ -525,5 +547,8 @@ private:
 
 	UFUNCTION()
 	void OnOverlapEnd(class UPrimitiveComponent* OverlappedComp, class AActor* OtherActor, class UPrimitiveComponent* OtherComp, int32 OtherBodyIndex);
+
+	UFUNCTION()
+	void OnQuestComplete(const FString& QuestCompleteContext); 
 };
 

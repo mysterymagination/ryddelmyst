@@ -19,14 +19,50 @@ class UInteract : public UInterface
 UENUM(BlueprintType)
 enum class InteractCapability : uint8 
 {
+	/**
+	 * @brief indicates that this actor can be picked up physically by the player and carried, but not pocketed
+	 */
 	GRABBABLE UMETA(DisplayName = "GRABBABLE"),
+	/**
+	 * @brief indicates that this actor can be pulled about
+	 */
 	PULLABLE UMETA(DisplayName = "PULLABLE"),
+	/**
+	 * @brief indicates that this actor can be pushed about
+	 */
 	PUSHABLE UMETA(DisplayName = "PUSHABLE"),
+	/**
+	 * @brief indicates that this actor acts as a switch for something and has a binary state
+	 */
 	SWITCHABLE UMETA(DisplayName = "SWITCHABLE"),
+	/**
+	 * @brief wishful thinking, non-functional
+	 */
 	HUGGABLE UMETA(DisplayName = "HUGGABLE"),
+	/**
+	 * @brief indicates that this actor generates a description for the player character to read out
+	 */
 	DESCRIBABLE UMETA(DisplayName = "DESCRIBABLE"),
+	/**
+	 * @brief indicates that this actor contains item data that should be transferred to player inventory
+	 */
 	POCKETABLE UMETA(DisplayName = "POCKETABLE"),
-	OPENABLE UMETA(DisplayName = "OPENABLE")
+	/**
+	 * @brief indicates that this actor is a container that can be opened
+	 */
+	OPENABLE UMETA(DisplayName = "OPENABLE"),
+	/**
+	 * @brief indicates that this actor dispense lore data in its description that should be recorded in player quest library
+	 */
+	LOREABLE UMETA(DisplayName = "LOREABLE"),
+	/**
+	 * @brief indicates that this actor can be conversed with
+	 */
+	TALKABLE UMETA(DisplayName = "TALKABLE"),
+	/**
+	 * @brief indicates that this actor has been used up upon interaction
+	 */
+	CONSUMABLE UMETA(DisplayName = "CONSUMABLE")
 };
 
 UENUM(BlueprintType)

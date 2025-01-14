@@ -44,8 +44,6 @@ private:
 	 * ID used to track the meteor, assigned by its orbitted body when it's first attached thereto 
 	 */
 	size_t mId = 0;
-	UPROPERTY()
-	class UParticleSystemComponent* MeteorParticles;
 	/**
 	 * Vector of magnitude 1 along which we will travel once launched
 	 */

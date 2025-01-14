@@ -1,0 +1,25 @@
+{
+    "dialogue": [
+        {
+            "name": "Test 1",
+            "image": "Maya_Confused",
+            "lines": [
+                "Choices, eh?"
+            ],
+            "choices": [
+                {
+                    "text": "Test Question 1 Prompt?...",
+                    "dialogue": [
+                        {
+                            "name": "Test Question 1",
+                            "image": "Maya_Eldritch",
+                            "lines": [
+                                "So... testing 1?"
+                            ]
+                        }
+                    ]
+                }
+            ]
+        }
+    ]
+}

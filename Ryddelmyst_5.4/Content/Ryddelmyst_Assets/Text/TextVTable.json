@@ -1,0 +1,93 @@
+{
+	"Meg_Reveal" : {
+		"conditions" : [
+			{
+				"stateVarName" : "Read_Diary_BlastoffEnthusiasm1",
+				"type" : "boolean",
+				"comparisonOperator" : "equalTo",
+				"passValue" : "true"
+			}
+		],
+		"passSubstitution" : "Ooooh that's the Meg I was recalling before; she's a planet. Well, that's even more exciting! Although I was looking forward to meeting a chick named Meg.",
+		"failSubstitution" : ""
+	},
+    "Diary_ID_Reaction_Ryddelroot" : {
+		"conditions" : [
+			{
+				"stateVarName" : "Read_Diary_Signature",
+				"type" : "boolean",
+				"comparisonOperator" : "equalTo",
+				"passValue" : "true"
+			}
+		],
+		"passSubstitution" : "Sure sounds like I was confident about whatever a Ryddelroot is when I wrote this, but I have no idea at the moment. How weird that I remember going to uni and my cozy dorm ${Molly_Discovered} and my wild plants ${Molly_Discovered} but nothing specific about this mission. Why?",
+		"failSubstitution" : "What the heck is a Ryddelroot? How could it generate Ryddelmyst?"
+	},
+    "Molly_Discovered" : {
+        "conditions" : [
+            {
+                "stateVarName" : "Molly_Glances",
+				"type" : "integer",
+				"comparisonOperator" : "greaterThanOrEqualTo",
+				"passValue" : "2"
+            }
+        ],
+        "passSubstitution" : "and Molly",
+        "failSubstitution" : ""
+    },
+    "Diary_ID_Reaction_Investigation" : {
+		"conditions" : [
+			{
+				"stateVarName" : "Read_Diary_Signature",
+				"type" : "boolean",
+				"comparisonOperator" : "equalTo",
+				"passValue" : "true"
+			}
+		],
+		"passSubstitution" : "Sweet sheep, I'm supposed to be using mystichanism to stop a war but instead the only spell I know is snowball in three elements and also I'm stuck in some kinda death maze. How did this happen? How do I escape? One thing's for sure, I need to hurry!",
+		"failSubstitution" : "Eesh, sure sounds like the author was up to something important!"
+	},
+    "Diary_ID_Reaction_Murder" : {
+		"conditions" : [
+			{
+				"stateVarName" : "Read_Diary_Signature",
+				"type" : "boolean",
+				"comparisonOperator" : "equalTo",
+				"passValue" : "true"
+			}
+		],
+		"passSubstitution" : "Noooo, my sweet Princess Athryn! Also the professors. Sweet strumpets, why do I feel guilty?! These nutbuckets murdered my friends and kidnapped my maybe possibly hopefully someday best galpal and all I can think about is how I should really feel worse for the profs. I'll be leaving very strongly worded letters for these goddesses to find when I am a great safe distance away.",
+		"failSubstitution" : "Fearsome fuzzbuckets, I really hope this is fiction... what have I stumbled into?"
+	},
+    "Diary_ID_Reaction_Megyle" : {
+		"conditions" : [
+			{
+				"stateVarName" : "Read_Diary_Signature",
+				"type" : "boolean",
+				"comparisonOperator" : "equalTo",
+				"passValue" : "true"
+			}
+		],
+		"passSubstitution" : "Sweet blighted clydesdale, I must have been given to the Ryddelroot and ${Qyvnily_Ryddelroot_Girlfish} took me here for some reason. That would explain why I'm so poorly rendered, I guess, if this is some kinda dreamscape. Does that mean this is how I see myself or is it how the goddesses see me? Either way, I have many feelings. And these boobs are still inexplicable, on multiple dimensions. Anyway, what does that mean for me? Perhaps if I pass this trial or whatever it is it'll mean something something freedom and asylum from the priestesses? I should have a chin wag with the various Manifestations I've seen about to clear this mystery up! Anyway, I wonder how a magical tree chick speaks or generates Ryddelmyst? Could they really be goddesses?",
+		"failSubstitution" : "Hm. Hrm. Hrmn."
+	},
+    "Qyvnily_Ryddelroot_Girlfish" : {
+		"conditions" : [
+			{
+				"stateVarName" : "Qyvnily_Forms_Visited",
+				"type" : "integer",
+				"comparisonOperator" : "greaterThanOrEqualTo",
+				"passValue" : "1"
+			},
+            {
+                "booleanChainOperator" : "or",
+                "stateVarName" : "Yvyteph_Mentioned_Daughter",
+				"type" : "boolean",
+				"comparisonOperator" : "equalTo",
+				"passValue" : "true"
+            }
+		],
+		"passSubstitution" : "she",
+		"failSubstitution" : "it"
+	}
+}

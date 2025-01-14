@@ -1,0 +1,23 @@
+{
+    "dialogue": [
+        {
+            "name": "Yvyteph's Undercarriage",
+            "image": "Yvyteph_FontOfFertility",
+            "lines": [
+                "What are you doing down here, little mouse? Return to your maze and inspire us!"
+            ] 
+        },
+        {
+            "name": "Maya's Curious Indignation",
+            "image": "Maya_Angry",
+            "lines": [
+                "Hang on now just a moment. I have questions!"
+            ],
+            "transition": {
+                "text": "Waaaack!",
+                "type": "deadend",
+                "clue": "wanting_found_wanting"
+            }
+        }
+    ]
+}

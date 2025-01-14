@@ -19,6 +19,8 @@ protected:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Dialogue")
 	FText DisplayText;
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Dialogue")
+	FString PortraitName;
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Dialogue")
 	UPaperSprite* Portrait;
 
 public:
@@ -31,6 +33,12 @@ public:
 
 	UFUNCTION(BlueprintCallable, Category = "Dialogue")
 	void SetText(const FText& Text) { DisplayText = Text; };
+
+	UFUNCTION(BlueprintCallable, Category = "Dialogue")
+	const FString& GetPortraitName() const { return PortraitName;  };
+
+	UFUNCTION(BlueprintCallable, Category = "Dialogue")
+	void SetPortraitName(const FString& String) { PortraitName = String; };
 
 	UFUNCTION(BlueprintCallable, Category = "Dialogue")
 	const UPaperSprite* GetPortrait() const { return Portrait; };

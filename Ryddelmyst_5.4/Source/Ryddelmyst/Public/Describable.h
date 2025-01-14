@@ -5,6 +5,7 @@
 #include "CoreMinimal.h"
 #include "UObject/Interface.h"
 #include "Interact.h"
+#include "LibraryBookWidget.h"
 #include "Describable.generated.h"
 
 USTRUCT(BlueprintType)
@@ -12,8 +13,19 @@ struct FDescriptor
 {
 	GENERATED_BODY()
 public:
+	/**
+	 * @brief Quick description of the object, suitable for convo bubble.
+	 */
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Interaction")
 	FText LocalizedDescription;
+	/**
+	 * @brief Data for the quest log entry.
+	 */
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Interaction")
+	FLibraryBookData Lore;
+	/**
+	 * @brief Reaction sprite showing player character's emotional response to the described object.
+	 */
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Interaction")
 	InteractReactions Reaction;
 };
@@ -36,7 +48,8 @@ class RYDDELMYST_API IDescribable
 public:
 	/**
 	 * Generates and returns a descriptor containing a localized text string describing the object as well as a reaction enum indicating which character portrait should be used 
+	 * @param FName BoneName - the bone closest to where our interact physics ray impacted the target, used to modify description based on part of the object being examined; only relevant for skeletalmeshes and will be None by default.
 	 */
 	UFUNCTION(BlueprintCallable, BlueprintNativeEvent, Category = "Interaction")
-	FDescriptor GenerateDescription();
+	FDescriptor GenerateDescription(FName BoneName);
 };
