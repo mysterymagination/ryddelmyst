@@ -55,9 +55,17 @@
     14.1: Source: https://www.artstation.com/artwork/LeGqkv
     14.2: Authors: https://www.artstation.com/ruslanholonko
     14.3: License: CC-BY-SA-4.0
+ 15. Ryddelmyst/Content/Ryddelmyst_Assets/Meshes/Sign
+    15.1: Source: https://opengameart.org/content/wooden-sign
+    15.2: Authors: https://opengameart.org/users/overactiongs, Overaction Game Studio
+    15.3: License: CC0
+ 16. Ryddelmyst/Content/Ryddelmyst_Assets/Meshes/SM_MagicalBush
+    16.1: Source: https://opengameart.org/content/colorful-bushes
+    16.2: Authors: https://opengameart.org/users/rubberduck
+    16.3: License: CC0
 
 Textures:
-  1. Ryddelmyst/Content/Ryddelmyst_Assets/Textures/snowflake.png 
+  1. Ryddelmyst/Content/Ryddelmyst_Assets/Textures/snowflake.png
     1.1 Source: https://opengameart.org/content/snow-flake
     1.2 Authors: https://opengameart.org/users/mkwong98
     1.3 License: CC0
@@ -112,7 +120,7 @@ Textures:
     13.1 Source: https://www.gimp.org/
     13.2 Authors: https://www.gimp.org/
     13.3 License: https://www.gnu.org/licenses/gpl-3.0.en.html
- 14. Ryddelmyst/Content/Ryddelmyst_Assets/Textures/maya_portraits.png 
+ 14. Ryddelmyst/Content/Ryddelmyst_Assets/Textures/maya_portraits.png
     14.1 Source: https://opengameart.org/content/tricolor-nes-rpg-character-portraits and https://opengameart.org/content/24x32-peppercarrot-characters
     14.2 Authors: https://opengameart.org/users/ctske and https://opengameart.org/users/diamonddmgirl
     14.3 Licenses: https://creativecommons.org/licenses/by/4.0/, http://opengameart.org/content/oga-by-30-faq, http://creativecommons.org/licenses/by/3.0/
@@ -124,6 +132,18 @@ Textures:
     16.1 Source: https://opengameart.org/content/death-in-the-snow
     16.2 Authors: https://opengameart.org/users/justin-nichol
     16.3 License: http://creativecommons.org/licenses/by-sa/3.0/, http://www.gnu.org/licenses/gpl-3.0.html, http://www.gnu.org/licenses/old-licenses/gpl-2.0.html
+ 17. Ryddelmyst/Content/Ryddelmyst_Assets/Sprites/books
+    17.1 Source: https://opengameart.org/content/magic-books
+    17.2 Authors: https://opengameart.org/users/rafaelchm
+    17.3 License: CC0
+ 18. Ryddelmyst/Content/Ryddelmyst_Assets/Textures/Cloud_1.png
+    18.1 Source: https://opengameart.org/content/cloud-pack
+    18.2 Authors: https://opengameart.org/users/monotone
+    18.3 License: CC0
+ 19. Ryddelmyst/Content/Ryddelmyst_Assets/Textures/vinediv.png
+    19.1 Source: https://opengameart.org/content/elemental-badges-from-the-savage-swordsman
+    19.2 Authors: https://opengameart.org/users/mndvecb
+    19.3 License: CC0, https://creativecommons.org/licenses/by/4.0/, http://www.gnu.org/licenses/gpl-3.0.html, http://opengameart.org/content/oga-by-30-faq
 
 Fonts:
   1. Ryddelmyst/Content/Ryddelmyst_Assets/Fonts/alagard_by_pix3m-d6awiwp.ttf
@@ -172,3 +192,63 @@ Audio:
    10.1 Source: https://opengameart.org/content/grassy-world-overture-8bitorchestral
    10.2 Authors: https://opengameart.org/users/matthew-pablo
    10.3 License: http://creativecommons.org/licenses/by/3.0/
+  11. Ryddelmyst/Content/Ryddelmyst_Assets/Audio/SFX/bfxr_sounds
+   11.1 Source: https://opengameart.org/content/8-bit-platformer-sfx
+   11.2 Authors: https://opengameart.org/users/bart
+   11.3 License: http://creativecommons.org/licenses/by/3.0/
+  12. Ryddelmyst/Content/Ryddelmyst_Assets/Audio/SFX/fire_sound_effect.mp3 
+   12.1 Source: https://opengameart.org/content/synthesized-fire-sound-effect
+   12.2 Authors: https://opengameart.org/users/spring-spring
+   12.3 License: CC0
+  13. Ryddelmyst/Content/Ryddelmyst_Assets/Audio/SFX/burst_fire.mp3 
+   13.1 Source: https://opengameart.org/content/laser-weapon-burst-fire
+   13.2 Authors: https://opengameart.org/users/celestialghost8
+   13.3 License: CC0
+  14. Ryddelmyst/Content/Ryddelmyst_Assets/Audio/VO/Maya 
+   14.1 Source: https://opengameart.org/users/nocturnalvanguard
+   14.2 Authors: https://www.fiverr.com/auravoice
+   14.3 License: CC0
+  15. Ryddelmyst/Content/Ryddelmyst_Assets/Audio/SFX/Rise01,Rise07 
+   15.1 Source: https://opengameart.org/content/level-up-power-up-coin-get-13-sounds
+   15.2 Authors: https://opengameart.org/users/wobbleboxx, wobbleboxx.com
+   15.3 License: CC0
+  16. Ryddelmyst/Content/Ryddelmyst_Assets/Audio/SFX/cloth_sounds (wardrobe_malfunction)
+   16.1 Source: https://opengameart.org/content/cloth-swing-sounds
+   16.2 Authors: https://opengameart.org/users/vinrax, Vladislav Krotov, http://vinraxarts.ru
+   16.3 License: http://creativecommons.org/licenses/by/3.0/
+  17. Ryddelmyst/Content/Ryddelmyst_Assets/Audio/SFX/Stationary_07 (wardrobe_malfunction)
+   17.1 Source: https://opengameart.org/content/202-more-sound-effects
+   17.2 Authors: https://opengameart.org/users/owlishmedia
+   17.3 License: CC0
+  18. Ryddelmyst/Content/Ryddelmyst_Assets/Audio/ending_themes/amorousangel/ascension.ogg and laserrain.ogg
+   18.1 Source: https://opengameart.org/content/space-shooter-music (Space Heroes.ogg and Rain of Lasers.ogg)
+   18.2 Authors: https://opengameart.org/users/oblidivm
+   18.3 License: http://creativecommons.org/licenses/by/3.0/
+  19. Ryddelmyst/Content/Ryddelmyst_Assets/Audio/ending_themes/practicalpawn/peasantsrejoice.wav
+   19.1 Source: https://opengameart.org/content/victory-2
+   19.2 Authors: https://opengameart.org/users/jkfite01, Composed by: Jon K. Fite
+   19.3 License: http://creativecommons.org/licenses/by/3.0/
+  20. Ryddelmyst/Content/Ryddelmyst_Assets/Audio/ending_themes/practicalpawn/unsettlement.wav
+   20.1 Source: https://opengameart.org/content/horror-unsettling-victory-loop
+   20.2 Authors: https://opengameart.org/users/clement-panchout-composer, Credits : Clement Panchout http://www.clementpanchout.com/
+   20.3 License: https://creativecommons.org/licenses/by/4.0/
+  21. Ryddelmyst/Content/Ryddelmyst_Assets/Audio/ending_themes/cravingqueen/longwayhome.wav
+   21.1 Source: https://opengameart.org/content/long-away-home-8bit
+   21.2 Authors: https://opengameart.org/users/nene
+   21.3 License: CC0
+  22. Ryddelmyst/Content/Ryddelmyst_Assets/Audio/ending_themes/cravingqueen/wrongwayround.wav
+   22.1 Source: https://opengameart.org/content/boss-battle-3-alternate-8-bit
+   22.2 Authors: https://opengameart.org/users/nene
+   22.3 License: CC0
+  23. Ryddelmyst/Content/Ryddelmyst_Assets/Audio/SFX/avalanche.flac
+   23.1 Source: https://opengameart.org/content/rockbreaking
+   23.2 Authors: http://apricot.blender.org/, submitted by https://opengameart.org/users/lamoot
+   23.3 License: http://creativecommons.org/licenses/by/3.0/
+  24. Ryddelmyst/Content/Ryddelmyst_Assets/Audio/SFX/eightbitbomb.wav
+   24.1 Source: https://opengameart.org/content/bombexplosion8bit
+   24.2 Authors: https://opengameart.org/users/lukerustltd, http://www.rustltd.com/
+   24.3 License: CC0
+  25. Ryddelmyst/Content/Ryddelmyst_Assets/Audio/SFX/lava.flac
+   25.1 Source: https://opengameart.org/content/lava-splash
+   25.2 Authors: Michel Baradari http://apollo-music.de/, submitted by https://opengameart.org/users/qubodup
+   25.3 License: CC0

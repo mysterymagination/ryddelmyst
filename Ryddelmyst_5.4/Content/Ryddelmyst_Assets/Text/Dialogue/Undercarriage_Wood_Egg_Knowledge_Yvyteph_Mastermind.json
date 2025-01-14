@@ -1,0 +1,55 @@
+{
+    "dialogue": [
+        {
+            "name": "Yvyteph Anticipation",
+            "image": "Yvyteph_FontOfFertility",
+            "lines": [
+                "*lip bitingly intrigued* You have felt it, yes? I can tell by your proud bearing, hips strongly squared despite their infinite curvature and bountiful chest thrust forth. *flirty lips lick only slightly spoiled by a tricksy escaping drool strand* You know what you must do!"
+            ]
+        },
+        {
+            "name": "Maya's Curious Egg",
+            "image": "Maya_Confused",
+            "lines": [
+                "'Know' is a strong word. I suspect things. Puzzlesome things I'd like to chat about."
+            ],
+            "choices": [
+                {
+                    "text": "What's up with the wood egg?",
+                    "dialogue": [
+                        {
+                            "name": "Maya is Curiosity",
+                            "image": "Maya_Eldritch",
+                            "lines": [
+                                "So I managed to pick up the wooden orb thing, and a Francis Ford Coupla things happened:",
+                                "Firstly, the tree guy went nuts. I didn't like that.",
+                                "Secondly, the orb was all warm and wiggly. I think it might be alive!"
+                            ]
+                        },
+                        {
+                            "name": "Yvyteph Predatory Instinct",
+                            "image": "Yvyteph_FontOfFertility",
+                            "lines": [
+                                "Yes, almost like it's an egg. His egg. And the last there will ever be of his species, now that the females are extinct.",
+                                "You know he Desires it. Isn't that useful information? Use. It. What comes to mind as a curious way to make use of such power?"
+                            ]
+                        },
+                        {
+                            "name": "Maya Takes a Guess",
+                            "image": "Maya_Confused",
+                            "lines": [
+                                "I guess I would..."
+                            ],
+                            "transition": {
+                                "text": "BOOM mic drop answer!",
+                                "type": "jump",
+                                "clue": "input_cruelty_query",
+                                "input": "How might one exploit the lure of love?"
+                            }
+                        }
+                    ]
+                }
+            ]
+        }
+    ]
+}

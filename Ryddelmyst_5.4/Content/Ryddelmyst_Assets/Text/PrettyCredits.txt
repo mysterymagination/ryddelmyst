@@ -1,0 +1,107 @@
+3D Models
+We would like to thank the following OpenGameArt.org users for their wonderful Creative Commons models!
+
+practicing01
+freelikegnu
+pompei2
+clint-bellanger
+piacenti
+yughues
+rubberduck
+hoodedkian
+mess110
+para
+julius
+lauris71
+thekingofdemons
+weaponguy
+danimal
+yd
+overactiongs, Overaction Game Studio
+
+We would like to thank the following ArtStation.com users for their wonderful Creative Commons models!
+
+ruslanholonko
+
+Writing
+Story is everything!
+
+Jeff Creswell, https://github.com/mysterymagination
+
+Textures
+A model isn't dressed without its texture, so we would like to thank the following OpenGameArt.org users for their wonderful Creative Commons textures!
+
+mkwong98
+calinou
+qubodup
+medicinestorm
+yd
+ramtam
+devnewton
+Clint Bellanger clint-bellanger
+melle
+bondoki
+craftpixnet-2d-game-assets
+blarumyrran
+cryham
+ctske
+diamonddmgirl
+rawdanitsu
+justin-nichol
+rafaelchm
+monotone
+mndvecb
+    
+Along with...
+
+http://code.google.com/p/crawl-tiles/
+https://www.gimp.org/
+
+Fonts
+Text presentation modifies its message, so thanks a ton to the following artists for their Creative Commons fonts!
+
+http://pix3m.deviantart.com/, submitted to OpenGameArt.org by https://opengameart.org/users/julius
+
+
+Game Design
+Hooray gamification!
+
+Jeff Creswell, https://github.com/mysterymagination
+
+Audio/Muzak
+Thanks so much to the following OpenGameArt.org users for helping us give a voice to the world of Ryddelmyst!
+
+request
+vinrax
+ogrebane
+beast
+bonebrah
+vinrax
+trazzz123
+arthur
+antumdeluge
+matthew-pablo
+bart
+spring-spring
+celestialghost8
+wobbleboxx, wobbleboxx.com
+vinrax, Vladislav Krotov, http://vinraxarts.ru
+owlishmedia
+oblidivm
+jkfite01, Jon K. Fite
+clement-panchout-composer, Clement Panchout http://www.clementpanchout.com/
+nene
+lamoot, submitting on behalf of Blender Foundation http://apricot.blender.org/
+lukerustltd
+qubodup, submitting on behalf of Michel Baradari http://apollo-music.de/
+
+and an extra special thanks to the voice of Maya herself!
+
+nocturnalvanguard, https://www.fiverr.com/auravoice
+
+Battle Programmer (also the rest of the programming, but I always wanted to be a Battle Programmer!)
+Functional poetry FTW!
+
+Jeff Creswell, https://github.com/mysterymagination
+
+AND YOU, GREATEST LIGHT WARRIOR OF ALL!!!

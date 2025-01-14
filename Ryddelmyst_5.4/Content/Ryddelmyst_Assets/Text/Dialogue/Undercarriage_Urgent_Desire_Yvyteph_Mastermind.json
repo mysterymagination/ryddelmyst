@@ -1,0 +1,46 @@
+{
+    "dialogue": [
+        {
+            "name": "Yvyteph Hurryup",
+            "image": "Yvyteph_FontOfFertility",
+            "lines": [
+                "Why do you dawdle here? I know I am fascinating, but you must hurry forth and indulge your predatory urges; my own urges are growing especially urgent!"
+            ]
+        },
+        {
+            "name": "Maya Enthusiastic Huntress",
+            "image": "Maya_Eldritch",
+            "lines": [
+                "Mine too! I think. I haven't snacked in a bit, so I might just be hungry."
+            ],
+            "choices": [
+                {
+                    "text": "To the hunt!",
+                    "transition": {
+                        "type": "deadend",
+                        "clue": "maya_evil_determination"
+                    }
+                },
+                {
+                    "text": "I changed my mind...",
+                    "dialogue": [
+                        {
+                            "name": "Maya Feelings Swirly",
+                            "image": "Maya_Confused",
+                            "lines": [
+                                "Lookit, I'm not feeling great about this whole murdery situation. The tree fella can suck my painted toes, but his egg didn't do anything. It's an innocent, and apparently I can't harm an innocent life even to save my own. In this moment I somewhat wish I could, because I really really do want to live, but then I wouldn't be Maya so really I don't wish that.",
+                                "Plus I don't like my growing certainty that you had something to do with the disappearance of the treantwives, triggering our tree fella friend's desperate desire to protect the continued existence of his species.",
+                                "I can't argue morals witha primordial goddess, I know that, although I kinda wanna, but anyway I can refuse to participate in this mess myself. So I do. Refuse, I mean. To do a murder."
+                            ],
+                            "transition": {
+                                "text": "So, um...",
+                                "type": "jump",
+                                "clue": "ending_amorous_angel"
+                            }
+                        }
+                    ]
+                }
+            ]
+        }
+    ]
+}

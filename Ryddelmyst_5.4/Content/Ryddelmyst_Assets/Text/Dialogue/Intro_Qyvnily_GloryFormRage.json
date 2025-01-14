@@ -1,0 +1,102 @@
+{
+    "dialogue": [
+        {
+            "name": "Qyvnily Dark Icy Intro Root",
+            "image": "Qyvnily_GloryForm_Rage",
+            "lines": [
+                "Why hello there, little human. I am Qyvnily's Glorious Rage, the wild flash-frozen fire-tide of frustration inevitable in a rooted god.",
+                "Particularly one bred only to serve a purpose at the whim of her mother, and whose existence rests upon the razor edge of her mother's flighty attention span."
+            ] 
+        },
+        {
+            "name": "Maya's Sympathy",
+            "image": "Maya_Sad",
+            "lines": [
+                "Oh ah. Hi. I'm Maya. Sorry to hear that."
+            ]
+        },
+        {
+            "name": "Qyvnily Dark Vanity",
+            "image": "Qyvnily_GloryForm_Rage",
+            "lines": [
+                "Fret not witchgirl girlwich. You have troubles enough of your own!",
+                "It would bring me great pleasure to upset her sadistic glee by hastening your victory and aiding your survival.",
+                "For starters, the Slippers of Long Winter's Nap are right behind you, atop the bush. You can stack climbing rocks to get up or make use of a whirlwind.",
+                "Bear in mind that clambering atop everything is not necessary when simply reaching through flimsy obstacles to claim your treasures will suffice!"
+            ],
+            "choices": [
+                {
+                    "text": "Keys?",
+                    "dialogue": [
+                        {
+                            "name": "Maya's Natural Curiosity",
+                            "image": "Maya_Happy",
+                            "lines": [
+                                "There's a Francis Ford Coupla locked treasure chests about; do you know anything about keys?"
+                            ]
+                        },
+                        {
+                            "name": "Qyvnily Icy Glee",
+                            "image": "Qyvnily_GloryForm_Rage",
+                            "lines": [
+                                "I've felt the awful heat coming off something treasure chesty in the northeast, and a smaller but similar heat sorta centralish. We're in the northwest extreme of the world at the moment, btw. Right around where I first felt your much more love-ily warmth appear, in fact.",
+                                "My mother once laughed about how close and yet how far a Chrome key was to its chest; something about precision platforming with imprecise collision under pain of death for any mistakes preventing anyone from even looking in the right spots."
+                            ],
+                            "thoughts": [
+                                "Please don't die, mortal. I like you. A lot."
+                            ]
+                        }
+                    ]
+                },
+                {
+                    "text": "Tree guy?",
+                    "dialogue": [
+                        {
+                            "name": "Maya's Hope",
+                            "image": "Maya_Happy",
+                            "lines": [
+                                "What do you know about the tree fella that's hunting me?"
+                            ]
+                        },
+                        {
+                            "name": "Qyvnily Displeasure",
+                            "image": "Qyvnily_GloryForm_Rage",
+                            "lines": [
+                                "Ugh, a wretched thing. Last of its kind *now*, thanks to Mother. She was curious to see what hopeless desire at the pinnacle of loneliness would look like. Her fertility form took much inspiration from the Treantwives she absorbed; I think she enjoys teasing him with the beauty he will never know again.",
+                                "He can't die so far as I can tell; Mother won't let him. He will discorporate and take a bit to reform if you hit him hard enough, though. Could buy you some respite.",
+                                "Being woody, he also has a great distaste for fire."
+                            ],
+                            "thoughts": [
+                                "I wonder if there's a way to save him? If so, maybe there's even a way to save me?"
+                            ]
+                        }
+                    ]
+                },
+                {
+                    "text": "Your hair! Your thighs!",
+                    "dialogue": [
+                        {
+                            "name": "Maya's Compliments",
+                            "image": "Maya_Flirty",
+                            "lines": [
+                                "How did you get your hair sooo pretty? And what kinda workout do you do to sculpt those polar beary th-th-thighs?",
+                                "So thicc, so huggable..."
+                            ]
+                        },
+                        {
+                            "name": "Qyvnily Pleasure",
+                            "image": "Qyvnily_GloryForm_Rage",
+                            "lines": [
+                                "Why thank you! I've not had a compliment in.... ever. My hair grows this way naturally, bushy and wild and windswept with winter's caprice. My hair *everywhere*. Long skirts are a blessing, and when you don't feel the cold you don't really need anything underneath. Havva peek!",
+                                "As for my thighs, some squats I guess but mostly just lucky genetics (you've seen Mother, and I'm the fruit of her perfect loins) and lots and lots of hearty snacking; winter calls for squish."
+                            ],
+                            "thoughts": [
+                                "My thighs have got nothing on your cute butt, especially when you crouch. I didn't know human anatomy could do that!"
+                            ]
+                        }
+                    ]
+                }
+            ] 
+        }
+    ]
+}

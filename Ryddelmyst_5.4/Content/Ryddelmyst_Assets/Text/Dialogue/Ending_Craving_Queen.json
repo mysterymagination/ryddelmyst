@@ -1,0 +1,89 @@
+{
+    "dialogue": [
+        {
+            "name": "Yvyteph Cackleful",
+            "image": "Yvyteph_FontOfFertility",
+            "lines": [
+                "*gleefully unhinged cackling* Well done! Oh, well done indeed! I knew the Reaper Treant would die for his child, but I can never anticipate the uniquely delicious flavor of longing that profound loss can evoke from mortals.",
+                "Thank you for indulging in one form of violent Desire with me, little Maya. Now, I have another in mind, no less violent and certainly no less messy, but a good deal more pleasurable."
+            ]
+        },
+        {
+            "name": "Qyvnily Darkness",
+            "image": "Qyvnily_GloryForm_Rage",
+            "lines": [
+                "I kinda hoped you might choose a different path, but I always expected we'd meet on this one. Ah well.",
+                "The broad scope of Desire and revelling in all its forms is starting to appeal to me, pain and pleasure blending into one seamless passionate continuum!",
+                "The terrible beauty of primal Desire would never have been clear to me without your demonstration. I thank you, girlfish."
+            ]
+        },
+        {
+            "name": "Maya Bashful Bane",
+            "image": "Maya_Confused",
+            "lines": [
+                "Oh come on now, it wasn't anything so grandious. You make me sound all evil and so forth! I'm a survivor, is all. He had a weakness and I exploited it. ANybody would have done the same. Maybe. I guess. Whichever."
+            ]
+        },
+        {
+            "name": "Maya Murder Hobo",
+            "image": "Maya_Eldritch",
+            "lines": [
+                "I can't deny that I enjoyed watching that fella burn, though; he was very rude."
+            ]
+        },
+        {
+            "name": "Yvyteph Dark Lust",
+            "image": "Yvyteph_FontOfFertility",
+            "lines": [
+                "You have taught my daughter well, Maya, and have thoroughly stirred the unfathomable depths of my perfect loins.",
+                "Having passed our trials I will grant you one of two wishes:",
+                "First, I can return you to Meigantu, though not to your previous life; you will lead my cult as High Priestess and spread my Word and Desire for eons to come! I lied before when I said all your colleagues were slain, by the way. Your aspirational mate Athryn yet lives. She has been adapting well to her indoctrination as one of my priestesses, so if you led them she would serve you. I will leave the details and possibilities therein to your imagination.",
+                "Alternatively, let go your mortality entirely and join with me! Wouldst thou like to live deliciously? Become an Angel of Desire and live forever in the stream of passion with me. I am aching to join you in three dimensions and more, to know every centimeter of you inside and out! I believe I did promise you a redefiniton of pleasure; I will keep that promise and show you so much more of Desire beyond pleasure if you stay. No mortal could survive the agony of ecstasy that awaits in my embrace, so you must first ascend to divinity beside and within me. Your Athryn will be elevated to a position of high honor, and she would literally worship you in every way possible as an entity of elemental ecstasy.",
+                "Choose wisely and quickly! I Desire you, and if you are neither gone from here nor an angel in the next instant your mortal shell will not survive my passion."
+            ]
+        },
+        {
+            "name": "Maya Final Decision",
+            "image": "Maya_Confused",
+            "lines": [
+                "*gulp*"
+            ],
+            "choices": [
+                {
+                    "text": "I will lead your priestesses and sing your glory on the material plane!",
+                    "dialogue": [
+                        {
+                            "name": "Yvyteph DiSatisfaction",
+                            "image": "Yvyteph_FontOfFertility",
+                            "lines": [
+                                "So shall it be! May our paths cross again someday, and on that day may my restraint fail that you may experience the power of my Desire for you. If only for an instant."
+                            ],
+                            "transition": {
+                                "text": "Weeeeeee~",
+                                "type": "deadend",
+                                "clue": "ending_craving_queen_homeward"
+                            }
+                        }
+                    ]
+                },
+                {
+                    "text": "I want to Ascend!",
+                    "dialogue": [
+                        {
+                            "name": "Maya Amorous Angel",
+                            "image": "Maya_Eldritch",
+                            "lines": [
+                                "Let us mate our power in every way possible!"
+                            ],
+                            "transition": {
+                                "text": "Embrace your Desire!",
+                                "type": "deadend",
+                                "clue": "ending_craving_queen_heavenward"
+                            }
+                        }
+                    ]
+                }
+            ]
+        }
+    ]
+}

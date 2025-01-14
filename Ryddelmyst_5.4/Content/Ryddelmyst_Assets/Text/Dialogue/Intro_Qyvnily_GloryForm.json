@@ -1,0 +1,147 @@
+{
+    "dialogue": [
+        {
+            "name": "Qyvnily Icy Intro Root",
+            "image": "Qyvnily_GloryForm",
+            "lines": [
+                "Greetings, Maya. I'm happy you've survived long enough to meet me. I am Qyvnily's Glory, a graceful tempest hidden behind gentle sweetness."
+            ] 
+        },
+        {
+            "name": "Maya's Confusion",
+            "image": "Maya_Confused",
+            "lines": [
+                "Oh wow, hello! You're quite a striking sight."
+            ]
+        },
+        {
+            "name": "Qyvnily Vanity",
+            "image": "Qyvnily_GloryForm",
+            "lines": [
+                "I am aware."
+            ],
+            "choices": [
+                {
+                    "text": "Ice princess?",
+                    "dialogue": [
+                        {
+                            "name": "Maya's Natural Curiosity",
+                            "image": "Maya_Happy",
+                            "lines": [
+                                "So how come you're all frosty? Your mum is all plants and fire, which kinda go together I guess, and your primary form is all plant-adjacent.",
+                                "Isn't winter a bit anathema to plantstuffs?"
+                            ]
+                        },
+                        {
+                            "name": "Qyvnily Icy Retort",
+                            "image": "Qyvnily_GloryForm",
+                            "lines": [
+                                "Winter is as natural as Summer. I am calm, I am silence. I am sometimes death. These are all necessary and beautiful things."
+                            ],
+                            "thoughts": [
+                                "I wonder if she's ever quiet?"
+                            ]
+                        },
+                        {
+                            "name": "Maya's Gulp",
+                            "image": "Maya_Confused",
+                            "lines": [
+                                "Uh yeah for sure, that's true. Um."
+                            ],
+                            "thoughts": [
+                                "She's pretty intense. Hard to believe she's part of Qyvnily.",
+                                "Also I'm getting all snowy standing in her aura."
+                            ],
+                            "transition": {
+                                "text": "So about these trials...",
+                                "type": "jump",
+                                "clue": "glory_perspective"
+                            }
+                        }
+                    ]
+                },
+                {
+                    "text": "Bit nippy?",
+                    "dialogue": [
+                        {
+                            "name": "Maya's Cheek",
+                            "image": "Maya_Flirty",
+                            "lines": [
+                                "Bit nippy out here, eh?"
+                            ]
+                        },
+                        {
+                            "name": "Qyvnily Deadpan",
+                            "image": "Qyvnily_GloryForm",
+                            "lines": [
+                                "It is always cold where I stand. I find it soothing.",
+                                "But the cold has nothing to do with what you're probably looking at."
+                            ],
+                            "thoughts": [
+                                "Oh criminey, are they showing again?!",
+                                "Well, they are glorious."
+                            ]
+                        },
+                        {
+                            "name": "Maya's Persistence",
+                            "image": "Maya_Eldritch",
+                            "lines": [
+                                "Ok but how do you get 'em to glow like that? Mine are always hard, regardless of the temp, and they draw plenty of gazes without the glow, but the glow is just so mesmerizing!"
+                            ],
+                            "thoughts": [
+                                "Wait, what? They're not hard from the cold?"
+                            ]
+                        },
+                        {
+                            "name": "Qyvnily Flustering",
+                            "image": "Qyvnily_GloryForm",
+                            "lines": [
+                                "Yours don't glow? Mine have always been this way.",
+                                "Glowy, that is, not hard. They only get hard when I behold someone that excites me."
+                            ]
+                        },
+                        {
+                            "name": "Maya's Gulp",
+                            "image": "Maya_Confused",
+                            "lines": [
+                                "R-really? Same, plus when I'm thinking about exciting things, which is way too often. And when I'm cold, which I very am at the moment. *brrr*",
+                                "Um. Just out of curiosity are you and your other aspects, like, linked? Are you different people?"
+                            ],
+                            "thoughts": [
+                                "How is jealousy going to work in this scenario? C'mon irrelevant!"
+                            ]
+                        },
+                        {
+                            "name": "Qyvnily Whimsy Grinning",
+                            "image": "Qyvnily_GloryForm",
+                            "lines": [
+                                "We are our own entities, but we share everything. Memories, feeling, experiences.",
+                                "If you were to kiss me, you would be kissing us all.",
+                                "And we want that. Alas, you will find no warmth in my arms, but perhaps if your heart were to beat faster you'd be less chilly in my aura..."
+                            ],
+                            "thoughts": [
+                                "Kissmekissmekissme, please."
+                            ]
+                        },
+                        {
+                            "name": "Maya's Shyness",
+                            "image": "Maya_Flirty",
+                            "lines": [
+                                "I also want that. Heart's already thumpin'! Stomach butterflies too. Let's see, lean in on past the snow and *smooch*",
+                                "Ooh, bracing!"
+                            ],
+                            "thoughts": [
+                                "I never knew cold could be so hot!"
+                            ],
+                            "transition": {
+                                "text": "AHem... ah. Oh yeah, trials? Um. Advicing, please and thanks?",
+                                "type": "jump",
+                                "clue": "glory_perspective"
+                            }
+                        }
+                    ]
+                }
+            ] 
+        }
+    ]
+}

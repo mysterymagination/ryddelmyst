@@ -1,0 +1,117 @@
+{
+    "dialogue": [
+        {
+            "name": "Yvyteph Sharp Intro Root",
+            "image": "Yvyteph_WildForm_Sharp",
+            "lines": [
+                "Touch me at your peril, mortal. I know I am irresistable, but try to control yourself. I am the crystal Sharpness in Yvyteph's Wildness."
+            ] 
+        },
+        {
+            "name": "Maya Is Confusion",
+            "image": "Maya_Confused",
+            "lines": [
+                "Hi! No touch, no problem. I always ask first."
+            ],
+            "choices": [
+                {
+                    "text": "More wild?",
+                    "dialogue": [
+                        {
+                            "name": "Maya Weariness",
+                            "image": "Maya_Weary",
+                            "lines": [
+                                "Yvyteph's wild form seemed pretty sharp; did she really need to be more dangerous?"
+                            ]
+                        },
+                        {
+                            "name": "Yvyteph Sharp Reply",
+                            "image": "Yvyteph_WildForm_Sharp",
+                            "lines": [
+                                "Yes."
+                            ],
+                            "thoughts": [
+                                "My sister aspects are too soft. That is why you still live, I'd wager."
+                            ]
+                        },
+                        {
+                            "name": "Yvyteph Wild Danger Advice",
+                            "image": "Yvyteph_WildForm_Sharp",
+                            "lines": [
+                                "Why do you hesitate in destroying your foe? Burn his soul and then burn him!"
+                            ],
+                            "thoughts": [
+                                "Oops, now I'm overexcited."
+                            ]
+                        },
+                        {
+                            "name": "Maya Stranger Danger",
+                            "image": "Maya_Weary",
+                            "lines": [
+                                "Yep, I know. Burn and kill and so forth. Gotcha."
+                            ],
+                            "thoughts": [
+                                "Who gave her sharp objects?!"
+                            ]    
+                        }
+                    ]
+                },
+                {
+                    "text": "How can I kill the big tree guy?",
+                    "dialogue": [
+                        {
+                            "name": "Maya Curious",
+                            "image": "Maya_Eldritch",
+                            "lines": [
+                                "So if I did want to kill the tree fella before he kills me, how would I do that?"
+                            ]
+                        },
+                        {
+                            "name": "Yvyteph Wild Sharp Passions",
+                            "image": "Yvyteph_WildForm_Sharp",
+                            "lines": [
+                                "Wood tends not to enjoy the touch of flame. Find the heart of fire in this world and see it Consume him. All of him.",
+                                "See how he weeps? Seize upon that target!"
+                            ],
+                            "thoughts": [
+                                "I want him consumed body AND soul, or you'll bore me."
+                            ]
+                        }
+                    ]
+                },
+                {
+                    "text": "How can I kill the tree golems?",
+                    "dialogue": [
+                        {
+                            "name": "Yvyteph Wild Sharp Passions",
+                            "image": "Yvyteph_WildForm_Sharp",
+                            "lines": [
+                                "Wood tends not to enjoy the touch of flame. These creatures are simplistic; merely burn their center mass and move on.",
+                                "Try not to let their boulders launch you out of the world! And don't be surprised if they bring their own fire to the table if you get too close."
+                            ],
+                            "thoughts": [
+                                "I love the sound of their breath weapon!"
+                            ]
+                        }
+                    ]
+                },
+                {
+                    "text": "How can I kill the robot ladies?",
+                    "dialogue": [
+                        {
+                            "name": "Yvyteph Wild Sharp Passions",
+                            "image": "Yvyteph_WildForm_Sharp",
+                            "lines": [
+                                "Ah, those creatures are fascinating; rocks that humans taught to think! Such a spectacle.",
+                                "They have electricity for blood -- perhaps disrupting that flow would be useful?"
+                            ],
+                            "thoughts": [
+                                "I wish I still had the manual. There were *diagrams*!"
+                            ]
+                        }
+                    ]
+                }
+            ]
+        }
+    ]
+}
