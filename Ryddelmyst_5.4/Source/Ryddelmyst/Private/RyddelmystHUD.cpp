@@ -100,8 +100,10 @@ void ARyddelmystHUD::BeginPlay()
 				if (InventorySelectionTexture)
 				{
 					InventorySelectionIcon = StatusWidget->WidgetTree->ConstructWidget<UImage>();
-					InventorySelectionIcon->SetDesiredSizeOverride(FVector2D(128, 128));
-					InventorySelectionIcon->SetBrushFromTexture(InventorySelectionTexture, false);
+					FSlateBrush ModBrush = InventorySelectionIcon->Brush;
+					ModBrush.SetImageSize(FVector2D(128, 128));
+					ModBrush.SetResourceObject(InventorySelectionTexture);
+					InventorySelectionIcon->SetBrush(ModBrush);
 				}
 
 				ShowDialogue(nullptr, FText::FromString(
@@ -177,8 +179,10 @@ UUserWidget* ARyddelmystHUD::GetStatusWidget()
 void ARyddelmystHUD::AddEquipIcon(class UTexture2D* tex)
 {
 	UImage* IconWidget = StatusWidget->WidgetTree->ConstructWidget<UImage>();
-	IconWidget->SetBrushFromTexture(tex, false);
-	IconWidget->SetDesiredSizeOverride(FVector2D(128, 128));
+	FSlateBrush ModBrush = IconWidget->Brush;
+    ModBrush.SetImageSize(FVector2D(128, 128));
+	ModBrush.SetResourceObject(tex);
+    IconWidget->SetBrush(ModBrush);
 	EquipmentPanel->AddChildToHorizontalBox(IconWidget);
 }
 
@@ -187,7 +191,10 @@ void ARyddelmystHUD::AddItemIcon(class UTexture2D* tex)
 	UImage* IconWidget = StatusWidget->WidgetTree->ConstructWidget<UImage>();
 	IconWidget->SetDesiredSizeOverride(FVector2D(128, 128)); // doesn't work, but recommend approach smdh
 	// IconWidget->SetBrushSize(FVector2D(128, 128)); // compiler complains about deprecation and as of 5.4 it doesn't work anymore.
-	IconWidget->SetBrushFromTexture(tex, false);
+	FSlateBrush ModBrush = IconWidget->Brush;
+    ModBrush.SetImageSize(FVector2D(128, 128));
+	ModBrush.SetResourceObject(tex);
+    IconWidget->SetBrush(ModBrush);
 	InventoryPanel->AddChildToHorizontalBox(IconWidget);
 }
 
@@ -205,7 +212,7 @@ void ARyddelmystHUD::SelectItem(uint8 idx)
 	{
 		UE_LOG(LogTemp, Warning, TEXT("SelectItem; idx is %u"), idx);
 		auto* slot = InventorySelectionOverlay->AddChildToHorizontalBox(InventorySelectionIcon);
-		slot->SetPadding(FMargin(idx*32,0,0,0));
+		slot->SetPadding(FMargin(idx*128,0,0,0));
 		slot->SynchronizeProperties();
 	}
 }
@@ -602,30 +609,38 @@ bool ARyddelmystHUD::HideLibrary()
 void ARyddelmystHUD::RollCredits(const FString& EndingContext)
 {
 	UE_LOG(LogTemp, Warning, TEXT("RollCredits"));
+	FString ImagePath = TEXT("/Game/Ryddelmyst_Assets/Textures/");
+	FString ImageName;
 	FString Ending;
 	if (EndingContext == ARyddelmystGameState::STATE_CLUE_ENDING_PRACTICAL_PAWN)
 	{
 		Ending = "Ending 1 of 5: Practical Pawn";
+		ImageName = "practical_pawn.practical_pawn";
 	}
 	else if (EndingContext == ARyddelmystGameState::STATE_CLUE_ENDING_CRAVING_QUEEN_HOMEWARD)
 	{
 		Ending = "Ending 2 of 5: Craving Queen, Homeward";
+		ImageName = "craving_queen_homeward.craving_queen_homeward";
 	}
 	else if (EndingContext == ARyddelmystGameState::STATE_CLUE_ENDING_CRAVING_QUEEN_HEAVENWARD)
 	{
 		Ending = "Ending 3 of 5: Craving Queen, Ascension";
+		ImageName = "craving_queen_ascension.craving_queen_ascension";
 	}
 	else if (EndingContext == ARyddelmystGameState::STATE_CLUE_ENDING_AMOROUS_ANGEL_HOMEWARD)
 	{
 		Ending = "Ending 4 of 5: Amorous Angel, Homeward";
+		ImageName = "amorous_angel_homeward.amorous_angel_homeward";
 	}
 	else if (EndingContext == ARyddelmystGameState::STATE_CLUE_ENDING_AMOROUS_ANGEL_HEAVENWARD)
 	{
 		Ending = "Ending 5 of 5: Amorous Angel, Ascension";
+		ImageName = "amorous_angel_ascension.amorous_angel_ascension";
 	}
 	else if (EndingContext == ARyddelmystGameState::STATE_CLUE_ENDING_DEAD)
 	{
 		Ending = "Ending -1 of 5: Death";
+		ImageName = "blizzardskull.blizzardskull";
 	}
 	else
 	{
@@ -636,9 +651,12 @@ void ARyddelmystHUD::RollCredits(const FString& EndingContext)
 	FString CreditsPath = FPaths::ProjectContentDir().Append(TEXT("Ryddelmyst_Assets/Text/PrettyCredits.txt"));
 	FFileHelper::LoadFileToString(Credits, *CreditsPath);
 	UE_LOG(LogTemp, Warning, TEXT("RollCredits; credits says %s"), *Credits);
+	auto* BackgroundImage = LoadObject<UTexture2D>(nullptr, *ImagePath.Append(ImageName), nullptr, LOAD_None, nullptr);
 	auto* CreditsWidget = CreateWidget<UUserWidget>(GetWorld(), CreditsWidgetClass);
 	auto* CreditsText = CreditsWidget->WidgetTree->FindWidget<UTextBlock>(FName("CreditsTextBlock"));
 	UE_LOG(LogTemp, Warning, TEXT("RollCredits; creditswidget says %p and creditstext says %p"), CreditsWidget, CreditsText);
 	CreditsText->SetText(FText::FromString(Credits + TEXT("\n") + Ending));
+	auto* BackgroundImageWidget = CreditsWidget->WidgetTree->FindWidget<UImage>(FName("Background"));
+	BackgroundImageWidget->SetBrushFromTexture(BackgroundImage);
 	CreditsWidget->AddToViewport();
 }
