@@ -635,7 +635,7 @@ void ARyddelmystHUD::RollCredits(const FString& EndingContext)
 	else if (EndingContext == ARyddelmystGameState::STATE_CLUE_ENDING_AMOROUS_ANGEL_HEAVENWARD)
 	{
 		Ending = "Ending 5 of 5: Amorous Angel, Ascension";
-		ImageName = "amorous_angel_ascension.amorous_angel_ascension";
+		ImageName = "amorous_angel_ascension3.amorous_angel_ascension3";
 	}
 	else if (EndingContext == ARyddelmystGameState::STATE_CLUE_ENDING_DEAD)
 	{
