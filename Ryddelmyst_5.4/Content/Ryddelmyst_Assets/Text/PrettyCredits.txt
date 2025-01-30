@@ -29,7 +29,7 @@ Story is everything!
 Jeff Creswell, https://github.com/mysterymagination
 
 Textures
-A model isn't dressed without its texture, so we would like to thank the following OpenGameArt.org users for their wonderful Creative Commons textures:
+A model isn't dressed without its texture, so we would like to thank the following OpenGameArt.org users for their amazing Creative Commons textures:
 
 mkwong98
 calinou
@@ -58,7 +58,7 @@ http://code.google.com/p/crawl-tiles/
 https://www.gimp.org/
 
 Fonts
-Text presentation modifies its message, so thanks a ton to the following artists for their Creative Commons fonts:
+Text presentation modifies its message, so thanks a ton to the following artists for their awesome Creative Commons fonts:
 
 http://pix3m.deviantart.com/, submitted to OpenGameArt.org by https://opengameart.org/users/julius
 
@@ -93,6 +93,9 @@ nene
 lamoot, submitting on behalf of Blender Foundation http://apricot.blender.org/
 lukerustltd
 qubodup, submitting on behalf of Michel Baradari http://apollo-music.de/
+
+gotta givva special shoutout to the FUNK MASTER without whom my lore debugging would have been stonily silent:
+congusbongus
 
 and an extra special thanks to the voice of Maya herself:
 

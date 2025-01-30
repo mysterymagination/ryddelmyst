@@ -252,3 +252,7 @@ Audio:
    25.1 Source: https://opengameart.org/content/lava-splash
    25.2 Authors: Michel Baradari http://apollo-music.de/, submitted by https://opengameart.org/users/qubodup
    25.3 License: CC0
+  26. Ryddelmyst/Content/Ryddelmyst_Assets/Audio/rhythm_garden.ogg
+   26.1 Source: https://opengameart.org/content/rhythm-garden
+   26.2 Authors: https://opengameart.org/users/congusbongus
+   26.3 License: CC0
