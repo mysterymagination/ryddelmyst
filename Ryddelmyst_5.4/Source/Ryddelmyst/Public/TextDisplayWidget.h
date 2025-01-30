@@ -45,4 +45,8 @@ public:
 
 	UFUNCTION(BlueprintCallable, Category = "Dialogue")
 	void SetPortrait(UPaperSprite* Image) { Portrait = Image; };
+
+	// todo: implement in BP for simplicity to cover convo in quest log double muzak edge case
+	UFUNCTION(BlueprintCallable, BlueprintNativeEvent, Category = "Dialogue")
+	void PlayAudio(const FString& AudioAssetPath);
 };
