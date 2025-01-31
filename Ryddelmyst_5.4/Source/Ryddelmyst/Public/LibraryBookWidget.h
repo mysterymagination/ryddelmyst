@@ -46,7 +46,7 @@ public:
 	 * @brief determines the category section this book fits under in the library.
 	 */
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Lore")
-	ELibraryCat Genre;
+	ELibraryCat Genre = ELibraryCat::Observation;
 };
 
 /**

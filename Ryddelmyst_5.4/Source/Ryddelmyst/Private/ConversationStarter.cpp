@@ -145,6 +145,7 @@ void UConversationStarter::SaveConversation(const FString& ConvoName)
     FLibraryBookData Data;
     Data.LocalizedTitle = FText::FromString(ConvoName);
     Data.ConversationScript = OutputString;
+    Data.Genre = ELibraryCat::Conversation;
     UE_LOG(LogTemp, Warning, TEXT("SaveConvo; script string says: %s"), *OutputString);
     auto* HUD = UGameplayStatics::GetPlayerController(GetWorld(), 0)->GetHUD<ARyddelmystHUD>();
     HUD->AddLore(Data);
@@ -272,6 +273,7 @@ void UConversationStarter::DeriveDeadend(const FString& Clue)
     }
 }
 
+// todo: this cluestate systems is brittle -- we use it both for relatively transient conversation jumps and more permanent game state progression, which means we can't cleanly clear it once consumed in the transient cases.
 FString UConversationStarter::CalculateScriptName(const FString& CharacterName)
 {
 	FString ConvoScriptName;
