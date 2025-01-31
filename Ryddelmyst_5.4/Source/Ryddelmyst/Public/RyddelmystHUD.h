@@ -165,10 +165,11 @@ public:
 	/**
 	 * @brief Converts the input JSON string into an interactive UI tree.
 	 * @param UUserWidget - convo content to display.
+	 * @param AudioAssetPath - optional audio file to play in the convo UI.
 	 * @return true if the convo was shown, false otherwise.
 	 */
 	UFUNCTION(BlueprintCallable, Category = "Dialogue")
-	bool ShowConversation(UUserWidget* ConvoContent);
+	bool ShowConversation(UUserWidget* ConvoContent, const FString& AudioAssetPath);
 
 	/**
 	 * @brief Removes the given convo widget from viewport and restores user control.

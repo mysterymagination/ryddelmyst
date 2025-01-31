@@ -417,11 +417,17 @@ bool ARyddelmystHUD::HideBookText()
 	return false;
 }
 
-bool ARyddelmystHUD::ShowConversation(UUserWidget* ConvoContent)
+bool ARyddelmystHUD::ShowConversation(UUserWidget* ConvoContent, const FString& AudioAssetPath)
 {
 	if (!ConvoContent->IsInViewport())
 	{
 		ConvoContent->AddToViewport();
+		// todo: should really refactor this so that convocontent is expected to be something that can play audio, and textdisplaywidget is probably not specific enough given how we've used it everywhere.
+		auto* TextDisplayConvoContent = Cast<UTextDisplayWidget>(ConvoContent);
+		if (TextDisplayConvoContent && !AudioAssetPath.IsEmpty())
+		{
+			TextDisplayConvoContent->PlayAudio(AudioAssetPath);
+		}
 		return true;
 	}
 	else 

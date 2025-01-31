@@ -47,6 +47,12 @@ public:
 	void SetPortrait(UPaperSprite* Image) { Portrait = Image; };
 
 	// todo: implement in BP for simplicity to cover convo in quest log double muzak edge case
+	/**
+	 * Spawn an AudioComponent and play the audio asset at the given path. The
+	 * audio will be deactivated when the widget is destroyed.
+	 * @param AudioAssetPath game package root relative path to the audio we want to play.
+	 */
 	UFUNCTION(BlueprintCallable, BlueprintNativeEvent, Category = "Dialogue")
 	void PlayAudio(const FString& AudioAssetPath);
+	void PlayAudio_Implementation(const FString& AudioAssetPath) { UE_LOG(LogTemp, Error, TEXT("PlayAudio; empty default impl. Please implement in BP.")) };
 };
