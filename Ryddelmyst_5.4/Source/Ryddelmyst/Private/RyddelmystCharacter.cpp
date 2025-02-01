@@ -412,7 +412,7 @@ void ARyddelmystCharacter::Interact()
 								APlayerController* PlayerController = UGameplayStatics::GetPlayerController(GetWorld(), 0);
 								PlayerController->SetShowMouseCursor(true);
 								UWidgetBlueprintLibrary::SetInputMode_UIOnlyEx(PlayerController);
-								HUD->ShowConversation(ConvoWidget, TEXT("/Game/Ryddelmyst_Assets/Audio/rhythm_garden.rhythm_garden"));
+								HUD->ShowConversation(ConvoWidget, TEXT("/Game/Ryddelmyst_Assets/Audio/raspberry_jam.raspberry_jam"));
 								UE_LOG(LogTemp, Warning, TEXT("interact; conversing"));
 								break;
 							}
@@ -1114,7 +1114,7 @@ void ARyddelmystCharacter::OnQuestComplete(const FString& QuestCompleteContext)
 	// nevermind the convo character args and bone name here; we autofill yvyteph mastermind for the ending character
 	ConversationStarter->Init(TEXT(""), TEXT(""), FName(TEXT("")), GameState);
 	auto* ConversationUI = ConversationStarter->GenerateConversationUI(ConversationStarter->GetScript());
-	HUD->ShowConversation(ConversationUI, TEXT("/Game/Ryddelmyst_Assets/Audio/rhythm_garden.rhythm_garden"));
+	HUD->ShowConversation(ConversationUI, TEXT("/Game/Ryddelmyst_Assets/Audio/raspberry_jam.raspberry_jam"));
 }
 
 bool ARyddelmystCharacter::AddInventoryItemFromActor(AItemActor* ItemActor)

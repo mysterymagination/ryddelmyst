@@ -256,3 +256,11 @@ Audio:
    26.1 Source: https://opengameart.org/content/rhythm-garden
    26.2 Authors: https://opengameart.org/users/congusbongus
    26.3 License: CC0
+  27. Ryddelmyst/Content/Ryddelmyst_Assets/Audio/raspberry_jam.ogg
+   27.1 Source: https://opengameart.org/content/raspberry-jam
+   27.2 Authors: https://opengameart.org/users/congusbongus
+   27.3 License: CC0
+  28. Ryddelmyst/Content/Ryddelmyst_Assets/Audio/ganymede.ogg
+   28.1 Source: https://opengameart.org/content/ganymede
+   28.2 Authors: https://opengameart.org/users/congusbongus
+   28.3 License: CC0

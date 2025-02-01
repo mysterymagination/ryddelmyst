@@ -132,11 +132,12 @@ public:
 	/**
 	 * @brief Attempts to show text in the mostly full screen text box, if one is not already showing
 	 * @param Text the text to show over most of the screen
+	 * @param AudioAssetPath - optional audio file to play in the text display UI.
 	 * @return true if text was shown, false otherwise 
 	 * 
 	 */
 	UFUNCTION(BlueprintCallable, Category = "Dialogue")
-	bool ShowText(const FText& Text);
+	bool ShowText(const FText& Text, const FString& AudioAssetPath);
 
 	/**
 	 * @brief Attempts to hide the mostly full screen text box, if one is showing

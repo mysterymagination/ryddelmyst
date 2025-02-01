@@ -347,7 +347,7 @@ void ARyddelmystHUD::ScrollTextDown()
 	}
 }
 
-bool ARyddelmystHUD::ShowText(const FText& Text)
+bool ARyddelmystHUD::ShowText(const FText& Text, const FString& AudioAssetPath)
 {
 	if (TextWidget)
 	{
@@ -355,6 +355,10 @@ bool ARyddelmystHUD::ShowText(const FText& Text)
 		if (!TextWidget->IsInViewport())
 		{
 			TextWidget->AddToViewport();
+			if (!AudioAssetPath.IsEmpty())
+			{
+				TextWidget->PlayAudio(AudioAssetPath);
+			}
 			return true;
 		}
 	}

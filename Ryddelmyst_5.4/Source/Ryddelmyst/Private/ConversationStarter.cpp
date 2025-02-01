@@ -247,7 +247,7 @@ void UConversationStarter::DeriveDeadend(const FString& Clue)
             nullptr,
             true
         );
-        HUD->ShowText(FText::FromString(PracticalPawnEpilogue));
+        HUD->ShowText(FText::FromString(PracticalPawnEpilogue), TEXT("/Game/Ryddelmyst_Assets/Audio/ending_themes/practicalpawn/ganymede.ganymede"));
     }
     else if (
         Clue == ARyddelmystGameState::STATE_CLUE_ENDING_CRAVING_QUEEN_HOMEWARD || 
