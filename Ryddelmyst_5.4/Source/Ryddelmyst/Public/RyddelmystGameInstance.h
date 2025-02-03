@@ -43,6 +43,8 @@ private:
 	UPROPERTY()
 	int MaxMonsterCount = 15;
 public:
+	static const FString TAG_FLAG_IGNORE_USER_VOL;
+
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Sound")
 	float MusicVolumeScale = 0.25f;
 
