@@ -19,6 +19,10 @@ private:
 	UPROPERTY()
 	UConversationStarter* ConversationStarter;
 
+public:
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Dialogue")
+	FString ConversationalName;
+
 public:	
 	// Sets default values for this component's properties
 	UConversationalComponent();
@@ -31,7 +35,8 @@ public:
 	// Called every frame
 	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
 
-	FString GetConversationScript_Implementation(const FString& ConvoTx, const FString& ConvoRx, FName ClosestBone, ARyddelmystGameState* GameState);
 	UUserWidget* StartConversation_Implementation(const FString& ConvoTx, const FString& ConvoRx, FName ClosestBone, ARyddelmystGameState* GameState, const FString& ConvoJSON);
+
+	FString GetConversationalName_Implementation() {return ConversationalName; };
 };
 

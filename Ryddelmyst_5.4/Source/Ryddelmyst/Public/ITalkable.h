@@ -30,9 +30,15 @@ public:
 	 * @param ClosestBone - indicates where the player was looking when initiating the convo.
 	 * @param GameState - handle to the current game state so that it can modify which conversation script is returned.
 	 * @param ConvoJSON - optional json script as FString that details the conversation flow and options; 
-	 * if not specified, we will call GetConversationScript() to figure out the script content. 
+	 * if not specified, we will call ConversationStarter::GetScript() to figure out the script content. 
 	 * @return UUserWidget containing the rendered conversation in a container suitable for replacing or appending to a conversation container in the HUD.
 	 */
-	UFUNCTION(BlueprintCallable, BlueprintNativeEvent, Category = "NPC")
+	UFUNCTION(BlueprintCallable, BlueprintNativeEvent, Category = "Dialogue")
 	UUserWidget* StartConversation(const FString& ConvoTx, const FString& ConvoRx, FName ClosestBone, ARyddelmystGameState* GameState, const FString& ConvoJSON);
+
+	/**
+	 * @return FString name identifying this actor for the purpose of conversation.
+	 */
+	UFUNCTION(BlueprintCallable, BlueprintNativeEvent, Category = "Dialogue")
+	FString GetConversationalName();
 };
