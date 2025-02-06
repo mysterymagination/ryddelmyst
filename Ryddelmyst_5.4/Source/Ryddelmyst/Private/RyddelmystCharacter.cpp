@@ -408,7 +408,7 @@ void ARyddelmystCharacter::Interact()
 							if (Convo && Convo->GetClass()->ImplementsInterface(UTalkable::StaticClass()))
 							{
 								Cast<URyddelmystGameInstance>(GetWorld()->GetGameInstance())->Pause();
-								UUserWidget* ConvoWidget = ITalkable::Execute_StartConversation(Convo, GetActorNameOrLabel(), Actor->GetActorNameOrLabel(), ClosestBone, GetWorld()->GetGameState<ARyddelmystGameState>(), TEXT(""));
+								UUserWidget* ConvoWidget = ITalkable::Execute_StartConversation(Convo, UConversationStarter::MATCHER_PLAYER_MAYA, ITalkable::Execute_GetConversationalName(Convo), ClosestBone, GetWorld()->GetGameState<ARyddelmystGameState>(), TEXT(""));
 								APlayerController* PlayerController = UGameplayStatics::GetPlayerController(GetWorld(), 0);
 								PlayerController->SetShowMouseCursor(true);
 								UWidgetBlueprintLibrary::SetInputMode_UIOnlyEx(PlayerController);
