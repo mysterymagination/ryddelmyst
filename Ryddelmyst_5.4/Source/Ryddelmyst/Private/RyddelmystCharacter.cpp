@@ -399,7 +399,7 @@ void ARyddelmystCharacter::Interact()
 							UE_LOG(LogTemp, Warning, TEXT("Interact; player cannot pick up %s for story reasons"), *Actor->GetName());
 						}
 					}
-					else if (cap == InteractCapability::TALKABLE && ClosestBone.ToString().Contains(TEXT("face"), ESearchCase::IgnoreCase) || cap == InteractCapability::DESCRIBABLE)
+					else if ((cap == InteractCapability::TALKABLE && ClosestBone.ToString().Contains(TEXT("face"), ESearchCase::IgnoreCase)) || cap == InteractCapability::DESCRIBABLE)
 					{
 						// todo: eesh, ugly hack to make talking and describing mutex so we don't get an empty description dialogue bubble after/before a conversation; better solution would be to turn the interact cap array into an assoc map so we can control the prioritization behavior here and in the data.
 						if (capArray.Contains(InteractCapability::TALKABLE) && ClosestBone.ToString().Contains(TEXT("face"), ESearchCase::IgnoreCase))
@@ -625,8 +625,8 @@ void ARyddelmystCharacter::MoveRight(float Value)
 void ARyddelmystCharacter::Zoom3PPCam(float Factor)
 {
 	float Length = ThirdPersonCameraArmComponent->TargetArmLength;
-	if (Length >= CamArmLengthMin && Factor < 0.f ||
-		Length <= CamArmLengthMax && Factor > 0.f)
+	if ((Length >= CamArmLengthMin && Factor < 0.f) ||
+		(Length <= CamArmLengthMax && Factor > 0.f))
 	{
 		ThirdPersonCameraArmComponent->TargetArmLength += ZoomRate*Factor;
 		UE_LOG(LogTemp, Warning, TEXT("Zoom3PPCam; new arm length is %f"), ThirdPersonCameraArmComponent->TargetArmLength);
