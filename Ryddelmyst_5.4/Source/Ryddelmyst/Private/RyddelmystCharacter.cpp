@@ -292,6 +292,7 @@ void ARyddelmystCharacter::Interact()
 				float LeastDistance = std::numeric_limits<float>::max();
 				for (auto BoneName : Skele->GetAllSocketNames())
 				{
+					UE_LOG(LogTemp, Warning, TEXT("Interact; the bones says %s"), *BoneName.ToString());
 					FVector BoneLocation = Skele->GetSocketLocation(BoneName);
 					FVector Diff = BoneLocation - Hit.Location;
 					float DiffMag = Diff.Length();
@@ -353,7 +354,7 @@ void ARyddelmystCharacter::Interact()
 										 NeckSlotItem && NeckSlotItem->GetName().Contains(TEXT("CracklingVioletVial")) &&
 										 HandsSlotItem && HandsSlotItem->GetName().Contains(TEXT("IronSwordCloudConquest")) &&
 										 FeetSlotItem && FeetSlotItem->GetName().Contains(TEXT("SlippersOfLongWintersNap"));
-							StoryBlock = false;//!AllQuestItems;
+							StoryBlock = !AllQuestItems;
 							USoundBase* Eggsclamation = nullptr;
 							if (!StoryBlock)
 							{
