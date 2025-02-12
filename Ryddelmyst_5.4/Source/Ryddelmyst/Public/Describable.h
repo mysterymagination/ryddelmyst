@@ -6,6 +6,7 @@
 #include "UObject/Interface.h"
 #include "Interact.h"
 #include "LibraryBookWidget.h"
+#include "Sound/SoundBase.h"
 #include "Describable.generated.h"
 
 USTRUCT(BlueprintType)
@@ -28,6 +29,12 @@ public:
 	 */
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Interaction")
 	InteractReactions Reaction;
+
+	/**
+	 * @brief Sound to play when interacting with this describable actor.
+	 */
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Interaction")
+	USoundBase* DescriptiveNoises;
 };
 
 // This class does not need to be modified.

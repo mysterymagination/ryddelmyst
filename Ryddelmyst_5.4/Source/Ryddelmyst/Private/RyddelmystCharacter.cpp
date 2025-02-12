@@ -353,7 +353,7 @@ void ARyddelmystCharacter::Interact()
 										 NeckSlotItem && NeckSlotItem->GetName().Contains(TEXT("CracklingVioletVial")) &&
 										 HandsSlotItem && HandsSlotItem->GetName().Contains(TEXT("IronSwordCloudConquest")) &&
 										 FeetSlotItem && FeetSlotItem->GetName().Contains(TEXT("SlippersOfLongWintersNap"));
-							StoryBlock = !AllQuestItems;
+							StoryBlock = false;//!AllQuestItems;
 							USoundBase* Eggsclamation = nullptr;
 							if (!StoryBlock)
 							{
@@ -433,6 +433,23 @@ void ARyddelmystCharacter::Interact()
 									// Maya defaults to a happy outlook!  That's the way to be.
 									ReactionPortrait = PortraitMap[InteractReactions::HAPPY];
 								}
+
+								auto* DescNoises = Desc.DescriptiveNoises;
+								if (DescNoises)
+								{
+										UGameplayStatics::PlaySoundAtLocation(
+										GetWorld(),
+										DescNoises,
+										GetActorLocation(),
+										GetActorRotation(),
+										Cast<URyddelmystGameInstance>(UGameplayStatics::GetGameInstance(GetWorld()))->SFXVolumeScale,
+										1.f,
+										0.f,
+										nullptr,
+										nullptr,
+										nullptr
+									);
+								}
 								
 								HUD->ShowDialogue(ReactionPortrait, Desc.LocalizedDescription);
 							}
@@ -452,6 +469,23 @@ void ARyddelmystCharacter::Interact()
 							{
 								// Maya defaults to a happy outlook!  That's the way to be.
 								ReactionPortrait = PortraitMap[InteractReactions::HAPPY];
+							}
+
+							auto* DescNoises = Desc.DescriptiveNoises;
+							if (DescNoises)
+							{
+									UGameplayStatics::PlaySoundAtLocation(
+									GetWorld(),
+									DescNoises,
+									GetActorLocation(),
+									GetActorRotation(),
+									Cast<URyddelmystGameInstance>(UGameplayStatics::GetGameInstance(GetWorld()))->SFXVolumeScale,
+									1.f,
+									0.f,
+									nullptr,
+									nullptr,
+									nullptr
+								);
 							}
 							
 							HUD->ShowDialogue(ReactionPortrait, Desc.LocalizedDescription);

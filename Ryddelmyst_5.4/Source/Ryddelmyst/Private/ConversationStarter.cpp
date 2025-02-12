@@ -90,6 +90,7 @@ void UConversationStarter::Init(const FString& _ConvoTx, const FString& _ConvoRx
 
     /// UI setup ///
     ConvoWidget = CreateWidget<UUserWidget>(GetWorld(), ConvoBaseWidgetClass);
+    UE_LOG(LogTemp, Warning, TEXT("init; convowidget says %p"), ConvoWidget);
     ConvoContainer = Cast<UScrollBox>(ConvoWidget->WidgetTree->FindWidget(TEXT("DialogueScrollBox")));
 }
 

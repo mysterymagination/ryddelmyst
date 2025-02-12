@@ -35,6 +35,7 @@ void UConversationalComponent::TickComponent(float DeltaTime, ELevelTick TickTyp
 UUserWidget* UConversationalComponent::StartConversation_Implementation(const FString& ConvoTx, const FString& ConvoRx, FName ClosestBone, ARyddelmystGameState* GameState, const FString& ConvoJSON)
 {
 	// use conversationstarter to render and process convo UI, then return it.
+	UE_LOG(LogTemp, Log, TEXT("startconversation; convotx: %s, convorx %s"), *ConvoTx, *ConvoRx);
 	ConversationStarter->Init(ConvoTx, ConvoRx, ClosestBone, GameState);
 	FString Script = ConvoJSON;
 	if (Script.IsEmpty())

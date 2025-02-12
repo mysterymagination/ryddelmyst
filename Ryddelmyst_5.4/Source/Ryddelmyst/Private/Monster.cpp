@@ -7,6 +7,7 @@
 #include "Attack.h"
 #include "RyddelmystGameInstance.h"
 #include "Kismet/GameplayStatics.h"
+#include "Sound/SoundBase.h"
 #include "ParticleUtils.h"
 
 AMonster::AMonster()
