@@ -12,15 +12,15 @@ class RYDDELMYST_API AItemActor : public AActor
 {
 	GENERATED_BODY()
 
-public:	
+public:
 	// Sets default values for this actor's properties
 	AItemActor();
 
-public:	
+public:
 	UFUNCTION()
 	TSubclassOf<UObject> GetItemType();
 
 protected:
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Inventory", meta = (MustImplement = "Item"))
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Inventory", meta = (MustImplement = "/Script/Ryddelmyst.Item"))
 	TSubclassOf<UObject> ItemType;
 };

@@ -10,8 +10,8 @@ UCLASS()
 class RYDDELMYST_API ATreasureChest : public AActor
 {
 	GENERATED_BODY()
-	
-public:	
+
+public:
 	// Sets default values for this actor's properties
 	ATreasureChest();
 
@@ -19,14 +19,14 @@ protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 
-public:	
+public:
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 
 protected:
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Item", meta = (MustImplement = "Item"))
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Item", meta = (MustImplement = "/Script/Ryddelmyst.Item"))
 	TSubclassOf<UObject> Treasure;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Item", meta = (MustImplement = "Item"))
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Item", meta = (MustImplement = "/Script/Ryddelmyst.Item"))
 	TSubclassOf<UObject> Key;
 };
