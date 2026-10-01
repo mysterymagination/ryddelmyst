@@ -1,0 +1,57 @@
+{
+    "dialogue": [
+        {
+            "name": "Yvyteph Hurrah",
+            "image": "Yvyteph_FontOfFertility",
+            "lines": [
+                "Yes! Desire is second nature to you, I knew it. You are my daughter as surely as Qyvnily. Enough talk now; words of passion are a fine tease, but I require action!"
+            ]
+        },
+        {
+            "name": "Maya Determination",
+            "image": "Maya_Confused",
+            "lines": ["Er, am I? Do you? Hm."],
+            "choices": [
+                {
+                    "text": "Okey-dokey",
+                    "dialogue": [
+                        {
+                            "name": "Maya's Evil Determination",
+                            "image": "Maya_Eldritch",
+                            "lines": [
+                                "Looking forward to it! My pursuer shall burn with Desire. *wink*"
+                            ],
+                            "transition": {
+                                "text": "Let the hunt begin!",
+                                "type": "deadend",
+                                "clue": "maya_evil_determination"
+                            }
+                        }
+                    ]
+                },
+                {
+                    "text": "Enough with these games...",
+                    "dialogue": [
+                        {
+                            "name": "Maya Good Determination",
+                            "image": "Maya_Angry",
+                            "lines": [
+                                "No more games! You want me to toss a treeman's egg into lava so that he'll jump in and burn to death in a desperate bid to save it, right?",
+                                "Well nuts to that. I will not harm an innocent, even to save my own life. So you better think of something else for me to do or let me go or kill me, because I'm not doing that."
+                            ],
+                            "transition": {
+                                "text": "You tell her!",
+                                "type": "jump",
+                                "clue": "ending_amorous_angel"
+                            }
+                        }
+                    ]
+                }
+            ]
+        }
+                    
+                
+            
+        
+    ]
+}

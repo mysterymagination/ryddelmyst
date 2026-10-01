@@ -1,0 +1,88 @@
+{
+    "dialogue": [
+        {
+            "name": "Yvyteph Confusion",
+            "image": "Yvyteph_FontOfFertility",
+            "lines": [
+                "*shiver quiver* Such passion! I love your tribute, mortal daughter, but I long for the demonstration of your commitment to longing more. Do what must be done, or let the Reaper Treant claim you. Either would be amusing."
+            ]
+        },
+        {
+            "name": "Qyvnily Rescue",
+            "image": "Qyvnily_WildFlower",
+            "lines": [
+                "Wait, Mum! There's something important here. Maya, you said you would die before harming an innocent? Why?"
+            ]
+        },
+        {
+            "name": "Maya Good Determination",
+            "image": "Maya_Happy",
+            "lines": [
+                "We call it 'compassion'. It's got 'passion' baked right into the loaf! It's the passion people have to care about other people's wellbeing and feelings, for kindness and love.",
+                "Not only does it help support a society of people and our interrelations, but it also allows us to thrill in actions that affect others more than ourselves; if these actions are good and constructive, we can have both a healthy society and exponentiate our communal passions by expanding our network of social influence. Some call this magical kindess power 'friendship', and it really is the best 'ship!",
+                "Compassion is a key facet of passion to humans, at least as far as I'm concerned, and it's pretty rad. Perhaps you should learn about it."
+            ]
+        },
+        {
+            "name": "Qyvnily Desire",
+            "image": "Qyvnily_WildFlower",
+            "lines": [
+                "I WANT to know the feelings she describes, Mother. I think she's done with the trials."
+            ]
+        },
+        {
+            "name": "Yvyteph Satisfaction",
+            "image": "Yvyteph_FontOfFertility",
+            "lines": [
+                "You have stirred much in my daughter, Maya, and also something within me. I am too primordial to consider such high-minded philosophy, but perhaps even I can still learn new dimensions of Desire. It is certainly infinite.",
+                "Very well, you have passed our trials! I will grant you one of two wishes:",
+                "First, I can return you to Meigantu and your previous life. I will instruct my priestesses that you are not to be harmed, and you may escape wherever you wish to live on as you see fit. I lied earlier when I said all your colleagues had been killed; your aspirational mate Athryn yet lives, and she too will be freed.",
+                "Alternatively, let go your old existence and join with me! Wouldst thou like to live deliciously? Become an Angel of Desire and live forever in the stream of passion with me. You have proven to be quite insightful, and my daughter and I would benefit from your guidance. And I especially would appreciate your... companionship. I believe I did promise you a redefiniton of pleasure; I will only keep that promise if you stay. After all, no mortal could survive the ecstasy I will show you, so you must first ascend to divinity beside us. Your Athryn will still be freed, and you'd even be in a position to see to it yourself. Also notable, you could visit her as an entity of elemental ecstasy whenever you like.",
+                "Choose wisely and quickly! I Desire you, and if you are neither gone from here nor an angel in the next instant your mortal shell will not survive my passion."
+            ]
+        },
+        {
+            "name": "Maya Final Decision",
+            "image": "Maya_Confused",
+            "lines": [
+                "*meep*"
+            ],
+            "choices": [
+                {
+                    "text": "I wanna go home!",
+                    "dialogue": [
+                        {
+                            "name": "Yvyteph DiSatisfaction",
+                            "image": "Yvyteph_FontOfFertility",
+                            "lines": [
+                                "Very well, mortal girl. You shall always be girlfish to me. Do not cross my path again, for I will not be able to hold back my Desire. I shall not even try."
+                            ],
+                            "transition": {
+                                "text": "Weeeeeee~",
+                                "type": "deadend",
+                                "clue": "ending_amorous_angel_homeward"
+                            }
+                        }
+                    ]
+                },
+                {
+                    "text": "Let's do it!",
+                    "dialogue": [
+                        {
+                            "name": "Maya Amorous Angel",
+                            "image": "Maya_Eldritch",
+                            "lines": [
+                                "All righty-roo, make me a demigoddess or whatever! I have a feeling Molly is going to need me on the squad with you guys."
+                            ],
+                            "transition": {
+                                "text": "Embrace your Desire!",
+                                "type": "deadend",
+                                "clue": "ending_amorous_angel_heavenward"
+                            }
+                        }
+                    ]
+                }
+            ]
+        }
+    ]
+}

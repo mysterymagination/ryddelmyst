@@ -1,0 +1,82 @@
+{
+    "dialogue": [
+        {
+            "name": "Test 1",
+            "image": "Qyvnily_WildFlower",
+            "lines": [
+                "Howie doin'?"
+            ],
+            "thoughts": [
+                "*cutie* ^_^;"
+            ]
+        },
+        {
+            "name": "Test 2",
+            "image": "Maya_Confused",
+            "lines": [
+                "Hi! Um. I'm Maya. Very happy to meet you!"
+            ],
+            "choices": [
+                {
+                    "text": "Test Question 1 Prompt?...",
+                    "dialogue": [
+                        {
+                            "name": "Test Question 1",
+                            "image": "Maya_Eldritch",
+                            "lines": [
+                                "So... testing 1?"
+                            ]
+                        },
+                        {
+                            "name": "Test Answer 1",
+                            "image": "Qyvnily_WildFlower",
+                            "lines": [
+                                "Answering 1, certainly."
+                            ]
+                        },
+                        {
+                            "name": "Test Answer 1 Response",
+                            "image": "Maya_Embarrassed",
+                            "lines": [
+                                "Cool, cool. ANyway... response 1 for sure."
+                            ],
+                            "thoughts": [
+                                "Sweet crumpets"
+                            ],
+                            "transition": {
+                                "text": "I haven't had enough of this chat yet; lets go round again",
+                                "type": "jump",
+                                "clue": "test_answer_1_clue",
+                                "input": "What should I say to her?"
+                            }     
+                        }
+                    ]
+                },
+                {
+                    "text": "Test Question 2 Prompt?...",
+                    "dialogue": [
+                        {
+                            "name": "Test Question 2",
+                            "image": "Maya_Happy",
+                            "lines": [
+                                "Hey how come test question 2?"
+                            ]
+                        },
+                        {
+                            "name": "Test Answer 2",
+                            "image": "Qyvnily_WildFlower",
+                            "lines": [
+                                "You know the answer is test answer 2."
+                            ],
+                            "transition": {
+                                "text": "And with Answer 2, we are doomed!",
+                                "type": "deadend",
+                                "clue": "test_answer_2_clue"
+                            }
+                        }
+                    ]
+                }
+            ]
+        }
+    ]
+}
