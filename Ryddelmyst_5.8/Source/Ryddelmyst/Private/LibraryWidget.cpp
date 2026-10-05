@@ -1,6 +1,5 @@
 // Copyright Jeff Creswell 2024. Subject to the GPL v3.0 license.
 
-
 #include "LibraryWidget.h"
 #include "Misc/Paths.h"
 #include "Serialization/JsonReader.h"
@@ -23,8 +22,7 @@ const FString ULibraryWidget::VALUE_CONDITION_STATE_VARIABLE_TYPE_BOOLEAN{TEXT("
 const FString ULibraryWidget::VALUE_CONDITION_BOOLEAN_CHAIN_OPERATOR_OR{TEXT("or")};
 const FString ULibraryWidget::VALUE_CONDITION_BOOLEAN_CHAIN_OPERATOR_AND{TEXT("and")};
 
-
-void ULibraryWidget::AddBook(const FLibraryBookData& Data)
+void ULibraryWidget::AddBook(const FLibraryBookData &Data)
 {
     if (BookBank.Contains(Data.Genre))
     {
@@ -39,7 +37,7 @@ void ULibraryWidget::AddBook(const FLibraryBookData& Data)
                     Duplicate = true;
                 }
             }
-            else 
+            else
             {
                 if (Data.ConversationScript.Equals(Book.ConversationScript, ESearchCase::IgnoreCase))
                 {
@@ -53,7 +51,7 @@ void ULibraryWidget::AddBook(const FLibraryBookData& Data)
             BookBank[Data.Genre].Books.Add(Data);
         }
     }
-    else 
+    else
     {
         // simple insert case for novel genre.
         FLibraryBookShelf Shelf;
@@ -81,37 +79,37 @@ void ULibraryWidget::PopulateUnshelved()
 FLibraryBookData ULibraryWidget::PullUnshelved(ELibraryCat Category)
 {
     FLibraryBookData data;
-    switch(Category)
-	{
-		case ELibraryCat::Observation:
-            if (UnshelvedObservations.Num() >= 1)
-            {
-                data = UnshelvedObservations[UnshelvedObservations.Num()-1];
-                UnshelvedObservations.RemoveAt(UnshelvedObservations.Num()-1);
-            }
-			break;
-        case ELibraryCat::Conversation:
-            if (UnshelvedConversations.Num() >= 1)
-            {
-			    data = UnshelvedConversations[UnshelvedConversations.Num()-1];
-                UnshelvedConversations.RemoveAt(UnshelvedConversations.Num()-1);
-            }
-			break;
-        case ELibraryCat::Diary:
-			if (UnshelvedDiaries.Num() >= 1)
-            {
-                data = UnshelvedDiaries[UnshelvedDiaries.Num()-1];
-                UnshelvedDiaries.RemoveAt(UnshelvedDiaries.Num()-1);
-            }
-			break;
-        default:
-            UE_LOG(LogTemp, Error, TEXT("Unrecognized book genre %i"), Category);
-            break;
-	}
+    switch (Category)
+    {
+    case ELibraryCat::Observation:
+        if (UnshelvedObservations.Num() >= 1)
+        {
+            data = UnshelvedObservations[UnshelvedObservations.Num() - 1];
+            UnshelvedObservations.RemoveAt(UnshelvedObservations.Num() - 1);
+        }
+        break;
+    case ELibraryCat::Conversation:
+        if (UnshelvedConversations.Num() >= 1)
+        {
+            data = UnshelvedConversations[UnshelvedConversations.Num() - 1];
+            UnshelvedConversations.RemoveAt(UnshelvedConversations.Num() - 1);
+        }
+        break;
+    case ELibraryCat::Diary:
+        if (UnshelvedDiaries.Num() >= 1)
+        {
+            data = UnshelvedDiaries[UnshelvedDiaries.Num() - 1];
+            UnshelvedDiaries.RemoveAt(UnshelvedDiaries.Num() - 1);
+        }
+        break;
+    default:
+        UE_LOG(LogTemp, Error, TEXT("Unrecognized book genre %i"), Category);
+        break;
+    }
     return data;
 }
 
-void ULibraryWidget::BookDoctor(FLibraryBookData& Data)
+void ULibraryWidget::BookDoctor(FLibraryBookData &Data)
 {
     FString LoreString = Data.LocalizedLore.ToString();
     StringDoctor(LoreString);
@@ -119,31 +117,31 @@ void ULibraryWidget::BookDoctor(FLibraryBookData& Data)
     Data.LocalizedLore = FText::FromString(LoreString);
 }
 
-void ULibraryWidget::StringDoctor(FString& LoreString)
+void ULibraryWidget::StringDoctor(FString &LoreString)
 {
     // search for instances of ${} template vars in the Lore of the input data
     FString VarOpenToken = TEXT("${");
     FString VarCloseToken = TEXT("}");
     int OpenVarIndex = LoreString.Find(VarOpenToken);
-    while (OpenVarIndex != -1) 
+    while (OpenVarIndex != -1)
     {
         int CloseVarIndex = LoreString.Find(VarCloseToken, ESearchCase::IgnoreCase, ESearchDir::FromStart, OpenVarIndex);
         if (CloseVarIndex != -1 && CloseVarIndex > OpenVarIndex)
         {
             // The open index will be index of the start of the open token substring, so we need to account for that in skipping to the varname content
             int VarNameStartPos = OpenVarIndex + VarOpenToken.Len();
-            // The length of the VarCloseToken doesn't matter here since we just want to make sure we discount the index where it 
+            // The length of the VarCloseToken doesn't matter here since we just want to make sure we discount the index where it
             // begins to catch only the end of the varname content
             int VarNameCount = CloseVarIndex - VarNameStartPos;
             FString VarName = LoreString.Mid(VarNameStartPos, VarNameCount);
             FString Sub = LookupVariableSubstitution(VarName);
             UE_LOG(LogTemp, Log, TEXT("StringDoctor; parsed out var name is: %s and sub is: %s"), *VarName, *Sub);
             // Excise the variable template substring
-            LoreString.RemoveAt(OpenVarIndex, VarOpenToken.Len() + VarName.Len() + VarCloseToken.Len(), true);
+            LoreString.RemoveAt(OpenVarIndex, VarOpenToken.Len() + VarName.Len() + VarCloseToken.Len(), EAllowShrinking::Default);
             // Insert the actual variable substitution value
             LoreString.InsertAt(OpenVarIndex, Sub);
         }
-        else 
+        else
         {
             UE_LOG(LogTemp, Error, TEXT("StringDoctor; Malformed variable sub at %i"), OpenVarIndex);
             continue;
@@ -153,7 +151,7 @@ void ULibraryWidget::StringDoctor(FString& LoreString)
     }
 }
 
-FString ULibraryWidget::LookupVariableSubstitution(const FString& VariableName)
+FString ULibraryWidget::LookupVariableSubstitution(const FString &VariableName)
 {
     UE_LOG(LogTemp, Log, TEXT("LookupVariableSubstitution; var name is: %s"), *VariableName);
     // *shh* nobody tell him about FText::Format() XD I wanted practice with UE JSON before the scary convo script processor ok?!
@@ -186,7 +184,7 @@ FString ULibraryWidget::LookupVariableSubstitution(const FString& VariableName)
                 {
                     UE_LOG(LogTemp, Log, TEXT("LookupVariableSub; stepping through conditions array."));
                     bool ConditionPassed = false;
-                    const TSharedPtr<FJsonObject>* ConditionObject;
+                    const TSharedPtr<FJsonObject> *ConditionObject;
                     if (Condition->TryGetObject(ConditionObject))
                     {
                         UE_LOG(LogTemp, Log, TEXT("LookupVariableSub; parsed condition into object."));
@@ -198,7 +196,7 @@ FString ULibraryWidget::LookupVariableSubstitution(const FString& VariableName)
                         FString PassVal = (*ConditionObject)->GetStringField(KEY_CONDITION_PASS_VALUE);
                         if (StateVarType == VALUE_CONDITION_STATE_VARIABLE_TYPE_BOOLEAN)
                         {
-                            bool* StateValue_ptr = GameState->StatesMapBool.Find(StateVarName);
+                            bool *StateValue_ptr = GameState->StatesMapBool.Find(StateVarName);
                             if (StateValue_ptr)
                             {
                                 if (ComparisonOp == VALUE_CONDITION_COMPARISON_OPERATOR_EQ)
@@ -211,45 +209,42 @@ FString ULibraryWidget::LookupVariableSubstitution(const FString& VariableName)
                                     {
                                         ConditionPassed = !*StateValue_ptr;
                                     }
-                                    UE_LOG(LogTemp, Log, 
-                                        TEXT("LookupVariableSub; for variablename %s's condition state var %s, bool eq comparison condition passed says %d based on passval of %s and state val of %d"), 
-                                        *VariableName, 
-                                        *StateVarName, 
-                                        ConditionPassed, 
-                                        *PassVal, 
-                                        *StateValue_ptr
-                                    );
+                                    UE_LOG(LogTemp, Log,
+                                           TEXT("LookupVariableSub; for variablename %s's condition state var %s, bool eq comparison condition passed says %d based on passval of %s and state val of %d"),
+                                           *VariableName,
+                                           *StateVarName,
+                                           ConditionPassed,
+                                           *PassVal,
+                                           *StateValue_ptr);
                                 }
                             }
                         }
                         else if (StateVarType == VALUE_CONDITION_STATE_VARIABLE_TYPE_INTEGER)
                         {
-                            int* StateValue_ptr = GameState->StatesMapInt.Find(StateVarName);
+                            int *StateValue_ptr = GameState->StatesMapInt.Find(StateVarName);
                             if (StateValue_ptr)
                             {
                                 if (ComparisonOp == VALUE_CONDITION_COMPARISON_OPERATOR_EQ)
                                 {
                                     ConditionPassed = *StateValue_ptr == UKismetStringLibrary::Conv_StringToInt(PassVal);
-                                    UE_LOG(LogTemp, Log, 
-                                        TEXT("LookupVariableSub; for variablename %s's condition state var %s, int eq comparison condition passed says %d based on passval of %s and state val of %d"), 
-                                        *VariableName, 
-                                        *StateVarName, 
-                                        ConditionPassed, 
-                                        *PassVal, 
-                                        *StateValue_ptr
-                                    );
+                                    UE_LOG(LogTemp, Log,
+                                           TEXT("LookupVariableSub; for variablename %s's condition state var %s, int eq comparison condition passed says %d based on passval of %s and state val of %d"),
+                                           *VariableName,
+                                           *StateVarName,
+                                           ConditionPassed,
+                                           *PassVal,
+                                           *StateValue_ptr);
                                 }
                                 else if (ComparisonOp == VALUE_CONDITION_COMPARISON_OPERATOR_GTE)
                                 {
                                     ConditionPassed = *StateValue_ptr >= UKismetStringLibrary::Conv_StringToInt(PassVal);
-                                    UE_LOG(LogTemp, Log, 
-                                        TEXT("LookupVariableSub; for variablename %s's condition state var %s, int gte comparison condition passed says %d based on passval of %s and state val of %d"), 
-                                        *VariableName, 
-                                        *StateVarName, 
-                                        ConditionPassed, 
-                                        *PassVal, 
-                                        *StateValue_ptr
-                                    );
+                                    UE_LOG(LogTemp, Log,
+                                           TEXT("LookupVariableSub; for variablename %s's condition state var %s, int gte comparison condition passed says %d based on passval of %s and state val of %d"),
+                                           *VariableName,
+                                           *StateVarName,
+                                           ConditionPassed,
+                                           *PassVal,
+                                           *StateValue_ptr);
                                 }
                             }
                         }
@@ -260,33 +255,30 @@ FString ULibraryWidget::LookupVariableSubstitution(const FString& VariableName)
                             if (BooleanChainOp == "and")
                             {
                                 AllConditionsPassed = AllConditionsPassed && ConditionPassed;
-                                UE_LOG(LogTemp, Log, 
-                                    TEXT("LookupVariableSub; for variablename %s's condition state var %s, 'and' chain gives allconditions passed as %d"), 
-                                    *VariableName, 
-                                    *StateVarName, 
-                                    AllConditionsPassed
-                                );
+                                UE_LOG(LogTemp, Log,
+                                       TEXT("LookupVariableSub; for variablename %s's condition state var %s, 'and' chain gives allconditions passed as %d"),
+                                       *VariableName,
+                                       *StateVarName,
+                                       AllConditionsPassed);
                             }
                             else if (BooleanChainOp == "or")
                             {
                                 AllConditionsPassed = AllConditionsPassed || ConditionPassed;
-                                UE_LOG(LogTemp, Log, 
-                                    TEXT("LookupVariableSub; for variablename %s's condition state var %s, 'or' chain gives allconditions passed as %d"), 
-                                    *VariableName, 
-                                    *StateVarName, 
-                                    AllConditionsPassed
-                                );
+                                UE_LOG(LogTemp, Log,
+                                       TEXT("LookupVariableSub; for variablename %s's condition state var %s, 'or' chain gives allconditions passed as %d"),
+                                       *VariableName,
+                                       *StateVarName,
+                                       AllConditionsPassed);
                             }
                         }
                         else
                         {
                             AllConditionsPassed = ConditionPassed;
-                            UE_LOG(LogTemp, Log, 
-                                TEXT("LookupVariableSub; for variablename %s's condition state var %s, no bool chain operator so allconditions passed is %d"), 
-                                *VariableName, 
-                                *StateVarName, 
-                                AllConditionsPassed
-                            );
+                            UE_LOG(LogTemp, Log,
+                                   TEXT("LookupVariableSub; for variablename %s's condition state var %s, no bool chain operator so allconditions passed is %d"),
+                                   *VariableName,
+                                   *StateVarName,
+                                   AllConditionsPassed);
                         }
                     }
                     else
@@ -323,6 +315,6 @@ FString ULibraryWidget::LookupVariableSubstitution(const FString& VariableName)
     {
         UE_LOG(LogTemp, Error, TEXT("LookupVariableSub; gamestate came up null"));
     }
-      
+
     return TEXT("Oops Error Substitution");
 }
