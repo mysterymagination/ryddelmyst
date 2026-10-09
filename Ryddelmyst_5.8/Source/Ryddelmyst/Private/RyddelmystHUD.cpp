@@ -29,7 +29,7 @@ ARyddelmystHUD::ARyddelmystHUD()
 
 	static ConstructorHelpers::FClassFinder<UUserWidget> StatusWidgetObj(TEXT("/Game/Ryddelmyst_Assets/UI/BP_Status"));
 	StatusWidgetClass = StatusWidgetObj.Class;
-	
+
 	static ConstructorHelpers::FClassFinder<UUserWidget> PauseMenuWidgetObj(TEXT("/Game/Ryddelmyst_Assets/UI/BP_PauseMenu"));
 	PauseMenuWidgetClass = PauseMenuWidgetObj.Class;
 
@@ -55,7 +55,6 @@ ARyddelmystHUD::ARyddelmystHUD()
 	CreditsWidgetClass = CreditsWidgetObj.Class;
 }
 
-
 void ARyddelmystHUD::DrawHUD()
 {
 	Super::DrawHUD();
@@ -66,13 +65,13 @@ void ARyddelmystHUD::DrawHUD()
 	const FVector2D Center(Canvas->ClipX * 0.5f, Canvas->ClipY * 0.5f);
 
 	// offset by half the texture's dimensions so that the center of the texture aligns with the center of the Canvas
-	const FVector2D CrosshairDrawPosition( (Center.X),
-										   (Center.Y + 20.0f));
+	const FVector2D CrosshairDrawPosition((Center.X),
+										  (Center.Y + 20.0f));
 
 	// draw the crosshair
-	FCanvasTileItem TileItem( CrosshairDrawPosition, CrosshairTex->GetResource(), FLinearColor::White);
+	FCanvasTileItem TileItem(CrosshairDrawPosition, CrosshairTex->GetResource(), FLinearColor::White);
 	TileItem.BlendMode = SE_BLEND_Translucent;
-	Canvas->DrawItem( TileItem );
+	Canvas->DrawItem(TileItem);
 }
 
 void ARyddelmystHUD::BeginPlay()
@@ -80,7 +79,7 @@ void ARyddelmystHUD::BeginPlay()
 	Super::BeginPlay();
 	FString MapName = GetWorld()->GetMapName();
 	UE_LOG(LogTemp, Warning, TEXT("BeginPlay; map name is %s"), *MapName);
-	if(!GetWorld()->GetMapName().Contains("splash", ESearchCase::Type::IgnoreCase))
+	if (!GetWorld()->GetMapName().Contains("splash", ESearchCase::Type::IgnoreCase))
 	{
 		if (StatusWidgetClass)
 		{
@@ -90,11 +89,11 @@ void ARyddelmystHUD::BeginPlay()
 			{
 				StatusWidget->AddToViewport();
 				// UI setup
-				UWidget* EquipmentPanelWidget = StatusWidget->WidgetTree->FindWidget(FName("EquipmentPanel"));
+				UWidget *EquipmentPanelWidget = StatusWidget->WidgetTree->FindWidget(FName("EquipmentPanel"));
 				EquipmentPanel = Cast<UHorizontalBox>(EquipmentPanelWidget);
-				UWidget* InventoryPanelWidget = StatusWidget->WidgetTree->FindWidget(FName("InventoryPanel"));
+				UWidget *InventoryPanelWidget = StatusWidget->WidgetTree->FindWidget(FName("InventoryPanel"));
 				InventoryPanel = Cast<UHorizontalBox>(InventoryPanelWidget);
-				UWidget* InventorySelectionOverlayWidget = StatusWidget->WidgetTree->FindWidget(FName("InventorySelectionOverlay"));
+				UWidget *InventorySelectionOverlayWidget = StatusWidget->WidgetTree->FindWidget(FName("InventorySelectionOverlay"));
 				InventorySelectionOverlay = Cast<UHorizontalBox>(InventorySelectionOverlayWidget);
 
 				if (InventorySelectionTexture)
@@ -107,16 +106,14 @@ void ARyddelmystHUD::BeginPlay()
 				}
 
 				ShowDialogue(nullptr, FText::FromString(
-					"What the?! Where am I? Hm, pretty cozy actually. I like it! "
-					"For some reason I feel compelled to tell myself, aloud, that "
-					"I can press the 'E Button' to interact with objects and close "
-					"out or advance 'UI Elements' including my own 'speech bubble'. "
-					"I can even pick some things up! Oooookay... that shouldn't be surprising. "
-					"Ooh wait here comes another -- I can also press the 'Q Button' "
-					"to pause and review my gathered 'quest logs'. Girl-o, my intrusive "
-					"thoughts are getting intricate! ALso, what am I doing standing on a table? AGAIN?"
-					)
-				);
+										  "What the?! Where am I? Hm, pretty cozy actually. I like it! "
+										  "For some reason I feel compelled to tell myself, aloud, that "
+										  "I can press the 'E Button' to interact with objects and close "
+										  "out or advance 'UI Elements' including my own 'speech bubble'. "
+										  "I can even pick some things up! Oooookay... that shouldn't be surprising. "
+										  "Ooh wait here comes another -- I can also press the 'Q Button' "
+										  "to pause and review my gathered 'quest logs'. Girl-o, my intrusive "
+										  "thoughts are getting intricate! ALso, what am I doing standing on a table? AGAIN?"));
 			}
 		}
 		else
@@ -171,30 +168,30 @@ void ARyddelmystHUD::BeginPlay()
 	}
 }
 
-UUserWidget* ARyddelmystHUD::GetStatusWidget()
+UUserWidget *ARyddelmystHUD::GetStatusWidget()
 {
 	return StatusWidget;
 }
 
-void ARyddelmystHUD::AddEquipIcon(class UTexture2D* tex)
+void ARyddelmystHUD::AddEquipIcon(class UTexture2D *tex)
 {
-	UImage* IconWidget = StatusWidget->WidgetTree->ConstructWidget<UImage>();
+	UImage *IconWidget = StatusWidget->WidgetTree->ConstructWidget<UImage>();
 	FSlateBrush ModBrush = IconWidget->Brush;
-    ModBrush.SetImageSize(FVector2D(128, 128));
+	ModBrush.SetImageSize(FVector2D(128, 128));
 	ModBrush.SetResourceObject(tex);
-    IconWidget->SetBrush(ModBrush);
+	IconWidget->SetBrush(ModBrush);
 	EquipmentPanel->AddChildToHorizontalBox(IconWidget);
 }
 
-void ARyddelmystHUD::AddItemIcon(class UTexture2D* tex)
+void ARyddelmystHUD::AddItemIcon(class UTexture2D *tex)
 {
-	UImage* IconWidget = StatusWidget->WidgetTree->ConstructWidget<UImage>();
+	UImage *IconWidget = StatusWidget->WidgetTree->ConstructWidget<UImage>();
 	IconWidget->SetDesiredSizeOverride(FVector2D(128, 128)); // doesn't work, but recommend approach smdh
 	// IconWidget->SetBrushSize(FVector2D(128, 128)); // compiler complains about deprecation and as of 5.4 it doesn't work anymore.
 	FSlateBrush ModBrush = IconWidget->Brush;
-    ModBrush.SetImageSize(FVector2D(128, 128));
+	ModBrush.SetImageSize(FVector2D(128, 128));
 	ModBrush.SetResourceObject(tex);
-    IconWidget->SetBrush(ModBrush);
+	IconWidget->SetBrush(ModBrush);
 	InventoryPanel->AddChildToHorizontalBox(IconWidget);
 }
 
@@ -211,8 +208,8 @@ void ARyddelmystHUD::SelectItem(uint8 idx)
 	if (InventorySelectionIcon)
 	{
 		UE_LOG(LogTemp, Warning, TEXT("SelectItem; idx is %u"), idx);
-		auto* slot = InventorySelectionOverlay->AddChildToHorizontalBox(InventorySelectionIcon);
-		slot->SetPadding(FMargin(idx*128,0,0,0));
+		auto *slot = InventorySelectionOverlay->AddChildToHorizontalBox(InventorySelectionIcon);
+		slot->SetPadding(FMargin(idx * 128, 0, 0, 0));
 		slot->SynchronizeProperties();
 	}
 }
@@ -226,7 +223,7 @@ void ARyddelmystHUD::ScrollDialogueUp()
 {
 	if (StatusWidget)
 	{
-		UScrollBox* DialogueScrollBox = StatusWidget->WidgetTree->FindWidget<UScrollBox>(FName("DialogueScrollBox"));
+		UScrollBox *DialogueScrollBox = StatusWidget->WidgetTree->FindWidget<UScrollBox>(FName("DialogueScrollBox"));
 		if (DialogueScrollBox->GetScrollOffset() > 0.f)
 		{
 			DialogueScrollBox->SetScrollOffset(DialogueScrollBox->GetScrollOffset() - 50.f);
@@ -238,7 +235,7 @@ void ARyddelmystHUD::ScrollDialogueDown()
 {
 	if (StatusWidget)
 	{
-		UScrollBox* DialogueScrollBox = StatusWidget->WidgetTree->FindWidget<UScrollBox>(FName("DialogueScrollBox"));
+		UScrollBox *DialogueScrollBox = StatusWidget->WidgetTree->FindWidget<UScrollBox>(FName("DialogueScrollBox"));
 		UE_LOG(LogTemp, Warning, TEXT("scrolling down; offsetofend says %f"), DialogueScrollBox->GetScrollOffsetOfEnd());
 		if (DialogueScrollBox->GetScrollOffset() < DialogueScrollBox->GetScrollOffsetOfEnd())
 		{
@@ -259,17 +256,17 @@ bool ARyddelmystHUD::IsDialogueActive()
 	}
 }
 
-bool ARyddelmystHUD::ShowDialogue(UPaperSprite* Portrait, const FText& Text)
+bool ARyddelmystHUD::ShowDialogue(UPaperSprite *Portrait, const FText &Text)
 {
 	if (StatusWidget)
 	{
 		StatusWidget->SetText(Text);
-		if(Portrait)
+		if (Portrait)
 		{
 			StatusWidget->SetPortrait(Portrait);
 		}
 		StatusWidget->IsDialogueDisplayed = true;
-		UScrollBox* DialogueScrollBox = StatusWidget->WidgetTree->FindWidget<UScrollBox>(FName("DialogueScrollBox"));
+		UScrollBox *DialogueScrollBox = StatusWidget->WidgetTree->FindWidget<UScrollBox>(FName("DialogueScrollBox"));
 		DialogueScrollBox->ScrollToStart();
 		return true;
 	}
@@ -313,7 +310,7 @@ void ARyddelmystHUD::ScrollTextUp()
 {
 	if (TextWidget && TextWidget->IsInViewport())
 	{
-		UScrollBox* TextScrollBox = TextWidget->WidgetTree->FindWidget<UScrollBox>(FName("TextScrollBox"));
+		UScrollBox *TextScrollBox = TextWidget->WidgetTree->FindWidget<UScrollBox>(FName("TextScrollBox"));
 		if (TextScrollBox)
 		{
 			if (TextScrollBox->GetScrollOffset() > 0.f)
@@ -321,7 +318,7 @@ void ARyddelmystHUD::ScrollTextUp()
 				TextScrollBox->SetScrollOffset(TextScrollBox->GetScrollOffset() - 50.f);
 			}
 		}
-		else 
+		else
 		{
 			UE_LOG(LogTemp, Error, TEXT("ScrollTextUp; textscrollbox widget not found"));
 		}
@@ -332,7 +329,7 @@ void ARyddelmystHUD::ScrollTextDown()
 {
 	if (TextWidget && TextWidget->IsInViewport())
 	{
-		UScrollBox* TextScrollBox = TextWidget->WidgetTree->FindWidget<UScrollBox>(FName("TextScrollBox"));
+		UScrollBox *TextScrollBox = TextWidget->WidgetTree->FindWidget<UScrollBox>(FName("TextScrollBox"));
 		if (TextScrollBox)
 		{
 			if (TextScrollBox->GetScrollOffset() < TextScrollBox->GetScrollOffsetOfEnd())
@@ -340,14 +337,14 @@ void ARyddelmystHUD::ScrollTextDown()
 				TextScrollBox->SetScrollOffset(TextScrollBox->GetScrollOffset() + 50.f);
 			}
 		}
-		else 
+		else
 		{
 			UE_LOG(LogTemp, Error, TEXT("ScrollTextDown; textscrollbox widget not found"));
 		}
 	}
 }
 
-bool ARyddelmystHUD::ShowText(const FText& Text, const FString& AudioAssetPath)
+bool ARyddelmystHUD::ShowText(const FText &Text, const FString &AudioAssetPath)
 {
 	if (TextWidget)
 	{
@@ -386,7 +383,7 @@ bool ARyddelmystHUD::HideText()
 	return false;
 }
 
-bool ARyddelmystHUD::ShowBookText(const FText& Text)
+bool ARyddelmystHUD::ShowBookText(const FText &Text)
 {
 	if (BookTextWidget)
 	{
@@ -421,34 +418,34 @@ bool ARyddelmystHUD::HideBookText()
 	return false;
 }
 
-bool ARyddelmystHUD::ShowConversation(UUserWidget* ConvoContent, const FString& AudioAssetPath)
+bool ARyddelmystHUD::ShowConversation(UUserWidget *ConvoContent, const FString &AudioAssetPath)
 {
 	if (!ConvoContent->IsInViewport())
 	{
 		ConvoContent->AddToViewport();
 		// todo: should really refactor this so that convocontent is expected to be something that can play audio, and textdisplaywidget is probably not specific enough given how we've used it everywhere.
-		auto* TextDisplayConvoContent = Cast<UTextDisplayWidget>(ConvoContent);
+		auto *TextDisplayConvoContent = Cast<UTextDisplayWidget>(ConvoContent);
 		if (TextDisplayConvoContent && !AudioAssetPath.IsEmpty())
 		{
 			TextDisplayConvoContent->PlayAudio(AudioAssetPath);
 		}
 		return true;
 	}
-	else 
+	else
 	{
 		UE_LOG(LogTemp, Error, TEXT("ShowConvo; convo widget already in viewport"));
 		return false;
 	}
 }
 
-bool ARyddelmystHUD::ExitConversation(UUserWidget* ConvoContent)
+bool ARyddelmystHUD::ExitConversation(UUserWidget *ConvoContent)
 {
 	if (ConvoContent->IsInViewport())
 	{
 		ConvoContent->RemoveFromParent();
 		return true;
 	}
-	else 
+	else
 	{
 		UE_LOG(LogTemp, Error, TEXT("ExitConvo; convo widget not in viewport"));
 		return false;
@@ -489,7 +486,7 @@ void ARyddelmystHUD::HideRyddelmystHUD()
 {
 	HideDialogue();
 	HideStatus();
-	if(Canvas)
+	if (Canvas)
 	{
 		Canvas->Reset();
 	}
@@ -545,7 +542,7 @@ void ARyddelmystHUD::ShowGameOverMenu()
 	}
 }
 
-void ARyddelmystHUD::AddLore(const FLibraryBookData& Data)
+void ARyddelmystHUD::AddLore(const FLibraryBookData &Data)
 {
 	if (LibraryWidget)
 	{
@@ -557,11 +554,11 @@ void ARyddelmystHUD::AddLore(const FLibraryBookData& Data)
 		//  actually get called. I think the better thing to do is dodge the whole janky UI object lifecycle mess entirely
 		//  by keeping a map of book data in memory and then having the library construct and populate all needed book widgets
 		//  when it gets displayed. Since it's constructing new instances of the books at this point anyway, we might as well
-		//  consider this the entry point for the actual book widget. 
-		//ULibraryBookWidget* LibraryBook = CreateWidget<ULibraryBookWidget>(GetWorld(), LibraryBookWidgetClass);
-		//LibraryBook->SetLore(Data);
+		//  consider this the entry point for the actual book widget.
+		// ULibraryBookWidget* LibraryBook = CreateWidget<ULibraryBookWidget>(GetWorld(), LibraryBookWidgetClass);
+		// LibraryBook->SetLore(Data);
 		// todo: look up utexture2d from Data.CoverArtPath
-		//LibraryBook->SetCoverArt(); // mrr... runtime asset loading. Nevermind, the book logo is good enough for demo!
+		// LibraryBook->SetCoverArt(); // mrr... runtime asset loading. Nevermind, the book logo is good enough for demo!
 
 		// add library book to library
 		LibraryWidget->AddBook(Data);
@@ -616,7 +613,7 @@ bool ARyddelmystHUD::HideLibrary()
 	return false;
 }
 
-void ARyddelmystHUD::RollCredits(const FString& EndingContext)
+void ARyddelmystHUD::RollCredits(const FString &EndingContext)
 {
 	UE_LOG(LogTemp, Warning, TEXT("RollCredits"));
 	FString ImagePath = TEXT("/Game/Ryddelmyst_Assets/Textures/");
@@ -661,12 +658,12 @@ void ARyddelmystHUD::RollCredits(const FString& EndingContext)
 	FString CreditsPath = FPaths::ProjectContentDir().Append(TEXT("Ryddelmyst_Assets/Text/PrettyCredits.txt"));
 	FFileHelper::LoadFileToString(Credits, *CreditsPath);
 	UE_LOG(LogTemp, Warning, TEXT("RollCredits; credits says %s"), *Credits);
-	auto* BackgroundImage = LoadObject<UTexture2D>(nullptr, *ImagePath.Append(ImageName), nullptr, LOAD_None, nullptr);
-	auto* CreditsWidget = CreateWidget<UUserWidget>(GetWorld(), CreditsWidgetClass);
-	auto* CreditsText = CreditsWidget->WidgetTree->FindWidget<UTextBlock>(FName("CreditsTextBlock"));
+	auto *BackgroundImage = LoadObject<UTexture2D>(nullptr, *ImagePath.Append(ImageName), nullptr, LOAD_None, nullptr);
+	auto *CreditsWidget = CreateWidget<UUserWidget>(GetWorld(), CreditsWidgetClass);
+	auto *CreditsText = CreditsWidget->WidgetTree->FindWidget<UTextBlock>(FName("CreditsTextBlock"));
 	UE_LOG(LogTemp, Warning, TEXT("RollCredits; creditswidget says %p and creditstext says %p"), CreditsWidget, CreditsText);
 	CreditsText->SetText(FText::FromString(Credits + TEXT("\n") + Ending));
-	auto* BackgroundImageWidget = CreditsWidget->WidgetTree->FindWidget<UImage>(FName("Background"));
+	auto *BackgroundImageWidget = CreditsWidget->WidgetTree->FindWidget<UImage>(FName("Background"));
 	BackgroundImageWidget->SetBrushFromTexture(BackgroundImage);
 	CreditsWidget->AddToViewport();
 }

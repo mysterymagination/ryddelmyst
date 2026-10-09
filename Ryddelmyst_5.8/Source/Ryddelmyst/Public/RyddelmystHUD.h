@@ -1,6 +1,6 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
-#pragma once 
+#pragma once
 
 #include "CoreMinimal.h"
 #include "GameFramework/HUD.h"
@@ -20,7 +20,7 @@ public:
 	/** Primary draw call for the HUD */
 	virtual void DrawHUD() override;
 	virtual void BeginPlay() override;
-	class UUserWidget* GetStatusWidget();
+	class UUserWidget *GetStatusWidget();
 
 	/**
 	 * Called via input to Scroll Up event when dialogue scrolling is active; a dialogue is a minor comment or observation made by the player character that appears in the StatusWidget and does not block gameplay.
@@ -50,7 +50,7 @@ public:
 	 * Gives access to the TextWidget so we can search for the exit button and install variant behavior e.g. for the Practical Pawn ending.
 	 */
 	UFUNCTION()
-	class UTextDisplayWidget* GetTextWidget() { return TextWidget; };
+	class UTextDisplayWidget *GetTextWidget() { return TextWidget; };
 
 	/**
 	 * @return true if the dialogue box is displayed in the status widget, false otherwise
@@ -65,18 +65,18 @@ public:
 	bool IsTextActive();
 
 	/**
-	 * Adds a UImage icon widget to the InventoryPanel, using the input texture for the image brush 
+	 * Adds a UImage icon widget to the InventoryPanel, using the input texture for the image brush
 	 * @param tex the texture representing the item
 	 */
 	UFUNCTION()
-	void AddItemIcon(class UTexture2D* tex);
+	void AddItemIcon(class UTexture2D *tex);
 
 	/**
 	 * Adds a UImage icon widget to the EquipmentPanel, using the input texture for the image brush
 	 * @param tex the texture representing the item
 	 */
 	UFUNCTION()
-	void AddEquipIcon(class UTexture2D* tex);
+	void AddEquipIcon(class UTexture2D *tex);
 
 	/**
 	 * Removes the UImage icon widget at the given child index from the InventoryPanel
@@ -102,11 +102,11 @@ public:
 	 * @brief Attempts to show the dialogue box, if one is not already showing
 	 * @param Portrait the character portrait to show beside the dialogue text
 	 * @param Text the dialogue text
-	 * @return true if a dialogue was shown, false otherwise 
-	 * 
+	 * @return true if a dialogue was shown, false otherwise
+	 *
 	 */
 	UFUNCTION(BlueprintCallable, Category = "Dialogue")
-	bool ShowDialogue(UPaperSprite* Portrait, const FText& Text);
+	bool ShowDialogue(UPaperSprite *Portrait, const FText &Text);
 
 	/**
 	 * @brief Attempts to hide the dialogue box, if one is showing
@@ -117,7 +117,7 @@ public:
 
 	/**
 	 * @brief Attempts to show the library, if it is not already showing
-	 * @return true if library was shown, false otherwise 
+	 * @return true if library was shown, false otherwise
 	 */
 	UFUNCTION(BlueprintCallable, Category = "Dialogue")
 	bool ShowLibrary();
@@ -133,11 +133,11 @@ public:
 	 * @brief Attempts to show text in the mostly full screen text box, if one is not already showing
 	 * @param Text the text to show over most of the screen
 	 * @param AudioAssetPath - optional audio file to play in the text display UI.
-	 * @return true if text was shown, false otherwise 
-	 * 
+	 * @return true if text was shown, false otherwise
+	 *
 	 */
 	UFUNCTION(BlueprintCallable, Category = "Dialogue")
-	bool ShowText(const FText& Text, const FString& AudioAssetPath);
+	bool ShowText(const FText &Text, const FString &AudioAssetPath);
 
 	/**
 	 * @brief Attempts to hide the mostly full screen text box, if one is showing
@@ -149,16 +149,16 @@ public:
 	/**
 	 * @brief Attempts to show book-like longform text in the mostly full screen text box, if one is not already showing
 	 * @param Text the text to show over most of the screen
-	 * @return true if text was shown, false otherwise 
-	 * 
+	 * @return true if text was shown, false otherwise
+	 *
 	 */
 	UFUNCTION(BlueprintCallable, Category = "Lore")
-	bool ShowBookText(const FText& Text);
+	bool ShowBookText(const FText &Text);
 
 	/**
 	 * @brief Attempts to hide the book-like longform text box, if one is showing
-	 * @return true if text was hidden, false otherwise 
-	 * 
+	 * @return true if text was hidden, false otherwise
+	 *
 	 */
 	UFUNCTION(BlueprintCallable, Category = "Lore")
 	bool HideBookText();
@@ -170,7 +170,7 @@ public:
 	 * @return true if the convo was shown, false otherwise.
 	 */
 	UFUNCTION(BlueprintCallable, Category = "Dialogue")
-	bool ShowConversation(UUserWidget* ConvoContent, const FString& AudioAssetPath);
+	bool ShowConversation(UUserWidget *ConvoContent, const FString &AudioAssetPath);
 
 	/**
 	 * @brief Removes the given convo widget from viewport and restores user control.
@@ -178,18 +178,18 @@ public:
 	 * @return true if the convo was removed, false otherwise.
 	 */
 	UFUNCTION(BlueprintCallable, Category = "Dialogue")
-	bool ExitConversation(UUserWidget* ConvoContent);
+	bool ExitConversation(UUserWidget *ConvoContent);
 
 	/**
 	 * @brief hides all parts of the HUD
-	 * 
+	 *
 	 */
 	UFUNCTION(BlueprintCallable, Category = "GameState")
 	void HideRyddelmystHUD();
 
 	/**
 	 * @brief shows only the crucial parts of the HUD (i.e. player status)
-	 * 
+	 *
 	 */
 	UFUNCTION(BlueprintCallable, Category = "GameState")
 	void ShowRyddelmystHUD();
@@ -211,14 +211,14 @@ public:
 
 	/**
 	 * @brief Adds a BP_LibraryBook widget to the BP_Library where the user can review their quest info.
-	 * @param Data the data necessary to populate the quest info entry. 
+	 * @param Data the data necessary to populate the quest info entry.
 	 */
 	UFUNCTION(BlueprintCallable, Category = "Lore")
-	void AddLore(const FLibraryBookData& Data);
+	void AddLore(const FLibraryBookData &Data);
 
 	/**
 	 * @brief Asks the library to pulls a book from the appropriate pool for a book widget to display.
-	 * @param Category the genre this book should be shelved into. 
+	 * @param Category the genre this book should be shelved into.
 	 */
 	UFUNCTION(BlueprintCallable, Category = "Lore")
 	FLibraryBookData PullUnshelved(ELibraryCat Category);
@@ -228,22 +228,22 @@ public:
 	 * @param EndingContext - the ending clue string identifying the ending reached by the player; this will be prettified and displayed after the credits.
 	 */
 	UFUNCTION(BlueprintCallable, Category = "Lore")
-	void RollCredits(const FString& EndingContext);
+	void RollCredits(const FString &EndingContext);
 
 private:
 	/** Crosshair asset pointer */
 	UPROPERTY()
-	class UTexture2D* CrosshairTex;
+	class UTexture2D *CrosshairTex;
 
 	UPROPERTY(EditAnywhere, Category = "RPG")
 	TSubclassOf<class UTextDisplayWidget> StatusWidgetClass;
 
 	UPROPERTY()
-	class UTextDisplayWidget* StatusWidget;
+	class UTextDisplayWidget *StatusWidget;
 
 	UPROPERTY(EditAnywhere, Category = "GameState")
 	TSubclassOf<class UUserWidget> CreditsWidgetClass;
-	
+
 	UPROPERTY(EditAnywhere, Category = "GameState")
 	TSubclassOf<class UUserWidget> PauseMenuWidgetClass;
 
@@ -257,42 +257,42 @@ private:
 	TSubclassOf<class UTextDisplayWidget> BookTextWidgetClass;
 
 	UPROPERTY()
-	class UUserWidget* PauseMenuWidget;
+	class UUserWidget *PauseMenuWidget;
 
 	UPROPERTY()
-	class UUserWidget* GameOverMenuWidget;
-
-	/**
-	 * @brief UTextDisplayWidget for displaying pop-up billboard-like text, center aligned etc.  
-	 */
-	UPROPERTY()
-	class UTextDisplayWidget* TextWidget;
+	class UUserWidget *GameOverMenuWidget;
 
 	/**
-	 * @brief UTextDisplayWidget for displaying book-like text, left and top aligned etc.  
+	 * @brief UTextDisplayWidget for displaying pop-up billboard-like text, center aligned etc.
 	 */
 	UPROPERTY()
-	class UTextDisplayWidget* BookTextWidget;
+	class UTextDisplayWidget *TextWidget;
+
+	/**
+	 * @brief UTextDisplayWidget for displaying book-like text, left and top aligned etc.
+	 */
+	UPROPERTY()
+	class UTextDisplayWidget *BookTextWidget;
 
 	/** Handle to the InventoryPanel UI widget in the HUD */
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Inventory", meta = (AllowPrivateAccess = "true"))
-	class UHorizontalBox* InventoryPanel;
+	class UHorizontalBox *InventoryPanel;
 
 	/** Handle to the EquipmentPanel UI widget in the HUD */
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Inventory", meta = (AllowPrivateAccess = "true"))
-	class UHorizontalBox* EquipmentPanel;
+	class UHorizontalBox *EquipmentPanel;
 
 	/** Handle to the InventorySelectionOverlay UI widget in the HUD */
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Inventory", meta = (AllowPrivateAccess = "true"))
-	class UHorizontalBox* InventorySelectionOverlay;
+	class UHorizontalBox *InventorySelectionOverlay;
 
 	/** Icon used to indicate selection in the InventorySelectionOverlay UI widget in the HUD */
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Inventory", meta = (AllowPrivateAccess = "true"))
-	class UImage* InventorySelectionIcon;
+	class UImage *InventorySelectionIcon;
 
 	/** Texture used to fill the InventorySelectionIcon */
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Inventory", meta = (AllowPrivateAccess = "true"))
-	class UTexture2D* InventorySelectionTexture;
+	class UTexture2D *InventorySelectionTexture;
 
 public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Dialogue")
@@ -305,6 +305,5 @@ public:
 	 * @brief user widget that manages Lore display and access via the quest log.
 	 */
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Lore")
-	class ULibraryWidget* LibraryWidget;
+	class ULibraryWidget *LibraryWidget;
 };
-

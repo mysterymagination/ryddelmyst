@@ -39,7 +39,7 @@ DEFINE_LOG_CATEGORY_STATIC(LogFPChar, Warning, All);
 //////////////////////////////////////////////////////////////////////////
 // ARyddelmystCharacter
 
-const FString ARyddelmystCharacter::EquipSlotsData[] = { TEXT("Head"), TEXT("Neck"), TEXT("Hands"), TEXT("Feet") };
+const FString ARyddelmystCharacter::EquipSlotsData[] = {TEXT("Head"), TEXT("Neck"), TEXT("Hands"), TEXT("Feet")};
 
 const std::string ARyddelmystCharacter::ID_SPELL_ELECTRICSNOWBALL = "ElectricSnowball";
 const std::string ARyddelmystCharacter::ID_SPELL_FIRESNOWBALL = "FireSnowball";
@@ -88,40 +88,30 @@ ARyddelmystCharacter::ARyddelmystCharacter()
 	{
 		Equipment.Add(key);
 	}
-    
-	PortraitMap = 
-	{
-		{InteractReactions::HAPPY, ConstructorHelpers::FObjectFinder<UPaperSprite>
- (TEXT("/Game/Ryddelmyst_Assets/Sprites/Maya_Happy_Portrait_Sprite.Maya_Happy_Portrait_Sprite")).Object},
- 		{InteractReactions::NEUTRAL, ConstructorHelpers::FObjectFinder<UPaperSprite>
- (TEXT("/Game/Ryddelmyst_Assets/Sprites/Maya_Happy_Portrait_Sprite.Maya_Happy_Portrait_Sprite")).Object},
-		{InteractReactions::SAD, ConstructorHelpers::FObjectFinder<UPaperSprite>
- (TEXT("/Game/Ryddelmyst_Assets/Sprites/Maya_Sad_Portrait_Sprite.Maya_Sad_Portrait_Sprite")).Object},
-		{InteractReactions::WEARY, ConstructorHelpers::FObjectFinder<UPaperSprite>
- (TEXT("/Game/Ryddelmyst_Assets/Sprites/Maya_Weary_Portrait_Sprite.Maya_Weary_Portrait_Sprite")).Object},
-		{InteractReactions::ELDRITCH, ConstructorHelpers::FObjectFinder<UPaperSprite>
- (TEXT("/Game/Ryddelmyst_Assets/Sprites/Maya_Eldritch_Portrait_Sprite.Maya_Eldritch_Portrait_Sprite")).Object},
-		{InteractReactions::FLIRTY, ConstructorHelpers::FObjectFinder<UPaperSprite>
- (TEXT("/Game/Ryddelmyst_Assets/Sprites/Maya_Flirty_Portrait_Sprite.Maya_Flirty_Portrait_Sprite")).Object},
-		{InteractReactions::ANGRY, ConstructorHelpers::FObjectFinder<UPaperSprite>
- (TEXT("/Game/Ryddelmyst_Assets/Sprites/Maya_Angry_Portrait_Sprite.Maya_Angry_Portrait_Sprite")).Object},
-		{InteractReactions::EMBARRASSED, ConstructorHelpers::FObjectFinder<UPaperSprite>
- (TEXT("/Game/Ryddelmyst_Assets/Sprites/Maya_Embarrassed_Portrait_Sprite.Maya_Embarrassed_Portrait_Sprite")).Object},
-		{InteractReactions::CONFUSED, ConstructorHelpers::FObjectFinder<UPaperSprite>
- (TEXT("/Game/Ryddelmyst_Assets/Sprites/Maya_Confused_Portrait_Sprite.Maya_Confused_Portrait_Sprite")).Object}
-	};
+
+	PortraitMap =
+		{
+			{InteractReactions::HAPPY, ConstructorHelpers::FObjectFinder<UPaperSprite>(TEXT("/Game/Ryddelmyst_Assets/Sprites/Maya_Happy_Portrait_Sprite.Maya_Happy_Portrait_Sprite")).Object},
+			{InteractReactions::NEUTRAL, ConstructorHelpers::FObjectFinder<UPaperSprite>(TEXT("/Game/Ryddelmyst_Assets/Sprites/Maya_Happy_Portrait_Sprite.Maya_Happy_Portrait_Sprite")).Object},
+			{InteractReactions::SAD, ConstructorHelpers::FObjectFinder<UPaperSprite>(TEXT("/Game/Ryddelmyst_Assets/Sprites/Maya_Sad_Portrait_Sprite.Maya_Sad_Portrait_Sprite")).Object},
+			{InteractReactions::WEARY, ConstructorHelpers::FObjectFinder<UPaperSprite>(TEXT("/Game/Ryddelmyst_Assets/Sprites/Maya_Weary_Portrait_Sprite.Maya_Weary_Portrait_Sprite")).Object},
+			{InteractReactions::ELDRITCH, ConstructorHelpers::FObjectFinder<UPaperSprite>(TEXT("/Game/Ryddelmyst_Assets/Sprites/Maya_Eldritch_Portrait_Sprite.Maya_Eldritch_Portrait_Sprite")).Object},
+			{InteractReactions::FLIRTY, ConstructorHelpers::FObjectFinder<UPaperSprite>(TEXT("/Game/Ryddelmyst_Assets/Sprites/Maya_Flirty_Portrait_Sprite.Maya_Flirty_Portrait_Sprite")).Object},
+			{InteractReactions::ANGRY, ConstructorHelpers::FObjectFinder<UPaperSprite>(TEXT("/Game/Ryddelmyst_Assets/Sprites/Maya_Angry_Portrait_Sprite.Maya_Angry_Portrait_Sprite")).Object},
+			{InteractReactions::EMBARRASSED, ConstructorHelpers::FObjectFinder<UPaperSprite>(TEXT("/Game/Ryddelmyst_Assets/Sprites/Maya_Embarrassed_Portrait_Sprite.Maya_Embarrassed_Portrait_Sprite")).Object},
+			{InteractReactions::CONFUSED, ConstructorHelpers::FObjectFinder<UPaperSprite>(TEXT("/Game/Ryddelmyst_Assets/Sprites/Maya_Confused_Portrait_Sprite.Maya_Confused_Portrait_Sprite")).Object}};
 
 	UE_LOG(LogTemp, Warning, TEXT("ryddelcharacter ctor; portraitmap at happy says %p"), PortraitMap[InteractReactions::HAPPY]);
 }
 
 void ARyddelmystCharacter::BeginPlay()
 {
-	// Call the base class  
+	// Call the base class
 	Super::BeginPlay();
 
 	check(GEngine != nullptr);
 
-	// Display a debug message for five seconds. 
+	// Display a debug message for five seconds.
 	// The -1 "Key" value argument prevents the message from being updated or refreshed.
 	GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Red, TEXT("We are riddled with RyddelmystCharacter!"));
 
@@ -130,7 +120,7 @@ void ARyddelmystCharacter::BeginPlay()
 	float MagicRechargeAmount = 20.f;
 	TimerDelegate.BindUFunction(this, FName("UpdateMagic"), MagicRechargeAmount);
 	GetWorldTimerManager().SetTimer(MagicTimerHandle, TimerDelegate, 5.0f, true, 0.f);
-	
+
 	FScriptDelegate DamageDelegate;
 	DamageDelegate.BindUFunction(this, FName("HandleDamage"));
 	OnTakePointDamage.Add(DamageDelegate);
@@ -146,7 +136,7 @@ void ARyddelmystCharacter::BeginPlay()
 	GetCapsuleComponent()->OnComponentEndOverlap.Add(OverlapEndDelegate);
 
 	// process any starting equipment effects
-	for (auto& Elem : Equipment)
+	for (auto &Elem : Equipment)
 	{
 		if (Elem.Value)
 		{
@@ -154,7 +144,7 @@ void ARyddelmystCharacter::BeginPlay()
 		}
 	}
 
-	if(CharacterStatsType)
+	if (CharacterStatsType)
 	{
 		CharacterStats = NewObject<UBattleStats>(this, CharacterStatsType);
 		// init other vars based on stats
@@ -181,7 +171,7 @@ void ARyddelmystCharacter::Tick(float DeltaTime)
 //////////////////////////////////////////////////////////////////////////
 // Input
 
-void ARyddelmystCharacter::SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent)
+void ARyddelmystCharacter::SetupPlayerInputComponent(class UInputComponent *PlayerInputComponent)
 {
 	// set up gameplay key bindings
 	check(PlayerInputComponent);
@@ -223,8 +213,8 @@ void ARyddelmystCharacter::FixMe()
 {
 	UE_LOG(LogTemp, Warning, TEXT("FixMe; player pos before is %s"), *GetActorLocation().ToString());
 	// oops, position in world i.e. relative to world origin is NOT considered part of the transform hierarchy, so for a root component not attached to any transform parent SetActorRelativeLocation and SetActorLocation are equivalent.
-	//SetActorRelativeLocation(FVector(100.f, 100.f, 100.f));
-	//SetActorLocation(FVector(100.f, 100.f, 100.f));
+	// SetActorRelativeLocation(FVector(100.f, 100.f, 100.f));
+	// SetActorLocation(FVector(100.f, 100.f, 100.f));
 	SetActorLocation(GetActorLocation() + GetActorForwardVector() * 100.f);
 	UE_LOG(LogTemp, Warning, TEXT("FixMe; player pos after is %s"), *GetActorLocation().ToString());
 }
@@ -238,7 +228,7 @@ void ARyddelmystCharacter::ToggleTorch()
 	}
 }
 
-UBodyCapsuleComponent* ARyddelmystCharacter::GetBody_Implementation()
+UBodyCapsuleComponent *ARyddelmystCharacter::GetBody_Implementation()
 {
 	UE_LOG(LogTemp, Error, TEXT("GetBody; body source not overriden in BP as expected!"));
 	return nullptr;
@@ -254,7 +244,7 @@ void ARyddelmystCharacter::Interact()
 {
 	UE_LOG(LogTemp, Log, TEXT("interact; gamestate says %p"), GetWorld()->GetGameState());
 	// hide dialogue if showing, and return early so we don't potentially trigger a new dialogue
-	if(HUD->HideDialogue() || HUD->HideText())
+	if (HUD->HideDialogue() || HUD->HideText())
 	{
 		return;
 	}
@@ -278,11 +268,11 @@ void ARyddelmystCharacter::Interact()
 	{
 		FHitResult Hit = FireInteractRay();
 		// process any hit actor looking for interactability
-		AActor* Actor = Hit.GetActor();
+		AActor *Actor = Hit.GetActor();
 		if (Actor)
 		{
 			UE_LOG(LogTemp, Warning, TEXT("Interact; found something in range called %s."), *Actor->GetName());
-			USceneComponent* Skele = Actor->FindComponentByClass<USceneComponent>();
+			USceneComponent *Skele = Actor->FindComponentByClass<USceneComponent>();
 			FName ClosestBone;
 			// Need to make sure the gaze was actually pretty nearby the closest bone
 			float MinimumRelevantDistance = 100.f;
@@ -296,16 +286,15 @@ void ARyddelmystCharacter::Interact()
 					FVector BoneLocation = Skele->GetSocketLocation(BoneName);
 					FVector Diff = BoneLocation - Hit.Location;
 					float DiffMag = Diff.Length();
-					if (DiffMag < LeastDistance && DiffMag <= MinimumRelevantDistance) 
+					if (DiffMag < LeastDistance && DiffMag <= MinimumRelevantDistance)
 					{
 						LeastDistance = DiffMag;
 						ClosestBone = BoneName;
 					}
 				}
-				UE_LOG(LogTemp, Warning, TEXT("Interact; found something in range called %s. Nearest bone to hit location is %s"), 
-					*Actor->GetName(), 
-					*ClosestBone.ToString()
-				);
+				UE_LOG(LogTemp, Warning, TEXT("Interact; found something in range called %s. Nearest bone to hit location is %s"),
+					   *Actor->GetName(),
+					   *ClosestBone.ToString());
 			}
 			if (Actor->GetClass()->ImplementsInterface(UInteract::StaticClass()))
 			{
@@ -324,38 +313,35 @@ void ARyddelmystCharacter::Interact()
 						// alert the treant that his offspring is being disturbed!
 						if (Actor->ActorHasTag(FName(TEXT("WoodEgg"))))
 						{
-							UObject* HeadSlotItem = Equipment[TEXT("Head")];
-							UObject* NeckSlotItem = Equipment[TEXT("Neck")];
-							UObject* HandsSlotItem = Equipment[TEXT("Hands")];
-							UObject* FeetSlotItem = Equipment[TEXT("Feet")];
+							UObject *HeadSlotItem = Equipment[TEXT("Head")];
+							UObject *NeckSlotItem = Equipment[TEXT("Neck")];
+							UObject *HandsSlotItem = Equipment[TEXT("Hands")];
+							UObject *FeetSlotItem = Equipment[TEXT("Feet")];
 							if (HeadSlotItem &&
 								NeckSlotItem &&
-								HandsSlotItem && 
-								FeetSlotItem
-							)
+								HandsSlotItem &&
+								FeetSlotItem)
 							{
 								UE_LOG(LogTemp, Log, TEXT("interact:grab; headslot has %s, neckslot has %s, handsslot has %s, and feetslot has %s"),
-									*HeadSlotItem->GetName(),
-									*NeckSlotItem->GetName(),
-									*HandsSlotItem->GetName(),
-									*FeetSlotItem->GetName()
-								);
+									   *HeadSlotItem->GetName(),
+									   *NeckSlotItem->GetName(),
+									   *HandsSlotItem->GetName(),
+									   *FeetSlotItem->GetName());
 							}
-							else 
+							else
 							{
 								UE_LOG(LogTemp, Log, TEXT("interact:grab; some slot item value came up null -- headslot %p, neckslot %p, handsslot %p, and feetslot %p"),
-									HeadSlotItem,
-									NeckSlotItem,
-									HandsSlotItem,
-									FeetSlotItem
-								);
+									   HeadSlotItem,
+									   NeckSlotItem,
+									   HandsSlotItem,
+									   FeetSlotItem);
 							}
 							bool AllQuestItems = HeadSlotItem && HeadSlotItem->GetName().Contains(TEXT("DiademHellfireMight")) &&
-										 NeckSlotItem && NeckSlotItem->GetName().Contains(TEXT("CracklingVioletVial")) &&
-										 HandsSlotItem && HandsSlotItem->GetName().Contains(TEXT("IronSwordCloudConquest")) &&
-										 FeetSlotItem && FeetSlotItem->GetName().Contains(TEXT("SlippersOfLongWintersNap"));
+												 NeckSlotItem && NeckSlotItem->GetName().Contains(TEXT("CracklingVioletVial")) &&
+												 HandsSlotItem && HandsSlotItem->GetName().Contains(TEXT("IronSwordCloudConquest")) &&
+												 FeetSlotItem && FeetSlotItem->GetName().Contains(TEXT("SlippersOfLongWintersNap"));
 							StoryBlock = !AllQuestItems;
-							USoundBase* Eggsclamation = nullptr;
+							USoundBase *Eggsclamation = nullptr;
 							if (!StoryBlock)
 							{
 								Cast<URyddelmystGameInstance>(GetWorld()->GetGameInstance())->GetEventManager()->WoodEggDangerEvent.Broadcast(true);
@@ -364,7 +350,7 @@ void ARyddelmystCharacter::Interact()
 								HUD->ShowDialogue(PortraitMap[InteractReactions::HAPPY], FText::FromString("Eh, I got 'im! Feels kinda warm. And wiggly. Hm."));
 								Eggsclamation = LoadObject<USoundBase>(nullptr, TEXT("/Game/Ryddelmyst_Assets/Audio/VO/Maya/gotcha.gotcha"), nullptr, LOAD_None, nullptr);
 							}
-							else 
+							else
 							{
 								HUD->ShowDialogue(PortraitMap[InteractReactions::WEARY], FText::FromString("OOOH GODS ALL AROUND US, MY BACK! Some crazy monsterpus force is holding it down. I sense artifacts of power nearby; perhaps I can use one or more of them to pry it loose?"));
 								Eggsclamation = LoadObject<USoundBase>(nullptr, *AssetUtils::ChooseRandomLadyExclamationAsset(), nullptr, LOAD_None, nullptr);
@@ -379,8 +365,7 @@ void ARyddelmystCharacter::Interact()
 								0.f,
 								nullptr,
 								nullptr,
-								nullptr
-							);
+								nullptr);
 						}
 						if (!StoryBlock)
 						{
@@ -390,12 +375,12 @@ void ARyddelmystCharacter::Interact()
 							GrabbedActor->AttachToActor(this, FAttachmentTransformRules::KeepWorldTransform, FName(TEXT("Spine-1")));
 							GrabbedActor->SetActorRelativeLocation(FVector(CarryDistance, 0.f, 0.f));
 
-							// Forward Vector version; it's just a unit vector on X accounting for all your rotations e.g. vector [1,0,0] rotated by all your character's rotations.  
-							//GrabbedActor->SetActorLocation(GetActorLocation() + (GetActorForwardVector() * CarryDistance));
+							// Forward Vector version; it's just a unit vector on X accounting for all your rotations e.g. vector [1,0,0] rotated by all your character's rotations.
+							// GrabbedActor->SetActorLocation(GetActorLocation() + (GetActorForwardVector() * CarryDistance));
 							// UE_LOG(LogTemp, Warning, TEXT("Interact; carry vector rotated by player rotation is %s"), *GetActorRotation().RotateVector(FVector(CarryDistance, 0.f, 0.f)).ToString());
 							UE_LOG(LogTemp, Warning, TEXT("Interact; player forward vector is %s.  placing grabbed actor at %s relative to player.  Its world coords are %s and world coords of player are %s"), *GetActorForwardVector().ToString(), *GrabbedActor->GetRootComponent()->GetRelativeLocation().ToString(), *GrabbedActor->GetActorLocation().ToString(), *GetActorLocation().ToString());
 						}
-						else 
+						else
 						{
 							UE_LOG(LogTemp, Warning, TEXT("Interact; player cannot pick up %s for story reasons"), *Actor->GetName());
 						}
@@ -405,12 +390,12 @@ void ARyddelmystCharacter::Interact()
 						// todo: eesh, ugly hack to make talking and describing mutex so we don't get an empty description dialogue bubble after/before a conversation; better solution would be to turn the interact cap array into an assoc map so we can control the prioritization behavior here and in the data.
 						if (capArray.Contains(InteractCapability::TALKABLE) && ClosestBone.ToString().Contains(TEXT("face"), ESearchCase::IgnoreCase))
 						{
-							UConversationalComponent* Convo = Actor->FindComponentByClass<UConversationalComponent>();
+							UConversationalComponent *Convo = Actor->FindComponentByClass<UConversationalComponent>();
 							if (Convo && Convo->GetClass()->ImplementsInterface(UTalkable::StaticClass()))
 							{
 								Cast<URyddelmystGameInstance>(GetWorld()->GetGameInstance())->Pause();
-								UUserWidget* ConvoWidget = ITalkable::Execute_StartConversation(Convo, UConversationStarter::MATCHER_PLAYER_MAYA, ITalkable::Execute_GetConversationalName(Convo), ClosestBone, GetWorld()->GetGameState<ARyddelmystGameState>(), TEXT(""));
-								APlayerController* PlayerController = UGameplayStatics::GetPlayerController(GetWorld(), 0);
+								UUserWidget *ConvoWidget = ITalkable::Execute_StartConversation(Convo, UConversationStarter::MATCHER_PLAYER_MAYA, ITalkable::Execute_GetConversationalName(Convo), ClosestBone, GetWorld()->GetGameState<ARyddelmystGameState>(), TEXT(""));
+								APlayerController *PlayerController = UGameplayStatics::GetPlayerController(GetWorld(), 0);
 								PlayerController->SetShowMouseCursor(true);
 								UWidgetBlueprintLibrary::SetInputMode_UIOnlyEx(PlayerController);
 								HUD->ShowConversation(ConvoWidget, TEXT("/Game/Ryddelmyst_Assets/Audio/raspberry_jam.raspberry_jam"));
@@ -418,13 +403,13 @@ void ARyddelmystCharacter::Interact()
 								break;
 							}
 						}
-						else 
+						else
 						{
 							UE_LOG(LogTemp, Warning, TEXT("interact; describing"));
 							if (Actor->GetClass()->ImplementsInterface(UDescribable::StaticClass()))
 							{
 								FDescriptor Desc = IDescribable::Execute_GenerateDescription(Actor, ClosestBone);
-								UPaperSprite* ReactionPortrait;
+								UPaperSprite *ReactionPortrait;
 								if (PortraitMap.Contains(Desc.Reaction))
 								{
 									ReactionPortrait = PortraitMap[Desc.Reaction];
@@ -435,10 +420,10 @@ void ARyddelmystCharacter::Interact()
 									ReactionPortrait = PortraitMap[InteractReactions::HAPPY];
 								}
 
-								auto* DescNoises = Desc.DescriptiveNoises;
+								auto *DescNoises = Desc.DescriptiveNoises;
 								if (DescNoises)
 								{
-										UGameplayStatics::PlaySoundAtLocation(
+									UGameplayStatics::PlaySoundAtLocation(
 										GetWorld(),
 										DescNoises,
 										GetActorLocation(),
@@ -448,10 +433,9 @@ void ARyddelmystCharacter::Interact()
 										0.f,
 										nullptr,
 										nullptr,
-										nullptr
-									);
+										nullptr);
 								}
-								
+
 								HUD->ShowDialogue(ReactionPortrait, Desc.LocalizedDescription);
 							}
 						}
@@ -461,7 +445,7 @@ void ARyddelmystCharacter::Interact()
 						if (Actor->GetClass()->ImplementsInterface(UDescribable::StaticClass()))
 						{
 							FDescriptor Desc = IDescribable::Execute_GenerateDescription(Actor, ClosestBone);
-							UPaperSprite* ReactionPortrait;
+							UPaperSprite *ReactionPortrait;
 							if (PortraitMap.Contains(Desc.Reaction))
 							{
 								ReactionPortrait = PortraitMap[Desc.Reaction];
@@ -472,10 +456,10 @@ void ARyddelmystCharacter::Interact()
 								ReactionPortrait = PortraitMap[InteractReactions::HAPPY];
 							}
 
-							auto* DescNoises = Desc.DescriptiveNoises;
+							auto *DescNoises = Desc.DescriptiveNoises;
 							if (DescNoises)
 							{
-									UGameplayStatics::PlaySoundAtLocation(
+								UGameplayStatics::PlaySoundAtLocation(
 									GetWorld(),
 									DescNoises,
 									GetActorLocation(),
@@ -485,10 +469,9 @@ void ARyddelmystCharacter::Interact()
 									0.f,
 									nullptr,
 									nullptr,
-									nullptr
-								);
+									nullptr);
 							}
-							
+
 							HUD->ShowDialogue(ReactionPortrait, Desc.LocalizedDescription);
 							UE_LOG(LogTemp, Warning, TEXT("Interact; loreable desc says title %s and lore %s"), *Desc.Lore.LocalizedTitle.ToString(), *Desc.Lore.LocalizedLore.ToString());
 							HUD->AddLore(Desc.Lore);
@@ -496,7 +479,7 @@ void ARyddelmystCharacter::Interact()
 					}
 					else if (cap == InteractCapability::POCKETABLE)
 					{
-						AItemActor* ItemActor = Cast<AItemActor>(Actor);
+						AItemActor *ItemActor = Cast<AItemActor>(Actor);
 						if (ItemActor)
 						{
 							UE_LOG(LogTemp, Warning, TEXT("Interact; pocketing item from %s"), *ItemActor->GetName());
@@ -505,12 +488,12 @@ void ARyddelmystCharacter::Interact()
 					}
 					else if (cap == InteractCapability::OPENABLE)
 					{
-						if(!IOpenClose::Execute_IsOpen(Actor))
+						if (!IOpenClose::Execute_IsOpen(Actor))
 						{
 							UE_LOG(LogTemp, Warning, TEXT("Interact; opening opencloseable object %s"), *Actor->GetName());
 							IOpenClose::Execute_Open(Actor, this);
 						}
-						else 
+						else
 						{
 							UE_LOG(LogTemp, Warning, TEXT("Interact; closing opencloseable object %s"), *Actor->GetName());
 							IOpenClose::Execute_Close(Actor, this);
@@ -567,16 +550,16 @@ void ARyddelmystCharacter::CameraToggle()
 {
 	if (FirstPersonCameraMode)
 	{
-		UE_LOG(LogTemp, Warning, TEXT("CameraToggle; 3PP cam is at %s, maya is at %s, and camera arm is at %s relative to maya"), 
-			*ThirdPersonCameraComponent->GetComponentLocation().ToString(),
-			*GetActorLocation().ToString(),
-			*ThirdPersonCameraArmComponent->GetRelativeLocation().ToString());
+		UE_LOG(LogTemp, Warning, TEXT("CameraToggle; 3PP cam is at %s, maya is at %s, and camera arm is at %s relative to maya"),
+			   *ThirdPersonCameraComponent->GetComponentLocation().ToString(),
+			   *GetActorLocation().ToString(),
+			   *ThirdPersonCameraArmComponent->GetRelativeLocation().ToString());
 		FirstPersonCameraMode = false;
 		FirstPersonCameraComponent->SetActive(false);
 		ThirdPersonCameraComponent->SetActive(true);
 		// in 3PP we want the cam to be able to orbit the character, which means we don't want rotation communicated to the pawn;
 		// that's why we have special handling for moveforward/right that turns the character wherever the cam is pointing
-		// and effectively allows free looking at self when still and sync'd rotation when in motion. 
+		// and effectively allows free looking at self when still and sync'd rotation when in motion.
 		bUseControllerRotationYaw = false;
 	}
 	else
@@ -622,7 +605,6 @@ void ARyddelmystCharacter::HandleCrouch()
 	}
 }
 
-
 void ARyddelmystCharacter::MoveForward(float Value)
 {
 	if (Controller != nullptr && Value != 0.0f)
@@ -663,7 +645,7 @@ void ARyddelmystCharacter::Zoom3PPCam(float Factor)
 	if ((Length >= CamArmLengthMin && Factor < 0.f) ||
 		(Length <= CamArmLengthMax && Factor > 0.f))
 	{
-		ThirdPersonCameraArmComponent->TargetArmLength += ZoomRate*Factor;
+		ThirdPersonCameraArmComponent->TargetArmLength += ZoomRate * Factor;
 		UE_LOG(LogTemp, Warning, TEXT("Zoom3PPCam; new arm length is %f"), ThirdPersonCameraArmComponent->TargetArmLength);
 	}
 }
@@ -694,7 +676,7 @@ void ARyddelmystCharacter::ScrollUp()
 	{
 		Zoom3PPCam(-1.f);
 	}
-	else 
+	else
 	{
 		CycleWeaponUp();
 	}
@@ -724,7 +706,7 @@ void ARyddelmystCharacter::CycleWeaponUp()
 {
 	UE_LOG(LogTemp, Warning, TEXT("CycleWeaponUp"));
 	if (Spells.Num() > 0)
-	{	
+	{
 		if (SelectedWeaponIdx < Spells.Num() - 1)
 		{
 			SelectedWeaponIdx++;
@@ -763,7 +745,7 @@ void ARyddelmystCharacter::Fire()
 		FVector MuzzleLocation = FirstPersonCameraComponent->GetComponentLocation() + FTransform(FirstPersonCameraComponent->GetComponentRotation()).TransformVector(MuzzleOffset);
 		FRotator AdjustedMuzzleRotation = MuzzleRotation + FirstPersonCameraComponent->GetComponentRotation();
 		UE_LOG(LogTemp, Warning, TEXT("Fire; adjusted MuzzleRotation becomes %s from original muzzle rotation %s plus first person cam rotation of %s"),
-			*AdjustedMuzzleRotation.ToString(), *MuzzleRotation.ToString(), *FirstPersonCameraComponent->GetComponentRotation().ToString());
+			   *AdjustedMuzzleRotation.ToString(), *MuzzleRotation.ToString(), *FirstPersonCameraComponent->GetComponentRotation().ToString());
 		/*
 		// Skew the aim to be slightly upwards.
 		FRotator MuzzleRotation = FirstPersonCameraComponent->GetComponentRotation();
@@ -771,39 +753,39 @@ void ARyddelmystCharacter::Fire()
 		MuzzleRotation.Pitch += 10.0f;
 		*/
 
-		UWorld* World = GetWorld();
+		UWorld *World = GetWorld();
 		if (World)
 		{
 			TSubclassOf<ASnowball> SnowballType = Spells[SelectedWeaponIdx];
 			// todo: support having metamagic change costs; the electricsnowball shouldn't cost more than the others until it has its awesome metamagic spreadshot installed
-			UAttack* CDOSnowballAttack = IAttacker::Execute_GetWeapon(SnowballType.GetDefaultObject()->GetSpellSphereComponent())->GetCurrentAttack();
+			UAttack *CDOSnowballAttack = IAttacker::Execute_GetWeapon(SnowballType.GetDefaultObject()->GetSpellSphereComponent())->GetCurrentAttack();
 			if (CDOSnowballAttack->CheckCosts(this))
 			{
 				UE_LOG(LogTemp, Warning, TEXT("Fire; magic is %f and cost is %f so firing"), CharacterStats->StatsData.StatsMap["MP"], CDOSnowballAttack->Costs["MP"]);
-				
-				// todo: order of operations may be a problem with this metamagic model -- say I have a one evocation fx that multiplies damage by 2 and another that adds 2; you'll have different result values depending on which fx is applied first, since PEMDAS isn't factored into this model at all.  Commutativity isn't so much of an issue since that's re: operands rather than operations, and the operands are encapsulated within the function fx.  One possible fix would be to use an ordered map of some sort (or sort the pairs you would iterate over prior to iteration or something) based on a PEMDAS derived priority?  
+
+				// todo: order of operations may be a problem with this metamagic model -- say I have a one evocation fx that multiplies damage by 2 and another that adds 2; you'll have different result values depending on which fx is applied first, since PEMDAS isn't factored into this model at all.  Commutativity isn't so much of an issue since that's re: operands rather than operations, and the operands are encapsulated within the function fx.  One possible fix would be to use an ordered map of some sort (or sort the pairs you would iterate over prior to iteration or something) based on a PEMDAS derived priority?
 
 				// Conjuration phase: lookup conjuration effects for the current spell and apply them, storing the returned bullet array.  If there are none, run the default creation behavior.
-				std::vector<ASnowball*> Bullets;
-				const auto& SpellMap = MetamagicMap[std::string(TCHAR_TO_UTF8(*SnowballType->GetName()))];
-				for(const auto& Source : SpellMap)
+				std::vector<ASnowball *> Bullets;
+				const auto &SpellMap = MetamagicMap[std::string(TCHAR_TO_UTF8(*SnowballType->GetName()))];
+				for (const auto &Source : SpellMap)
 				{
 					// check the current Source for Conjuration effects and run them
 					const auto SourceConjurationItr = Source.second.find(ARyddelmystCharacter::ID_SPELL_PHASE_CONJURATION);
-					if(SourceConjurationItr != Source.second.end())
+					if (SourceConjurationItr != Source.second.end())
 					{
-						// todo: obviously this architecture only really supports one Conjuration[Creation] function, so how should the case of multiple creation functions from multiple sources interoperate?  Maybe the best method would be to check for incompatibilities at the OnEquip stage and disable the incompatible part of the newly added source or refuse to equip it entirely? 
-						const auto& ConjurationMap = SourceConjurationItr->second;
+						// todo: obviously this architecture only really supports one Conjuration[Creation] function, so how should the case of multiple creation functions from multiple sources interoperate?  Maybe the best method would be to check for incompatibilities at the OnEquip stage and disable the incompatible part of the newly added source or refuse to equip it entirely?
+						const auto &ConjurationMap = SourceConjurationItr->second;
 						const auto ConjurationCreationItr = ConjurationMap.find(ARyddelmystCharacter::ID_METAMAGIC_CATEGORY_CREATION);
 						if (ConjurationCreationItr != ConjurationMap.end())
 						{
 							// since Creation is currently the only Conjuration phase effect (and any additional effects would likely need a different function sig), there's no need to iterate
-								const auto& CreationFnVariant = ConjurationCreationItr->second;
+							const auto &CreationFnVariant = ConjurationCreationItr->second;
 							try
 							{
-								Bullets = std::get<std::function<std::vector<ASnowball*>/*created instances*/(ARyddelmystCharacter* /*creating character*/)>>(CreationFnVariant)(this); 
+								Bullets = std::get<std::function<std::vector<ASnowball *> /*created instances*/ (ARyddelmystCharacter * /*creating character*/)>>(CreationFnVariant)(this);
 							}
-							catch (std::bad_variant_access const& ex)
+							catch (std::bad_variant_access const &ex)
 							{
 								UE_LOG(LogTemp, Warning, TEXT("Fire; no Conjuration[Creation] function with expected signature from %s.  Details are: %s"), *FString(Source.first.c_str()), *FString(ex.what()));
 							}
@@ -811,7 +793,7 @@ void ARyddelmystCharacter::Fire()
 					}
 				}
 				// If we didn't have any Conjuration[Creation] functions to run, we'll need to use the default
-				if(Bullets.size() == 0)
+				if (Bullets.size() == 0)
 				{
 					FTransform SpawnTransform;
 					SpawnTransform.SetIdentity();
@@ -825,24 +807,24 @@ void ARyddelmystCharacter::Fire()
 				}
 
 				// Evocation phase: lookup evocation effects for the current spell and apply them to each instance in the bullet array created above.
-				for(const auto& Source : SpellMap)
+				for (const auto &Source : SpellMap)
 				{
 					// check the current Source for Evocation effects and run them
-						auto SourceEvocationItr = Source.second.find(ARyddelmystCharacter::ID_SPELL_PHASE_EVOCATION);
-						if(SourceEvocationItr != Source.second.end())
+					auto SourceEvocationItr = Source.second.find(ARyddelmystCharacter::ID_SPELL_PHASE_EVOCATION);
+					if (SourceEvocationItr != Source.second.end())
+					{
+						const auto &EvocationMap = SourceEvocationItr->second;
+						for (const auto &Evocation : EvocationMap)
 						{
-							const auto& EvocationMap = SourceEvocationItr->second;
-						for(const auto& Evocation : EvocationMap)
-						{
-							try 
+							try
 							{
-								const auto& EvocationFn = std::get<std::function<void(ASnowball*)>>(Evocation.second);
-								for(auto Bullet : Bullets)
+								const auto &EvocationFn = std::get<std::function<void(ASnowball *)>>(Evocation.second);
+								for (auto Bullet : Bullets)
 								{
 									EvocationFn(Bullet);
 								}
 							}
-							catch (std::bad_variant_access const& ex)
+							catch (std::bad_variant_access const &ex)
 							{
 								UE_LOG(LogTemp, Warning, TEXT("Fire; no evocation function with expected signature from %s.  Details are: %s"), *FString(Source.first.c_str()), *FString(ex.what()));
 							}
@@ -851,26 +833,26 @@ void ARyddelmystCharacter::Fire()
 				}
 
 				// Enchantment phase: lookup enchantment effects for the current spell and store them for later OnHit application in each bullet instance in the bullet array created above.
-				for(const auto& Source : SpellMap)
+				for (const auto &Source : SpellMap)
 				{
 					// check the current Source for Enchantment effects and install them for invocation in OnHit later
 					auto SourceEnchantmentItr = Source.second.find(ARyddelmystCharacter::ID_SPELL_PHASE_ENCHANTMENT);
-					if(SourceEnchantmentItr != Source.second.end())
+					if (SourceEnchantmentItr != Source.second.end())
 					{
-						const auto& EnchantmentMap = SourceEnchantmentItr->second;
-						for(const auto& Enchantment : EnchantmentMap)
+						const auto &EnchantmentMap = SourceEnchantmentItr->second;
+						for (const auto &Enchantment : EnchantmentMap)
 						{
-							try 
+							try
 							{
-								const auto& EnchantmentFn = std::get<std::function<void(AActor* /*EnchantedActor*/, const FHitResult& /*HitResult data*/)>>(Enchantment.second);
-								for(auto Bullet : Bullets)
+								const auto &EnchantmentFn = std::get<std::function<void(AActor * /*EnchantedActor*/, const FHitResult & /*HitResult data*/)>>(Enchantment.second);
+								for (auto Bullet : Bullets)
 								{
 									UE_LOG(LogTemp, Warning, TEXT("Fire; adding enchantment from %s"), *FString(Source.first.c_str()));
-									USnowballAttack* SnowballAttack = Cast<USnowballAttack>(IAttacker::Execute_GetWeapon(Bullet->GetSpellSphereComponent())->GetCurrentAttack());
+									USnowballAttack *SnowballAttack = Cast<USnowballAttack>(IAttacker::Execute_GetWeapon(Bullet->GetSpellSphereComponent())->GetCurrentAttack());
 									SnowballAttack->GetEffectsVector().emplace_back(EnchantmentFn);
 								}
 							}
-							catch (std::bad_variant_access const& ex)
+							catch (std::bad_variant_access const &ex)
 							{
 								UE_LOG(LogTemp, Warning, TEXT("Fire; no enchantment function with expected signature from %s.  Details are: %s"), *FString(Source.first.c_str()), *FString(ex.what()));
 							}
@@ -885,70 +867,70 @@ void ARyddelmystCharacter::Fire()
 				SpawnTransform.SetScale3D(FVector(1.f));
 				FVector LaunchDirection = AdjustedMuzzleRotation.Vector();
 				bool Spawned = false;
-				for(const auto& Source : SpellMap)
+				for (const auto &Source : SpellMap)
 				{
 					// check the current Source for Evocation effects and install them for invocation in OnHit later
 					auto SourceTransmutationItr = Source.second.find(ARyddelmystCharacter::ID_SPELL_PHASE_TRANSMUTATION);
-					if(SourceTransmutationItr != Source.second.end())
+					if (SourceTransmutationItr != Source.second.end())
 					{
-						const auto& TransmutationMap = SourceTransmutationItr->second;
+						const auto &TransmutationMap = SourceTransmutationItr->second;
 						auto TransmutationSpawnItr = TransmutationMap.find(ARyddelmystCharacter::ID_METAMAGIC_CATEGORY_SPAWN);
-						if(TransmutationSpawnItr != TransmutationMap.end())
+						if (TransmutationSpawnItr != TransmutationMap.end())
 						{
-							const auto& SpawnFnVariant = TransmutationSpawnItr->second;
-							try 
+							const auto &SpawnFnVariant = TransmutationSpawnItr->second;
+							try
 							{
-								const auto& SpawnFn = std::get<std::function<void(ARyddelmystCharacter* /*TransmutingCharacter*/, const FTransform& /*SpawnTransform*/, const FVector& /*LaunchDirection*/, const std::vector<ASnowball*>& /*Bullets spawned in map*/)>>(SpawnFnVariant);
+								const auto &SpawnFn = std::get<std::function<void(ARyddelmystCharacter * /*TransmutingCharacter*/, const FTransform & /*SpawnTransform*/, const FVector & /*LaunchDirection*/, const std::vector<ASnowball *> & /*Bullets spawned in map*/)>>(SpawnFnVariant);
 								UE_LOG(LogTemp, Warning, TEXT("Fire; custom spawn function discovered.  Running it..."));
 								SpawnFn(this, SpawnTransform, LaunchDirection, Bullets);
 								Spawned = true;
 							}
-							catch (std::bad_variant_access const& ex)
+							catch (std::bad_variant_access const &ex)
 							{
 								UE_LOG(LogTemp, Warning, TEXT("Fire; no spawn transmutation function with expected signature from %s.  Details are: %s"), *FString(Source.first.c_str()), *FString(ex.what()));
 							}
 						}
 					}
 				}
-				
+
 				// run default spawning behavior iff none of our metamagic sources had a Transmutation[Spawn] function
-				if(!Spawned)
+				if (!Spawned)
 				{
-				 	for(auto Bullet : Bullets)
-				 	{
+					for (auto Bullet : Bullets)
+					{
 						UE_LOG(LogTemp, Warning, TEXT("Fire; default spawning Bullet %s"), *Bullet->GetName());
 						// todo: should I be using UGameplayStatics::FinishSpawningActor instead here?
 						Bullet->FinishSpawning(SpawnTransform);
 						Bullet->Cast(this, LaunchDirection);
-				 	}
+					}
 				}
 
 				// apply any other post-spawn metamagic transforms
-				for(const auto& Source : SpellMap)
+				for (const auto &Source : SpellMap)
 				{
 					auto SourceTransmutationItr = Source.second.find(ARyddelmystCharacter::ID_SPELL_PHASE_TRANSMUTATION);
-					if(SourceTransmutationItr != Source.second.end())
+					if (SourceTransmutationItr != Source.second.end())
 					{
-						const auto& TransmutationMap = SourceTransmutationItr->second;
-						for(const auto& Transmutation : TransmutationMap)
+						const auto &TransmutationMap = SourceTransmutationItr->second;
+						for (const auto &Transmutation : TransmutationMap)
 						{
-							try 
+							try
 							{
 								// check the current Source for post-spawn Transmutation effects, which should only need the Bullet pointer as input and output nothing, and run them
-								const auto& TransmutationFn = std::get<std::function<void(ASnowball* /*spell actor to transform*//*, Transform to apply is expected to already be bound or to be created within the lambda*/)>>(Transmutation.second);
-								for(auto Bullet : Bullets)
+								const auto &TransmutationFn = std::get<std::function<void(ASnowball * /*spell actor to transform*/ /*, Transform to apply is expected to already be bound or to be created within the lambda*/)>>(Transmutation.second);
+								for (auto Bullet : Bullets)
 								{
 									TransmutationFn(Bullet);
 								}
 							}
-							catch (std::bad_variant_access const& ex)
+							catch (std::bad_variant_access const &ex)
 							{
 								UE_LOG(LogTemp, Warning, TEXT("Fire; no post-spawn transmutation function with expected signature from %s.  Details are: %s"), *FString(Source.first.c_str()), *FString(ex.what()));
 							}
 						}
 					}
 				}
-				
+
 				UGameplayStatics::PlaySoundAtLocation(
 					GetWorld(),
 					LoadObject<USoundBase>(nullptr, TEXT("/Game/Ryddelmyst_Assets/Audio/SFX/bfxr_sounds/Laser2.Laser2"), nullptr, LOAD_None, nullptr),
@@ -959,8 +941,7 @@ void ARyddelmystCharacter::Fire()
 					0.f,
 					nullptr,
 					nullptr,
-					nullptr
-				);
+					nullptr);
 
 				// last, we incur the cost of casting the spell
 				CDOSnowballAttack->ProcessCosts(this);
@@ -969,7 +950,7 @@ void ARyddelmystCharacter::Fire()
 	}
 }
 
-float ARyddelmystCharacter::GetHealth() 
+float ARyddelmystCharacter::GetHealth()
 {
 	return CharacterStats->StatsData.StatsMap["HP"];
 }
@@ -1033,21 +1014,20 @@ void ARyddelmystCharacter::UpdateMagic(float MagicChange)
 }
 
 void ARyddelmystCharacter::HandleDamage(
-	AActor* DamagedActor, 
-	float Damage, 
-	class AController* InstigatedBy,
+	AActor *DamagedActor,
+	float Damage,
+	class AController *InstigatedBy,
 	FVector HitLocation,
-	UPrimitiveComponent* StrickenComp,
-	FName BoneName, 
+	UPrimitiveComponent *StrickenComp,
+	FName BoneName,
 	FVector ShotFromDirection,
-	const class UDamageType* DamageType, 
-	AActor* DamageCauser
-)
+	const class UDamageType *DamageType,
+	AActor *DamageCauser)
 {
 	UE_LOG(LogTemp, Warning, TEXT("HandleDamage; ouch for %f to %s"), Damage, *DamagedActor->GetName());
 	// load up a different successful hit sound, lady exclaiming sort of thing
 	FString ImpactLadyNoises = AssetUtils::ChooseRandomLadyExclamationAsset();
-    USoundBase* Exclamation = LoadObject<USoundBase>(nullptr, *ImpactLadyNoises, nullptr, LOAD_None, nullptr);
+	USoundBase *Exclamation = LoadObject<USoundBase>(nullptr, *ImpactLadyNoises, nullptr, LOAD_None, nullptr);
 	if (Exclamation)
 	{
 		UGameplayStatics::PlaySoundAtLocation(
@@ -1060,10 +1040,9 @@ void ARyddelmystCharacter::HandleDamage(
 			0.f,
 			nullptr,
 			nullptr,
-			nullptr
-		);
+			nullptr);
 	}
-	else 
+	else
 	{
 		UE_LOG(LogTemp, Error, TEXT("HandleDamage; exclamation sound from file %s came up null"), *ImpactLadyNoises);
 	}
@@ -1077,7 +1056,7 @@ void ARyddelmystCharacter::HandleDamage(
 			SetCanBeDamaged(false);
 			DamageInvincibilityTimer();
 		}
-		else 
+		else
 		{
 			UE_LOG(LogTemp, Warning, TEXT("HandleDamage; skipping iframes because damagecauser %s has ignore iframes tag"), *DamageCauser->GetName());
 		}
@@ -1096,8 +1075,8 @@ void ARyddelmystCharacter::HandleDamage(
 	{
 		// good ol' knockback
 		ShotFromDirection.Normalize(0);
-		UE_LOG(LogTemp, Warning, TEXT("HandleDamage; %s inflicts standard knockback via damage piece %f times normalized impluse vector %s"), DamageCauser ? *DamageCauser->GetName() : TEXT("unknown damage causer"), Damage/10.f, *ShotFromDirection.ToString());
-		LaunchCharacter(ShotFromDirection * (Damage/100.f), false, false);
+		UE_LOG(LogTemp, Warning, TEXT("HandleDamage; %s inflicts standard knockback via damage piece %f times normalized impluse vector %s"), DamageCauser ? *DamageCauser->GetName() : TEXT("unknown damage causer"), Damage / 10.f, *ShotFromDirection.ToString());
+		LaunchCharacter(ShotFromDirection * (Damage / 100.f), false, false);
 	}
 }
 
@@ -1112,7 +1091,7 @@ void ARyddelmystCharacter::DamageInvincibilityTimer()
 	GetWorldTimerManager().SetTimer(InvincibilityTimerHandle, this, &ARyddelmystCharacter::SetDamageState, 1.f, false);
 }
 
-void ARyddelmystCharacter::OnOverlapBegin(class UPrimitiveComponent* OverlappedComp, class AActor* OtherActor, class UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
+void ARyddelmystCharacter::OnOverlapBegin(class UPrimitiveComponent *OverlappedComp, class AActor *OtherActor, class UPrimitiveComponent *OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult &SweepResult)
 {
 	UE_LOG(LogTemp, Warning, TEXT("OnOverlapBegin; character overlapping %s"), *OtherActor->GetName());
 	// if overlap item is an Item then add to onscreen inv as well as data inventory
@@ -1123,11 +1102,11 @@ void ARyddelmystCharacter::OnOverlapBegin(class UPrimitiveComponent* OverlappedC
 	}
 }
 
-void ARyddelmystCharacter::OnQuestComplete(const FString& QuestCompleteContext)
+void ARyddelmystCharacter::OnQuestComplete(const FString &QuestCompleteContext)
 {
 	UE_LOG(LogTemp, Warning, TEXT("OnQuestComplete; context says %s"), *QuestCompleteContext);
 	// set gamestate clue to quest completion context
-	auto* GameState = GetWorld()->GetGameState<ARyddelmystGameState>();
+	auto *GameState = GetWorld()->GetGameState<ARyddelmystGameState>();
 	if (CharacterStats->StatsData.StatsMap["HP"] == 0.0f)
 	{
 		UE_LOG(LogTemp, Warning, TEXT("OnQuestComplete; context is %s but we're dead so loading ending_dead"), *QuestCompleteContext);
@@ -1140,7 +1119,7 @@ void ARyddelmystCharacter::OnQuestComplete(const FString& QuestCompleteContext)
 
 	// todo: move this pause game for UI business into a utility someplace
 	Cast<URyddelmystGameInstance>(GetWorld()->GetGameInstance())->Pause();
-	APlayerController* PlayerController = UGameplayStatics::GetPlayerController(GetWorld(), 0);
+	APlayerController *PlayerController = UGameplayStatics::GetPlayerController(GetWorld(), 0);
 	PlayerController->SetShowMouseCursor(true);
 	UWidgetBlueprintLibrary::SetInputMode_UIOnlyEx(PlayerController);
 
@@ -1148,18 +1127,18 @@ void ARyddelmystCharacter::OnQuestComplete(const FString& QuestCompleteContext)
 	ConversationStarter = NewObject<UConversationStarter>(this);
 	// nevermind the convo character args and bone name here; we autofill yvyteph mastermind for the ending character
 	ConversationStarter->Init(TEXT(""), TEXT(""), FName(TEXT("")), GameState);
-	auto* ConversationUI = ConversationStarter->GenerateConversationUI(ConversationStarter->GetScript());
+	auto *ConversationUI = ConversationStarter->GenerateConversationUI(ConversationStarter->GetScript());
 	HUD->ShowConversation(ConversationUI, TEXT("/Game/Ryddelmyst_Assets/Audio/raspberry_jam.raspberry_jam"));
 }
 
-bool ARyddelmystCharacter::AddInventoryItemFromActor(AItemActor* ItemActor)
+bool ARyddelmystCharacter::AddInventoryItemFromActor(AItemActor *ItemActor)
 {
 	TSubclassOf<UObject> ItemClass = ItemActor->GetItemType();
 	if (ItemClass)
 	{
 		if (ItemClass->ImplementsInterface(UItem::StaticClass()))
 		{
-			UObject* ItemObj = NewObject<UObject>(this, ItemClass);
+			UObject *ItemObj = NewObject<UObject>(this, ItemClass);
 			if (AddInventoryItem(ItemObj))
 			{
 				ItemActor->Destroy();
@@ -1177,14 +1156,14 @@ bool ARyddelmystCharacter::AddInventoryItemFromActor(AItemActor* ItemActor)
 			return false;
 		}
 	}
-	else 
+	else
 	{
 		UE_LOG(LogTemp, Error, TEXT("AddInventoryItemFromActor; itemactor's item class came up null; please install an item object to the actor"));
 		return false;
 	}
 }
 
-bool ARyddelmystCharacter::AddInventoryItem(UObject* ItemObj)
+bool ARyddelmystCharacter::AddInventoryItem(UObject *ItemObj)
 {
 	if (Inventory.Num() < MaxInventory)
 	{
@@ -1198,8 +1177,7 @@ bool ARyddelmystCharacter::AddInventoryItem(UObject* ItemObj)
 				0.f,
 				nullptr,
 				nullptr,
-				true
-			);
+				true);
 			HUD->AddItemIcon(IItem::Execute_GetDisplayIcon(ItemObj));
 			IItem::Execute_OnPickup(ItemObj, this);
 			Inventory.Add(ItemObj);
@@ -1225,7 +1203,7 @@ bool ARyddelmystCharacter::AddInventoryItem(UObject* ItemObj)
 	}
 }
 
-void ARyddelmystCharacter::AddEquippedItem(UObject* ItemObj)
+void ARyddelmystCharacter::AddEquippedItem(UObject *ItemObj)
 {
 	if (ItemObj->GetClass()->ImplementsInterface(UItem::StaticClass()))
 	{
@@ -1239,8 +1217,7 @@ void ARyddelmystCharacter::AddEquippedItem(UObject* ItemObj)
 				0.f,
 				nullptr,
 				nullptr,
-				true
-			);
+				true);
 			UGameplayStatics::PlaySound2D(
 				GetWorld(),
 				LoadObject<USoundBase>(nullptr, TEXT("/Game/Ryddelmyst_Assets/Audio/SFX/wardrobe_malfunction.wardrobe_malfunction"), nullptr, LOAD_None, nullptr),
@@ -1249,8 +1226,7 @@ void ARyddelmystCharacter::AddEquippedItem(UObject* ItemObj)
 				0.f,
 				nullptr,
 				nullptr,
-				true
-			);
+				true);
 			HUD->AddEquipIcon(IItem::Execute_GetDisplayIcon(ItemObj));
 			IItem::Execute_OnEquip(ItemObj, this);
 			Equipment.Add(IItem::Execute_GetEquipSlot(ItemObj), ItemObj);
@@ -1266,7 +1242,7 @@ void ARyddelmystCharacter::AddEquippedItem(UObject* ItemObj)
 	}
 }
 
-void ARyddelmystCharacter::OnOverlapEnd(class UPrimitiveComponent* OverlappedComp, class AActor* OtherActor, class UPrimitiveComponent* OtherComp, int32 OtherBodyIndex)
+void ARyddelmystCharacter::OnOverlapEnd(class UPrimitiveComponent *OverlappedComp, class AActor *OtherActor, class UPrimitiveComponent *OtherComp, int32 OtherBodyIndex)
 {
 	UE_LOG(LogTemp, Warning, TEXT("OnOverlapEnd; character no longer overlapping %s"), *OtherActor->GetName());
 }
@@ -1277,9 +1253,9 @@ void ARyddelmystCharacter::UseItem()
 	{
 		UE_LOG(LogTemp, Warning, TEXT("UseItem; used item is %s and lives at %p"), *Inventory[SelectedItemIdx]->GetName(), Inventory[SelectedItemIdx]);
 		bool UseSuccess = IItem::Execute_OnUse(Inventory[SelectedItemIdx], this);
-		
+
 		// todo: support non-consumable/multi-use items?
-		
+
 		// only process item consumption if the use succeeded, e.g. a key was used on the correct lock
 		if (UseSuccess)
 		{
@@ -1290,7 +1266,7 @@ void ARyddelmystCharacter::UseItem()
 			// only need to modify the SelectedItemIdx if we've used the only item in the inv or if we used the last item (i.e. item at highest index) in the inv array
 			if (Inventory.Num() == 0)
 			{
-				// empty inv after removing used item, clear selection 
+				// empty inv after removing used item, clear selection
 				HUD->ClearItemSelection();
 			}
 			else if (SelectedItemIdx >= Inventory.Num())
